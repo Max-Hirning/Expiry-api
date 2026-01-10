@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@/database/company/generated/client.js";
+import { Prisma, PrismaClient } from "@/database/team/generated/client.js";
 
 export type BaseRepository<T extends Uncapitalize<Model>> = {
     count: PrismaClient[T]["count"];

@@ -1,4 +1,4 @@
-import { Prisma } from "@/database/company/generated/client.js";
+import { Prisma } from "@/database/team/generated/client.js";
 
 /**
  * Convert Prisma model method return type from PrismaPromise to Promise.

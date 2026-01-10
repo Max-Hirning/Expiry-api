@@ -18,6 +18,9 @@ const compat = new FlatCompat({
 });
 
 export default [
+    {
+        ignores: ["src/database/team/generated/**", "src/database/master/generated/**"],
+    },
     ...compat.extends(
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"

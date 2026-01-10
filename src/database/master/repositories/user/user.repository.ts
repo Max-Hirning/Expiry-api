@@ -13,6 +13,7 @@ export const defaultUserSelector = {
     phoneNumber: true,
     password: true,
     role: true,
+    status: true,
     avatar: true,
     notificationPreferences: true,
 } satisfies Prisma.UserSelect;

@@ -30,4 +30,8 @@
         "incremental": true
     },
     "include": ["src/**/*", "**/*.json", "test/**/*"],
+    "exclude": [
+        "src/database/master/generated",
+        "src/database/team/generated"
+    ]
 }
