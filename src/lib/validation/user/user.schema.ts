@@ -31,6 +31,32 @@ const inviteUserBodySchema = defaultUserSchema
 
 type InviteUserBodyInput = z.infer<typeof inviteUserBodySchema>;
 
+const updateUserBodySchema = defaultUserSchema
+    .pick({
+        fullName: true,
+        email: true,
+        phoneNumber: true,
+        status: true,
+    })
+    .extend({
+        avatar: defaultAvatarSchema.pick({
+            mimeType: true,
+            width: true,
+            height: true,
+            fileSize: true,
+        }),
+    })
+    .partial();
+
+type UpdateUserBodyInput = z.infer<typeof updateUserBodySchema>;
+
+const updateUserPasswordBodySchema = z.object({
+    oldPassword: z.string(),
+    password: z.string(),
+});
+
+type UpdateUserPasswordBodyInput = z.infer<typeof updateUserPasswordBodySchema>;
+
 const userParamsSchema = z.object({
     userId: z.uuid(),
 });
@@ -91,6 +117,8 @@ export {
     inviteUserBodySchema,
     fetchInvitedUserQuerySchema,
     defaultUserSchema,
+    updateUserPasswordBodySchema,
+    updateUserBodySchema,
     fetchUsersQuerySchema,
 };
 
@@ -99,6 +127,8 @@ export type {
     FetchUsersResponse,
     InviteUserBodyInput,
     FetchInvitedUserQueryInput,
+    UpdateUserPasswordBodyInput,
+    UpdateUserBodyInput,
     UserParamsInput,
     FetchUsersQueryInput,
 };

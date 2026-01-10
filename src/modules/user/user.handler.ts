@@ -7,10 +7,28 @@ import {
     FetchInvitedUserQueryInput,
     FetchUsersQueryInput,
     InviteUserBodyInput,
+    UpdateUserBodyInput,
+    UpdateUserPasswordBodyInput,
     UserParamsInput,
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserHandler = {
+    updateUser: (
+        request: FastifyRequest<{
+            Params: UserParamsInput;
+            Body: UpdateUserBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
+    updateUserPassword: (
+        request: FastifyRequest<{
+            Params: UserParamsInput;
+            Body: UpdateUserPasswordBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
     deleteInvitedUser: (
         request: FastifyRequest<{
             Params: UserParamsInput;
@@ -59,6 +77,28 @@ export const createHandler = (
     jwt: JWT
 ): UserHandler => {
     return {
+        updateUser: async (request, reply) => {
+            const { params, body } = request;
+
+            const data = await userService.updateUser({
+                params,
+                body,
+            });
+
+            return reply.send(data);
+        },
+
+        updateUserPassword: async (request, reply) => {
+            const { params, body } = request;
+
+            const data = await userService.updateUserPassword({
+                params,
+                body,
+            });
+
+            return reply.send(data);
+        },
+
         deleteInvitedUser: async (request, reply) => {
             const { params } = request;
 

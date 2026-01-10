@@ -1,5 +1,7 @@
 import { JWT } from "@fastify/jwt";
+import { hashing } from "@/lib/hashing/hashing.js";
 import { AuthService } from "../auth/auth.service.js";
+import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import {
     Prisma,
@@ -15,11 +17,21 @@ import {
     FetchUsersQueryInput,
     FetchUsersResponse,
     InviteUserBodyInput,
+    UpdateUserBodyInput,
+    UpdateUserPasswordBodyInput,
     UserParamsInput,
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserService = {
     getUser: (p: { params: UserParamsInput }) => Promise<FetchUserResponse>;
+    updateUser: (p: {
+        params: UserParamsInput;
+        body: UpdateUserBodyInput;
+    }) => Promise<FetchUserResponse>;
+    updateUserPassword: (p: {
+        params: UserParamsInput;
+        body: UpdateUserPasswordBodyInput;
+    }) => Promise<FetchUserResponse>;
     deleteInvitedUser: (p: {
         params: UserParamsInput;
     }) => Promise<FetchUserResponse>;
@@ -37,6 +49,99 @@ export const createService = (
     authService: AuthService,
     jwt: JWT
 ): UserService => ({
+    updateUser: async ({ params, body }) => {
+        await userRepository.findFirstOrFail({
+            where: {
+                id: params.userId,
+            },
+        });
+
+        if (body.email || body.phoneNumber) {
+            await authService.checkIfUserExists({
+                where: {
+                    OR: [
+                        ...(body.email
+                            ? [
+                                {
+                                    email: body.email,
+                                },
+                            ]
+                            : []),
+                        ...(body.phoneNumber
+                            ? [
+                                {
+                                    phoneNumber: body.phoneNumber,
+                                },
+                            ]
+                            : []),
+                    ],
+                },
+            });
+        }
+
+        const user = await userRepository.update({
+            where: {
+                id: params.userId,
+            },
+            data: {
+                fullName: body.fullName,
+                email: body.email,
+                status: body.status,
+                phoneNumber: body.phoneNumber,
+                ...(body.avatar && {
+                    avatar: {
+                        update: {
+                            mimeType: body.avatar.mimeType,
+                            fileSize: body.avatar.fileSize,
+                            width: body.avatar.width,
+                            height: body.avatar.height,
+                        },
+                    },
+                }),
+            },
+            select: defaultUserSelector,
+        });
+
+        return {
+            message: "User updated successfully.",
+            data: { user },
+        };
+    },
+
+    updateUserPassword: async ({ params, body }) => {
+        const userToUpdate = await userRepository.findFirstOrFail({
+            where: {
+                id: params.userId,
+            },
+        });
+
+        const isValidPassword = await hashing.comparePassword(
+            body.oldPassword,
+            userToUpdate.password
+        );
+
+        if (!isValidPassword) {
+            throw new ConflictError("Invalid password");
+        }
+
+        const password = await hashing.hashPassword(body.password);
+
+        const user = await userRepository.update({
+            where: {
+                id: params.userId,
+            },
+            data: {
+                password,
+            },
+            select: defaultUserSelector,
+        });
+
+        return {
+            message: "User password updated successfully.",
+            data: { user },
+        };
+    },
+
     inviteUser: async ({ body }) => {
         await authService.checkIfUserExists({
             where: {

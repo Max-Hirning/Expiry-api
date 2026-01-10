@@ -6,6 +6,8 @@ import {
     fetchUsersQuerySchema,
     fetchUsersResponseSchema,
     inviteUserBodySchema,
+    updateUserBodySchema,
+    updateUserPasswordBodySchema,
     userParamsSchema,
 } from "@/lib/validation/user/user.schema.js";
 
@@ -65,6 +67,38 @@ export const createUserRoutes = (
                 tags: ["user"],
                 summary: "Delete user",
                 params: userParamsSchema,
+                response: {
+                    200: fetchUserResponseSchema,
+                },
+            },
+        },
+        userHandler.deleteUser
+    );
+
+    fastify.put(
+        "/:userId",
+        {
+            schema: {
+                tags: ["user"],
+                summary: "Update user",
+                params: userParamsSchema,
+                body: updateUserBodySchema,
+                response: {
+                    200: fetchUserResponseSchema,
+                },
+            },
+        },
+        userHandler.deleteUser
+    );
+
+    fastify.put(
+        "/:userId/password",
+        {
+            schema: {
+                tags: ["user"],
+                summary: "Update user password",
+                params: userParamsSchema,
+                body: updateUserPasswordBodySchema,
                 response: {
                     200: fetchUserResponseSchema,
                 },
