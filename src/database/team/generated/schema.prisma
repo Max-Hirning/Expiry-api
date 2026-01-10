@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "../dbml"
+  outputName          = "schema.dbml"
+  projectName         = "Project Name"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "ER Diagram"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model CompanyLink {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  url  String
+  icon String
+
+  @@map("company_links")
+}
+
+enum LocationStatuses {
+  ACTIVE
+  DEACTIVATED
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  status       LocationStatuses
+  placeId      String
+  location     String
+  city         String
+  state        String
+  stateIndex   String
+  postalCode   String
+  title        String
+  country      String
+  countryIndex String
+  coords       Unsupported("geography(Point)")
+
+  locationComments LocationComment[]
+  actionLogs       ActionLog[]
+
+  @@map("locations")
+}
+
+model LocationComment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  comment String
+
+  authorId String @map("author_id")
+
+  locationId String   @map("location_id")
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  chats Chat[]
+
+  @@map("location_comments")
+}
+
+enum OfferStatuses {
+  DRAFT
+  ACTIVE
+  DEACTIVATED
+}
+
+model Offer {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  title       String
+  description String
+  keyFeatures String
+  priceAmount Float
+  tags        String[]
+  status      OfferStatuses
+
+  companyId String @map("company_id")
+
+  images                OfferImage[]
+  transactions          Transaction[]
+  offerPublishSchedules OfferPublishSchedule[]
+  offerComments         OfferComment[]
+  offerDiscounts        OfferDiscount[]
+  chats                 Chat[]
+  actionLogs            ActionLog[]
+
+  @@unique([status, title])
+  @@map("offers")
+}
+
+model OfferComment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  comment String
+
+  authorId String @map("author_id")
+
+  offerId String @map("offer_id")
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  chats Chat[]
+
+  @@map("offer_comments")
+}
+
+model OfferPublishSchedule {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  dateTime DateTime
+  status   OfferStatuses
+
+  offerId String @unique @map("offer_id")
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@map("offer_publish_schedules")
+}
+
+model OfferImage {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  key       String   @unique @map("file_path")
+  fileSize  Float    @map("file_size")
+  mimeType  String   @map("mime_type")
+  url       String
+  expiredAt DateTime @map("expired_at")
+  width     Float
+  height    Float
+
+  offerId String @map("offer_id")
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@map("offer_images")
+}
+
+enum OfferDiscountTypes {
+  PERCENTAGE
+  AMOUNT
+}
+
+enum OfferDiscountStatuses {
+  ACTIVE
+  DEACTIVATED
+}
+
+model OfferDiscount {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  discount Float
+  type     OfferDiscountTypes
+  status   OfferDiscountStatuses
+
+  offerId String @unique @map("offer_id")
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  transactions Transaction[]
+  actionLogs   ActionLog[]
+
+  @@map("offer_discounts")
+}
+
+enum TransactionStatuses {
+  PAID
+  PENDING
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  amount    Float
+  netAmount Float
+  fee       Float
+  discount  Float
+  title     String
+
+  offerId String @map("offer_id")
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  offerDiscountId String?        @map("offer_discount_id")
+  offerDiscount   OfferDiscount? @relation(fields: [offerDiscountId], references: [id], onDelete: SetNull)
+
+  payerId String @map("payer_id")
+
+  status TransactionStatuses
+
+  @@map("transactions")
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  name String
+
+  offerId String? @map("offer_id")
+  offer   Offer?  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  offerCommentId String?       @map("offer_comment_id")
+  offerComment   OfferComment? @relation(fields: [offerCommentId], references: [id], onDelete: Cascade)
+
+  locationCommentId String?          @map("location_comment_id")
+  locationComment   LocationComment? @relation(fields: [locationCommentId], references: [id], onDelete: Cascade)
+
+  chatMembers ChatMember[]
+  messages    ChatMessage[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  userId String @map("user_id")
+
+  chatId String @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("chat_members")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  text String
+
+  authorId String @map("author_id")
+
+  chatId String @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+}
+
+model ActionLog {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  text String
+
+  offerId String? @map("offer_id")
+  offer   Offer?  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  locationId String?   @map("location_id")
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  offerDiscountId String?        @map("offer_discount_id")
+  offerDiscount   OfferDiscount? @relation(fields: [offerDiscountId], references: [id], onDelete: Cascade)
+
+  initiatorId String @map("initiator_id")
+
+  @@map("action_logs")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  title   String
+  message String
+  image   String
+  isRead  Boolean @default(false) @map("is_read")
+
+  receiverId String @map("receiver_id")
+
+  @@map("notifications")
+}

@@ -1,8 +1,4 @@
-import { Prisma } from "@prisma/client";
-import {
-    GetFindResult,
-    OperationPayload,
-} from "@prisma/client/runtime/library";
+import { Prisma } from "@/database/company/generated/client.js";
 
 /**
  * Convert Prisma model method return type from PrismaPromise to Promise.
@@ -26,6 +22,16 @@ export type PrismaAwaited<
  *   >;
  *};
  * */
-export type FindUniqueOrFail<U, R extends OperationPayload> = <T extends U>(
+export type FindUniqueOrFail<U, R> = <T extends U>(
     args: Prisma.SelectSubset<T, U>
-) => Promise<GetFindResult<R, T, object>>;
+) => Promise<R>;
+
+export type FindFirstOrFail<U, R> = <T extends U>(
+    args: Prisma.SelectSubset<T, U>
+) => Promise<R>;
+
+export type PrismaMethod<Args, Result> = (args: Args) => Promise<Result>;
+
+export type PrismaDelegateMethod<Args, Result> = (
+    args: Args
+) => Prisma.PrismaPromise<Result>;

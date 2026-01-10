@@ -1,17 +1,16 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@/database/company/generated/client.js";
 
 export type BaseRepository<T extends Uncapitalize<Model>> = {
-    create: PrismaClient[T]["create"];
-    createMany: PrismaClient[T]["createMany"];
     count: PrismaClient[T]["count"];
     findUnique: PrismaClient[T]["findUnique"];
     findFirst: PrismaClient[T]["findFirst"];
     update: PrismaClient[T]["update"];
-    upsert: PrismaClient[T]["upsert"];
     updateMany: PrismaClient[T]["updateMany"];
     delete: PrismaClient[T]["delete"];
     findMany: PrismaClient[T]["findMany"];
     deleteMany: PrismaClient[T]["deleteMany"];
+    aggregate: PrismaClient[T]["aggregate"];
+    groupBy: PrismaClient[T]["groupBy"];
 };
 
 type Model = Prisma.ModelName;
@@ -40,12 +39,6 @@ export const generateRepository = <T extends Model>(
 
     const delegate = prisma[modelInstanceName];
 
-    const create = delegate["create"] as (typeof delegate)["create"];
-
-    const createMany = delegate[
-        "createMany"
-    ] as (typeof delegate)["createMany"];
-
     const count = delegate["count"] as (typeof delegate)["count"];
 
     const findUnique = delegate[
@@ -56,13 +49,15 @@ export const generateRepository = <T extends Model>(
 
     const update = delegate["update"] as (typeof delegate)["update"];
 
-    const upsert = delegate["upsert"] as (typeof delegate)["upsert"];
-
     const updateMany = delegate[
         "updateMany"
     ] as (typeof delegate)["updateMany"];
 
     const deleteOne = delegate["delete"] as (typeof delegate)["delete"];
+
+    const aggregate = delegate["aggregate"] as (typeof delegate)["aggregate"];
+
+    const groupBy = delegate["groupBy"] as (typeof delegate)["groupBy"];
 
     const findMany = delegate["findMany"] as (typeof delegate)["findMany"];
 
@@ -71,14 +66,13 @@ export const generateRepository = <T extends Model>(
     ] as (typeof delegate)["deleteMany"];
 
     return {
-        create,
-        createMany,
         findMany,
         count,
         findUnique,
+        aggregate,
+        groupBy,
         findFirst,
         update,
-        upsert,
         updateMany,
         delete: deleteOne,
         deleteMany,

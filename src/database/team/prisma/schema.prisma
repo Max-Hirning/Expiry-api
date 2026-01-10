@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "../dbml"
+  outputName          = "schema.dbml"
+  projectName         = "Expiry Team"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "ER Diagram"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DocumentStatuses {
+  PROCESSING
+  ACTIVE
+  ARCHIVED
+  FAILED
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status DocumentStatuses
+  tags String[]
+  key       String   @unique
+  fileSize  Float    @map("file_size")
+  mimeType  String   @map("mime_type")
+  url       String
+  expiredAt DateTime @map("expired_at")
+  width     Float?
+  height    Float?
+
+  documentExtractedFields DocumentExtractedField[]
+  documentDeadlines DocumentDeadline[]
+
+  @@map("documents")
+}
+
+enum ExtractedFieldType {
+  EXPIRY_DATE
+  ISSUE_DATE
+  COUNTERPARTY
+  AMOUNT
+}
+
+enum ExtractedFieldSource {
+  OCR
+  REGEX
+  MANUAL
+}
+
+model DocumentExtractedField {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  type        ExtractedFieldType
+  value       String
+  confidence  Float
+  source      ExtractedFieldSource
+
+  documentId String @map("document_id")
+  document   Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("document_extracted_fields")
+}
+
+enum DeadlineStatus {
+  ACTIVE
+  COMPLETED
+  OVERDUE
+}
+
+model DocumentDeadline {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  name        String
+  dueAt       DateTime @map("due_at")
+  status      DeadlineStatus
+  riskLevel   String @map("risk_level")
+
+  documentId String @map("document_id")
+  document   Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("document_deadline")
+}
+
+model ActionLog {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  payload String
+
+  userId String @map("user_id")
+
+  @@map("action_logs")
+}
+
+enum TeamMemberRole {
+  ADMIN
+  STAFF
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  role TeamMemberRole
+
+  userId String @unique @map("user_id")
+
+  @@map("team_members")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  title String
+  description String
+
+  userId String @map("user_id")
+
+  @@map("notifications")
+}

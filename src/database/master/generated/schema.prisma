@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "../dbml"
+  outputName          = "schema.dbml"
+  projectName         = "Project Name"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "ER Diagram"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRoles {
+  SUPER_ADMIN
+  SUB_ADMIN
+  COMPANY_STAFF
+  CUSTOMER
+}
+
+enum UserStatuses {
+  ACTIVE
+  DEACTIVATED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  fullName    String       @map("full_name")
+  email       String
+  phoneNumber String       @map("phone_number")
+  password    String
+  role        UserRoles
+  status      UserStatuses
+
+  avatar                  Avatar?
+  companyMember           CompanyMember?
+  notificationPreferences NotificationPreference?
+
+  @@unique([email, role])
+  @@unique([phoneNumber, role])
+  @@map("users")
+}
+
+model Avatar {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  key       String   @unique @map("file_path")
+  fileSize  Float    @map("file_size")
+  mimeType  String   @map("mime_type")
+  url       String
+  expiredAt DateTime @map("expired_at")
+  width     Float
+  height    Float
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("avatars")
+}
+
+model NotificationPreference {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  offerUpdates Boolean @map("offer_updates")
+  companyNews  Boolean @map("company_news")
+  comments     Boolean
+  purchases    Boolean
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  name  String @unique
+  dbUrl String
+
+  logo    Logo?
+  members CompanyMember[]
+}
+
+model Logo {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  key       String   @unique @map("file_path")
+  fileSize  Float    @map("file_size")
+  mimeType  String   @map("mime_type")
+  url       String
+  expiredAt DateTime @map("expired_at")
+  width     Float
+  height    Float
+
+  companyId String  @unique @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("logos")
+}
+
+enum CompanyMemberRole {
+  OWNER
+  ADMIN
+  STAFF
+}
+
+model CompanyMember {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  role CompanyMemberRole
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+}
