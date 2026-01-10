@@ -53,6 +53,7 @@ export namespace $Enums {
     export const UserStatuses: {
         ACTIVE: "ACTIVE";
         DEACTIVATED: "DEACTIVATED";
+        INVITED: "INVITED";
     };
 
     export type UserStatuses = (typeof UserStatuses)[keyof typeof UserStatuses];

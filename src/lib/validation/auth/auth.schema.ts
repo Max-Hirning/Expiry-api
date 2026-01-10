@@ -18,6 +18,7 @@ const signUpBodySchema = z.object({
         .extend({
             password: z.string(),
         }),
+    invitationId: z.string().optional(),
     team: z.object({
         name: z.string(),
     }),

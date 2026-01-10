@@ -25,6 +25,7 @@ enum UserRoles {
 enum UserStatuses {
   ACTIVE
   DEACTIVATED
+  INVITED
 }
 
 model User {

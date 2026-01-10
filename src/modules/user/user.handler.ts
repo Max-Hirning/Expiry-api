@@ -1,12 +1,37 @@
+import { JWT } from "@fastify/jwt";
 import { UserService } from "./user.service.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { User } from "@/database/master/generated/index.js";
 import {
+    FetchInvitedUserQueryInput,
     FetchUsersQueryInput,
+    InviteUserBodyInput,
     UserParamsInput,
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserHandler = {
+    deleteInvitedUser: (
+        request: FastifyRequest<{
+            Params: UserParamsInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
+    getInvitedUser: (
+        request: FastifyRequest<{
+            Querystring: FetchInvitedUserQueryInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
+    deleteUser: (
+        request: FastifyRequest<{
+            Params: UserParamsInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
     getUser: (
         request: FastifyRequest<{
             Params: UserParamsInput;
@@ -20,10 +45,54 @@ export type UserHandler = {
         }>,
         reply: FastifyReply
     ) => Promise<void>;
+
+    inviteUser: (
+        request: FastifyRequest<{
+            Body: InviteUserBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
 };
 
-export const createHandler = (userService: UserService): UserHandler => {
+export const createHandler = (
+    userService: UserService,
+    jwt: JWT
+): UserHandler => {
     return {
+        deleteInvitedUser: async (request, reply) => {
+            const { params } = request;
+
+            const data = await userService.deleteInvitedUser({
+                params,
+            });
+
+            return reply.send(data);
+        },
+
+        getInvitedUser: async (request, reply) => {
+            const { query } = request;
+
+            const { id } = jwt.verify<Pick<User, "id">>(query.invitationId);
+
+            const data = await userService.getUser({
+                params: {
+                    userId: id,
+                },
+            });
+
+            return reply.send(data);
+        },
+
+        deleteUser: async (request, reply) => {
+            const { params } = request;
+
+            const data = await userService.deleteUser({
+                params,
+            });
+
+            return reply.send(data);
+        },
+
         getUser: async (request, reply) => {
             const { params } = request;
 
@@ -42,6 +111,16 @@ export const createHandler = (userService: UserService): UserHandler => {
             });
 
             return reply.send(data);
+        },
+
+        inviteUser: async (request, reply) => {
+            const { body } = request;
+
+            const data = await userService.inviteUser({
+                body,
+            });
+
+            return reply.status(201).send(data);
         },
     };
 };

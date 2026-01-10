@@ -13,6 +13,18 @@ const defaultUserSchema = z.object({
     status: z.enum(UserStatuses),
 });
 
+const inviteUserBodySchema = defaultUserSchema
+    .pick({
+        fullName: true,
+        email: true,
+        phoneNumber: true,
+    })
+    .extend({
+        teamId: z.uuid(),
+    });
+
+type InviteUserBodyInput = z.infer<typeof inviteUserBodySchema>;
+
 const userParamsSchema = z.object({
     userId: z.uuid(),
 });
@@ -52,6 +64,12 @@ const fetchUsersQuerySchema = z
 
 type FetchUsersQueryInput = z.infer<typeof fetchUsersQuerySchema>;
 
+const fetchInvitedUserQuerySchema = z.object({
+    invitationId: z.string(),
+});
+
+type FetchInvitedUserQueryInput = z.infer<typeof fetchInvitedUserQuerySchema>;
+
 const fetchUsersResponseSchema = z.object({
     user: z.string(),
     data: z.object({
@@ -73,6 +91,8 @@ export {
     fetchUserResponseSchema,
     fetchUsersResponseSchema,
     userParamsSchema,
+    inviteUserBodySchema,
+    fetchInvitedUserQuerySchema,
     defaultUserSchema,
     fetchUsersQuerySchema,
 };
@@ -80,6 +100,8 @@ export {
 export type {
     FetchUserResponse,
     FetchUsersResponse,
+    InviteUserBodyInput,
+    FetchInvitedUserQueryInput,
     UserParamsInput,
     FetchUsersQueryInput,
 };

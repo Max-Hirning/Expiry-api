@@ -192,6 +192,7 @@ exports.UserRoles = exports.$Enums.UserRoles = {
 exports.UserStatuses = exports.$Enums.UserStatuses = {
     ACTIVE: "ACTIVE",
     DEACTIVATED: "DEACTIVATED",
+    INVITED: "INVITED",
 };
 
 exports.Prisma.ModelName = {
