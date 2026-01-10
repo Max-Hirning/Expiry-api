@@ -85,9 +85,9 @@ model Team {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  name  String @unique
+  name String @unique
 
-  logo    Logo?
+  logo Logo?
 
   @@map("teams")
 }
@@ -105,8 +105,8 @@ model Logo {
   width     Float
   height    Float
 
-  teamId String  @unique @map("team_id")
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId String @unique @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("logos")
 }

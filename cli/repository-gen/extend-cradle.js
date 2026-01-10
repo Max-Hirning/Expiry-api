@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export const extendCradle = (namePascal, nameCamel, nameKebab) => {
+export const extendCradle = (db, namePascal, nameCamel, nameKebab) => {
     const diContainerPath = path.join(
         process.cwd(),
         "src/types/di-container.type.ts"
@@ -13,7 +13,7 @@ export const extendCradle = (namePascal, nameCamel, nameKebab) => {
         const importMarker = 'import { EnvConfig } from "./env.type.js";';
 
         const newImports = `
-import { ${namePascal}Repository } from "@/database/repositories/${nameKebab}/${nameKebab}.repository.js";`;
+import { ${namePascal}Repository } from "@/database/${db}/repositories/${nameKebab}/${nameKebab}.repository.js";`;
 
         diContent = diContent.replace(
             importMarker,

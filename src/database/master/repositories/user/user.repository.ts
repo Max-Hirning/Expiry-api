@@ -1,6 +1,5 @@
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { FindUniqueOrFail } from "@/database/master/prisma/prisma.type.js";
 import { Prisma, PrismaClient } from "@/database/master/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
@@ -19,10 +18,12 @@ export const defaultUserSelector = {
 } satisfies Prisma.UserSelect;
 
 export type UserRepository = BaseRepository<"user"> & {
-    findUniqueOrFail: FindUniqueOrFail<
-        Prisma.UserFindUniqueArgs,
-        Prisma.UserGetPayload<Prisma.UserFindUniqueArgs>
-    >;
+    findUniqueOrFail: <TArgs extends Prisma.UserFindUniqueArgs>(
+        args: TArgs
+    ) => Promise<Prisma.UserGetPayload<TArgs>>;
+    findFirstOrFail: <TArgs extends Prisma.UserFindFirstArgs>(
+        args: TArgs
+    ) => Promise<Prisma.UserGetPayload<TArgs>>;
 };
 
 export const createUserRepository = (prisma: PrismaClient): UserRepository => {
@@ -30,14 +31,27 @@ export const createUserRepository = (prisma: PrismaClient): UserRepository => {
 
     return {
         ...repository,
-        findUniqueOrFail: async (args) => {
+        findUniqueOrFail: async <TArgs extends Prisma.UserFindUniqueArgs>(
+            args: TArgs
+        ) => {
             const user = await prisma.user.findUnique(args);
 
             if (!user) {
                 throw new NotFoundError("User not found.");
             }
 
-            return user;
+            return user as Prisma.UserGetPayload<TArgs>;
+        },
+        findFirstOrFail: async <TArgs extends Prisma.UserFindFirstArgs>(
+            args: TArgs
+        ) => {
+            const user = await prisma.user.findFirst(args);
+
+            if (!user) {
+                throw new NotFoundError("User not found.");
+            }
+
+            return user as Prisma.UserGetPayload<TArgs>;
         },
     };
 };

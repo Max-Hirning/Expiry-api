@@ -37,12 +37,12 @@ exports.Prisma = Prisma;
 exports.$Enums = {};
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.2.0
+ * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
  */
 Prisma.prismaVersion = {
-    client: "7.1.0",
-    engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
+    client: "7.2.0",
+    engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
 };
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -125,12 +125,11 @@ exports.Prisma.NotificationPreferenceScalarFieldEnum = {
     userId: "userId",
 };
 
-exports.Prisma.CompanyScalarFieldEnum = {
+exports.Prisma.TeamScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
     updatedAt: "updatedAt",
     name: "name",
-    dbUrl: "dbUrl",
 };
 
 exports.Prisma.LogoScalarFieldEnum = {
@@ -144,16 +143,7 @@ exports.Prisma.LogoScalarFieldEnum = {
     expiredAt: "expiredAt",
     width: "width",
     height: "height",
-    companyId: "companyId",
-};
-
-exports.Prisma.CompanyMemberScalarFieldEnum = {
-    id: "id",
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-    role: "role",
-    userId: "userId",
-    companyId: "companyId",
+    teamId: "teamId",
 };
 
 exports.Prisma.SortOrder = {
@@ -168,8 +158,7 @@ exports.Prisma.QueryMode = {
 exports.UserRoles = exports.$Enums.UserRoles = {
     SUPER_ADMIN: "SUPER_ADMIN",
     SUB_ADMIN: "SUB_ADMIN",
-    COMPANY_STAFF: "COMPANY_STAFF",
-    CUSTOMER: "CUSTOMER",
+    USER: "USER",
 };
 
 exports.UserStatuses = exports.$Enums.UserStatuses = {
@@ -177,34 +166,27 @@ exports.UserStatuses = exports.$Enums.UserStatuses = {
     DEACTIVATED: "DEACTIVATED",
 };
 
-exports.CompanyMemberRole = exports.$Enums.CompanyMemberRole = {
-    OWNER: "OWNER",
-    ADMIN: "ADMIN",
-    STAFF: "STAFF",
-};
-
 exports.Prisma.ModelName = {
     User: "User",
     Avatar: "Avatar",
     NotificationPreference: "NotificationPreference",
-    Company: "Company",
+    Team: "Team",
     Logo: "Logo",
-    CompanyMember: "CompanyMember",
 };
 /**
  * Create the Client
  */
 const config = {
     previewFeatures: [],
-    clientVersion: "7.1.0",
-    engineVersion: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
+    clientVersion: "7.2.0",
+    engineVersion: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
     activeProvider: "postgresql",
     inlineSchema:
-        'generator client {\n  provider = "prisma-client-js"\n  output   = "../generated"\n}\n\ngenerator dbml {\n  provider            = "prisma-dbml-generator"\n  output              = "../dbml"\n  outputName          = "schema.dbml"\n  projectName         = "Project Name"\n  projectDatabaseType = "PostgreSQL"\n  projectNote         = "ER Diagram"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum UserRoles {\n  SUPER_ADMIN\n  SUB_ADMIN\n  COMPANY_STAFF\n  CUSTOMER\n}\n\nenum UserStatuses {\n  ACTIVE\n  DEACTIVATED\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @default(now())\n\n  fullName    String       @map("full_name")\n  email       String\n  phoneNumber String       @map("phone_number")\n  password    String\n  role        UserRoles\n  status      UserStatuses\n\n  avatar                  Avatar?\n  companyMember           CompanyMember?\n  notificationPreferences NotificationPreference?\n\n  @@unique([email, role])\n  @@unique([phoneNumber, role])\n  @@map("users")\n}\n\nmodel Avatar {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  key       String   @unique @map("file_path")\n  fileSize  Float    @map("file_size")\n  mimeType  String   @map("mime_type")\n  url       String\n  expiredAt DateTime @map("expired_at")\n  width     Float\n  height    Float\n\n  userId String @unique @map("user_id")\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map("avatars")\n}\n\nmodel NotificationPreference {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @map("updated_at")\n\n  offerUpdates Boolean @map("offer_updates")\n  companyNews  Boolean @map("company_news")\n  comments     Boolean\n  purchases    Boolean\n\n  userId String @unique @map("user_id")\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map("notification_preferences")\n}\n\nmodel Company {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  name  String @unique\n  dbUrl String\n\n  logo    Logo?\n  members CompanyMember[]\n}\n\nmodel Logo {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  key       String   @unique @map("file_path")\n  fileSize  Float    @map("file_size")\n  mimeType  String   @map("mime_type")\n  url       String\n  expiredAt DateTime @map("expired_at")\n  width     Float\n  height    Float\n\n  companyId String  @unique @map("company_id")\n  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)\n\n  @@map("logos")\n}\n\nenum CompanyMemberRole {\n  OWNER\n  ADMIN\n  STAFF\n}\n\nmodel CompanyMember {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  role CompanyMemberRole\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id])\n\n  companyId String\n  company   Company @relation(fields: [companyId], references: [id])\n}\n',
+        'generator client {\n  provider = "prisma-client-js"\n  output   = "../generated"\n}\n\ngenerator dbml {\n  provider            = "prisma-dbml-generator"\n  output              = "../dbml"\n  outputName          = "schema.dbml"\n  projectName         = "Expiry"\n  projectDatabaseType = "PostgreSQL"\n  projectNote         = "ER Diagram"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum UserRoles {\n  SUPER_ADMIN\n  SUB_ADMIN\n  USER\n}\n\nenum UserStatuses {\n  ACTIVE\n  DEACTIVATED\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @default(now())\n\n  fullName    String       @map("full_name")\n  email       String       @unique\n  phoneNumber String       @unique @map("phone_number")\n  password    String\n  role        UserRoles\n  status      UserStatuses\n\n  avatar                  Avatar?\n  notificationPreferences NotificationPreference?\n\n  @@map("users")\n}\n\nmodel Avatar {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  key       String   @unique\n  fileSize  Float    @map("file_size")\n  mimeType  String   @map("mime_type")\n  url       String\n  expiredAt DateTime @map("expired_at")\n  width     Float\n  height    Float\n\n  userId String @unique @map("user_id")\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map("avatars")\n}\n\nmodel NotificationPreference {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @map("updated_at")\n\n  offerUpdates Boolean @map("offer_updates")\n  companyNews  Boolean @map("company_news")\n  comments     Boolean\n  purchases    Boolean\n\n  userId String @unique @map("user_id")\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map("notification_preferences")\n}\n\nmodel Team {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  name String @unique\n\n  logo Logo?\n\n  @@map("teams")\n}\n\nmodel Logo {\n  id        String   @id @default(uuid())\n  createdAt DateTime @default(now()) @map("created_at")\n  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")\n\n  key       String   @unique\n  fileSize  Float    @map("file_size")\n  mimeType  String   @map("mime_type")\n  url       String\n  expiredAt DateTime @map("expired_at")\n  width     Float\n  height    Float\n\n  teamId String @unique @map("team_id")\n  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)\n\n  @@map("logos")\n}\n',
 };
 
 config.runtimeDataModel = JSON.parse(
-    '{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"fullName","kind":"scalar","type":"String","dbName":"full_name"},{"name":"email","kind":"scalar","type":"String"},{"name":"phoneNumber","kind":"scalar","type":"String","dbName":"phone_number"},{"name":"password","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"UserRoles"},{"name":"status","kind":"enum","type":"UserStatuses"},{"name":"avatar","kind":"object","type":"Avatar","relationName":"AvatarToUser"},{"name":"companyMember","kind":"object","type":"CompanyMember","relationName":"CompanyMemberToUser"},{"name":"notificationPreferences","kind":"object","type":"NotificationPreference","relationName":"NotificationPreferenceToUser"}],"dbName":"users"},"Avatar":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"key","kind":"scalar","type":"String","dbName":"file_path"},{"name":"fileSize","kind":"scalar","type":"Float","dbName":"file_size"},{"name":"mimeType","kind":"scalar","type":"String","dbName":"mime_type"},{"name":"url","kind":"scalar","type":"String"},{"name":"expiredAt","kind":"scalar","type":"DateTime","dbName":"expired_at"},{"name":"width","kind":"scalar","type":"Float"},{"name":"height","kind":"scalar","type":"Float"},{"name":"userId","kind":"scalar","type":"String","dbName":"user_id"},{"name":"user","kind":"object","type":"User","relationName":"AvatarToUser"}],"dbName":"avatars"},"NotificationPreference":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"offerUpdates","kind":"scalar","type":"Boolean","dbName":"offer_updates"},{"name":"companyNews","kind":"scalar","type":"Boolean","dbName":"company_news"},{"name":"comments","kind":"scalar","type":"Boolean"},{"name":"purchases","kind":"scalar","type":"Boolean"},{"name":"userId","kind":"scalar","type":"String","dbName":"user_id"},{"name":"user","kind":"object","type":"User","relationName":"NotificationPreferenceToUser"}],"dbName":"notification_preferences"},"Company":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"name","kind":"scalar","type":"String"},{"name":"dbUrl","kind":"scalar","type":"String"},{"name":"logo","kind":"object","type":"Logo","relationName":"CompanyToLogo"},{"name":"members","kind":"object","type":"CompanyMember","relationName":"CompanyToCompanyMember"}],"dbName":null},"Logo":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"key","kind":"scalar","type":"String","dbName":"file_path"},{"name":"fileSize","kind":"scalar","type":"Float","dbName":"file_size"},{"name":"mimeType","kind":"scalar","type":"String","dbName":"mime_type"},{"name":"url","kind":"scalar","type":"String"},{"name":"expiredAt","kind":"scalar","type":"DateTime","dbName":"expired_at"},{"name":"width","kind":"scalar","type":"Float"},{"name":"height","kind":"scalar","type":"Float"},{"name":"companyId","kind":"scalar","type":"String","dbName":"company_id"},{"name":"company","kind":"object","type":"Company","relationName":"CompanyToLogo"}],"dbName":"logos"},"CompanyMember":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"role","kind":"enum","type":"CompanyMemberRole"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"CompanyMemberToUser"},{"name":"companyId","kind":"scalar","type":"String"},{"name":"company","kind":"object","type":"Company","relationName":"CompanyToCompanyMember"}],"dbName":null}},"enums":{},"types":{}}'
+    '{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"fullName","kind":"scalar","type":"String","dbName":"full_name"},{"name":"email","kind":"scalar","type":"String"},{"name":"phoneNumber","kind":"scalar","type":"String","dbName":"phone_number"},{"name":"password","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"UserRoles"},{"name":"status","kind":"enum","type":"UserStatuses"},{"name":"avatar","kind":"object","type":"Avatar","relationName":"AvatarToUser"},{"name":"notificationPreferences","kind":"object","type":"NotificationPreference","relationName":"NotificationPreferenceToUser"}],"dbName":"users"},"Avatar":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"key","kind":"scalar","type":"String"},{"name":"fileSize","kind":"scalar","type":"Float","dbName":"file_size"},{"name":"mimeType","kind":"scalar","type":"String","dbName":"mime_type"},{"name":"url","kind":"scalar","type":"String"},{"name":"expiredAt","kind":"scalar","type":"DateTime","dbName":"expired_at"},{"name":"width","kind":"scalar","type":"Float"},{"name":"height","kind":"scalar","type":"Float"},{"name":"userId","kind":"scalar","type":"String","dbName":"user_id"},{"name":"user","kind":"object","type":"User","relationName":"AvatarToUser"}],"dbName":"avatars"},"NotificationPreference":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"offerUpdates","kind":"scalar","type":"Boolean","dbName":"offer_updates"},{"name":"companyNews","kind":"scalar","type":"Boolean","dbName":"company_news"},{"name":"comments","kind":"scalar","type":"Boolean"},{"name":"purchases","kind":"scalar","type":"Boolean"},{"name":"userId","kind":"scalar","type":"String","dbName":"user_id"},{"name":"user","kind":"object","type":"User","relationName":"NotificationPreferenceToUser"}],"dbName":"notification_preferences"},"Team":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"name","kind":"scalar","type":"String"},{"name":"logo","kind":"object","type":"Logo","relationName":"LogoToTeam"}],"dbName":"teams"},"Logo":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime","dbName":"created_at"},{"name":"updatedAt","kind":"scalar","type":"DateTime","dbName":"updated_at"},{"name":"key","kind":"scalar","type":"String"},{"name":"fileSize","kind":"scalar","type":"Float","dbName":"file_size"},{"name":"mimeType","kind":"scalar","type":"String","dbName":"mime_type"},{"name":"url","kind":"scalar","type":"String"},{"name":"expiredAt","kind":"scalar","type":"DateTime","dbName":"expired_at"},{"name":"width","kind":"scalar","type":"Float"},{"name":"height","kind":"scalar","type":"Float"},{"name":"teamId","kind":"scalar","type":"String","dbName":"team_id"},{"name":"team","kind":"object","type":"Team","relationName":"LogoToTeam"}],"dbName":"logos"}},"enums":{},"types":{}}'
 );
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel);
 config.compilerWasm = {

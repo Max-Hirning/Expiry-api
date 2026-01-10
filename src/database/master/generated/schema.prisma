@@ -7,7 +7,7 @@ generator dbml {
   provider            = "prisma-dbml-generator"
   output              = "../dbml"
   outputName          = "schema.dbml"
-  projectName         = "Project Name"
+  projectName         = "Expiry"
   projectDatabaseType = "PostgreSQL"
   projectNote         = "ER Diagram"
 }
@@ -19,8 +19,7 @@ datasource db {
 enum UserRoles {
   SUPER_ADMIN
   SUB_ADMIN
-  COMPANY_STAFF
-  CUSTOMER
+  USER
 }
 
 enum UserStatuses {
@@ -34,18 +33,15 @@ model User {
   updatedAt DateTime @default(now())
 
   fullName    String       @map("full_name")
-  email       String
-  phoneNumber String       @map("phone_number")
+  email       String       @unique
+  phoneNumber String       @unique @map("phone_number")
   password    String
   role        UserRoles
   status      UserStatuses
 
   avatar                  Avatar?
-  companyMember           CompanyMember?
   notificationPreferences NotificationPreference?
 
-  @@unique([email, role])
-  @@unique([phoneNumber, role])
   @@map("users")
 }
 
@@ -54,7 +50,7 @@ model Avatar {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  key       String   @unique @map("file_path")
+  key       String   @unique
   fileSize  Float    @map("file_size")
   mimeType  String   @map("mime_type")
   url       String
@@ -84,16 +80,16 @@ model NotificationPreference {
   @@map("notification_preferences")
 }
 
-model Company {
+model Team {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  name  String @unique
-  dbUrl String
+  name String @unique
 
-  logo    Logo?
-  members CompanyMember[]
+  logo Logo?
+
+  @@map("teams")
 }
 
 model Logo {
@@ -101,7 +97,7 @@ model Logo {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  key       String   @unique @map("file_path")
+  key       String   @unique
   fileSize  Float    @map("file_size")
   mimeType  String   @map("mime_type")
   url       String
@@ -109,28 +105,8 @@ model Logo {
   width     Float
   height    Float
 
-  companyId String  @unique @map("company_id")
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  teamId String @unique @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("logos")
-}
-
-enum CompanyMemberRole {
-  OWNER
-  ADMIN
-  STAFF
-}
-
-model CompanyMember {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  role CompanyMemberRole
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id])
 }

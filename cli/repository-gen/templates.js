@@ -1,7 +1,7 @@
 export const templates = {
-    repository: (nameCamel, namePascal) =>
+    repository: (db, nameCamel, namePascal) =>
         `
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/database/${db}}/generated/client.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 

@@ -73,6 +73,7 @@ export {
     fetchUserResponseSchema,
     fetchUsersResponseSchema,
     userParamsSchema,
+    defaultUserSchema,
     fetchUsersQuerySchema,
 };
 

@@ -1,6 +1,5 @@
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { FindUniqueOrFail } from "@/database/team/prisma/prisma.type.js";
 import { Prisma, PrismaClient } from "@/database/team/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
@@ -20,10 +19,12 @@ export const defaultDocumentSelector = {
 } satisfies Prisma.DocumentSelect;
 
 export type DocumentRepository = BaseRepository<"document"> & {
-    findUniqueOrFail: FindUniqueOrFail<
-        Prisma.DocumentFindUniqueArgs,
-        Prisma.DocumentGetPayload<Prisma.DocumentFindUniqueArgs>
-    >;
+    findUniqueOrFail: <TArgs extends Prisma.DocumentFindUniqueArgs>(
+        args: TArgs
+    ) => Promise<Prisma.DocumentGetPayload<TArgs>>;
+    findFirstOrFail: <TArgs extends Prisma.DocumentFindFirstArgs>(
+        args: TArgs
+    ) => Promise<Prisma.DocumentGetPayload<TArgs>>;
 };
 
 export const createDocumentRepository = (
@@ -33,14 +34,27 @@ export const createDocumentRepository = (
 
     return {
         ...repository,
-        findUniqueOrFail: async (args) => {
+        findUniqueOrFail: async <TArgs extends Prisma.DocumentFindUniqueArgs>(
+            args: TArgs
+        ) => {
             const document = await prisma.document.findUnique(args);
 
             if (!document) {
                 throw new NotFoundError("Document not found.");
             }
 
-            return document;
+            return document as Prisma.DocumentGetPayload<TArgs>;
+        },
+        findFirstOrFail: async <TArgs extends Prisma.DocumentFindFirstArgs>(
+            args: TArgs
+        ) => {
+            const document = await prisma.document.findFirst(args);
+
+            if (!document) {
+                throw new NotFoundError("Document not found.");
+            }
+
+            return document as Prisma.DocumentGetPayload<TArgs>;
         },
     };
 };

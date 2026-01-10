@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 import { templates } from "./templates.js";
 
-export const generateRepository = (nameCamel, namePascal, nameKebab) => {
+export const generateRepository = (db, nameCamel, namePascal, nameKebab) => {
     const repositoryPath = path.join(
         process.cwd(),
-        "src/database/repositories",
+        `src/database/${db}/repositories`,
         nameKebab
     );
 
@@ -18,7 +18,7 @@ export const generateRepository = (nameCamel, namePascal, nameKebab) => {
     console.log(`📁 Created folder: ${repositoryPath}`);
 
     const filePath = path.join(repositoryPath, `${nameKebab}.repository.ts`);
-    const fileContent = templates["repository"](nameCamel, namePascal);
+    const fileContent = templates["repository"](db, nameCamel, namePascal);
 
     fs.writeFileSync(filePath, fileContent);
     console.log(`📄 Created file: ${filePath}`);
