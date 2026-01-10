@@ -41,7 +41,7 @@ export const createAuthHandler = (authService: AuthService): AuthHandler => {
                 body,
             });
 
-            return reply.send(data);
+            return reply.status(201).send(data);
         },
     };
 };

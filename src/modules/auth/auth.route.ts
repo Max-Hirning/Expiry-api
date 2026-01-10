@@ -33,7 +33,7 @@ export const createAuthRoutes = (
                 summary: "Sign up",
                 body: signUpBodySchema,
                 response: {
-                    200: fetchUserResponseSchema,
+                    201: fetchUserResponseSchema,
                 },
             },
         },

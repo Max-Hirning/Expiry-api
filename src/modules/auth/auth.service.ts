@@ -19,6 +19,7 @@ import {
 
 export type AuthService = {
     checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
+    checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
     signIn: (p: { body: SignInBodyInput }) => Promise<FetchUserResponse>;
     signUp: (p: { body: SignUpBodyInput }) => Promise<FetchUserResponse>;
 };
@@ -62,6 +63,7 @@ export const createAuthService = (
 
     return {
         checkIfUserExists,
+        checkIfTeamExists,
 
         signIn: async ({ body }) => {
             const user = await userRepository.findFirstOrFail({
@@ -94,11 +96,19 @@ export const createAuthService = (
 
         signUp: async ({ body }) => {
             const { user, invitationId, team } = body;
+            const teamId = randomUUID();
 
             await Promise.all([
                 checkIfTeamExists({
                     where: {
-                        name: team.name,
+                        OR: [
+                            {
+                                id: teamId,
+                            },
+                            {
+                                name: team.name,
+                            },
+                        ],
                     },
                 }),
                 checkIfUserExists({
@@ -116,7 +126,6 @@ export const createAuthService = (
             ]);
 
             const password = await hashing.hashPassword(user.password);
-            const teamId = randomUUID();
 
             try {
                 await prisma.master.$queryRaw`

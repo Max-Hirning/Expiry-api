@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { Prisma } from "@/database/master/generated/edge.js";
 import { UserStatuses, UserRoles } from "@/database/master/generated/client.js";
+import {
+    paginationQuerySchema,
+    paginationResponseSchema,
+} from "../pagination/pagination.schema.js";
 
 const defaultUserSchema = z.object({
     id: z.uuid(),
@@ -40,11 +44,9 @@ const fetchUserResponseSchema = z.object({
 
 type FetchUserResponse = z.infer<typeof fetchUserResponseSchema>;
 
-const fetchUsersQuerySchema = z
-    .object({
-        page: z.int(),
+const fetchUsersQuerySchema = paginationQuerySchema
+    .extend({
         search: z.string(),
-        perPage: z.int().max(25),
         sortOrder: z.enum(Prisma.SortOrder),
         sortField: z.enum(Prisma.UserScalarFieldEnum),
         statuses: z.union([
@@ -74,14 +76,7 @@ const fetchUsersResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         users: z.array(defaultUserSchema),
-        pagination: z.object({
-            perPage: z.int(),
-            page: z.int(),
-            prevPage: z.int().nullable(),
-            nextPage: z.int().nullable(),
-            total: z.int(),
-            totalPages: z.int(),
-        }),
+        pagination: paginationResponseSchema,
     }),
 });
 

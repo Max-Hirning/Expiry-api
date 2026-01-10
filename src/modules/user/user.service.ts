@@ -169,7 +169,13 @@ export const createService = (
                 where,
                 take: query.perPage,
                 orderBy: {
-                    createdAt: Prisma.SortOrder.desc,
+                    ...(query.sortField && query.sortOrder
+                        ? {
+                            [query.sortField]: query.sortOrder,
+                        }
+                        : {
+                            createdAt: Prisma.SortOrder.desc,
+                        }),
                 },
             }),
             userRepository.count({

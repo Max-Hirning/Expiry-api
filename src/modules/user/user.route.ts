@@ -51,7 +51,7 @@ export const createUserRoutes = (
                 summary: "Delete invited user",
                 params: userParamsSchema,
                 response: {
-                    201: fetchUserResponseSchema,
+                    200: fetchUserResponseSchema,
                 },
             },
         },
@@ -66,7 +66,7 @@ export const createUserRoutes = (
                 summary: "Delete user",
                 params: userParamsSchema,
                 response: {
-                    201: fetchUserResponseSchema,
+                    200: fetchUserResponseSchema,
                 },
             },
         },
