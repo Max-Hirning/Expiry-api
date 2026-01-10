@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { FastifyInstance } from "fastify";
 import { hashing } from "@/lib/hashing/hashing.js";
+import { UserService } from "../user/user.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
@@ -30,6 +31,7 @@ export type AuthService = {
 export const createAuthService = (
     teamRepository: TeamRepository,
     userRepository: UserRepository,
+    userService: UserService,
     prisma: FastifyInstance["prisma"]
 ): AuthService => {
     const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
@@ -69,7 +71,7 @@ export const createAuthService = (
         checkIfTeamExists,
 
         signIn: async ({ body }) => {
-            const user = await userRepository.findFirstOrFail({
+            const userToSignIn = await userRepository.findFirstOrFail({
                 where: {
                     OR: [
                         {
@@ -85,12 +87,20 @@ export const createAuthService = (
 
             const isPasswordValid = await hashing.comparePassword(
                 body.password,
-                user.password
+                userToSignIn.password
             );
 
             if (!isPasswordValid) {
                 throw new ConflictError("Password is invalid");
             }
+
+            const {
+                data: { user },
+            } = await userService.getUser({
+                params: {
+                    userId: userToSignIn.id,
+                },
+            });
 
             return {
                 message: "User signed in successfully.",
@@ -187,15 +197,31 @@ export const createAuthService = (
                                         teamId: createdTeam.id,
                                     },
                                 },
+                                notificationPreferences: {
+                                    create: {
+                                        offerUpdates: true,
+                                        companyNews: true,
+                                        comments: true,
+                                        purchases: true,
+                                    },
+                                },
                             },
                             select: defaultUserSelector,
                         });
                     }
                 );
 
+                const {
+                    data: { user: userInfo },
+                } = await userService.getUser({
+                    params: {
+                        userId: createdUser.id,
+                    },
+                });
+
                 return {
                     message: "User signed up successfully.",
-                    data: { user: createdUser },
+                    data: { user: userInfo },
                 };
             } catch (error) {
                 await prisma.master.$queryRaw`

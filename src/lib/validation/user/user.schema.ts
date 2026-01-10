@@ -6,6 +6,7 @@ import {
     paginationQuerySchema,
     paginationResponseSchema,
 } from "../pagination/pagination.schema.js";
+import { defaultNotificationPreferenceSchema } from "../notification-preference/notification-preference.schema.js";
 
 const defaultUserSchema = z.object({
     id: z.uuid(),
@@ -17,6 +18,7 @@ const defaultUserSchema = z.object({
     role: z.enum(UserRoles),
     status: z.enum(UserStatuses),
     avatar: defaultAvatarSchema.nullable(),
+    notificationPreferences: defaultNotificationPreferenceSchema,
 });
 
 const inviteUserBodySchema = defaultUserSchema
