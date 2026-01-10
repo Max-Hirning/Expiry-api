@@ -39,6 +39,7 @@ model User {
   password    String
   role        UserRoles
   status      UserStatuses
+  teamMembers TeamMember[]
 
   avatar                  Avatar?
   notificationPreferences NotificationPreference?
@@ -88,9 +89,31 @@ model Team {
 
   name String @unique
 
-  logo Logo?
+  logo        Logo?
+  teamMembers TeamMember[]
 
   @@map("teams")
+}
+
+enum TeamMemberRole {
+  ADMIN
+  STAFF
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  role TeamMemberRole
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  teamId String @unique @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("team_members")
 }
 
 model Logo {

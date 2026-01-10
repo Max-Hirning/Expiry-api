@@ -160,6 +160,15 @@ exports.Prisma.TeamScalarFieldEnum = {
     name: "name",
 };
 
+exports.Prisma.TeamMemberScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    role: "role",
+    userId: "userId",
+    teamId: "teamId",
+};
+
 exports.Prisma.LogoScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -195,11 +204,17 @@ exports.UserStatuses = exports.$Enums.UserStatuses = {
     INVITED: "INVITED",
 };
 
+exports.TeamMemberRole = exports.$Enums.TeamMemberRole = {
+    ADMIN: "ADMIN",
+    STAFF: "STAFF",
+};
+
 exports.Prisma.ModelName = {
     User: "User",
     Avatar: "Avatar",
     NotificationPreference: "NotificationPreference",
     Team: "Team",
+    TeamMember: "TeamMember",
     Logo: "Logo",
 };
 

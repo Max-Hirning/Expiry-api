@@ -1,19 +1,41 @@
 import fp from "fastify-plugin";
 import { FastifyInstance } from "fastify";
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { FastifyPlugin } from "@/lib/fastify/fastify.constant.js";
+import { PrismaClient as TeamPrisma } from "@/database/team/generated/client.js";
+import { PrismaClient as MasterPrisma } from "@/database/master/generated/client.js";
+
+export type TeamPrismaFactory = (
+    schema: string
+) => InstanceType<typeof TeamPrisma>;
 
 const configurePrisma = async (fastify: FastifyInstance) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: fastify.config.DATABASE_URL,
+    const masterPrisma = new MasterPrisma();
+    await masterPrisma.$connect();
+
+    const createTeamPrisma: TeamPrismaFactory = (schema) => {
+        const adapter = new PrismaPg(
+            {
+                connectionString: fastify.config.DATABASE_URL,
+            },
+            {
+                schema,
+            }
+        );
+
+        const client = new TeamPrisma({ adapter });
+        client.$connect();
+
+        return client;
+    };
+
+    fastify.decorate("prisma", {
+        master: masterPrisma,
+        team: createTeamPrisma,
     });
 
-    await prisma.$connect();
-
-    fastify.decorate("prisma", prisma);
-
-    fastify.addHook("onClose", async (fastify) => {
-        await fastify.prisma.$disconnect();
+    fastify.addHook("onClose", async () => {
+        await masterPrisma.$disconnect();
     });
 };
 

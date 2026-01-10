@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+import { FastifyInstance } from "fastify";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
@@ -10,7 +12,7 @@ import {
 } from "@/lib/validation/auth/auth.schema.js";
 import {
     Prisma,
-    PrismaClient,
+    TeamMemberRole,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/index.js";
@@ -24,7 +26,7 @@ export type AuthService = {
 export const createAuthService = (
     teamRepository: TeamRepository,
     userRepository: UserRepository,
-    prisma: PrismaClient
+    prisma: FastifyInstance["prisma"]
 ): AuthService => {
     const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
         const existedUser = await userRepository.findFirst(args);
@@ -85,7 +87,7 @@ export const createAuthService = (
             }
 
             return {
-                user: "User signed in successfully.",
+                message: "User signed in successfully.",
                 data: { user },
             };
         },
@@ -114,42 +116,79 @@ export const createAuthService = (
             ]);
 
             const password = await hashing.hashPassword(user.password);
+            const teamId = randomUUID();
 
-            const [createdUser] = await prisma.$transaction([
-                invitationId
-                    ? prisma.user.update({
-                        where: {
-                            id: invitationId,
-                        },
-                        data: {
-                            status: UserStatuses.ACTIVE,
-                            fullName: user.fullName,
-                            email: user.email,
-                            phoneNumber: user.phoneNumber,
-                            password,
-                        },
-                    })
-                    : prisma.user.create({
-                        data: {
-                            role: UserRoles.USER,
-                            status: UserStatuses.ACTIVE,
-                            fullName: user.fullName,
-                            email: user.email,
-                            phoneNumber: user.phoneNumber,
-                            password,
-                        },
-                    }),
-                prisma.team.create({
-                    data: {
-                        name: team.name,
-                    },
-                }),
-            ]);
+            try {
+                await prisma.master.$queryRaw`
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ${teamId}) THEN
+                            EXECUTE format('CREATE DATABASE %I', ${teamId});
+                        END IF;
+                    END
+                    $$;
+                `;
 
-            return {
-                user: "User signed up successfully.",
-                data: { user: createdUser },
-            };
+                const createdUser = await prisma.master.$transaction(
+                    async (tx) => {
+                        const createdTeam = await tx.team.create({
+                            data: {
+                                id: teamId,
+                                name: team.name,
+                            },
+                        });
+
+                        if (invitationId) {
+                            return tx.user.update({
+                                where: {
+                                    id: invitationId,
+                                },
+                                data: {
+                                    status: UserStatuses.ACTIVE,
+                                    fullName: user.fullName,
+                                    email: user.email,
+                                    phoneNumber: user.phoneNumber,
+                                    password,
+                                    teamMembers: {
+                                        create: {
+                                            role: TeamMemberRole.ADMIN,
+                                            teamId: createdTeam.id,
+                                        },
+                                    },
+                                },
+                            });
+                        }
+
+                        return tx.user.create({
+                            data: {
+                                role: UserRoles.USER,
+                                status: UserStatuses.ACTIVE,
+                                fullName: user.fullName,
+                                email: user.email,
+                                phoneNumber: user.phoneNumber,
+                                password,
+                                teamMembers: {
+                                    create: {
+                                        role: TeamMemberRole.ADMIN,
+                                        teamId: createdTeam.id,
+                                    },
+                                },
+                            },
+                        });
+                    }
+                );
+
+                return {
+                    message: "User signed up successfully.",
+                    data: { user: createdUser },
+                };
+            } catch (error) {
+                await prisma.master.$queryRaw`
+                    DROP DATABASE IF EXISTS ${teamId};
+                `;
+
+                throw error;
+            }
         },
     };
 };

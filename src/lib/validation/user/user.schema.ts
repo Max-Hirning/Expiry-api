@@ -32,7 +32,7 @@ const userParamsSchema = z.object({
 type UserParamsInput = z.infer<typeof userParamsSchema>;
 
 const fetchUserResponseSchema = z.object({
-    user: z.string(),
+    message: z.string(),
     data: z.object({
         user: defaultUserSchema,
     }),
@@ -71,7 +71,7 @@ const fetchInvitedUserQuerySchema = z.object({
 type FetchInvitedUserQueryInput = z.infer<typeof fetchInvitedUserQuerySchema>;
 
 const fetchUsersResponseSchema = z.object({
-    user: z.string(),
+    message: z.string(),
     data: z.object({
         users: z.array(defaultUserSchema),
         pagination: z.object({

@@ -161,14 +161,6 @@ exports.Prisma.ActionLogScalarFieldEnum = {
     userId: "userId",
 };
 
-exports.Prisma.TeamMemberScalarFieldEnum = {
-    id: "id",
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-    role: "role",
-    userId: "userId",
-};
-
 exports.Prisma.NotificationScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -218,17 +210,11 @@ exports.DeadlineStatus = exports.$Enums.DeadlineStatus = {
     OVERDUE: "OVERDUE",
 };
 
-exports.TeamMemberRole = exports.$Enums.TeamMemberRole = {
-    ADMIN: "ADMIN",
-    STAFF: "STAFF",
-};
-
 exports.Prisma.ModelName = {
     Document: "Document",
     DocumentExtractedField: "DocumentExtractedField",
     DocumentDeadline: "DocumentDeadline",
     ActionLog: "ActionLog",
-    TeamMember: "TeamMember",
     Notification: "Notification",
 };
 

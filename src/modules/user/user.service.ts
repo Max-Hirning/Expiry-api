@@ -67,7 +67,7 @@ export const createService = (
         console.log(invitationId);
 
         return {
-            user: "User invited successfully.",
+            message: "User invited successfully.",
             data: { user },
         };
     },
@@ -88,7 +88,7 @@ export const createService = (
         });
 
         return {
-            user: "Invitation deleted successfully.",
+            message: "Invitation deleted successfully.",
             data: { user },
         };
     },
@@ -107,7 +107,7 @@ export const createService = (
         });
 
         return {
-            user: "User deleted successfully.",
+            message: "User deleted successfully.",
             data: { user },
         };
     },
@@ -120,7 +120,7 @@ export const createService = (
         });
 
         return {
-            user: "User fetched successfully.",
+            message: "User fetched successfully.",
             data: { user },
         };
     },
@@ -182,7 +182,7 @@ export const createService = (
         const nextPage = query.page < totalPages ? query.page + 1 : null;
 
         return {
-            user: "Users fetched successfully.",
+            message: "Users fetched successfully.",
             data: {
                 users,
                 pagination: {
