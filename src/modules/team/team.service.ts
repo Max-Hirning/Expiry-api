@@ -3,7 +3,10 @@ import { AuthService } from "../auth/auth.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { Prisma } from "@/database/master/generated/index.js";
-import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
+import {
+    defaultTeamSelector,
+    TeamRepository,
+} from "@/database/master/repositories/team/team.repository.js";
 import {
     TeamParamsInput,
     FetchTeamResponse,
@@ -39,6 +42,7 @@ export const createTeamService = (
             where: {
                 id: params.teamId,
             },
+            select: defaultTeamSelector,
         });
 
         return {
@@ -58,6 +62,7 @@ export const createTeamService = (
             where: {
                 id: params.teamId,
             },
+            select: defaultTeamSelector,
         });
 
         try {
@@ -132,6 +137,7 @@ export const createTeamService = (
                             createdAt: Prisma.SortOrder.desc,
                         }),
                 },
+                select: defaultTeamSelector,
             }),
             teamRepository.count({
                 where,
@@ -196,6 +202,7 @@ export const createTeamService = (
                         },
                     }),
                 },
+                select: defaultTeamSelector,
             });
 
             return {
@@ -237,6 +244,7 @@ export const createTeamService = (
                     },
                 }),
             },
+            select: defaultTeamSelector,
         });
 
         return {

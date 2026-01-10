@@ -1,12 +1,15 @@
 import { JWT } from "@fastify/jwt";
 import { AuthService } from "../auth/auth.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import {
     Prisma,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/edge.js";
+import {
+    defaultUserSelector,
+    UserRepository,
+} from "@/database/master/repositories/user/user.repository.js";
 import {
     FetchUserResponse,
     FetchUsersQueryInput,
@@ -57,6 +60,7 @@ export const createService = (
                 phoneNumber: body.phoneNumber,
                 password: "",
             },
+            select: defaultUserSelector,
         });
 
         const invitationId = jwt.sign({
@@ -85,6 +89,7 @@ export const createService = (
                 id: params.userId,
                 status: UserStatuses.INVITED,
             },
+            select: defaultUserSelector,
         });
 
         return {
@@ -104,6 +109,7 @@ export const createService = (
             where: {
                 id: params.userId,
             },
+            select: defaultUserSelector,
         });
 
         return {
@@ -117,6 +123,7 @@ export const createService = (
             where: {
                 id: params.userId,
             },
+            select: defaultUserSelector,
         });
 
         return {
@@ -177,6 +184,7 @@ export const createService = (
                             createdAt: Prisma.SortOrder.desc,
                         }),
                 },
+                select: defaultUserSelector,
             }),
             userRepository.count({
                 where,

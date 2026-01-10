@@ -8,6 +8,7 @@ export const defaultTeamSelector = {
     createdAt: true,
     updatedAt: true,
     name: true,
+    logo: true,
 } satisfies Prisma.TeamSelect;
 
 export type TeamRepository = BaseRepository<"team"> & {

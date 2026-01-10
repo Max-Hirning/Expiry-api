@@ -4,12 +4,15 @@ import { hashing } from "@/lib/hashing/hashing.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
-import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     SignInBodyInput,
     SignUpBodyInput,
 } from "@/lib/validation/auth/auth.schema.js";
+import {
+    defaultUserSelector,
+    UserRepository,
+} from "@/database/master/repositories/user/user.repository.js";
 import {
     Prisma,
     TeamMemberRole,
@@ -77,6 +80,7 @@ export const createAuthService = (
                         },
                     ],
                 },
+                select: defaultUserSelector,
             });
 
             const isPasswordValid = await hashing.comparePassword(
@@ -165,6 +169,7 @@ export const createAuthService = (
                                         },
                                     },
                                 },
+                                select: defaultUserSelector,
                             });
                         }
 
@@ -183,6 +188,7 @@ export const createAuthService = (
                                     },
                                 },
                             },
+                            select: defaultUserSelector,
                         });
                     }
                 );

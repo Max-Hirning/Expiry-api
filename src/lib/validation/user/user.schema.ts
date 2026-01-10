@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Prisma } from "@/database/master/generated/edge.js";
+import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
 import { UserStatuses, UserRoles } from "@/database/master/generated/client.js";
 import {
     paginationQuerySchema,
@@ -15,6 +16,7 @@ const defaultUserSchema = z.object({
     phoneNumber: z.string(),
     role: z.enum(UserRoles),
     status: z.enum(UserStatuses),
+    avatar: defaultAvatarSchema.nullable(),
 });
 
 const inviteUserBodySchema = defaultUserSchema
