@@ -89,12 +89,16 @@ export const createHandler = (
         },
 
         updateUserPassword: async (request, reply) => {
-            const { params, body } = request;
+            const { params, user, body } = request;
 
             const data = await userService.updateUserPassword({
                 params,
                 body,
             });
+
+            if (params.userId === user.id) {
+                request.resetTokens = true;
+            }
 
             return reply.send(data);
         },
@@ -124,11 +128,15 @@ export const createHandler = (
         },
 
         deleteUser: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await userService.deleteUser({
                 params,
             });
+
+            if (params.userId === user.id) {
+                request.resetTokens = true;
+            }
 
             return reply.send(data);
         },

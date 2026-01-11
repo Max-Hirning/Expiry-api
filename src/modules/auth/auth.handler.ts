@@ -31,6 +31,9 @@ export const createAuthHandler = (authService: AuthService): AuthHandler => {
                 body,
             });
 
+            request.createNewTokens = true;
+            request.updateUserSession = true;
+
             return reply.send(data);
         },
 
@@ -40,6 +43,9 @@ export const createAuthHandler = (authService: AuthService): AuthHandler => {
             const data = await authService.signUp({
                 body,
             });
+
+            request.createNewTokens = true;
+            request.updateUserSession = true;
 
             return reply.status(201).send(data);
         },
