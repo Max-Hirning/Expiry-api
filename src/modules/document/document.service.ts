@@ -113,6 +113,11 @@ export const createDocumentService = (
                         },
                     },
                     {
+                        tags: {
+                            has: query.search,
+                        },
+                    },
+                    {
                         documentExtractedFields: {
                             some: {
                                 value: {
