@@ -49,51 +49,56 @@ export type TeamHandler = {
 export const createTeamHandler = (teamService: TeamService): TeamHandler => {
     return {
         getTeam: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await teamService.getTeam({
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         deleteTeam: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await teamService.deleteTeam({
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         getTeams: async (request, reply) => {
-            const { query } = request;
+            const { query, user } = request;
 
             const data = await teamService.getTeams({
                 query,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         createTeam: async (request, reply) => {
-            const { body } = request;
+            const { body, user } = request;
 
             const data = await teamService.createTeam({
                 body,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         updateTeam: async (request, reply) => {
-            const { params, body } = request;
+            const { params, body, user } = request;
 
             const data = await teamService.updateTeam({
                 params,
                 body,
+                initiator: user,
             });
 
             return reply.send(data);

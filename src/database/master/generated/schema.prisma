@@ -41,10 +41,25 @@ model User {
   status      UserStatuses
   teamMembers TeamMember[]
 
+  refreshToken            RefreshToken?
   avatar                  Avatar?
   notificationPreferences NotificationPreference?
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
 
 model Avatar {

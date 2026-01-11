@@ -50,53 +50,58 @@ export const createDocumentHandler = (
 ): DocumentHandler => {
     return {
         getDocument: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await documentService.getDocument({
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         deleteDocument: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await documentService.deleteDocument({
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         getDocuments: async (request, reply) => {
-            const { query, params } = request;
+            const { query, params, user } = request;
 
             const data = await documentService.getDocuments({
                 query,
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         createDocument: async (request, reply) => {
-            const { body, params } = request;
+            const { body, params, user } = request;
 
             const data = await documentService.createDocument({
                 body,
                 params,
+                initiator: user,
             });
 
             return reply.send(data);
         },
 
         updateDocument: async (request, reply) => {
-            const { params, body } = request;
+            const { params, body, user } = request;
 
             const data = await documentService.updateDocument({
                 params,
                 body,
+                initiator: user,
             });
 
             return reply.send(data);

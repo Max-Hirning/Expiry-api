@@ -1,0 +1,7 @@
+const MILISECONDS = 1000;
+const SECONDS = 60 * MILISECONDS;
+const MINUTES = 60 * SECONDS;
+const HOURS = 60 * MINUTES;
+const DAYS = 24 * HOURS;
+
+export { SECONDS, MINUTES, HOURS, DAYS };

@@ -4,6 +4,7 @@ import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { User } from "@/database/master/generated/index.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { ApplicationService } from "../application/application.service.js";
@@ -21,21 +22,26 @@ import {
 export type DocumentService = {
     getDocument: (p: {
         params: DocumentParamsInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchDocumentResponse>;
     deleteDocument: (p: {
         params: DocumentParamsInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchDocumentResponse>;
     getDocuments: (p: {
         query: FetchDocumentsQueryInput;
         params: TeamParamsInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchDocumentsResponse>;
     createDocument: (p: {
         body: CreateDocumentBodyInput;
         params: TeamParamsInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchDocumentResponse>;
     updateDocument: (p: {
         params: DocumentParamsInput;
         body: UpdateDocumentBodyInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchDocumentResponse>;
 };
 

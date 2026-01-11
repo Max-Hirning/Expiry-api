@@ -6,7 +6,7 @@ import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { migrateTenantDatabase } from "@/database/infra/tenant.js";
-import { Logo, Prisma } from "@/database/master/generated/index.js";
+import { Logo, Prisma, User } from "@/database/master/generated/index.js";
 import {
     defaultTeamSelector,
     TeamRepository,
@@ -23,17 +23,26 @@ import {
 } from "@/lib/validation/team/team.schema.js";
 
 export type TeamService = {
-    getTeam: (p: { params: TeamParamsInput }) => Promise<FetchTeamResponse>;
-    deleteTeam: (p: { params: TeamParamsInput }) => Promise<FetchTeamResponse>;
+    getTeam: (p: {
+        params: TeamParamsInput;
+        initiator: Pick<User, "id" | "role">;
+    }) => Promise<FetchTeamResponse>;
+    deleteTeam: (p: {
+        params: TeamParamsInput;
+        initiator: Pick<User, "id" | "role">;
+    }) => Promise<FetchTeamResponse>;
     getTeams: (p: {
         query: FetchTeamsQueryInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchTeamsResponse>;
     createTeam: (p: {
         body: CreateTeamBodyInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<CreateTeamResponse>;
     updateTeam: (p: {
         params: TeamParamsInput;
         body: UpdateTeamBodyInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<UpdateTeamResponse>;
 };
 

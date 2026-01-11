@@ -128,6 +128,15 @@ exports.Prisma.UserScalarFieldEnum = {
     status: "status",
 };
 
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    token: "token",
+    expiresAt: "expiresAt",
+    userId: "userId",
+};
+
 exports.Prisma.AvatarScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -211,6 +220,7 @@ exports.TeamMemberRole = exports.$Enums.TeamMemberRole = {
 
 exports.Prisma.ModelName = {
     User: "User",
+    RefreshToken: "RefreshToken",
     Avatar: "Avatar",
     NotificationPreference: "NotificationPreference",
     Team: "Team",
