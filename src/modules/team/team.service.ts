@@ -3,10 +3,17 @@ import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { migrateTenantDatabase } from "@/database/infra/tenant.js";
-import { Logo, Prisma, User } from "@/database/master/generated/index.js";
+import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
+import {
+    Logo,
+    Prisma,
+    User,
+    UserRoles,
+} from "@/database/master/generated/index.js";
 import {
     defaultTeamSelector,
     TeamRepository,
@@ -52,171 +59,301 @@ export const createTeamService = (
     config: EnvConfig,
     teamRepository: TeamRepository,
     prisma: FastifyInstance["prisma"],
-    log: FastifyBaseLogger
-): TeamService => ({
-    getTeam: async ({ params }) => {
-        const team = await teamRepository.findUniqueOrFail({
+    log: FastifyBaseLogger,
+    userRepository: UserRepository
+): TeamService => {
+    const checkTeamMembersRoles = async (teamMembersIds: string[]) => {
+        const futureTeamMembers = await userRepository.findMany({
             where: {
-                id: params.teamId,
-            },
-            select: defaultTeamSelector,
-        });
-
-        return {
-            message: "Team fetched successfully.",
-            data: { team },
-        };
-    },
-
-    deleteTeam: async ({ params }) => {
-        await teamRepository.findFirstOrFail({
-            where: {
-                id: params.teamId,
+                id: {
+                    in: teamMembersIds,
+                },
             },
         });
 
-        const team = await teamRepository.delete({
-            where: {
-                id: params.teamId,
-            },
-            select: defaultTeamSelector,
-        });
+        if (futureTeamMembers.some(({ role }) => role !== UserRoles.USER)) {
+            throw new BadRequestError("Only users can access the team");
+        }
 
-        try {
-            await prisma.master.$queryRaw`
+        return true;
+    };
+
+    return {
+        getTeam: async ({ params }) => {
+            const team = await teamRepository.findUniqueOrFail({
+                where: {
+                    id: params.teamId,
+                },
+                select: defaultTeamSelector,
+            });
+
+            return {
+                message: "Team fetched successfully.",
+                data: { team },
+            };
+        },
+
+        deleteTeam: async ({ params }) => {
+            await teamRepository.findFirstOrFail({
+                where: {
+                    id: params.teamId,
+                },
+            });
+
+            const team = await teamRepository.delete({
+                where: {
+                    id: params.teamId,
+                },
+                select: defaultTeamSelector,
+            });
+
+            try {
+                await prisma.master.$queryRaw`
                 DROP DATABASE IF EXISTS ${team.id};
             `;
-        } catch (error) {
-            log.error({ error }, "Failed to delete team DB");
-        }
-
-        if (team.logo) {
-            try {
-                await gcpService.deleteFile(team.logo.key);
             } catch (error) {
-                log.error({ error }, "Failed to delete team logo");
+                log.error({ error }, "Failed to delete team DB");
             }
-        }
 
-        return {
-            message: "Team deleted successfully.",
-            data: { team },
-        };
-    },
+            if (team.logo) {
+                try {
+                    await gcpService.deleteFile(team.logo.key);
+                } catch (error) {
+                    log.error({ error }, "Failed to delete team logo");
+                }
+            }
 
-    getTeams: async ({ query }) => {
-        const skip = (query.page - 1) * query.perPage;
+            return {
+                message: "Team deleted successfully.",
+                data: { team },
+            };
+        },
 
-        const where: Prisma.TeamWhereInput = {
-            ...(query.search && {
-                OR: [
-                    {
-                        name: {
-                            mode: "insensitive",
-                            contains: query.search,
-                        },
+        getTeams: async ({ query, initiator }) => {
+            const skip = (query.page - 1) * query.perPage;
+
+            const where: Prisma.TeamWhereInput = {
+                teamMembers: {
+                    some: {
+                        userId: initiator.id,
                     },
-                    {
-                        teamMembers: {
-                            some: {
-                                user: {
-                                    OR: [
-                                        {
-                                            fullName: {
-                                                mode: "insensitive",
-                                                contains: query.search,
+                },
+                ...(query.search && {
+                    OR: [
+                        {
+                            name: {
+                                mode: "insensitive",
+                                contains: query.search,
+                            },
+                        },
+                        {
+                            teamMembers: {
+                                some: {
+                                    user: {
+                                        OR: [
+                                            {
+                                                fullName: {
+                                                    mode: "insensitive",
+                                                    contains: query.search,
+                                                },
                                             },
-                                        },
-                                        {
-                                            email: {
-                                                mode: "insensitive",
-                                                contains: query.search,
+                                            {
+                                                email: {
+                                                    mode: "insensitive",
+                                                    contains: query.search,
+                                                },
                                             },
-                                        },
-                                        {
-                                            phoneNumber: {
-                                                mode: "insensitive",
-                                                contains: query.search,
+                                            {
+                                                phoneNumber: {
+                                                    mode: "insensitive",
+                                                    contains: query.search,
+                                                },
                                             },
-                                        },
-                                    ],
+                                        ],
+                                    },
                                 },
                             },
                         },
-                    },
-                ],
-            }),
-        };
+                    ],
+                }),
+            };
 
-        const [teams, total] = await Promise.all([
-            teamRepository.findMany({
-                skip,
-                where,
-                take: query.perPage,
-                orderBy: {
-                    ...(query.sortField && query.sortOrder
-                        ? {
-                            [query.sortField]: query.sortOrder,
+            const [teams, total] = await Promise.all([
+                teamRepository.findMany({
+                    skip,
+                    where,
+                    take: query.perPage,
+                    orderBy: {
+                        ...(query.sortField && query.sortOrder
+                            ? {
+                                [query.sortField]: query.sortOrder,
+                            }
+                            : {
+                                createdAt: Prisma.SortOrder.desc,
+                            }),
+                    },
+                    select: defaultTeamSelector,
+                }),
+                teamRepository.count({
+                    where,
+                }),
+            ]);
+
+            const totalPages = Math.ceil(total / query.perPage);
+            const prevPage = query.page > 1 ? query.page - 1 : null;
+            const nextPage = query.page < totalPages ? query.page + 1 : null;
+
+            return {
+                message: "Teams fetched successfully.",
+                data: {
+                    teams,
+                    pagination: {
+                        page: query.page,
+                        perPage: query.perPage,
+                        prevPage,
+                        nextPage,
+                        totalPages,
+                        total,
+                    },
+                },
+            };
+        },
+
+        createTeam: async ({ body }) => {
+            const teamId = randomUUID();
+
+            await authService.checkIfTeamExists({
+                where: {
+                    OR: [
+                        {
+                            id: teamId,
+                        },
+                        {
+                            name: body.name,
+                        },
+                    ],
+                },
+            });
+
+            if (body.teamMembers) {
+                await checkTeamMembersRoles(
+                    body.teamMembers.map(({ userId }) => userId)
+                );
+            }
+
+            let logoPayload:
+                | (Pick<Logo, "url" | "key" | "expiredAt"> & {
+                      uploadUrl: string;
+                  })
+                | null = null;
+
+            try {
+                if (body.logo) {
+                    const { key, url: uploadUrl } = await gcpService.uploadFile(
+                        {
+                            keyPayload: {
+                                type: FileTypes.LOGO,
+                                teamId: teamId,
+                            },
+                            mimeType: body.logo.mimeType,
                         }
-                        : {
-                            createdAt: Prisma.SortOrder.desc,
-                        }),
-                },
-                select: defaultTeamSelector,
-            }),
-            teamRepository.count({
-                where,
-            }),
-        ]);
+                    );
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+                    const { url, expiredAt } = await gcpService.getFileUrl({
+                        key,
+                        type: FileTypes.AVATAR,
+                    });
 
-        return {
-            message: "Teams fetched successfully.",
-            data: {
-                teams,
-                pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
-                },
-            },
-        };
-    },
+                    logoPayload = {
+                        url,
+                        key,
+                        expiredAt,
+                        uploadUrl,
+                    };
+                }
 
-    createTeam: async ({ body }) => {
-        const teamId = randomUUID();
+                await prisma.master.$queryRaw`
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ${teamId}) THEN
+                            EXECUTE format('CREATE DATABASE %I', ${teamId});
+                        END IF;
+                    END
+                    $$;
+                `;
 
-        await authService.checkIfTeamExists({
-            where: {
-                OR: [
-                    {
-                        id: teamId,
-                    },
-                    {
+                await migrateTenantDatabase(
+                    config.DATABASE_URL.replace("/postgres", `/${teamId}`)
+                );
+
+                const team = await teamRepository.create({
+                    data: {
                         name: body.name,
+                        ...(body.teamMembers && {
+                            teamMembers: {
+                                createMany: {
+                                    data: body.teamMembers,
+                                },
+                            },
+                        }),
+                        ...(body.logo &&
+                            logoPayload && {
+                            logo: {
+                                create: {
+                                    key: logoPayload.key,
+                                    fileSize: body.logo.fileSize,
+                                    mimeType: body.logo.mimeType,
+                                    url: logoPayload.url,
+                                    expiredAt: logoPayload.expiredAt,
+                                    width: body.logo.width,
+                                    height: body.logo.height,
+                                },
+                            },
+                        }),
                     },
-                ],
-            },
-        });
+                    select: defaultTeamSelector,
+                });
 
-        let logoPayload:
-            | (Pick<Logo, "url" | "key" | "expiredAt"> & {
-                  uploadUrl: string;
-              })
-            | null = null;
+                return {
+                    message: "Team created successfully.",
+                    data: {
+                        team,
+                        uploadUrl: logoPayload?.uploadUrl || null,
+                    },
+                };
+            } catch (error) {
+                try {
+                    await prisma.master.$queryRaw`
+                    DROP DATABASE IF EXISTS ${teamId};
+                `;
+                } catch (error) {
+                    log.error({ error }, "Failed to delete team DB");
+                }
 
-        try {
+                if (logoPayload) {
+                    try {
+                        await gcpService.deleteFile(logoPayload.key);
+                    } catch (error) {
+                        log.error({ error }, "Failed to delete team logo");
+                    }
+                }
+
+                throw error;
+            }
+        },
+
+        updateTeam: async ({ params, body }) => {
+            let logoPayload:
+                | (Pick<Logo, "url" | "key" | "expiredAt"> & {
+                      uploadUrl: string;
+                  })
+                | null = null;
+
             if (body.logo) {
                 const { key, url: uploadUrl } = await gcpService.uploadFile({
                     keyPayload: {
                         type: FileTypes.LOGO,
-                        teamId: teamId,
+                        teamId: params.teamId,
                     },
                     mimeType: body.logo.mimeType,
                 });
@@ -234,30 +371,18 @@ export const createTeamService = (
                 };
             }
 
-            await prisma.master.$queryRaw`
-                    DO $$
-                    BEGIN
-                        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ${teamId}) THEN
-                            EXECUTE format('CREATE DATABASE %I', ${teamId});
-                        END IF;
-                    END
-                    $$;
-                `;
+            if (body.teamMembers) {
+                await checkTeamMembersRoles(
+                    body.teamMembers.map(({ userId }) => userId)
+                );
+            }
 
-            await migrateTenantDatabase(
-                config.DATABASE_URL.replace("/postgres", `/${teamId}`)
-            );
-
-            const team = await teamRepository.create({
+            const team = await teamRepository.update({
+                where: {
+                    id: params.teamId,
+                },
                 data: {
                     name: body.name,
-                    ...(body.teamMembers && {
-                        teamMembers: {
-                            createMany: {
-                                data: body.teamMembers,
-                            },
-                        },
-                    }),
                     ...(body.logo &&
                         logoPayload && {
                         logo: {
@@ -270,6 +395,31 @@ export const createTeamService = (
                                 width: body.logo.width,
                                 height: body.logo.height,
                             },
+                            update: {
+                                key: logoPayload.key,
+                                fileSize: body.logo.fileSize,
+                                mimeType: body.logo.mimeType,
+                                url: logoPayload.url,
+                                expiredAt: logoPayload.expiredAt,
+                                width: body.logo.width,
+                                height: body.logo.height,
+                            },
+                        },
+                    }),
+                    ...((body.teamMembers || body.teamMembersToDeleteIds) && {
+                        teamMembers: {
+                            ...(body.teamMembersToDeleteIds && {
+                                deleteMany: {
+                                    id: {
+                                        in: body.teamMembersToDeleteIds,
+                                    },
+                                },
+                            }),
+                            ...(body.teamMembers && {
+                                createMany: {
+                                    data: body.teamMembers,
+                                },
+                            }),
                         },
                     }),
                 },
@@ -277,119 +427,14 @@ export const createTeamService = (
             });
 
             return {
-                message: "Team created successfully.",
+                message: "Team updated successfully.",
                 data: {
                     team,
                     uploadUrl: logoPayload?.uploadUrl || null,
                 },
             };
-        } catch (error) {
-            try {
-                await prisma.master.$queryRaw`
-                    DROP DATABASE IF EXISTS ${teamId};
-                `;
-            } catch (error) {
-                log.error({ error }, "Failed to delete team DB");
-            }
-
-            if (logoPayload) {
-                try {
-                    await gcpService.deleteFile(logoPayload.key);
-                } catch (error) {
-                    log.error({ error }, "Failed to delete team logo");
-                }
-            }
-
-            throw error;
-        }
-    },
-
-    updateTeam: async ({ params, body }) => {
-        let logoPayload:
-            | (Pick<Logo, "url" | "key" | "expiredAt"> & {
-                  uploadUrl: string;
-              })
-            | null = null;
-
-        if (body.logo) {
-            const { key, url: uploadUrl } = await gcpService.uploadFile({
-                keyPayload: {
-                    type: FileTypes.LOGO,
-                    teamId: params.teamId,
-                },
-                mimeType: body.logo.mimeType,
-            });
-
-            const { url, expiredAt } = await gcpService.getFileUrl({
-                key,
-                type: FileTypes.AVATAR,
-            });
-
-            logoPayload = {
-                url,
-                key,
-                expiredAt,
-                uploadUrl,
-            };
-        }
-
-        const team = await teamRepository.update({
-            where: {
-                id: params.teamId,
-            },
-            data: {
-                name: body.name,
-                ...(body.logo &&
-                    logoPayload && {
-                    logo: {
-                        create: {
-                            key: logoPayload.key,
-                            fileSize: body.logo.fileSize,
-                            mimeType: body.logo.mimeType,
-                            url: logoPayload.url,
-                            expiredAt: logoPayload.expiredAt,
-                            width: body.logo.width,
-                            height: body.logo.height,
-                        },
-                        update: {
-                            key: logoPayload.key,
-                            fileSize: body.logo.fileSize,
-                            mimeType: body.logo.mimeType,
-                            url: logoPayload.url,
-                            expiredAt: logoPayload.expiredAt,
-                            width: body.logo.width,
-                            height: body.logo.height,
-                        },
-                    },
-                }),
-                ...((body.teamMembers || body.teamMembersToDeleteIds) && {
-                    teamMembers: {
-                        ...(body.teamMembersToDeleteIds && {
-                            deleteMany: {
-                                id: {
-                                    in: body.teamMembersToDeleteIds,
-                                },
-                            },
-                        }),
-                        ...(body.teamMembers && {
-                            createMany: {
-                                data: body.teamMembers,
-                            },
-                        }),
-                    },
-                }),
-            },
-            select: defaultTeamSelector,
-        });
-
-        return {
-            message: "Team updated successfully.",
-            data: {
-                team,
-                uploadUrl: logoPayload?.uploadUrl || null,
-            },
-        };
-    },
-});
+        },
+    };
+};
 
 addDIResolverName(createTeamService, "teamService");

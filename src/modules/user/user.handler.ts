@@ -154,10 +154,11 @@ export const createHandler = (
         },
 
         inviteUser: async (request, reply) => {
-            const { body } = request;
+            const { body, user } = request;
 
             const data = await userService.inviteUser({
                 body,
+                initiator: user,
             });
 
             return reply.status(201).send(data);

@@ -28,7 +28,7 @@ const inviteUserBodySchema = defaultUserSchema
         phoneNumber: true,
     })
     .extend({
-        teamId: z.uuid(),
+        teamId: z.uuid().optional(),
     });
 
 type InviteUserBodyInput = z.infer<typeof inviteUserBodySchema>;
@@ -38,7 +38,6 @@ const updateUserBodySchema = defaultUserSchema
         fullName: true,
         email: true,
         phoneNumber: true,
-        status: true,
     })
     .extend({
         avatar: defaultAvatarSchema.pick({

@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { Actions } from "../auth/auth.types.js";
 import { DocumentHandler } from "./document.handler.js";
 import { teamParamsSchema } from "@/lib/validation/team/team.schema.js";
 import {
@@ -26,6 +27,10 @@ export const createDocumentRoutes = (
                     200: fetchDocumentsResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_DOCUMENT),
+            ],
         },
         documentHandler.getDocument
     );
@@ -41,6 +46,10 @@ export const createDocumentRoutes = (
                     200: fetchDocumentsResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.DELETE_DOCUMENT),
+            ],
         },
         documentHandler.deleteDocument
     );
@@ -57,6 +66,10 @@ export const createDocumentRoutes = (
                     200: fetchDocumentsResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_DOCUMENTS),
+            ],
         },
         documentHandler.getDocuments
     );
@@ -73,6 +86,10 @@ export const createDocumentRoutes = (
                     201: createDocumentResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.CREATE_DOCUMENT),
+            ],
         },
         documentHandler.createDocument
     );
@@ -89,6 +106,10 @@ export const createDocumentRoutes = (
                     200: updateDocumentResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_DOCUMENT),
+            ],
         },
         documentHandler.updateDocument
     );

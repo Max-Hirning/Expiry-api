@@ -5,17 +5,23 @@ import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { ConflictError, InternalServerError } from "@/lib/errors/errors.js";
 import {
-    Avatar,
-    Prisma,
-    UserRoles,
-    UserStatuses,
-} from "@/database/master/generated/edge.js";
+    BadRequestError,
+    ConflictError,
+    InternalServerError,
+} from "@/lib/errors/errors.js";
 import {
     defaultUserSelector,
     UserRepository,
 } from "@/database/master/repositories/user/user.repository.js";
+import {
+    Avatar,
+    Prisma,
+    TeamMemberRole,
+    User,
+    UserRoles,
+    UserStatuses,
+} from "@/database/master/generated/edge.js";
 import {
     FetchUserResponse,
     FetchUsersQueryInput,
@@ -46,6 +52,7 @@ export type UserService = {
     }) => Promise<FetchUsersResponse>;
     inviteUser: (p: {
         body: InviteUserBodyInput;
+        initiator: Pick<User, "id" | "role">;
     }) => Promise<FetchUserResponse>;
 };
 
@@ -149,7 +156,6 @@ export const createService = (
                 data: {
                     fullName: body.fullName,
                     email: body.email,
-                    status: body.status,
                     phoneNumber: body.phoneNumber,
                     ...(body.avatar &&
                         avatarPayload && {
@@ -222,7 +228,15 @@ export const createService = (
             };
         },
 
-        inviteUser: async ({ body }) => {
+        inviteUser: async ({ body, initiator }) => {
+            if (initiator.role === UserRoles.USER && !body.teamId) {
+                throw new BadRequestError("Team id is required");
+            }
+
+            if (initiator.role !== UserRoles.USER) {
+                body.teamId = undefined;
+            }
+
             await authService.checkIfUserExists({
                 where: {
                     OR: [
@@ -244,6 +258,14 @@ export const createService = (
                     email: body.email,
                     phoneNumber: body.phoneNumber,
                     password: "",
+                    ...(body.teamId && {
+                        teamMembers: {
+                            create: {
+                                teamId: body.teamId,
+                                role: TeamMemberRole.STAFF,
+                            },
+                        },
+                    }),
                     notificationPreferences: {
                         create: {
                             offerUpdates: true,

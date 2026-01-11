@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { UserHandler } from "./user.handler.js";
+import { Actions } from "../auth/auth.types.js";
 import {
     fetchInvitedUserQuerySchema,
     fetchUserResponseSchema,
@@ -26,6 +27,10 @@ export const createUserRoutes = (
                     200: fetchUsersResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_USERS),
+            ],
         },
         userHandler.getUsers
     );
@@ -41,6 +46,10 @@ export const createUserRoutes = (
                     201: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.INVITE_USER),
+            ],
         },
         userHandler.inviteUser
     );
@@ -56,6 +65,10 @@ export const createUserRoutes = (
                     200: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.DELETE_INVITED_USER),
+            ],
         },
         userHandler.deleteInvitedUser
     );
@@ -71,6 +84,10 @@ export const createUserRoutes = (
                     200: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.DELETE_USER),
+            ],
         },
         userHandler.deleteUser
     );
@@ -87,8 +104,12 @@ export const createUserRoutes = (
                     200: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_USER),
+            ],
         },
-        userHandler.deleteUser
+        userHandler.updateUser
     );
 
     fastify.put(
@@ -103,6 +124,10 @@ export const createUserRoutes = (
                     200: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_USER_PASSWORD),
+            ],
         },
         userHandler.deleteUser
     );
@@ -133,6 +158,10 @@ export const createUserRoutes = (
                     200: fetchUserResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_USER),
+            ],
         },
         userHandler.getUser
     );

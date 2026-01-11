@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { TeamHandler } from "./team.handler.js";
+import { Actions } from "../auth/auth.types.js";
 import {
     createTeamBodySchema,
     fetchTeamResponseSchema,
@@ -24,6 +25,10 @@ export const createTeamRoutes = (
                     200: fetchTeamResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_TEAM),
+            ],
         },
         teamHandler.getTeam
     );
@@ -39,6 +44,10 @@ export const createTeamRoutes = (
                     200: fetchTeamResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.DELETE_TEAM),
+            ],
         },
         teamHandler.deleteTeam
     );
@@ -54,6 +63,10 @@ export const createTeamRoutes = (
                     200: fetchTeamsResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_TEAMS),
+            ],
         },
         teamHandler.getTeams
     );
@@ -69,6 +82,10 @@ export const createTeamRoutes = (
                     201: fetchTeamResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.CREATE_TEAM),
+            ],
         },
         teamHandler.createTeam
     );
@@ -85,6 +102,10 @@ export const createTeamRoutes = (
                     200: fetchTeamResponseSchema,
                 },
             },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_TEAM),
+            ],
         },
         teamHandler.updateTeam
     );
