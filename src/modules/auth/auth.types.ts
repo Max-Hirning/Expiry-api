@@ -4,6 +4,7 @@ export enum Actions {
     DELETE_INVITED_USER,
     DELETE_USER,
     UPDATE_USER,
+    TOGGLE_USER_STATUS,
     UPDATE_USER_PASSWORD,
     GET_USER,
     GET_TEAM,

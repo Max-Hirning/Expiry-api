@@ -109,7 +109,11 @@ const configureJwt = async (fastify: FastifyInstance) => {
             action: Actions
         ): ((req: FastifyRequest, reply: FastifyReply) => Promise<void>) => {
             return async (req) => {
-                if (action === Actions.GET_USERS) {
+                if (
+                    [Actions.GET_USERS, Actions.TOGGLE_USER_STATUS].includes(
+                        action
+                    )
+                ) {
                     const { role } = req.user;
 
                     if (
@@ -160,9 +164,22 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
+                if (Actions.DELETE_USER === action) {
+                    const { id, role } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: UserParamsInput;
+                    }>;
+
+                    if (id === params.userId && role !== UserRoles.SUB_ADMIN) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
                 if (
                     [
-                        Actions.DELETE_USER,
                         Actions.UPDATE_USER,
                         Actions.UPDATE_USER_PASSWORD,
                     ].includes(action)
@@ -173,7 +190,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         Params: UserParamsInput;
                     }>;
 
-                    if (id !== params.userId) {
+                    if (id === params.userId) {
                         return;
                     }
 
@@ -259,16 +276,6 @@ const configureJwt = async (fastify: FastifyInstance) => {
                 }
 
                 if ([Actions.GET_TEAMS, Actions.CREATE_TEAM].includes(action)) {
-                    const { role } = req.user;
-
-                    if (role === UserRoles.USER) {
-                        return;
-                    }
-
-                    throw new ForbiddenError("Forbidden");
-                }
-
-                if (action === Actions.GET_TEAMS) {
                     const { role } = req.user;
 
                     if (role === UserRoles.USER) {

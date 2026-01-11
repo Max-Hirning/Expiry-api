@@ -5,15 +5,17 @@ import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import {
-    BadRequestError,
-    ConflictError,
-    InternalServerError,
-} from "@/lib/errors/errors.js";
+import { invitedRoles, toggleStatuses } from "./user.constants.js";
 import {
     defaultUserSelector,
     UserRepository,
 } from "@/database/master/repositories/user/user.repository.js";
+import {
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    InternalServerError,
+} from "@/lib/errors/errors.js";
 import {
     Avatar,
     Prisma,
@@ -47,6 +49,9 @@ export type UserService = {
         params: UserParamsInput;
     }) => Promise<FetchUserResponse>;
     deleteUser: (p: { params: UserParamsInput }) => Promise<FetchUserResponse>;
+    toggleUserStatus: (p: {
+        params: UserParamsInput;
+    }) => Promise<FetchUserResponse>;
     getUsers: (p: {
         query: FetchUsersQueryInput;
     }) => Promise<FetchUsersResponse>;
@@ -229,6 +234,12 @@ export const createService = (
         },
 
         inviteUser: async ({ body, initiator }) => {
+            const role = invitedRoles[initiator.role];
+
+            if (!role) {
+                throw new ForbiddenError("Forbidden");
+            }
+
             if (initiator.role === UserRoles.USER && !body.teamId) {
                 throw new BadRequestError("Team id is required");
             }
@@ -252,7 +263,7 @@ export const createService = (
 
             const invitedUser = await userRepository.create({
                 data: {
-                    role: UserRoles.USER,
+                    role,
                     status: UserStatuses.INVITED,
                     fullName: body.fullName,
                     email: body.email,
@@ -343,6 +354,30 @@ export const createService = (
 
             return {
                 message: "User deleted successfully.",
+                data: { user },
+            };
+        },
+
+        toggleUserStatus: async ({ params }) => {
+            const userToUpdate = await userRepository.findFirstOrFail({
+                where: {
+                    id: params.userId,
+                },
+            });
+
+            await userRepository.update({
+                where: {
+                    id: params.userId,
+                },
+                data: {
+                    status: toggleStatuses[userToUpdate.status],
+                },
+            });
+
+            const user = await getUser(params.userId);
+
+            return {
+                message: "User status updated successfully.",
                 data: { user },
             };
         },

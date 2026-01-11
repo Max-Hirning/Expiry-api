@@ -50,6 +50,13 @@ export type UserHandler = {
         reply: FastifyReply
     ) => Promise<void>;
 
+    toggleUserStatus: (
+        request: FastifyRequest<{
+            Params: UserParamsInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
     getUser: (
         request: FastifyRequest<{
             Params: UserParamsInput;
@@ -137,6 +144,16 @@ export const createHandler = (
             if (params.userId === user.id) {
                 request.resetTokens = true;
             }
+
+            return reply.send(data);
+        },
+
+        toggleUserStatus: async (request, reply) => {
+            const { params } = request;
+
+            const data = await userService.toggleUserStatus({
+                params,
+            });
 
             return reply.send(data);
         },

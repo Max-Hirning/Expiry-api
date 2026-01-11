@@ -112,6 +112,25 @@ export const createUserRoutes = (
         userHandler.updateUser
     );
 
+    fastify.patch(
+        "/:userId/status",
+        {
+            schema: {
+                tags: ["user"],
+                summary: "Toggle user status",
+                params: userParamsSchema,
+                response: {
+                    200: fetchUserResponseSchema,
+                },
+            },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.TOGGLE_USER_STATUS),
+            ],
+        },
+        userHandler.toggleUserStatus
+    );
+
     fastify.put(
         "/:userId/password",
         {
