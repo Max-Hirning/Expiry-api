@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { defaultUserSchema } from "../user/user.schema.js";
+import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
 
 const signInBodySchema = z.object({
     identifier: z.union([z.email(), z.string()]),
@@ -17,6 +18,14 @@ const signUpBodySchema = z.object({
         })
         .extend({
             password: z.string(),
+            avatar: defaultAvatarSchema
+                .pick({
+                    mimeType: true,
+                    width: true,
+                    height: true,
+                    fileSize: true,
+                })
+                .optional(),
         }),
     invitationId: z.string().optional(),
     team: z.object({

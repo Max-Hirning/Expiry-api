@@ -1,9 +1,13 @@
 import { JWT } from "@fastify/jwt";
+import { FastifyBaseLogger } from "fastify";
 import { hashing } from "@/lib/hashing/hashing.js";
+import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
+import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { ConflictError, InternalServerError } from "@/lib/errors/errors.js";
 import {
+    Avatar,
     Prisma,
     UserRoles,
     UserStatuses,
@@ -19,6 +23,7 @@ import {
     InviteUserBodyInput,
     UpdateUserBodyInput,
     UpdateUserPasswordBodyInput,
+    UpdateUserResponse,
     UserParamsInput,
 } from "@/lib/validation/user/user.schema.js";
 
@@ -27,7 +32,7 @@ export type UserService = {
     updateUser: (p: {
         params: UserParamsInput;
         body: UpdateUserBodyInput;
-    }) => Promise<FetchUserResponse>;
+    }) => Promise<UpdateUserResponse>;
     updateUserPassword: (p: {
         params: UserParamsInput;
         body: UpdateUserPasswordBodyInput;
@@ -47,7 +52,9 @@ export type UserService = {
 export const createService = (
     userRepository: UserRepository,
     authService: AuthService,
-    jwt: JWT
+    jwt: JWT,
+    log: FastifyBaseLogger,
+    gcpService: GcpService
 ): UserService => {
     const getUser = async (
         userId: string
@@ -107,6 +114,34 @@ export const createService = (
                 });
             }
 
+            let avatarPayload:
+                | (Pick<Avatar, "url" | "key" | "expiredAt"> & {
+                      uploadUrl: string;
+                  })
+                | null = null;
+
+            if (body.avatar) {
+                const { key, url: uploadUrl } = await gcpService.uploadFile({
+                    keyPayload: {
+                        type: FileTypes.AVATAR,
+                        userId: params.userId,
+                    },
+                    mimeType: body.avatar.mimeType,
+                });
+
+                const { url, expiredAt } = await gcpService.getFileUrl({
+                    key,
+                    type: FileTypes.AVATAR,
+                });
+
+                avatarPayload = {
+                    url,
+                    key,
+                    expiredAt,
+                    uploadUrl,
+                };
+            }
+
             await userRepository.update({
                 where: {
                     id: params.userId,
@@ -116,11 +151,24 @@ export const createService = (
                     email: body.email,
                     status: body.status,
                     phoneNumber: body.phoneNumber,
-                    ...(body.avatar && {
+                    ...(body.avatar &&
+                        avatarPayload && {
                         avatar: {
-                            update: {
-                                mimeType: body.avatar.mimeType,
+                            create: {
+                                key: avatarPayload.key,
                                 fileSize: body.avatar.fileSize,
+                                mimeType: body.avatar.mimeType,
+                                url: avatarPayload.url,
+                                expiredAt: avatarPayload.expiredAt,
+                                width: body.avatar.width,
+                                height: body.avatar.height,
+                            },
+                            update: {
+                                key: avatarPayload.key,
+                                fileSize: body.avatar.fileSize,
+                                mimeType: body.avatar.mimeType,
+                                url: avatarPayload.url,
+                                expiredAt: avatarPayload.expiredAt,
                                 width: body.avatar.width,
                                 height: body.avatar.height,
                             },
@@ -134,7 +182,7 @@ export const createService = (
 
             return {
                 message: "User updated successfully.",
-                data: { user },
+                data: { user, uploadUrl: avatarPayload?.uploadUrl || null },
             };
         },
 
@@ -256,12 +304,20 @@ export const createService = (
 
             const user = await getUser(params.userId);
 
-            await userRepository.delete({
+            const deletedUser = await userRepository.delete({
                 where: {
                     id: params.userId,
                 },
                 select: defaultUserSelector,
             });
+
+            if (deletedUser.avatar) {
+                try {
+                    await gcpService.deleteFile(deletedUser.avatar.key);
+                } catch (error) {
+                    log.error({ error }, "Failed to delete user avatar");
+                }
+            }
 
             return {
                 message: "User deleted successfully.",

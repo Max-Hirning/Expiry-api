@@ -1,9 +1,11 @@
 import { randomUUID } from "crypto";
-import { FastifyInstance } from "fastify";
 import { hashing } from "@/lib/hashing/hashing.js";
+import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { UserService } from "../user/user.service.js";
+import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
@@ -15,6 +17,7 @@ import {
     UserRepository,
 } from "@/database/master/repositories/user/user.repository.js";
 import {
+    Avatar,
     Prisma,
     TeamMemberRole,
     UserRoles,
@@ -32,6 +35,8 @@ export const createAuthService = (
     teamRepository: TeamRepository,
     userRepository: UserRepository,
     userService: UserService,
+    gcpService: GcpService,
+    log: FastifyBaseLogger,
     prisma: FastifyInstance["prisma"]
 ): AuthService => {
     const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
@@ -111,6 +116,7 @@ export const createAuthService = (
         signUp: async ({ body }) => {
             const { user, invitationId, team } = body;
             const teamId = randomUUID();
+            const userId = invitationId || randomUUID();
 
             await Promise.all([
                 checkIfTeamExists({
@@ -129,6 +135,9 @@ export const createAuthService = (
                     where: {
                         OR: [
                             {
+                                id: userId,
+                            },
+                            {
                                 email: user.email,
                             },
                             {
@@ -140,8 +149,37 @@ export const createAuthService = (
             ]);
 
             const password = await hashing.hashPassword(user.password);
+            let avatarPayload:
+                | (Pick<Avatar, "url" | "key" | "expiredAt"> & {
+                      uploadUrl: string;
+                  })
+                | null = null;
 
             try {
+                if (user.avatar) {
+                    const { key, url: uploadUrl } = await gcpService.uploadFile(
+                        {
+                            keyPayload: {
+                                type: FileTypes.AVATAR,
+                                userId: userId,
+                            },
+                            mimeType: user.avatar.mimeType,
+                        }
+                    );
+
+                    const { url, expiredAt } = await gcpService.getFileUrl({
+                        key,
+                        type: FileTypes.AVATAR,
+                    });
+
+                    avatarPayload = {
+                        url,
+                        key,
+                        expiredAt,
+                        uploadUrl,
+                    };
+                }
+
                 await prisma.master.$queryRaw`
                     DO $$
                     BEGIN
@@ -164,7 +202,7 @@ export const createAuthService = (
                         if (invitationId) {
                             return tx.user.update({
                                 where: {
-                                    id: invitationId,
+                                    id: userId,
                                 },
                                 data: {
                                     status: UserStatuses.ACTIVE,
@@ -185,6 +223,7 @@ export const createAuthService = (
 
                         return tx.user.create({
                             data: {
+                                id: userId,
                                 role: UserRoles.USER,
                                 status: UserStatuses.ACTIVE,
                                 fullName: user.fullName,
@@ -197,6 +236,21 @@ export const createAuthService = (
                                         teamId: createdTeam.id,
                                     },
                                 },
+                                ...(user.avatar &&
+                                    avatarPayload && {
+                                    avatar: {
+                                        create: {
+                                            key: avatarPayload.key,
+                                            fileSize: user.avatar.fileSize,
+                                            mimeType: user.avatar.mimeType,
+                                            url: avatarPayload.url,
+                                            expiredAt:
+                                                    avatarPayload.expiredAt,
+                                            width: user.avatar.width,
+                                            height: user.avatar.height,
+                                        },
+                                    },
+                                }),
                                 notificationPreferences: {
                                     create: {
                                         offerUpdates: true,
@@ -224,9 +278,17 @@ export const createAuthService = (
                     data: { user: userInfo },
                 };
             } catch (error) {
-                await prisma.master.$queryRaw`
-                    DROP DATABASE IF EXISTS ${teamId};
-                `;
+                try {
+                    await prisma.master.$queryRaw`
+                        DROP DATABASE IF EXISTS ${teamId};
+                    `;
+                } catch (error) {
+                    log.error({ error }, "Failed to delete team DB");
+                }
+
+                if (avatarPayload) {
+                    await gcpService.deleteFile(avatarPayload.key);
+                }
 
                 throw error;
             }

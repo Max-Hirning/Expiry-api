@@ -33,6 +33,7 @@ const configureAwilix = async (fastify: FastifyInstance) => {
                 __dirname,
                 "../database/repositories/{*,**/*}.repository.{js,ts}"
             ),
+            path.join(__dirname, "../lib/**/*.service.{js,ts}"),
         ],
         {
             resolverOptions: {

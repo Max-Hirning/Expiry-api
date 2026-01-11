@@ -1,8 +1,10 @@
 import { randomUUID } from "crypto";
+import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
+import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { Prisma } from "@/database/master/generated/index.js";
+import { Logo, Prisma } from "@/database/master/generated/index.js";
 import {
     defaultTeamSelector,
     TeamRepository,
@@ -33,6 +35,7 @@ export type TeamService = {
 
 export const createTeamService = (
     authService: AuthService,
+    gcpService: GcpService,
     teamRepository: TeamRepository,
     prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger
@@ -71,6 +74,14 @@ export const createTeamService = (
             `;
         } catch (error) {
             log.error({ error }, "Failed to delete team DB");
+        }
+
+        if (team.logo) {
+            try {
+                await gcpService.deleteFile(team.logo.key);
+            } catch (error) {
+                log.error({ error }, "Failed to delete team logo");
+            }
         }
 
         return {
@@ -180,7 +191,35 @@ export const createTeamService = (
             },
         });
 
+        let logoPayload:
+            | (Pick<Logo, "url" | "key" | "expiredAt"> & {
+                  uploadUrl: string;
+              })
+            | null = null;
+
         try {
+            if (body.logo) {
+                const { key, url: uploadUrl } = await gcpService.uploadFile({
+                    keyPayload: {
+                        type: FileTypes.LOGO,
+                        teamId: teamId,
+                    },
+                    mimeType: body.logo.mimeType,
+                });
+
+                const { url, expiredAt } = await gcpService.getFileUrl({
+                    key,
+                    type: FileTypes.AVATAR,
+                });
+
+                logoPayload = {
+                    url,
+                    key,
+                    expiredAt,
+                    uploadUrl,
+                };
+            }
+
             await prisma.master.$queryRaw`
                     DO $$
                     BEGIN
@@ -201,6 +240,20 @@ export const createTeamService = (
                             },
                         },
                     }),
+                    ...(body.logo &&
+                        logoPayload && {
+                        logo: {
+                            create: {
+                                key: logoPayload.key,
+                                fileSize: body.logo.fileSize,
+                                mimeType: body.logo.mimeType,
+                                url: logoPayload.url,
+                                expiredAt: logoPayload.expiredAt,
+                                width: body.logo.width,
+                                height: body.logo.height,
+                            },
+                        },
+                    }),
                 },
                 select: defaultTeamSelector,
             });
@@ -212,21 +265,84 @@ export const createTeamService = (
                 },
             };
         } catch (error) {
-            await prisma.master.$queryRaw`
-                DROP DATABASE IF EXISTS ${teamId};
-            `;
+            try {
+                await prisma.master.$queryRaw`
+                    DROP DATABASE IF EXISTS ${teamId};
+                `;
+            } catch (error) {
+                log.error({ error }, "Failed to delete team DB");
+            }
+
+            if (logoPayload) {
+                try {
+                    await gcpService.deleteFile(logoPayload.key);
+                } catch (error) {
+                    log.error({ error }, "Failed to delete team logo");
+                }
+            }
 
             throw error;
         }
     },
 
     updateTeam: async ({ params, body }) => {
+        let logoPayload:
+            | (Pick<Logo, "url" | "key" | "expiredAt"> & {
+                  uploadUrl: string;
+              })
+            | null = null;
+
+        if (body.logo) {
+            const { key, url: uploadUrl } = await gcpService.uploadFile({
+                keyPayload: {
+                    type: FileTypes.LOGO,
+                    teamId: params.teamId,
+                },
+                mimeType: body.logo.mimeType,
+            });
+
+            const { url, expiredAt } = await gcpService.getFileUrl({
+                key,
+                type: FileTypes.AVATAR,
+            });
+
+            logoPayload = {
+                url,
+                key,
+                expiredAt,
+                uploadUrl,
+            };
+        }
+
         const team = await teamRepository.update({
             where: {
                 id: params.teamId,
             },
             data: {
                 name: body.name,
+                ...(body.logo &&
+                    logoPayload && {
+                    logo: {
+                        create: {
+                            key: logoPayload.key,
+                            fileSize: body.logo.fileSize,
+                            mimeType: body.logo.mimeType,
+                            url: logoPayload.url,
+                            expiredAt: logoPayload.expiredAt,
+                            width: body.logo.width,
+                            height: body.logo.height,
+                        },
+                        update: {
+                            key: logoPayload.key,
+                            fileSize: body.logo.fileSize,
+                            mimeType: body.logo.mimeType,
+                            url: logoPayload.url,
+                            expiredAt: logoPayload.expiredAt,
+                            width: body.logo.width,
+                            height: body.logo.height,
+                        },
+                    },
+                }),
                 ...((body.teamMembers || body.teamMembersToDeleteIds) && {
                     teamMembers: {
                         ...(body.teamMembersToDeleteIds && {

@@ -1,5 +1,6 @@
 import { EnvConfig } from "./env.type.js";
 import { FastifyBaseLogger } from "fastify";
+import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { PrismaClient } from "@prisma/client/extension";
 import { TeamService } from "@/modules/team/team.service.js";
 import { TeamHandler } from "@/modules/team/team.handler.js";
@@ -11,12 +12,17 @@ import { ApplicationService } from "@/modules/application/application.service.js
 import { ApplicationHandler } from "@/modules/application/application.handler.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
+import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
 import { DocumentRepository } from "@/database/team/repositories/document/docuement.repository.js";
 
 export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    avatarRepository: AvatarRepository;
+
+    createGcpService: GcpService;
 
     teamService: TeamService;
     teamHandler: TeamHandler;

@@ -14,12 +14,14 @@ const configureEnv = async (fastify: FastifyInstance) => {
             .prop("DATABASE_URL", S.string())
             .prop("APPLICATION_SECRET", S.string())
             .prop("APPLICATION_URL", S.string())
+            .prop("GCP_BUCKET", S.string())
             .prop("PORT", S.number())
             .prop("DOCS_PASSWORD", S.string())
             .prop("HOST", S.string().default("0.0.0.0"))
             .required([
                 "NODE_ENV",
                 "DATABASE_URL",
+                "GCP_BUCKET",
                 "APPLICATION_SECRET",
                 "APPLICATION_URL",
                 "PORT",

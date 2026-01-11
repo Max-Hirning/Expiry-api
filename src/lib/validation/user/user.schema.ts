@@ -74,6 +74,16 @@ const fetchUserResponseSchema = z.object({
 
 type FetchUserResponse = z.infer<typeof fetchUserResponseSchema>;
 
+const updateUserResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        user: defaultUserSchema,
+        uploadUrl: z.url().nullable(),
+    }),
+});
+
+type UpdateUserResponse = z.infer<typeof updateUserResponseSchema>;
+
 const fetchUsersQuerySchema = paginationQuerySchema
     .extend({
         search: z.string(),
@@ -119,6 +129,7 @@ export {
     inviteUserBodySchema,
     fetchInvitedUserQuerySchema,
     defaultUserSchema,
+    updateUserResponseSchema,
     updateUserPasswordBodySchema,
     updateUserBodySchema,
     fetchUsersQuerySchema,
@@ -129,6 +140,7 @@ export type {
     FetchUsersResponse,
     InviteUserBodyInput,
     FetchInvitedUserQueryInput,
+    UpdateUserResponse,
     UpdateUserPasswordBodyInput,
     UpdateUserBodyInput,
     UserParamsInput,
