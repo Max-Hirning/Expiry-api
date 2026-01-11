@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { EnvConfig } from "@/types/env.type.js";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { UserService } from "../user/user.service.js";
@@ -6,6 +7,7 @@ import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import { migrateTenantDatabase } from "@/database/infra/tenant.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
@@ -37,6 +39,7 @@ export const createAuthService = (
     userService: UserService,
     gcpService: GcpService,
     log: FastifyBaseLogger,
+    config: EnvConfig,
     prisma: FastifyInstance["prisma"]
 ): AuthService => {
     const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
@@ -189,6 +192,10 @@ export const createAuthService = (
                     END
                     $$;
                 `;
+
+                await migrateTenantDatabase(
+                    config.DATABASE_URL.replace("/postgres", `/${teamId}`)
+                );
 
                 const createdUser = await prisma.master.$transaction(
                     async (tx) => {

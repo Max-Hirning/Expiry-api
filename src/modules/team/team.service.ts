@@ -1,9 +1,11 @@
 import { randomUUID } from "crypto";
+import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import { migrateTenantDatabase } from "@/database/infra/tenant.js";
 import { Logo, Prisma } from "@/database/master/generated/index.js";
 import {
     defaultTeamSelector,
@@ -36,6 +38,7 @@ export type TeamService = {
 export const createTeamService = (
     authService: AuthService,
     gcpService: GcpService,
+    config: EnvConfig,
     teamRepository: TeamRepository,
     prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger
@@ -229,6 +232,10 @@ export const createTeamService = (
                     END
                     $$;
                 `;
+
+            await migrateTenantDatabase(
+                config.DATABASE_URL.replace("/postgres", `/${teamId}`)
+            );
 
             const team = await teamRepository.create({
                 data: {
