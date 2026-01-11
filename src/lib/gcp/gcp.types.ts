@@ -16,6 +16,7 @@ type ConfigureFileKeyArg =
     | {
           type: FileTypes.DOCUMENT;
           teamId: string;
+          documentId: string;
       };
 
 export { FileTypes };

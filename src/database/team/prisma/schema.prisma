@@ -30,6 +30,7 @@ model Document {
 
   status    DocumentStatuses
   tags      String[]
+  name      String           @unique
   key       String           @unique
   fileSize  Float            @map("file_size")
   mimeType  String           @map("mime_type")

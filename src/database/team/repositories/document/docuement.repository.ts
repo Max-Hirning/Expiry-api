@@ -1,12 +1,14 @@
+import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { Prisma, PrismaClient } from "@/database/team/generated/client.js";
+import { Prisma } from "@/database/team/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
 export const defaultDocumentSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    name: true,
     status: true,
     tags: true,
     key: true,
@@ -25,19 +27,23 @@ export type DocumentRepository = BaseRepository<"document"> & {
     findFirstOrFail: <TArgs extends Prisma.DocumentFindFirstArgs>(
         args: TArgs
     ) => Promise<Prisma.DocumentGetPayload<TArgs>>;
+    $disconnect: () => Promise<void>;
 };
 
 export const createDocumentRepository = (
-    prisma: PrismaClient
+    { team: prisma }: FastifyInstance["prisma"],
+    dbUrl: string
 ): DocumentRepository => {
-    const repository = generateRepository(prisma, "Document");
+    const client = prisma(dbUrl);
+    const repository = generateRepository(client, "Document");
 
     return {
         ...repository,
+        $disconnect: () => client.$disconnect(),
         findUniqueOrFail: async <TArgs extends Prisma.DocumentFindUniqueArgs>(
             args: TArgs
         ) => {
-            const document = await prisma.document.findUnique(args);
+            const document = await client.document.findUnique(args);
 
             if (!document) {
                 throw new NotFoundError("Document not found.");
@@ -48,7 +54,7 @@ export const createDocumentRepository = (
         findFirstOrFail: async <TArgs extends Prisma.DocumentFindFirstArgs>(
             args: TArgs
         ) => {
-            const document = await prisma.document.findFirst(args);
+            const document = await client.document.findFirst(args);
 
             if (!document) {
                 throw new NotFoundError("Document not found.");

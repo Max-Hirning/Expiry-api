@@ -18,6 +18,8 @@ import {
     FetchTeamsResponse,
     CreateTeamBodyInput,
     UpdateTeamBodyInput,
+    CreateTeamResponse,
+    UpdateTeamResponse,
 } from "@/lib/validation/team/team.schema.js";
 
 export type TeamService = {
@@ -28,11 +30,11 @@ export type TeamService = {
     }) => Promise<FetchTeamsResponse>;
     createTeam: (p: {
         body: CreateTeamBodyInput;
-    }) => Promise<FetchTeamResponse>;
+    }) => Promise<CreateTeamResponse>;
     updateTeam: (p: {
         params: TeamParamsInput;
         body: UpdateTeamBodyInput;
-    }) => Promise<FetchTeamResponse>;
+    }) => Promise<UpdateTeamResponse>;
 };
 
 export const createTeamService = (
@@ -269,6 +271,7 @@ export const createTeamService = (
                 message: "Team created successfully.",
                 data: {
                     team,
+                    uploadUrl: logoPayload?.uploadUrl || null,
                 },
             };
         } catch (error) {
@@ -371,9 +374,10 @@ export const createTeamService = (
         });
 
         return {
-            message: "Team created successfully.",
+            message: "Team updated successfully.",
             data: {
                 team,
+                uploadUrl: logoPayload?.uploadUrl || null,
             },
         };
     },

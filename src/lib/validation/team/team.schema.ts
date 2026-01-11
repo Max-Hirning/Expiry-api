@@ -51,6 +51,20 @@ const updateTeamBodySchema = createTeamBodySchema.partial().extend({
 
 type UpdateTeamBodyInput = z.infer<typeof updateTeamBodySchema>;
 
+const createTeamResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        team: defaultTeamSchema,
+        uploadUrl: z.url().nullable(),
+    }),
+});
+
+type CreateTeamResponse = z.infer<typeof createTeamResponseSchema>;
+
+const updateTeamResponseSchema = createTeamResponseSchema;
+
+type UpdateTeamResponse = z.infer<typeof updateTeamResponseSchema>;
+
 const fetchTeamResponseSchema = z.object({
     message: z.string(),
     data: z.object({
@@ -87,6 +101,8 @@ type FetchTeamsResponse = z.infer<typeof fetchTeamsResponseSchema>;
 export {
     fetchTeamResponseSchema,
     fetchTeamsResponseSchema,
+    createTeamResponseSchema,
+    updateTeamResponseSchema,
     teamParamsSchema,
     createTeamBodySchema,
     updateTeamBodySchema,
@@ -98,6 +114,8 @@ export type {
     FetchTeamResponse,
     FetchTeamsResponse,
     TeamParamsInput,
+    CreateTeamResponse,
+    UpdateTeamResponse,
     CreateTeamBodyInput,
     UpdateTeamBodyInput,
     FetchTeamsQueryInput,

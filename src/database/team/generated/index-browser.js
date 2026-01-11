@@ -122,6 +122,7 @@ exports.Prisma.DocumentScalarFieldEnum = {
     updatedAt: "updatedAt",
     status: "status",
     tags: "tags",
+    name: "name",
     key: "key",
     fileSize: "fileSize",
     mimeType: "mimeType",

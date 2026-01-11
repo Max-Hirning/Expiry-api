@@ -8,6 +8,8 @@ import { AuthService } from "@/modules/auth/auth.service.js";
 import { AuthHandler } from "@/modules/auth/auth.handler.js";
 import { UserHandler } from "@/modules/user/user.handler.js";
 import { UserService } from "@/modules/user/user.service.js";
+import { DocumentService } from "@/modules/document/document.service.js";
+import { DocumentHandler } from "@/modules/document/document.handler.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 import { ApplicationHandler } from "@/modules/application/application.handler.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
@@ -19,6 +21,9 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    documentService: DocumentService;
+    documentHandler: DocumentHandler;
 
     avatarRepository: AvatarRepository;
 

@@ -2,6 +2,8 @@ import { Prisma, PrismaClient } from "@/database/team/generated/client.js";
 
 export type BaseRepository<T extends Uncapitalize<Model>> = {
     count: PrismaClient[T]["count"];
+    create: PrismaClient[T]["create"];
+    createMany: PrismaClient[T]["createMany"];
     findUnique: PrismaClient[T]["findUnique"];
     findFirst: PrismaClient[T]["findFirst"];
     update: PrismaClient[T]["update"];
@@ -45,6 +47,12 @@ export const generateRepository = <T extends Model>(
         "findUnique"
     ] as (typeof delegate)["findUnique"];
 
+    const create = delegate["create"] as (typeof delegate)["create"];
+
+    const createMany = delegate[
+        "createMany"
+    ] as (typeof delegate)["createMany"];
+
     const findFirst = delegate["findFirst"] as (typeof delegate)["findFirst"];
 
     const update = delegate["update"] as (typeof delegate)["update"];
@@ -67,6 +75,8 @@ export const generateRepository = <T extends Model>(
 
     return {
         findMany,
+        create,
+        createMany,
         count,
         findUnique,
         aggregate,

@@ -1474,6 +1474,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         status: $Enums.DocumentStatuses | null;
+        name: string | null;
         key: string | null;
         fileSize: number | null;
         mimeType: string | null;
@@ -1488,6 +1489,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         status: $Enums.DocumentStatuses | null;
+        name: string | null;
         key: string | null;
         fileSize: number | null;
         mimeType: string | null;
@@ -1503,6 +1505,7 @@ export namespace Prisma {
         updatedAt: number;
         status: number;
         tags: number;
+        name: number;
         key: number;
         fileSize: number;
         mimeType: number;
@@ -1530,6 +1533,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         status?: true;
+        name?: true;
         key?: true;
         fileSize?: true;
         mimeType?: true;
@@ -1544,6 +1548,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         status?: true;
+        name?: true;
         key?: true;
         fileSize?: true;
         mimeType?: true;
@@ -1559,6 +1564,7 @@ export namespace Prisma {
         updatedAt?: true;
         status?: true;
         tags?: true;
+        name?: true;
         key?: true;
         fileSize?: true;
         mimeType?: true;
@@ -1666,6 +1672,7 @@ export namespace Prisma {
         updatedAt: Date;
         status: $Enums.DocumentStatuses;
         tags: string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -1703,6 +1710,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             status?: boolean;
             tags?: boolean;
+            name?: boolean;
             key?: boolean;
             fileSize?: boolean;
             mimeType?: boolean;
@@ -1730,6 +1738,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             status?: boolean;
             tags?: boolean;
+            name?: boolean;
             key?: boolean;
             fileSize?: boolean;
             mimeType?: boolean;
@@ -1750,6 +1759,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             status?: boolean;
             tags?: boolean;
+            name?: boolean;
             key?: boolean;
             fileSize?: boolean;
             mimeType?: boolean;
@@ -1767,6 +1777,7 @@ export namespace Prisma {
         updatedAt?: boolean;
         status?: boolean;
         tags?: boolean;
+        name?: boolean;
         key?: boolean;
         fileSize?: boolean;
         mimeType?: boolean;
@@ -1784,6 +1795,7 @@ export namespace Prisma {
         | "updatedAt"
         | "status"
         | "tags"
+        | "name"
         | "key"
         | "fileSize"
         | "mimeType"
@@ -1824,6 +1836,7 @@ export namespace Prisma {
                 updatedAt: Date;
                 status: $Enums.DocumentStatuses;
                 tags: string[];
+                name: string;
                 key: string;
                 fileSize: number;
                 mimeType: string;
@@ -2457,6 +2470,7 @@ export namespace Prisma {
         readonly updatedAt: FieldRef<"Document", "DateTime">;
         readonly status: FieldRef<"Document", "DocumentStatuses">;
         readonly tags: FieldRef<"Document", "String[]">;
+        readonly name: FieldRef<"Document", "String">;
         readonly key: FieldRef<"Document", "String">;
         readonly fileSize: FieldRef<"Document", "Float">;
         readonly mimeType: FieldRef<"Document", "String">;
@@ -8352,6 +8366,7 @@ export namespace Prisma {
         updatedAt: "updatedAt";
         status: "status";
         tags: "tags";
+        name: "name";
         key: "key";
         fileSize: "fileSize";
         mimeType: "mimeType";
@@ -8567,6 +8582,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFilter<"Document">
             | $Enums.DocumentStatuses;
         tags?: StringNullableListFilter<"Document">;
+        name?: StringFilter<"Document"> | string;
         key?: StringFilter<"Document"> | string;
         fileSize?: FloatFilter<"Document"> | number;
         mimeType?: StringFilter<"Document"> | string;
@@ -8584,6 +8600,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         status?: SortOrder;
         tags?: SortOrder;
+        name?: SortOrder;
         key?: SortOrder;
         fileSize?: SortOrder;
         mimeType?: SortOrder;
@@ -8598,6 +8615,7 @@ export namespace Prisma {
     export type DocumentWhereUniqueInput = Prisma.AtLeast<
         {
             id?: string;
+            name?: string;
             key?: string;
             AND?: DocumentWhereInput | DocumentWhereInput[];
             OR?: DocumentWhereInput[];
@@ -8617,7 +8635,7 @@ export namespace Prisma {
             documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
             documentDeadlines?: DocumentDeadlineListRelationFilter;
         },
-        "id" | "key"
+        "id" | "name" | "key"
     >;
 
     export type DocumentOrderByWithAggregationInput = {
@@ -8626,6 +8644,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         status?: SortOrder;
         tags?: SortOrder;
+        name?: SortOrder;
         key?: SortOrder;
         fileSize?: SortOrder;
         mimeType?: SortOrder;
@@ -8655,6 +8674,7 @@ export namespace Prisma {
             | EnumDocumentStatusesWithAggregatesFilter<"Document">
             | $Enums.DocumentStatuses;
         tags?: StringNullableListFilter<"Document">;
+        name?: StringWithAggregatesFilter<"Document"> | string;
         key?: StringWithAggregatesFilter<"Document"> | string;
         fileSize?: FloatWithAggregatesFilter<"Document"> | number;
         mimeType?: StringWithAggregatesFilter<"Document"> | string;
@@ -9006,6 +9026,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -9023,6 +9044,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -9042,6 +9064,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -9061,6 +9084,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -9078,6 +9102,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -9095,6 +9120,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -9112,6 +9138,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -9518,6 +9545,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         status?: SortOrder;
         tags?: SortOrder;
+        name?: SortOrder;
         key?: SortOrder;
         fileSize?: SortOrder;
         mimeType?: SortOrder;
@@ -9538,6 +9566,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         status?: SortOrder;
+        name?: SortOrder;
         key?: SortOrder;
         fileSize?: SortOrder;
         mimeType?: SortOrder;
@@ -9552,6 +9581,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         status?: SortOrder;
+        name?: SortOrder;
         key?: SortOrder;
         fileSize?: SortOrder;
         mimeType?: SortOrder;
@@ -10665,6 +10695,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -10681,6 +10712,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -10728,6 +10760,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -10746,6 +10779,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -10762,6 +10796,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -10778,6 +10813,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
+        name: string;
         key: string;
         fileSize: number;
         mimeType: string;
@@ -10824,6 +10860,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
@@ -10842,6 +10879,7 @@ export namespace Prisma {
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;

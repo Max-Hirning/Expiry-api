@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { addDays, addMinutes } from "date-fns";
 import { EnvConfig } from "@/types/env.type.js";
 import { Storage } from "@google-cloud/storage";
@@ -39,7 +38,7 @@ const createGcpService = (config: EnvConfig): GcpService => {
         }
 
         if (p.type === FileTypes.DOCUMENT) {
-            return `teams/${p.teamId}/documents/${randomUUID()}`;
+            return `teams/${p.teamId}/documents/${p.documentId}`;
         }
 
         throw new InternalServerError("Type for file key is required");
