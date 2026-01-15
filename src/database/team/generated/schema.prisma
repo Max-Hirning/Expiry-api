@@ -41,6 +41,7 @@ model Document {
 
   documentExtractedFields DocumentExtractedField[]
   documentDeadlines       DocumentDeadline[]
+  actionLogs              ActionLog[]
 
   @@map("documents")
 }
@@ -96,18 +97,6 @@ model DocumentDeadline {
   @@map("document_deadline")
 }
 
-model ActionLog {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  payload String
-
-  userId String @map("user_id")
-
-  @@map("action_logs")
-}
-
 model Notification {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -119,4 +108,40 @@ model Notification {
   userId String @map("user_id")
 
   @@map("notifications")
+}
+
+enum ActionLogTypes {
+  CREATE_TEAM
+  UPDATE_TEAM
+
+  ADD_USER
+  INVITE_USER
+  DELETE_USER
+
+  CREATE_DOCUMENT
+  UPDATE_DOCUMENT
+  DELETE_DOCUMENT
+}
+
+model ActionLog {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  type ActionLogTypes
+
+  documentName String?
+  documentId   String?   @map("document_id")
+  document     Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  actorId        String  @map("actor_id")
+  actorFullName  String  @map("actor_full_name")
+  actorAvatarUrl String? @map("actor_avatar_url")
+
+  userId        String? @map("user_id")
+  userFullName  String? @map("user_full_name")
+  userAvatarUrl String? @map("user_avatar_url")
+
+  @@index([actorId])
+  @@map("action_logs")
 }

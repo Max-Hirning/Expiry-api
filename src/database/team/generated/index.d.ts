@@ -29,16 +29,16 @@ export type DocumentExtractedField =
 export type DocumentDeadline =
     $Result.DefaultSelection<Prisma.$DocumentDeadlinePayload>;
 /**
- * Model ActionLog
- *
- */
-export type ActionLog = $Result.DefaultSelection<Prisma.$ActionLogPayload>;
-/**
  * Model Notification
  *
  */
 export type Notification =
     $Result.DefaultSelection<Prisma.$NotificationPayload>;
+/**
+ * Model ActionLog
+ *
+ */
+export type ActionLog = $Result.DefaultSelection<Prisma.$ActionLogPayload>;
 
 /**
  * Enums
@@ -81,6 +81,20 @@ export namespace $Enums {
 
     export type DeadlineStatus =
         (typeof DeadlineStatus)[keyof typeof DeadlineStatus];
+
+    export const ActionLogTypes: {
+        CREATE_TEAM: "CREATE_TEAM";
+        UPDATE_TEAM: "UPDATE_TEAM";
+        ADD_USER: "ADD_USER";
+        INVITE_USER: "INVITE_USER";
+        DELETE_USER: "DELETE_USER";
+        CREATE_DOCUMENT: "CREATE_DOCUMENT";
+        UPDATE_DOCUMENT: "UPDATE_DOCUMENT";
+        DELETE_DOCUMENT: "DELETE_DOCUMENT";
+    };
+
+    export type ActionLogTypes =
+        (typeof ActionLogTypes)[keyof typeof ActionLogTypes];
 }
 
 export type DocumentStatuses = $Enums.DocumentStatuses;
@@ -98,6 +112,10 @@ export const ExtractedFieldSource: typeof $Enums.ExtractedFieldSource;
 export type DeadlineStatus = $Enums.DeadlineStatus;
 
 export const DeadlineStatus: typeof $Enums.DeadlineStatus;
+
+export type ActionLogTypes = $Enums.ActionLogTypes;
+
+export const ActionLogTypes: typeof $Enums.ActionLogTypes;
 
 /**
  * ##  Prisma Client ʲˢ
@@ -298,16 +316,6 @@ export class PrismaClient<
     >;
 
     /**
-     * `prisma.actionLog`: Exposes CRUD operations for the **ActionLog** model.
-     * Example usage:
-     * ```ts
-     * // Fetch zero or more ActionLogs
-     * const actionLogs = await prisma.actionLog.findMany()
-     * ```
-     */
-    get actionLog(): Prisma.ActionLogDelegate<ExtArgs, ClientOptions>;
-
-    /**
      * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
      * Example usage:
      * ```ts
@@ -316,6 +324,16 @@ export class PrismaClient<
      * ```
      */
     get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
+
+    /**
+     * `prisma.actionLog`: Exposes CRUD operations for the **ActionLog** model.
+     * Example usage:
+     * ```ts
+     * // Fetch zero or more ActionLogs
+     * const actionLogs = await prisma.actionLog.findMany()
+     * ```
+     */
+    get actionLog(): Prisma.ActionLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -774,8 +792,8 @@ export namespace Prisma {
         Document: "Document";
         DocumentExtractedField: "DocumentExtractedField";
         DocumentDeadline: "DocumentDeadline";
-        ActionLog: "ActionLog";
         Notification: "Notification";
+        ActionLog: "ActionLog";
     };
 
     export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -803,8 +821,8 @@ export namespace Prisma {
                 | "document"
                 | "documentExtractedField"
                 | "documentDeadline"
-                | "actionLog"
-                | "notification";
+                | "notification"
+                | "actionLog";
             txIsolationLevel: Prisma.TransactionIsolationLevel;
         };
         model: {
@@ -1036,82 +1054,6 @@ export namespace Prisma {
                     };
                 };
             };
-            ActionLog: {
-                payload: Prisma.$ActionLogPayload<ExtArgs>;
-                fields: Prisma.ActionLogFieldRefs;
-                operations: {
-                    findUnique: {
-                        args: Prisma.ActionLogFindUniqueArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload> | null;
-                    };
-                    findUniqueOrThrow: {
-                        args: Prisma.ActionLogFindUniqueOrThrowArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    findFirst: {
-                        args: Prisma.ActionLogFindFirstArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload> | null;
-                    };
-                    findFirstOrThrow: {
-                        args: Prisma.ActionLogFindFirstOrThrowArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    findMany: {
-                        args: Prisma.ActionLogFindManyArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
-                    };
-                    create: {
-                        args: Prisma.ActionLogCreateArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    createMany: {
-                        args: Prisma.ActionLogCreateManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    createManyAndReturn: {
-                        args: Prisma.ActionLogCreateManyAndReturnArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
-                    };
-                    delete: {
-                        args: Prisma.ActionLogDeleteArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    update: {
-                        args: Prisma.ActionLogUpdateArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    deleteMany: {
-                        args: Prisma.ActionLogDeleteManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    updateMany: {
-                        args: Prisma.ActionLogUpdateManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    updateManyAndReturn: {
-                        args: Prisma.ActionLogUpdateManyAndReturnArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
-                    };
-                    upsert: {
-                        args: Prisma.ActionLogUpsertArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
-                    };
-                    aggregate: {
-                        args: Prisma.ActionLogAggregateArgs<ExtArgs>;
-                        result: $Utils.Optional<AggregateActionLog>;
-                    };
-                    groupBy: {
-                        args: Prisma.ActionLogGroupByArgs<ExtArgs>;
-                        result: $Utils.Optional<ActionLogGroupByOutputType>[];
-                    };
-                    count: {
-                        args: Prisma.ActionLogCountArgs<ExtArgs>;
-                        result:
-                            | $Utils.Optional<ActionLogCountAggregateOutputType>
-                            | number;
-                    };
-                };
-            };
             Notification: {
                 payload: Prisma.$NotificationPayload<ExtArgs>;
                 fields: Prisma.NotificationFieldRefs;
@@ -1184,6 +1126,82 @@ export namespace Prisma {
                         args: Prisma.NotificationCountArgs<ExtArgs>;
                         result:
                             | $Utils.Optional<NotificationCountAggregateOutputType>
+                            | number;
+                    };
+                };
+            };
+            ActionLog: {
+                payload: Prisma.$ActionLogPayload<ExtArgs>;
+                fields: Prisma.ActionLogFieldRefs;
+                operations: {
+                    findUnique: {
+                        args: Prisma.ActionLogFindUniqueArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload> | null;
+                    };
+                    findUniqueOrThrow: {
+                        args: Prisma.ActionLogFindUniqueOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    findFirst: {
+                        args: Prisma.ActionLogFindFirstArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload> | null;
+                    };
+                    findFirstOrThrow: {
+                        args: Prisma.ActionLogFindFirstOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    findMany: {
+                        args: Prisma.ActionLogFindManyArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
+                    };
+                    create: {
+                        args: Prisma.ActionLogCreateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    createMany: {
+                        args: Prisma.ActionLogCreateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    createManyAndReturn: {
+                        args: Prisma.ActionLogCreateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
+                    };
+                    delete: {
+                        args: Prisma.ActionLogDeleteArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    update: {
+                        args: Prisma.ActionLogUpdateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    deleteMany: {
+                        args: Prisma.ActionLogDeleteManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateMany: {
+                        args: Prisma.ActionLogUpdateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateManyAndReturn: {
+                        args: Prisma.ActionLogUpdateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>[];
+                    };
+                    upsert: {
+                        args: Prisma.ActionLogUpsertArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$ActionLogPayload>;
+                    };
+                    aggregate: {
+                        args: Prisma.ActionLogAggregateArgs<ExtArgs>;
+                        result: $Utils.Optional<AggregateActionLog>;
+                    };
+                    groupBy: {
+                        args: Prisma.ActionLogGroupByArgs<ExtArgs>;
+                        result: $Utils.Optional<ActionLogGroupByOutputType>[];
+                    };
+                    count: {
+                        args: Prisma.ActionLogCountArgs<ExtArgs>;
+                        result:
+                            | $Utils.Optional<ActionLogCountAggregateOutputType>
                             | number;
                     };
                 };
@@ -1309,8 +1327,8 @@ export namespace Prisma {
         document?: DocumentOmit;
         documentExtractedField?: DocumentExtractedFieldOmit;
         documentDeadline?: DocumentDeadlineOmit;
-        actionLog?: ActionLogOmit;
         notification?: NotificationOmit;
+        actionLog?: ActionLogOmit;
     };
 
     /* Types for Logging */
@@ -1397,6 +1415,7 @@ export namespace Prisma {
     export type DocumentCountOutputType = {
         documentExtractedFields: number;
         documentDeadlines: number;
+        actionLogs: number;
     };
 
     export type DocumentCountOutputTypeSelect<
@@ -1408,6 +1427,7 @@ export namespace Prisma {
         documentDeadlines?:
             | boolean
             | DocumentCountOutputTypeCountDocumentDeadlinesArgs;
+        actionLogs?: boolean | DocumentCountOutputTypeCountActionLogsArgs;
     };
 
     // Custom InputTypes
@@ -1439,6 +1459,15 @@ export namespace Prisma {
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         where?: DocumentDeadlineWhereInput;
+    };
+
+    /**
+     * DocumentCountOutputType without action
+     */
+    export type DocumentCountOutputTypeCountActionLogsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: ActionLogWhereInput;
     };
 
     /**
@@ -1724,6 +1753,7 @@ export namespace Prisma {
             documentDeadlines?:
                 | boolean
                 | Document$documentDeadlinesArgs<ExtArgs>;
+            actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
             _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
         },
         ExtArgs["result"]["document"]
@@ -1812,6 +1842,7 @@ export namespace Prisma {
             | boolean
             | Document$documentExtractedFieldsArgs<ExtArgs>;
         documentDeadlines?: boolean | Document$documentDeadlinesArgs<ExtArgs>;
+        actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
         _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type DocumentIncludeCreateManyAndReturn<
@@ -1828,6 +1859,7 @@ export namespace Prisma {
         objects: {
             documentExtractedFields: Prisma.$DocumentExtractedFieldPayload<ExtArgs>[];
             documentDeadlines: Prisma.$DocumentDeadlinePayload<ExtArgs>[];
+            actionLogs: Prisma.$ActionLogPayload<ExtArgs>[];
         };
         scalars: $Extensions.GetPayloadResult<
             {
@@ -2423,6 +2455,17 @@ export namespace Prisma {
               >
             | Null
         >;
+        actionLogs<T extends Document$actionLogsArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$actionLogsArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$ActionLogPayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
         /**
          * Attaches callbacks for the resolution and/or rejection of the Promise.
          * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2962,6 +3005,34 @@ export namespace Prisma {
         distinct?:
             | DocumentDeadlineScalarFieldEnum
             | DocumentDeadlineScalarFieldEnum[];
+    };
+
+    /**
+     * Document.actionLogs
+     */
+    export type Document$actionLogsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        where?: ActionLogWhereInput;
+        orderBy?:
+            | ActionLogOrderByWithRelationInput
+            | ActionLogOrderByWithRelationInput[];
+        cursor?: ActionLogWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
     };
 
     /**
@@ -5859,1240 +5930,6 @@ export namespace Prisma {
     };
 
     /**
-     * Model ActionLog
-     */
-
-    export type AggregateActionLog = {
-        _count: ActionLogCountAggregateOutputType | null;
-        _min: ActionLogMinAggregateOutputType | null;
-        _max: ActionLogMaxAggregateOutputType | null;
-    };
-
-    export type ActionLogMinAggregateOutputType = {
-        id: string | null;
-        createdAt: Date | null;
-        updatedAt: Date | null;
-        payload: string | null;
-        userId: string | null;
-    };
-
-    export type ActionLogMaxAggregateOutputType = {
-        id: string | null;
-        createdAt: Date | null;
-        updatedAt: Date | null;
-        payload: string | null;
-        userId: string | null;
-    };
-
-    export type ActionLogCountAggregateOutputType = {
-        id: number;
-        createdAt: number;
-        updatedAt: number;
-        payload: number;
-        userId: number;
-        _all: number;
-    };
-
-    export type ActionLogMinAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        payload?: true;
-        userId?: true;
-    };
-
-    export type ActionLogMaxAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        payload?: true;
-        userId?: true;
-    };
-
-    export type ActionLogCountAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        payload?: true;
-        userId?: true;
-        _all?: true;
-    };
-
-    export type ActionLogAggregateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Filter which ActionLog to aggregate.
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of ActionLogs to fetch.
-         */
-        orderBy?:
-            | ActionLogOrderByWithRelationInput
-            | ActionLogOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the start position
-         */
-        cursor?: ActionLogWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` ActionLogs from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` ActionLogs.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Count returned ActionLogs
-         **/
-        _count?: true | ActionLogCountAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Select which fields to find the minimum value
-         **/
-        _min?: ActionLogMinAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Select which fields to find the maximum value
-         **/
-        _max?: ActionLogMaxAggregateInputType;
-    };
-
-    export type GetActionLogAggregateType<T extends ActionLogAggregateArgs> = {
-        [P in keyof T & keyof AggregateActionLog]: P extends "_count" | "count"
-            ? T[P] extends true
-                ? number
-                : GetScalarType<T[P], AggregateActionLog[P]>
-            : GetScalarType<T[P], AggregateActionLog[P]>;
-    };
-
-    export type ActionLogGroupByArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        where?: ActionLogWhereInput;
-        orderBy?:
-            | ActionLogOrderByWithAggregationInput
-            | ActionLogOrderByWithAggregationInput[];
-        by: ActionLogScalarFieldEnum[] | ActionLogScalarFieldEnum;
-        having?: ActionLogScalarWhereWithAggregatesInput;
-        take?: number;
-        skip?: number;
-        _count?: ActionLogCountAggregateInputType | true;
-        _min?: ActionLogMinAggregateInputType;
-        _max?: ActionLogMaxAggregateInputType;
-    };
-
-    export type ActionLogGroupByOutputType = {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        payload: string;
-        userId: string;
-        _count: ActionLogCountAggregateOutputType | null;
-        _min: ActionLogMinAggregateOutputType | null;
-        _max: ActionLogMaxAggregateOutputType | null;
-    };
-
-    type GetActionLogGroupByPayload<T extends ActionLogGroupByArgs> =
-        Prisma.PrismaPromise<
-            Array<
-                PickEnumerable<ActionLogGroupByOutputType, T["by"]> & {
-                    [P in keyof T &
-                        keyof ActionLogGroupByOutputType]: P extends "_count"
-                        ? T[P] extends boolean
-                            ? number
-                            : GetScalarType<T[P], ActionLogGroupByOutputType[P]>
-                        : GetScalarType<T[P], ActionLogGroupByOutputType[P]>;
-                }
-            >
-        >;
-
-    export type ActionLogSelect<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            payload?: boolean;
-            userId?: boolean;
-        },
-        ExtArgs["result"]["actionLog"]
-    >;
-
-    export type ActionLogSelectCreateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            payload?: boolean;
-            userId?: boolean;
-        },
-        ExtArgs["result"]["actionLog"]
-    >;
-
-    export type ActionLogSelectUpdateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            payload?: boolean;
-            userId?: boolean;
-        },
-        ExtArgs["result"]["actionLog"]
-    >;
-
-    export type ActionLogSelectScalar = {
-        id?: boolean;
-        createdAt?: boolean;
-        updatedAt?: boolean;
-        payload?: boolean;
-        userId?: boolean;
-    };
-
-    export type ActionLogOmit<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetOmit<
-        "id" | "createdAt" | "updatedAt" | "payload" | "userId",
-        ExtArgs["result"]["actionLog"]
-    >;
-
-    export type $ActionLogPayload<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        name: "ActionLog";
-        objects: {};
-        scalars: $Extensions.GetPayloadResult<
-            {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                payload: string;
-                userId: string;
-            },
-            ExtArgs["result"]["actionLog"]
-        >;
-        composites: {};
-    };
-
-    type ActionLogGetPayload<
-        S extends boolean | null | undefined | ActionLogDefaultArgs,
-    > = $Result.GetResult<Prisma.$ActionLogPayload, S>;
-
-    type ActionLogCountArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = Omit<
-        ActionLogFindManyArgs,
-        "select" | "include" | "distinct" | "omit"
-    > & {
-        select?: ActionLogCountAggregateInputType | true;
-    };
-
-    export interface ActionLogDelegate<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-        GlobalOmitOptions = {},
-    > {
-        [K: symbol]: {
-            types: Prisma.TypeMap<ExtArgs>["model"]["ActionLog"];
-            meta: { name: "ActionLog" };
-        };
-        /**
-         * Find zero or one ActionLog that matches the filter.
-         * @param {ActionLogFindUniqueArgs} args - Arguments to find a ActionLog
-         * @example
-         * // Get one ActionLog
-         * const actionLog = await prisma.actionLog.findUnique({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findUnique<T extends ActionLogFindUniqueArgs>(
-            args: SelectSubset<T, ActionLogFindUniqueArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "findUnique",
-                GlobalOmitOptions
-            > | null,
-            null,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find one ActionLog that matches the filter or throw an error with `error.code='P2025'`
-         * if no matches were found.
-         * @param {ActionLogFindUniqueOrThrowArgs} args - Arguments to find a ActionLog
-         * @example
-         * // Get one ActionLog
-         * const actionLog = await prisma.actionLog.findUniqueOrThrow({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findUniqueOrThrow<T extends ActionLogFindUniqueOrThrowArgs>(
-            args: SelectSubset<T, ActionLogFindUniqueOrThrowArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "findUniqueOrThrow",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find the first ActionLog that matches the filter.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogFindFirstArgs} args - Arguments to find a ActionLog
-         * @example
-         * // Get one ActionLog
-         * const actionLog = await prisma.actionLog.findFirst({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findFirst<T extends ActionLogFindFirstArgs>(
-            args?: SelectSubset<T, ActionLogFindFirstArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "findFirst",
-                GlobalOmitOptions
-            > | null,
-            null,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find the first ActionLog that matches the filter or
-         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogFindFirstOrThrowArgs} args - Arguments to find a ActionLog
-         * @example
-         * // Get one ActionLog
-         * const actionLog = await prisma.actionLog.findFirstOrThrow({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findFirstOrThrow<T extends ActionLogFindFirstOrThrowArgs>(
-            args?: SelectSubset<T, ActionLogFindFirstOrThrowArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "findFirstOrThrow",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find zero or more ActionLogs that matches the filter.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogFindManyArgs} args - Arguments to filter and select certain fields only.
-         * @example
-         * // Get all ActionLogs
-         * const actionLogs = await prisma.actionLog.findMany()
-         *
-         * // Get first 10 ActionLogs
-         * const actionLogs = await prisma.actionLog.findMany({ take: 10 })
-         *
-         * // Only select the `id`
-         * const actionLogWithIdOnly = await prisma.actionLog.findMany({ select: { id: true } })
-         *
-         */
-        findMany<T extends ActionLogFindManyArgs>(
-            args?: SelectSubset<T, ActionLogFindManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "findMany",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Create a ActionLog.
-         * @param {ActionLogCreateArgs} args - Arguments to create a ActionLog.
-         * @example
-         * // Create one ActionLog
-         * const ActionLog = await prisma.actionLog.create({
-         *   data: {
-         *     // ... data to create a ActionLog
-         *   }
-         * })
-         *
-         */
-        create<T extends ActionLogCreateArgs>(
-            args: SelectSubset<T, ActionLogCreateArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "create",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Create many ActionLogs.
-         * @param {ActionLogCreateManyArgs} args - Arguments to create many ActionLogs.
-         * @example
-         * // Create many ActionLogs
-         * const actionLog = await prisma.actionLog.createMany({
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         */
-        createMany<T extends ActionLogCreateManyArgs>(
-            args?: SelectSubset<T, ActionLogCreateManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Create many ActionLogs and returns the data saved in the database.
-         * @param {ActionLogCreateManyAndReturnArgs} args - Arguments to create many ActionLogs.
-         * @example
-         * // Create many ActionLogs
-         * const actionLog = await prisma.actionLog.createManyAndReturn({
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         * // Create many ActionLogs and only return the `id`
-         * const actionLogWithIdOnly = await prisma.actionLog.createManyAndReturn({
-         *   select: { id: true },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         *
-         */
-        createManyAndReturn<T extends ActionLogCreateManyAndReturnArgs>(
-            args?: SelectSubset<T, ActionLogCreateManyAndReturnArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "createManyAndReturn",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Delete a ActionLog.
-         * @param {ActionLogDeleteArgs} args - Arguments to delete one ActionLog.
-         * @example
-         * // Delete one ActionLog
-         * const ActionLog = await prisma.actionLog.delete({
-         *   where: {
-         *     // ... filter to delete one ActionLog
-         *   }
-         * })
-         *
-         */
-        delete<T extends ActionLogDeleteArgs>(
-            args: SelectSubset<T, ActionLogDeleteArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "delete",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Update one ActionLog.
-         * @param {ActionLogUpdateArgs} args - Arguments to update one ActionLog.
-         * @example
-         * // Update one ActionLog
-         * const actionLog = await prisma.actionLog.update({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: {
-         *     // ... provide data here
-         *   }
-         * })
-         *
-         */
-        update<T extends ActionLogUpdateArgs>(
-            args: SelectSubset<T, ActionLogUpdateArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "update",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Delete zero or more ActionLogs.
-         * @param {ActionLogDeleteManyArgs} args - Arguments to filter ActionLogs to delete.
-         * @example
-         * // Delete a few ActionLogs
-         * const { count } = await prisma.actionLog.deleteMany({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         *
-         */
-        deleteMany<T extends ActionLogDeleteManyArgs>(
-            args?: SelectSubset<T, ActionLogDeleteManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Update zero or more ActionLogs.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogUpdateManyArgs} args - Arguments to update one or more rows.
-         * @example
-         * // Update many ActionLogs
-         * const actionLog = await prisma.actionLog.updateMany({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: {
-         *     // ... provide data here
-         *   }
-         * })
-         *
-         */
-        updateMany<T extends ActionLogUpdateManyArgs>(
-            args: SelectSubset<T, ActionLogUpdateManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Update zero or more ActionLogs and returns the data updated in the database.
-         * @param {ActionLogUpdateManyAndReturnArgs} args - Arguments to update many ActionLogs.
-         * @example
-         * // Update many ActionLogs
-         * const actionLog = await prisma.actionLog.updateManyAndReturn({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         * // Update zero or more ActionLogs and only return the `id`
-         * const actionLogWithIdOnly = await prisma.actionLog.updateManyAndReturn({
-         *   select: { id: true },
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         *
-         */
-        updateManyAndReturn<T extends ActionLogUpdateManyAndReturnArgs>(
-            args: SelectSubset<T, ActionLogUpdateManyAndReturnArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "updateManyAndReturn",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Create or update one ActionLog.
-         * @param {ActionLogUpsertArgs} args - Arguments to update or create a ActionLog.
-         * @example
-         * // Update or create a ActionLog
-         * const actionLog = await prisma.actionLog.upsert({
-         *   create: {
-         *     // ... data to create a ActionLog
-         *   },
-         *   update: {
-         *     // ... in case it already exists, update
-         *   },
-         *   where: {
-         *     // ... the filter for the ActionLog we want to update
-         *   }
-         * })
-         */
-        upsert<T extends ActionLogUpsertArgs>(
-            args: SelectSubset<T, ActionLogUpsertArgs<ExtArgs>>
-        ): Prisma__ActionLogClient<
-            $Result.GetResult<
-                Prisma.$ActionLogPayload<ExtArgs>,
-                T,
-                "upsert",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Count the number of ActionLogs.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogCountArgs} args - Arguments to filter ActionLogs to count.
-         * @example
-         * // Count the number of ActionLogs
-         * const count = await prisma.actionLog.count({
-         *   where: {
-         *     // ... the filter for the ActionLogs we want to count
-         *   }
-         * })
-         **/
-        count<T extends ActionLogCountArgs>(
-            args?: Subset<T, ActionLogCountArgs>
-        ): Prisma.PrismaPromise<
-            T extends $Utils.Record<"select", any>
-                ? T["select"] extends true
-                    ? number
-                    : GetScalarType<
-                          T["select"],
-                          ActionLogCountAggregateOutputType
-                      >
-                : number
-        >;
-
-        /**
-         * Allows you to perform aggregations operations on a ActionLog.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-         * @example
-         * // Ordered by age ascending
-         * // Where email contains prisma.io
-         * // Limited to the 10 users
-         * const aggregations = await prisma.user.aggregate({
-         *   _avg: {
-         *     age: true,
-         *   },
-         *   where: {
-         *     email: {
-         *       contains: "prisma.io",
-         *     },
-         *   },
-         *   orderBy: {
-         *     age: "asc",
-         *   },
-         *   take: 10,
-         * })
-         **/
-        aggregate<T extends ActionLogAggregateArgs>(
-            args: Subset<T, ActionLogAggregateArgs>
-        ): Prisma.PrismaPromise<GetActionLogAggregateType<T>>;
-
-        /**
-         * Group by ActionLog.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {ActionLogGroupByArgs} args - Group by arguments.
-         * @example
-         * // Group by city, order by createdAt, get count
-         * const result = await prisma.user.groupBy({
-         *   by: ['city', 'createdAt'],
-         *   orderBy: {
-         *     createdAt: true
-         *   },
-         *   _count: {
-         *     _all: true
-         *   },
-         * })
-         *
-         **/
-        groupBy<
-            T extends ActionLogGroupByArgs,
-            HasSelectOrTake extends Or<
-                Extends<"skip", Keys<T>>,
-                Extends<"take", Keys<T>>
-            >,
-            OrderByArg extends True extends HasSelectOrTake
-                ? { orderBy: ActionLogGroupByArgs["orderBy"] }
-                : { orderBy?: ActionLogGroupByArgs["orderBy"] },
-            OrderFields extends ExcludeUnderscoreKeys<
-                Keys<MaybeTupleToUnion<T["orderBy"]>>
-            >,
-            ByFields extends MaybeTupleToUnion<T["by"]>,
-            ByValid extends Has<ByFields, OrderFields>,
-            HavingFields extends GetHavingFields<T["having"]>,
-            HavingValid extends Has<ByFields, HavingFields>,
-            ByEmpty extends T["by"] extends never[] ? True : False,
-            InputErrors extends ByEmpty extends True
-                ? `Error: "by" must not be empty.`
-                : HavingValid extends False
-                  ? {
-                        [P in HavingFields]: P extends ByFields
-                            ? never
-                            : P extends string
-                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                              : [
-                                    Error,
-                                    "Field ",
-                                    P,
-                                    ` in "having" needs to be provided in "by"`,
-                                ];
-                    }[HavingFields]
-                  : "take" extends Keys<T>
-                    ? "orderBy" extends Keys<T>
-                        ? ByValid extends True
-                            ? {}
-                            : {
-                                  [P in OrderFields]: P extends ByFields
-                                      ? never
-                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                              }[OrderFields]
-                        : 'Error: If you provide "take", you also need to provide "orderBy"'
-                    : "skip" extends Keys<T>
-                      ? "orderBy" extends Keys<T>
-                          ? ByValid extends True
-                              ? {}
-                              : {
-                                    [P in OrderFields]: P extends ByFields
-                                        ? never
-                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                                }[OrderFields]
-                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
-                      : ByValid extends True
-                        ? {}
-                        : {
-                              [P in OrderFields]: P extends ByFields
-                                  ? never
-                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                          }[OrderFields],
-        >(
-            args: SubsetIntersection<T, ActionLogGroupByArgs, OrderByArg> &
-                InputErrors
-        ): {} extends InputErrors
-            ? GetActionLogGroupByPayload<T>
-            : Prisma.PrismaPromise<InputErrors>;
-        /**
-         * Fields of the ActionLog model
-         */
-        readonly fields: ActionLogFieldRefs;
-    }
-
-    /**
-     * The delegate class that acts as a "Promise-like" for ActionLog.
-     * Why is this prefixed with `Prisma__`?
-     * Because we want to prevent naming conflicts as mentioned in
-     * https://github.com/prisma/prisma-client-js/issues/707
-     */
-    export interface Prisma__ActionLogClient<
-        T,
-        Null = never,
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-        GlobalOmitOptions = {},
-    > extends Prisma.PrismaPromise<T> {
-        readonly [Symbol.toStringTag]: "PrismaPromise";
-        /**
-         * Attaches callbacks for the resolution and/or rejection of the Promise.
-         * @param onfulfilled The callback to execute when the Promise is resolved.
-         * @param onrejected The callback to execute when the Promise is rejected.
-         * @returns A Promise for the completion of which ever callback is executed.
-         */
-        then<TResult1 = T, TResult2 = never>(
-            onfulfilled?:
-                | ((value: T) => TResult1 | PromiseLike<TResult1>)
-                | undefined
-                | null,
-            onrejected?:
-                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
-                | undefined
-                | null
-        ): $Utils.JsPromise<TResult1 | TResult2>;
-        /**
-         * Attaches a callback for only the rejection of the Promise.
-         * @param onrejected The callback to execute when the Promise is rejected.
-         * @returns A Promise for the completion of the callback.
-         */
-        catch<TResult = never>(
-            onrejected?:
-                | ((reason: any) => TResult | PromiseLike<TResult>)
-                | undefined
-                | null
-        ): $Utils.JsPromise<T | TResult>;
-        /**
-         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-         * resolved value cannot be modified from the callback.
-         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-         * @returns A Promise for the completion of the callback.
-         */
-        finally(
-            onfinally?: (() => void) | undefined | null
-        ): $Utils.JsPromise<T>;
-    }
-
-    /**
-     * Fields of the ActionLog model
-     */
-    interface ActionLogFieldRefs {
-        readonly id: FieldRef<"ActionLog", "String">;
-        readonly createdAt: FieldRef<"ActionLog", "DateTime">;
-        readonly updatedAt: FieldRef<"ActionLog", "DateTime">;
-        readonly payload: FieldRef<"ActionLog", "String">;
-        readonly userId: FieldRef<"ActionLog", "String">;
-    }
-
-    // Custom InputTypes
-    /**
-     * ActionLog findUnique
-     */
-    export type ActionLogFindUniqueArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter, which ActionLog to fetch.
-         */
-        where: ActionLogWhereUniqueInput;
-    };
-
-    /**
-     * ActionLog findUniqueOrThrow
-     */
-    export type ActionLogFindUniqueOrThrowArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter, which ActionLog to fetch.
-         */
-        where: ActionLogWhereUniqueInput;
-    };
-
-    /**
-     * ActionLog findFirst
-     */
-    export type ActionLogFindFirstArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter, which ActionLog to fetch.
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of ActionLogs to fetch.
-         */
-        orderBy?:
-            | ActionLogOrderByWithRelationInput
-            | ActionLogOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for searching for ActionLogs.
-         */
-        cursor?: ActionLogWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` ActionLogs from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` ActionLogs.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-         *
-         * Filter by unique combinations of ActionLogs.
-         */
-        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
-    };
-
-    /**
-     * ActionLog findFirstOrThrow
-     */
-    export type ActionLogFindFirstOrThrowArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter, which ActionLog to fetch.
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of ActionLogs to fetch.
-         */
-        orderBy?:
-            | ActionLogOrderByWithRelationInput
-            | ActionLogOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for searching for ActionLogs.
-         */
-        cursor?: ActionLogWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` ActionLogs from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` ActionLogs.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-         *
-         * Filter by unique combinations of ActionLogs.
-         */
-        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
-    };
-
-    /**
-     * ActionLog findMany
-     */
-    export type ActionLogFindManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter, which ActionLogs to fetch.
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of ActionLogs to fetch.
-         */
-        orderBy?:
-            | ActionLogOrderByWithRelationInput
-            | ActionLogOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for listing ActionLogs.
-         */
-        cursor?: ActionLogWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` ActionLogs from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` ActionLogs.
-         */
-        skip?: number;
-        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
-    };
-
-    /**
-     * ActionLog create
-     */
-    export type ActionLogCreateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * The data needed to create a ActionLog.
-         */
-        data: XOR<ActionLogCreateInput, ActionLogUncheckedCreateInput>;
-    };
-
-    /**
-     * ActionLog createMany
-     */
-    export type ActionLogCreateManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * The data used to create many ActionLogs.
-         */
-        data: ActionLogCreateManyInput | ActionLogCreateManyInput[];
-        skipDuplicates?: boolean;
-    };
-
-    /**
-     * ActionLog createManyAndReturn
-     */
-    export type ActionLogCreateManyAndReturnArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelectCreateManyAndReturn<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * The data used to create many ActionLogs.
-         */
-        data: ActionLogCreateManyInput | ActionLogCreateManyInput[];
-        skipDuplicates?: boolean;
-    };
-
-    /**
-     * ActionLog update
-     */
-    export type ActionLogUpdateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * The data needed to update a ActionLog.
-         */
-        data: XOR<ActionLogUpdateInput, ActionLogUncheckedUpdateInput>;
-        /**
-         * Choose, which ActionLog to update.
-         */
-        where: ActionLogWhereUniqueInput;
-    };
-
-    /**
-     * ActionLog updateMany
-     */
-    export type ActionLogUpdateManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * The data used to update ActionLogs.
-         */
-        data: XOR<
-            ActionLogUpdateManyMutationInput,
-            ActionLogUncheckedUpdateManyInput
-        >;
-        /**
-         * Filter which ActionLogs to update
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * Limit how many ActionLogs to update.
-         */
-        limit?: number;
-    };
-
-    /**
-     * ActionLog updateManyAndReturn
-     */
-    export type ActionLogUpdateManyAndReturnArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelectUpdateManyAndReturn<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * The data used to update ActionLogs.
-         */
-        data: XOR<
-            ActionLogUpdateManyMutationInput,
-            ActionLogUncheckedUpdateManyInput
-        >;
-        /**
-         * Filter which ActionLogs to update
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * Limit how many ActionLogs to update.
-         */
-        limit?: number;
-    };
-
-    /**
-     * ActionLog upsert
-     */
-    export type ActionLogUpsertArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * The filter to search for the ActionLog to update in case it exists.
-         */
-        where: ActionLogWhereUniqueInput;
-        /**
-         * In case the ActionLog found by the `where` argument doesn't exist, create a new ActionLog with this data.
-         */
-        create: XOR<ActionLogCreateInput, ActionLogUncheckedCreateInput>;
-        /**
-         * In case the ActionLog was found with the provided `where` argument, update it with this data.
-         */
-        update: XOR<ActionLogUpdateInput, ActionLogUncheckedUpdateInput>;
-    };
-
-    /**
-     * ActionLog delete
-     */
-    export type ActionLogDeleteArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-        /**
-         * Filter which ActionLog to delete.
-         */
-        where: ActionLogWhereUniqueInput;
-    };
-
-    /**
-     * ActionLog deleteMany
-     */
-    export type ActionLogDeleteManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Filter which ActionLogs to delete
-         */
-        where?: ActionLogWhereInput;
-        /**
-         * Limit how many ActionLogs to delete.
-         */
-        limit?: number;
-    };
-
-    /**
-     * ActionLog without action
-     */
-    export type ActionLogDefaultArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the ActionLog
-         */
-        select?: ActionLogSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the ActionLog
-         */
-        omit?: ActionLogOmit<ExtArgs> | null;
-    };
-
-    /**
      * Model Notification
      */
 
@@ -8347,6 +7184,1444 @@ export namespace Prisma {
     };
 
     /**
+     * Model ActionLog
+     */
+
+    export type AggregateActionLog = {
+        _count: ActionLogCountAggregateOutputType | null;
+        _min: ActionLogMinAggregateOutputType | null;
+        _max: ActionLogMaxAggregateOutputType | null;
+    };
+
+    export type ActionLogMinAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        type: $Enums.ActionLogTypes | null;
+        documentName: string | null;
+        documentId: string | null;
+        actorId: string | null;
+        actorFullName: string | null;
+        actorAvatarUrl: string | null;
+        userId: string | null;
+        userFullName: string | null;
+        userAvatarUrl: string | null;
+    };
+
+    export type ActionLogMaxAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        type: $Enums.ActionLogTypes | null;
+        documentName: string | null;
+        documentId: string | null;
+        actorId: string | null;
+        actorFullName: string | null;
+        actorAvatarUrl: string | null;
+        userId: string | null;
+        userFullName: string | null;
+        userAvatarUrl: string | null;
+    };
+
+    export type ActionLogCountAggregateOutputType = {
+        id: number;
+        createdAt: number;
+        updatedAt: number;
+        type: number;
+        documentName: number;
+        documentId: number;
+        actorId: number;
+        actorFullName: number;
+        actorAvatarUrl: number;
+        userId: number;
+        userFullName: number;
+        userAvatarUrl: number;
+        _all: number;
+    };
+
+    export type ActionLogMinAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        type?: true;
+        documentName?: true;
+        documentId?: true;
+        actorId?: true;
+        actorFullName?: true;
+        actorAvatarUrl?: true;
+        userId?: true;
+        userFullName?: true;
+        userAvatarUrl?: true;
+    };
+
+    export type ActionLogMaxAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        type?: true;
+        documentName?: true;
+        documentId?: true;
+        actorId?: true;
+        actorFullName?: true;
+        actorAvatarUrl?: true;
+        userId?: true;
+        userFullName?: true;
+        userAvatarUrl?: true;
+    };
+
+    export type ActionLogCountAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        type?: true;
+        documentName?: true;
+        documentId?: true;
+        actorId?: true;
+        actorFullName?: true;
+        actorAvatarUrl?: true;
+        userId?: true;
+        userFullName?: true;
+        userAvatarUrl?: true;
+        _all?: true;
+    };
+
+    export type ActionLogAggregateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which ActionLog to aggregate.
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of ActionLogs to fetch.
+         */
+        orderBy?:
+            | ActionLogOrderByWithRelationInput
+            | ActionLogOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the start position
+         */
+        cursor?: ActionLogWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` ActionLogs from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` ActionLogs.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Count returned ActionLogs
+         **/
+        _count?: true | ActionLogCountAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the minimum value
+         **/
+        _min?: ActionLogMinAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the maximum value
+         **/
+        _max?: ActionLogMaxAggregateInputType;
+    };
+
+    export type GetActionLogAggregateType<T extends ActionLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateActionLog]: P extends "_count" | "count"
+            ? T[P] extends true
+                ? number
+                : GetScalarType<T[P], AggregateActionLog[P]>
+            : GetScalarType<T[P], AggregateActionLog[P]>;
+    };
+
+    export type ActionLogGroupByArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: ActionLogWhereInput;
+        orderBy?:
+            | ActionLogOrderByWithAggregationInput
+            | ActionLogOrderByWithAggregationInput[];
+        by: ActionLogScalarFieldEnum[] | ActionLogScalarFieldEnum;
+        having?: ActionLogScalarWhereWithAggregatesInput;
+        take?: number;
+        skip?: number;
+        _count?: ActionLogCountAggregateInputType | true;
+        _min?: ActionLogMinAggregateInputType;
+        _max?: ActionLogMaxAggregateInputType;
+    };
+
+    export type ActionLogGroupByOutputType = {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        type: $Enums.ActionLogTypes;
+        documentName: string | null;
+        documentId: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl: string | null;
+        userId: string | null;
+        userFullName: string | null;
+        userAvatarUrl: string | null;
+        _count: ActionLogCountAggregateOutputType | null;
+        _min: ActionLogMinAggregateOutputType | null;
+        _max: ActionLogMaxAggregateOutputType | null;
+    };
+
+    type GetActionLogGroupByPayload<T extends ActionLogGroupByArgs> =
+        Prisma.PrismaPromise<
+            Array<
+                PickEnumerable<ActionLogGroupByOutputType, T["by"]> & {
+                    [P in keyof T &
+                        keyof ActionLogGroupByOutputType]: P extends "_count"
+                        ? T[P] extends boolean
+                            ? number
+                            : GetScalarType<T[P], ActionLogGroupByOutputType[P]>
+                        : GetScalarType<T[P], ActionLogGroupByOutputType[P]>;
+                }
+            >
+        >;
+
+    export type ActionLogSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            type?: boolean;
+            documentName?: boolean;
+            documentId?: boolean;
+            actorId?: boolean;
+            actorFullName?: boolean;
+            actorAvatarUrl?: boolean;
+            userId?: boolean;
+            userFullName?: boolean;
+            userAvatarUrl?: boolean;
+            document?: boolean | ActionLog$documentArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["actionLog"]
+    >;
+
+    export type ActionLogSelectCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            type?: boolean;
+            documentName?: boolean;
+            documentId?: boolean;
+            actorId?: boolean;
+            actorFullName?: boolean;
+            actorAvatarUrl?: boolean;
+            userId?: boolean;
+            userFullName?: boolean;
+            userAvatarUrl?: boolean;
+            document?: boolean | ActionLog$documentArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["actionLog"]
+    >;
+
+    export type ActionLogSelectUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            type?: boolean;
+            documentName?: boolean;
+            documentId?: boolean;
+            actorId?: boolean;
+            actorFullName?: boolean;
+            actorAvatarUrl?: boolean;
+            userId?: boolean;
+            userFullName?: boolean;
+            userAvatarUrl?: boolean;
+            document?: boolean | ActionLog$documentArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["actionLog"]
+    >;
+
+    export type ActionLogSelectScalar = {
+        id?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        type?: boolean;
+        documentName?: boolean;
+        documentId?: boolean;
+        actorId?: boolean;
+        actorFullName?: boolean;
+        actorAvatarUrl?: boolean;
+        userId?: boolean;
+        userFullName?: boolean;
+        userAvatarUrl?: boolean;
+    };
+
+    export type ActionLogOmit<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetOmit<
+        | "id"
+        | "createdAt"
+        | "updatedAt"
+        | "type"
+        | "documentName"
+        | "documentId"
+        | "actorId"
+        | "actorFullName"
+        | "actorAvatarUrl"
+        | "userId"
+        | "userFullName"
+        | "userAvatarUrl",
+        ExtArgs["result"]["actionLog"]
+    >;
+    export type ActionLogInclude<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | ActionLog$documentArgs<ExtArgs>;
+    };
+    export type ActionLogIncludeCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | ActionLog$documentArgs<ExtArgs>;
+    };
+    export type ActionLogIncludeUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | ActionLog$documentArgs<ExtArgs>;
+    };
+
+    export type $ActionLogPayload<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        name: "ActionLog";
+        objects: {
+            document: Prisma.$DocumentPayload<ExtArgs> | null;
+        };
+        scalars: $Extensions.GetPayloadResult<
+            {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                type: $Enums.ActionLogTypes;
+                documentName: string | null;
+                documentId: string | null;
+                actorId: string;
+                actorFullName: string;
+                actorAvatarUrl: string | null;
+                userId: string | null;
+                userFullName: string | null;
+                userAvatarUrl: string | null;
+            },
+            ExtArgs["result"]["actionLog"]
+        >;
+        composites: {};
+    };
+
+    type ActionLogGetPayload<
+        S extends boolean | null | undefined | ActionLogDefaultArgs,
+    > = $Result.GetResult<Prisma.$ActionLogPayload, S>;
+
+    type ActionLogCountArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = Omit<
+        ActionLogFindManyArgs,
+        "select" | "include" | "distinct" | "omit"
+    > & {
+        select?: ActionLogCountAggregateInputType | true;
+    };
+
+    export interface ActionLogDelegate<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > {
+        [K: symbol]: {
+            types: Prisma.TypeMap<ExtArgs>["model"]["ActionLog"];
+            meta: { name: "ActionLog" };
+        };
+        /**
+         * Find zero or one ActionLog that matches the filter.
+         * @param {ActionLogFindUniqueArgs} args - Arguments to find a ActionLog
+         * @example
+         * // Get one ActionLog
+         * const actionLog = await prisma.actionLog.findUnique({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUnique<T extends ActionLogFindUniqueArgs>(
+            args: SelectSubset<T, ActionLogFindUniqueArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "findUnique",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find one ActionLog that matches the filter or throw an error with `error.code='P2025'`
+         * if no matches were found.
+         * @param {ActionLogFindUniqueOrThrowArgs} args - Arguments to find a ActionLog
+         * @example
+         * // Get one ActionLog
+         * const actionLog = await prisma.actionLog.findUniqueOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUniqueOrThrow<T extends ActionLogFindUniqueOrThrowArgs>(
+            args: SelectSubset<T, ActionLogFindUniqueOrThrowArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first ActionLog that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogFindFirstArgs} args - Arguments to find a ActionLog
+         * @example
+         * // Get one ActionLog
+         * const actionLog = await prisma.actionLog.findFirst({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirst<T extends ActionLogFindFirstArgs>(
+            args?: SelectSubset<T, ActionLogFindFirstArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "findFirst",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first ActionLog that matches the filter or
+         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogFindFirstOrThrowArgs} args - Arguments to find a ActionLog
+         * @example
+         * // Get one ActionLog
+         * const actionLog = await prisma.actionLog.findFirstOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirstOrThrow<T extends ActionLogFindFirstOrThrowArgs>(
+            args?: SelectSubset<T, ActionLogFindFirstOrThrowArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "findFirstOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find zero or more ActionLogs that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogFindManyArgs} args - Arguments to filter and select certain fields only.
+         * @example
+         * // Get all ActionLogs
+         * const actionLogs = await prisma.actionLog.findMany()
+         *
+         * // Get first 10 ActionLogs
+         * const actionLogs = await prisma.actionLog.findMany({ take: 10 })
+         *
+         * // Only select the `id`
+         * const actionLogWithIdOnly = await prisma.actionLog.findMany({ select: { id: true } })
+         *
+         */
+        findMany<T extends ActionLogFindManyArgs>(
+            args?: SelectSubset<T, ActionLogFindManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "findMany",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create a ActionLog.
+         * @param {ActionLogCreateArgs} args - Arguments to create a ActionLog.
+         * @example
+         * // Create one ActionLog
+         * const ActionLog = await prisma.actionLog.create({
+         *   data: {
+         *     // ... data to create a ActionLog
+         *   }
+         * })
+         *
+         */
+        create<T extends ActionLogCreateArgs>(
+            args: SelectSubset<T, ActionLogCreateArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "create",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Create many ActionLogs.
+         * @param {ActionLogCreateManyArgs} args - Arguments to create many ActionLogs.
+         * @example
+         * // Create many ActionLogs
+         * const actionLog = await prisma.actionLog.createMany({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         */
+        createMany<T extends ActionLogCreateManyArgs>(
+            args?: SelectSubset<T, ActionLogCreateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Create many ActionLogs and returns the data saved in the database.
+         * @param {ActionLogCreateManyAndReturnArgs} args - Arguments to create many ActionLogs.
+         * @example
+         * // Create many ActionLogs
+         * const actionLog = await prisma.actionLog.createManyAndReturn({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Create many ActionLogs and only return the `id`
+         * const actionLogWithIdOnly = await prisma.actionLog.createManyAndReturn({
+         *   select: { id: true },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        createManyAndReturn<T extends ActionLogCreateManyAndReturnArgs>(
+            args?: SelectSubset<T, ActionLogCreateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "createManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Delete a ActionLog.
+         * @param {ActionLogDeleteArgs} args - Arguments to delete one ActionLog.
+         * @example
+         * // Delete one ActionLog
+         * const ActionLog = await prisma.actionLog.delete({
+         *   where: {
+         *     // ... filter to delete one ActionLog
+         *   }
+         * })
+         *
+         */
+        delete<T extends ActionLogDeleteArgs>(
+            args: SelectSubset<T, ActionLogDeleteArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "delete",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Update one ActionLog.
+         * @param {ActionLogUpdateArgs} args - Arguments to update one ActionLog.
+         * @example
+         * // Update one ActionLog
+         * const actionLog = await prisma.actionLog.update({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        update<T extends ActionLogUpdateArgs>(
+            args: SelectSubset<T, ActionLogUpdateArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "update",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Delete zero or more ActionLogs.
+         * @param {ActionLogDeleteManyArgs} args - Arguments to filter ActionLogs to delete.
+         * @example
+         * // Delete a few ActionLogs
+         * const { count } = await prisma.actionLog.deleteMany({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         *
+         */
+        deleteMany<T extends ActionLogDeleteManyArgs>(
+            args?: SelectSubset<T, ActionLogDeleteManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more ActionLogs.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogUpdateManyArgs} args - Arguments to update one or more rows.
+         * @example
+         * // Update many ActionLogs
+         * const actionLog = await prisma.actionLog.updateMany({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        updateMany<T extends ActionLogUpdateManyArgs>(
+            args: SelectSubset<T, ActionLogUpdateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more ActionLogs and returns the data updated in the database.
+         * @param {ActionLogUpdateManyAndReturnArgs} args - Arguments to update many ActionLogs.
+         * @example
+         * // Update many ActionLogs
+         * const actionLog = await prisma.actionLog.updateManyAndReturn({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Update zero or more ActionLogs and only return the `id`
+         * const actionLogWithIdOnly = await prisma.actionLog.updateManyAndReturn({
+         *   select: { id: true },
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        updateManyAndReturn<T extends ActionLogUpdateManyAndReturnArgs>(
+            args: SelectSubset<T, ActionLogUpdateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "updateManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create or update one ActionLog.
+         * @param {ActionLogUpsertArgs} args - Arguments to update or create a ActionLog.
+         * @example
+         * // Update or create a ActionLog
+         * const actionLog = await prisma.actionLog.upsert({
+         *   create: {
+         *     // ... data to create a ActionLog
+         *   },
+         *   update: {
+         *     // ... in case it already exists, update
+         *   },
+         *   where: {
+         *     // ... the filter for the ActionLog we want to update
+         *   }
+         * })
+         */
+        upsert<T extends ActionLogUpsertArgs>(
+            args: SelectSubset<T, ActionLogUpsertArgs<ExtArgs>>
+        ): Prisma__ActionLogClient<
+            $Result.GetResult<
+                Prisma.$ActionLogPayload<ExtArgs>,
+                T,
+                "upsert",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Count the number of ActionLogs.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogCountArgs} args - Arguments to filter ActionLogs to count.
+         * @example
+         * // Count the number of ActionLogs
+         * const count = await prisma.actionLog.count({
+         *   where: {
+         *     // ... the filter for the ActionLogs we want to count
+         *   }
+         * })
+         **/
+        count<T extends ActionLogCountArgs>(
+            args?: Subset<T, ActionLogCountArgs>
+        ): Prisma.PrismaPromise<
+            T extends $Utils.Record<"select", any>
+                ? T["select"] extends true
+                    ? number
+                    : GetScalarType<
+                          T["select"],
+                          ActionLogCountAggregateOutputType
+                      >
+                : number
+        >;
+
+        /**
+         * Allows you to perform aggregations operations on a ActionLog.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+         * @example
+         * // Ordered by age ascending
+         * // Where email contains prisma.io
+         * // Limited to the 10 users
+         * const aggregations = await prisma.user.aggregate({
+         *   _avg: {
+         *     age: true,
+         *   },
+         *   where: {
+         *     email: {
+         *       contains: "prisma.io",
+         *     },
+         *   },
+         *   orderBy: {
+         *     age: "asc",
+         *   },
+         *   take: 10,
+         * })
+         **/
+        aggregate<T extends ActionLogAggregateArgs>(
+            args: Subset<T, ActionLogAggregateArgs>
+        ): Prisma.PrismaPromise<GetActionLogAggregateType<T>>;
+
+        /**
+         * Group by ActionLog.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {ActionLogGroupByArgs} args - Group by arguments.
+         * @example
+         * // Group by city, order by createdAt, get count
+         * const result = await prisma.user.groupBy({
+         *   by: ['city', 'createdAt'],
+         *   orderBy: {
+         *     createdAt: true
+         *   },
+         *   _count: {
+         *     _all: true
+         *   },
+         * })
+         *
+         **/
+        groupBy<
+            T extends ActionLogGroupByArgs,
+            HasSelectOrTake extends Or<
+                Extends<"skip", Keys<T>>,
+                Extends<"take", Keys<T>>
+            >,
+            OrderByArg extends True extends HasSelectOrTake
+                ? { orderBy: ActionLogGroupByArgs["orderBy"] }
+                : { orderBy?: ActionLogGroupByArgs["orderBy"] },
+            OrderFields extends ExcludeUnderscoreKeys<
+                Keys<MaybeTupleToUnion<T["orderBy"]>>
+            >,
+            ByFields extends MaybeTupleToUnion<T["by"]>,
+            ByValid extends Has<ByFields, OrderFields>,
+            HavingFields extends GetHavingFields<T["having"]>,
+            HavingValid extends Has<ByFields, HavingFields>,
+            ByEmpty extends T["by"] extends never[] ? True : False,
+            InputErrors extends ByEmpty extends True
+                ? `Error: "by" must not be empty.`
+                : HavingValid extends False
+                  ? {
+                        [P in HavingFields]: P extends ByFields
+                            ? never
+                            : P extends string
+                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+                              : [
+                                    Error,
+                                    "Field ",
+                                    P,
+                                    ` in "having" needs to be provided in "by"`,
+                                ];
+                    }[HavingFields]
+                  : "take" extends Keys<T>
+                    ? "orderBy" extends Keys<T>
+                        ? ByValid extends True
+                            ? {}
+                            : {
+                                  [P in OrderFields]: P extends ByFields
+                                      ? never
+                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                              }[OrderFields]
+                        : 'Error: If you provide "take", you also need to provide "orderBy"'
+                    : "skip" extends Keys<T>
+                      ? "orderBy" extends Keys<T>
+                          ? ByValid extends True
+                              ? {}
+                              : {
+                                    [P in OrderFields]: P extends ByFields
+                                        ? never
+                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                                }[OrderFields]
+                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+                      : ByValid extends True
+                        ? {}
+                        : {
+                              [P in OrderFields]: P extends ByFields
+                                  ? never
+                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                          }[OrderFields],
+        >(
+            args: SubsetIntersection<T, ActionLogGroupByArgs, OrderByArg> &
+                InputErrors
+        ): {} extends InputErrors
+            ? GetActionLogGroupByPayload<T>
+            : Prisma.PrismaPromise<InputErrors>;
+        /**
+         * Fields of the ActionLog model
+         */
+        readonly fields: ActionLogFieldRefs;
+    }
+
+    /**
+     * The delegate class that acts as a "Promise-like" for ActionLog.
+     * Why is this prefixed with `Prisma__`?
+     * Because we want to prevent naming conflicts as mentioned in
+     * https://github.com/prisma/prisma-client-js/issues/707
+     */
+    export interface Prisma__ActionLogClient<
+        T,
+        Null = never,
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > extends Prisma.PrismaPromise<T> {
+        readonly [Symbol.toStringTag]: "PrismaPromise";
+        document<T extends ActionLog$documentArgs<ExtArgs> = {}>(
+            args?: Subset<T, ActionLog$documentArgs<ExtArgs>>
+        ): Prisma__DocumentClient<
+            $Result.GetResult<
+                Prisma.$DocumentPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        /**
+         * Attaches callbacks for the resolution and/or rejection of the Promise.
+         * @param onfulfilled The callback to execute when the Promise is resolved.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of which ever callback is executed.
+         */
+        then<TResult1 = T, TResult2 = never>(
+            onfulfilled?:
+                | ((value: T) => TResult1 | PromiseLike<TResult1>)
+                | undefined
+                | null,
+            onrejected?:
+                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<TResult1 | TResult2>;
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?:
+                | ((reason: any) => TResult | PromiseLike<TResult>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<T | TResult>;
+        /**
+         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+         * resolved value cannot be modified from the callback.
+         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+         * @returns A Promise for the completion of the callback.
+         */
+        finally(
+            onfinally?: (() => void) | undefined | null
+        ): $Utils.JsPromise<T>;
+    }
+
+    /**
+     * Fields of the ActionLog model
+     */
+    interface ActionLogFieldRefs {
+        readonly id: FieldRef<"ActionLog", "String">;
+        readonly createdAt: FieldRef<"ActionLog", "DateTime">;
+        readonly updatedAt: FieldRef<"ActionLog", "DateTime">;
+        readonly type: FieldRef<"ActionLog", "ActionLogTypes">;
+        readonly documentName: FieldRef<"ActionLog", "String">;
+        readonly documentId: FieldRef<"ActionLog", "String">;
+        readonly actorId: FieldRef<"ActionLog", "String">;
+        readonly actorFullName: FieldRef<"ActionLog", "String">;
+        readonly actorAvatarUrl: FieldRef<"ActionLog", "String">;
+        readonly userId: FieldRef<"ActionLog", "String">;
+        readonly userFullName: FieldRef<"ActionLog", "String">;
+        readonly userAvatarUrl: FieldRef<"ActionLog", "String">;
+    }
+
+    // Custom InputTypes
+    /**
+     * ActionLog findUnique
+     */
+    export type ActionLogFindUniqueArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter, which ActionLog to fetch.
+         */
+        where: ActionLogWhereUniqueInput;
+    };
+
+    /**
+     * ActionLog findUniqueOrThrow
+     */
+    export type ActionLogFindUniqueOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter, which ActionLog to fetch.
+         */
+        where: ActionLogWhereUniqueInput;
+    };
+
+    /**
+     * ActionLog findFirst
+     */
+    export type ActionLogFindFirstArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter, which ActionLog to fetch.
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of ActionLogs to fetch.
+         */
+        orderBy?:
+            | ActionLogOrderByWithRelationInput
+            | ActionLogOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for ActionLogs.
+         */
+        cursor?: ActionLogWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` ActionLogs from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` ActionLogs.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of ActionLogs.
+         */
+        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
+    };
+
+    /**
+     * ActionLog findFirstOrThrow
+     */
+    export type ActionLogFindFirstOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter, which ActionLog to fetch.
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of ActionLogs to fetch.
+         */
+        orderBy?:
+            | ActionLogOrderByWithRelationInput
+            | ActionLogOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for ActionLogs.
+         */
+        cursor?: ActionLogWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` ActionLogs from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` ActionLogs.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of ActionLogs.
+         */
+        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
+    };
+
+    /**
+     * ActionLog findMany
+     */
+    export type ActionLogFindManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter, which ActionLogs to fetch.
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of ActionLogs to fetch.
+         */
+        orderBy?:
+            | ActionLogOrderByWithRelationInput
+            | ActionLogOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for listing ActionLogs.
+         */
+        cursor?: ActionLogWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` ActionLogs from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` ActionLogs.
+         */
+        skip?: number;
+        distinct?: ActionLogScalarFieldEnum | ActionLogScalarFieldEnum[];
+    };
+
+    /**
+     * ActionLog create
+     */
+    export type ActionLogCreateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * The data needed to create a ActionLog.
+         */
+        data: XOR<ActionLogCreateInput, ActionLogUncheckedCreateInput>;
+    };
+
+    /**
+     * ActionLog createMany
+     */
+    export type ActionLogCreateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to create many ActionLogs.
+         */
+        data: ActionLogCreateManyInput | ActionLogCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * ActionLog createManyAndReturn
+     */
+    export type ActionLogCreateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelectCreateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * The data used to create many ActionLogs.
+         */
+        data: ActionLogCreateManyInput | ActionLogCreateManyInput[];
+        skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogIncludeCreateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * ActionLog update
+     */
+    export type ActionLogUpdateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * The data needed to update a ActionLog.
+         */
+        data: XOR<ActionLogUpdateInput, ActionLogUncheckedUpdateInput>;
+        /**
+         * Choose, which ActionLog to update.
+         */
+        where: ActionLogWhereUniqueInput;
+    };
+
+    /**
+     * ActionLog updateMany
+     */
+    export type ActionLogUpdateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to update ActionLogs.
+         */
+        data: XOR<
+            ActionLogUpdateManyMutationInput,
+            ActionLogUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which ActionLogs to update
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * Limit how many ActionLogs to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * ActionLog updateManyAndReturn
+     */
+    export type ActionLogUpdateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelectUpdateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * The data used to update ActionLogs.
+         */
+        data: XOR<
+            ActionLogUpdateManyMutationInput,
+            ActionLogUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which ActionLogs to update
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * Limit how many ActionLogs to update.
+         */
+        limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogIncludeUpdateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * ActionLog upsert
+     */
+    export type ActionLogUpsertArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * The filter to search for the ActionLog to update in case it exists.
+         */
+        where: ActionLogWhereUniqueInput;
+        /**
+         * In case the ActionLog found by the `where` argument doesn't exist, create a new ActionLog with this data.
+         */
+        create: XOR<ActionLogCreateInput, ActionLogUncheckedCreateInput>;
+        /**
+         * In case the ActionLog was found with the provided `where` argument, update it with this data.
+         */
+        update: XOR<ActionLogUpdateInput, ActionLogUncheckedUpdateInput>;
+    };
+
+    /**
+     * ActionLog delete
+     */
+    export type ActionLogDeleteArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+        /**
+         * Filter which ActionLog to delete.
+         */
+        where: ActionLogWhereUniqueInput;
+    };
+
+    /**
+     * ActionLog deleteMany
+     */
+    export type ActionLogDeleteManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which ActionLogs to delete
+         */
+        where?: ActionLogWhereInput;
+        /**
+         * Limit how many ActionLogs to delete.
+         */
+        limit?: number;
+    };
+
+    /**
+     * ActionLog.document
+     */
+    export type ActionLog$documentArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Document
+         */
+        select?: DocumentSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Document
+         */
+        omit?: DocumentOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentInclude<ExtArgs> | null;
+        where?: DocumentWhereInput;
+    };
+
+    /**
+     * ActionLog without action
+     */
+    export type ActionLogDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ActionLog
+         */
+        select?: ActionLogSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ActionLog
+         */
+        omit?: ActionLogOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ActionLogInclude<ExtArgs> | null;
+    };
+
+    /**
      * Enums
      */
 
@@ -8407,17 +8682,6 @@ export namespace Prisma {
     export type DocumentDeadlineScalarFieldEnum =
         (typeof DocumentDeadlineScalarFieldEnum)[keyof typeof DocumentDeadlineScalarFieldEnum];
 
-    export const ActionLogScalarFieldEnum: {
-        id: "id";
-        createdAt: "createdAt";
-        updatedAt: "updatedAt";
-        payload: "payload";
-        userId: "userId";
-    };
-
-    export type ActionLogScalarFieldEnum =
-        (typeof ActionLogScalarFieldEnum)[keyof typeof ActionLogScalarFieldEnum];
-
     export const NotificationScalarFieldEnum: {
         id: "id";
         createdAt: "createdAt";
@@ -8429,6 +8693,24 @@ export namespace Prisma {
 
     export type NotificationScalarFieldEnum =
         (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum];
+
+    export const ActionLogScalarFieldEnum: {
+        id: "id";
+        createdAt: "createdAt";
+        updatedAt: "updatedAt";
+        type: "type";
+        documentName: "documentName";
+        documentId: "documentId";
+        actorId: "actorId";
+        actorFullName: "actorFullName";
+        actorAvatarUrl: "actorAvatarUrl";
+        userId: "userId";
+        userFullName: "userFullName";
+        userAvatarUrl: "userAvatarUrl";
+    };
+
+    export type ActionLogScalarFieldEnum =
+        (typeof ActionLogScalarFieldEnum)[keyof typeof ActionLogScalarFieldEnum];
 
     export const SortOrder: {
         asc: "asc";
@@ -8552,6 +8834,18 @@ export namespace Prisma {
         FieldRefInputType<$PrismaModel, "DeadlineStatus[]">;
 
     /**
+     * Reference to a field of type 'ActionLogTypes'
+     */
+    export type EnumActionLogTypesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ActionLogTypes">;
+
+    /**
+     * Reference to a field of type 'ActionLogTypes[]'
+     */
+    export type ListEnumActionLogTypesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ActionLogTypes[]">;
+
+    /**
      * Reference to a field of type 'Int'
      */
     export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -8592,6 +8886,7 @@ export namespace Prisma {
         height?: FloatNullableFilter<"Document"> | number | null;
         documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
         documentDeadlines?: DocumentDeadlineListRelationFilter;
+        actionLogs?: ActionLogListRelationFilter;
     };
 
     export type DocumentOrderByWithRelationInput = {
@@ -8610,6 +8905,7 @@ export namespace Prisma {
         height?: SortOrderInput | SortOrder;
         documentExtractedFields?: DocumentExtractedFieldOrderByRelationAggregateInput;
         documentDeadlines?: DocumentDeadlineOrderByRelationAggregateInput;
+        actionLogs?: ActionLogOrderByRelationAggregateInput;
     };
 
     export type DocumentWhereUniqueInput = Prisma.AtLeast<
@@ -8634,6 +8930,7 @@ export namespace Prisma {
             height?: FloatNullableFilter<"Document"> | number | null;
             documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
             documentDeadlines?: DocumentDeadlineListRelationFilter;
+            actionLogs?: ActionLogListRelationFilter;
         },
         "id" | "name" | "key"
     >;
@@ -8891,65 +9188,6 @@ export namespace Prisma {
         documentId?: StringWithAggregatesFilter<"DocumentDeadline"> | string;
     };
 
-    export type ActionLogWhereInput = {
-        AND?: ActionLogWhereInput | ActionLogWhereInput[];
-        OR?: ActionLogWhereInput[];
-        NOT?: ActionLogWhereInput | ActionLogWhereInput[];
-        id?: StringFilter<"ActionLog"> | string;
-        createdAt?: DateTimeFilter<"ActionLog"> | Date | string;
-        updatedAt?: DateTimeFilter<"ActionLog"> | Date | string;
-        payload?: StringFilter<"ActionLog"> | string;
-        userId?: StringFilter<"ActionLog"> | string;
-    };
-
-    export type ActionLogOrderByWithRelationInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        payload?: SortOrder;
-        userId?: SortOrder;
-    };
-
-    export type ActionLogWhereUniqueInput = Prisma.AtLeast<
-        {
-            id?: string;
-            AND?: ActionLogWhereInput | ActionLogWhereInput[];
-            OR?: ActionLogWhereInput[];
-            NOT?: ActionLogWhereInput | ActionLogWhereInput[];
-            createdAt?: DateTimeFilter<"ActionLog"> | Date | string;
-            updatedAt?: DateTimeFilter<"ActionLog"> | Date | string;
-            payload?: StringFilter<"ActionLog"> | string;
-            userId?: StringFilter<"ActionLog"> | string;
-        },
-        "id"
-    >;
-
-    export type ActionLogOrderByWithAggregationInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        payload?: SortOrder;
-        userId?: SortOrder;
-        _count?: ActionLogCountOrderByAggregateInput;
-        _max?: ActionLogMaxOrderByAggregateInput;
-        _min?: ActionLogMinOrderByAggregateInput;
-    };
-
-    export type ActionLogScalarWhereWithAggregatesInput = {
-        AND?:
-            | ActionLogScalarWhereWithAggregatesInput
-            | ActionLogScalarWhereWithAggregatesInput[];
-        OR?: ActionLogScalarWhereWithAggregatesInput[];
-        NOT?:
-            | ActionLogScalarWhereWithAggregatesInput
-            | ActionLogScalarWhereWithAggregatesInput[];
-        id?: StringWithAggregatesFilter<"ActionLog"> | string;
-        createdAt?: DateTimeWithAggregatesFilter<"ActionLog"> | Date | string;
-        updatedAt?: DateTimeWithAggregatesFilter<"ActionLog"> | Date | string;
-        payload?: StringWithAggregatesFilter<"ActionLog"> | string;
-        userId?: StringWithAggregatesFilter<"ActionLog"> | string;
-    };
-
     export type NotificationWhereInput = {
         AND?: NotificationWhereInput | NotificationWhereInput[];
         OR?: NotificationWhereInput[];
@@ -9020,6 +9258,131 @@ export namespace Prisma {
         userId?: StringWithAggregatesFilter<"Notification"> | string;
     };
 
+    export type ActionLogWhereInput = {
+        AND?: ActionLogWhereInput | ActionLogWhereInput[];
+        OR?: ActionLogWhereInput[];
+        NOT?: ActionLogWhereInput | ActionLogWhereInput[];
+        id?: StringFilter<"ActionLog"> | string;
+        createdAt?: DateTimeFilter<"ActionLog"> | Date | string;
+        updatedAt?: DateTimeFilter<"ActionLog"> | Date | string;
+        type?: EnumActionLogTypesFilter<"ActionLog"> | $Enums.ActionLogTypes;
+        documentName?: StringNullableFilter<"ActionLog"> | string | null;
+        documentId?: StringNullableFilter<"ActionLog"> | string | null;
+        actorId?: StringFilter<"ActionLog"> | string;
+        actorFullName?: StringFilter<"ActionLog"> | string;
+        actorAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+        userId?: StringNullableFilter<"ActionLog"> | string | null;
+        userFullName?: StringNullableFilter<"ActionLog"> | string | null;
+        userAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+        document?: XOR<
+            DocumentNullableScalarRelationFilter,
+            DocumentWhereInput
+        > | null;
+    };
+
+    export type ActionLogOrderByWithRelationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        type?: SortOrder;
+        documentName?: SortOrderInput | SortOrder;
+        documentId?: SortOrderInput | SortOrder;
+        actorId?: SortOrder;
+        actorFullName?: SortOrder;
+        actorAvatarUrl?: SortOrderInput | SortOrder;
+        userId?: SortOrderInput | SortOrder;
+        userFullName?: SortOrderInput | SortOrder;
+        userAvatarUrl?: SortOrderInput | SortOrder;
+        document?: DocumentOrderByWithRelationInput;
+    };
+
+    export type ActionLogWhereUniqueInput = Prisma.AtLeast<
+        {
+            id?: string;
+            AND?: ActionLogWhereInput | ActionLogWhereInput[];
+            OR?: ActionLogWhereInput[];
+            NOT?: ActionLogWhereInput | ActionLogWhereInput[];
+            createdAt?: DateTimeFilter<"ActionLog"> | Date | string;
+            updatedAt?: DateTimeFilter<"ActionLog"> | Date | string;
+            type?:
+                | EnumActionLogTypesFilter<"ActionLog">
+                | $Enums.ActionLogTypes;
+            documentName?: StringNullableFilter<"ActionLog"> | string | null;
+            documentId?: StringNullableFilter<"ActionLog"> | string | null;
+            actorId?: StringFilter<"ActionLog"> | string;
+            actorFullName?: StringFilter<"ActionLog"> | string;
+            actorAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+            userId?: StringNullableFilter<"ActionLog"> | string | null;
+            userFullName?: StringNullableFilter<"ActionLog"> | string | null;
+            userAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+            document?: XOR<
+                DocumentNullableScalarRelationFilter,
+                DocumentWhereInput
+            > | null;
+        },
+        "id"
+    >;
+
+    export type ActionLogOrderByWithAggregationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        type?: SortOrder;
+        documentName?: SortOrderInput | SortOrder;
+        documentId?: SortOrderInput | SortOrder;
+        actorId?: SortOrder;
+        actorFullName?: SortOrder;
+        actorAvatarUrl?: SortOrderInput | SortOrder;
+        userId?: SortOrderInput | SortOrder;
+        userFullName?: SortOrderInput | SortOrder;
+        userAvatarUrl?: SortOrderInput | SortOrder;
+        _count?: ActionLogCountOrderByAggregateInput;
+        _max?: ActionLogMaxOrderByAggregateInput;
+        _min?: ActionLogMinOrderByAggregateInput;
+    };
+
+    export type ActionLogScalarWhereWithAggregatesInput = {
+        AND?:
+            | ActionLogScalarWhereWithAggregatesInput
+            | ActionLogScalarWhereWithAggregatesInput[];
+        OR?: ActionLogScalarWhereWithAggregatesInput[];
+        NOT?:
+            | ActionLogScalarWhereWithAggregatesInput
+            | ActionLogScalarWhereWithAggregatesInput[];
+        id?: StringWithAggregatesFilter<"ActionLog"> | string;
+        createdAt?: DateTimeWithAggregatesFilter<"ActionLog"> | Date | string;
+        updatedAt?: DateTimeWithAggregatesFilter<"ActionLog"> | Date | string;
+        type?:
+            | EnumActionLogTypesWithAggregatesFilter<"ActionLog">
+            | $Enums.ActionLogTypes;
+        documentName?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+        documentId?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+        actorId?: StringWithAggregatesFilter<"ActionLog"> | string;
+        actorFullName?: StringWithAggregatesFilter<"ActionLog"> | string;
+        actorAvatarUrl?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+        userId?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+        userFullName?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+        userAvatarUrl?:
+            | StringNullableWithAggregatesFilter<"ActionLog">
+            | string
+            | null;
+    };
+
     export type DocumentCreateInput = {
         id?: string;
         createdAt?: Date | string;
@@ -9036,6 +9399,7 @@ export namespace Prisma {
         height?: number | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateInput = {
@@ -9054,6 +9418,7 @@ export namespace Prisma {
         height?: number | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUpdateInput = {
@@ -9074,6 +9439,7 @@ export namespace Prisma {
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateInput = {
@@ -9094,6 +9460,7 @@ export namespace Prisma {
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateManyInput = {
@@ -9324,62 +9691,6 @@ export namespace Prisma {
         documentId?: StringFieldUpdateOperationsInput | string;
     };
 
-    export type ActionLogCreateInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        payload: string;
-        userId: string;
-    };
-
-    export type ActionLogUncheckedCreateInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        payload: string;
-        userId: string;
-    };
-
-    export type ActionLogUpdateInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        payload?: StringFieldUpdateOperationsInput | string;
-        userId?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type ActionLogUncheckedUpdateInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        payload?: StringFieldUpdateOperationsInput | string;
-        userId?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type ActionLogCreateManyInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        payload: string;
-        userId: string;
-    };
-
-    export type ActionLogUpdateManyMutationInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        payload?: StringFieldUpdateOperationsInput | string;
-        userId?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type ActionLogUncheckedUpdateManyInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        payload?: StringFieldUpdateOperationsInput | string;
-        userId?: StringFieldUpdateOperationsInput | string;
-    };
-
     export type NotificationCreateInput = {
         id?: string;
         createdAt?: Date | string;
@@ -9441,6 +9752,142 @@ export namespace Prisma {
         title?: StringFieldUpdateOperationsInput | string;
         description?: StringFieldUpdateOperationsInput | string;
         userId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type ActionLogCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
+        document?: DocumentCreateNestedOneWithoutActionLogsInput;
+    };
+
+    export type ActionLogUncheckedCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        documentId?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
+    };
+
+    export type ActionLogUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        document?: DocumentUpdateOneWithoutActionLogsNestedInput;
+    };
+
+    export type ActionLogUncheckedUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+    };
+
+    export type ActionLogCreateManyInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        documentId?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
+    };
+
+    export type ActionLogUpdateManyMutationInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+    };
+
+    export type ActionLogUncheckedUpdateManyInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type StringFilter<$PrismaModel = never> = {
@@ -9526,6 +9973,12 @@ export namespace Prisma {
         none?: DocumentDeadlineWhereInput;
     };
 
+    export type ActionLogListRelationFilter = {
+        every?: ActionLogWhereInput;
+        some?: ActionLogWhereInput;
+        none?: ActionLogWhereInput;
+    };
+
     export type SortOrderInput = {
         sort: SortOrder;
         nulls?: NullsOrder;
@@ -9536,6 +9989,10 @@ export namespace Prisma {
     };
 
     export type DocumentDeadlineOrderByRelationAggregateInput = {
+        _count?: SortOrder;
+    };
+
+    export type ActionLogOrderByRelationAggregateInput = {
         _count?: SortOrder;
     };
 
@@ -9865,30 +10322,6 @@ export namespace Prisma {
         _max?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
     };
 
-    export type ActionLogCountOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        payload?: SortOrder;
-        userId?: SortOrder;
-    };
-
-    export type ActionLogMaxOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        payload?: SortOrder;
-        userId?: SortOrder;
-    };
-
-    export type ActionLogMinOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        payload?: SortOrder;
-        userId?: SortOrder;
-    };
-
     export type NotificationCountOrderByAggregateInput = {
         id?: SortOrder;
         createdAt?: SortOrder;
@@ -9914,6 +10347,125 @@ export namespace Prisma {
         title?: SortOrder;
         description?: SortOrder;
         userId?: SortOrder;
+    };
+
+    export type EnumActionLogTypesFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.ActionLogTypes
+            | EnumActionLogTypesFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumActionLogTypesFilter<$PrismaModel>
+            | $Enums.ActionLogTypes;
+    };
+
+    export type StringNullableFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        contains?: string | StringFieldRefInput<$PrismaModel>;
+        startsWith?: string | StringFieldRefInput<$PrismaModel>;
+        endsWith?: string | StringFieldRefInput<$PrismaModel>;
+        mode?: QueryMode;
+        not?: NestedStringNullableFilter<$PrismaModel> | string | null;
+    };
+
+    export type DocumentNullableScalarRelationFilter = {
+        is?: DocumentWhereInput | null;
+        isNot?: DocumentWhereInput | null;
+    };
+
+    export type ActionLogCountOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        type?: SortOrder;
+        documentName?: SortOrder;
+        documentId?: SortOrder;
+        actorId?: SortOrder;
+        actorFullName?: SortOrder;
+        actorAvatarUrl?: SortOrder;
+        userId?: SortOrder;
+        userFullName?: SortOrder;
+        userAvatarUrl?: SortOrder;
+    };
+
+    export type ActionLogMaxOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        type?: SortOrder;
+        documentName?: SortOrder;
+        documentId?: SortOrder;
+        actorId?: SortOrder;
+        actorFullName?: SortOrder;
+        actorAvatarUrl?: SortOrder;
+        userId?: SortOrder;
+        userFullName?: SortOrder;
+        userAvatarUrl?: SortOrder;
+    };
+
+    export type ActionLogMinOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        type?: SortOrder;
+        documentName?: SortOrder;
+        documentId?: SortOrder;
+        actorId?: SortOrder;
+        actorFullName?: SortOrder;
+        actorAvatarUrl?: SortOrder;
+        userId?: SortOrder;
+        userFullName?: SortOrder;
+        userAvatarUrl?: SortOrder;
+    };
+
+    export type EnumActionLogTypesWithAggregatesFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.ActionLogTypes
+            | EnumActionLogTypesFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumActionLogTypesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ActionLogTypes;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedEnumActionLogTypesFilter<$PrismaModel>;
+        _max?: NestedEnumActionLogTypesFilter<$PrismaModel>;
+    };
+
+    export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        contains?: string | StringFieldRefInput<$PrismaModel>;
+        startsWith?: string | StringFieldRefInput<$PrismaModel>;
+        endsWith?: string | StringFieldRefInput<$PrismaModel>;
+        mode?: QueryMode;
+        not?:
+            | NestedStringNullableWithAggregatesFilter<$PrismaModel>
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedStringNullableFilter<$PrismaModel>;
+        _max?: NestedStringNullableFilter<$PrismaModel>;
     };
 
     export type DocumentCreatetagsInput = {
@@ -9954,6 +10506,21 @@ export namespace Prisma {
             | DocumentDeadlineWhereUniqueInput[];
     };
 
+    export type ActionLogCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  ActionLogCreateWithoutDocumentInput,
+                  ActionLogUncheckedCreateWithoutDocumentInput
+              >
+            | ActionLogCreateWithoutDocumentInput[]
+            | ActionLogUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ActionLogCreateOrConnectWithoutDocumentInput
+            | ActionLogCreateOrConnectWithoutDocumentInput[];
+        createMany?: ActionLogCreateManyDocumentInputEnvelope;
+        connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+    };
+
     export type DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput =
         {
             create?:
@@ -9989,6 +10556,21 @@ export namespace Prisma {
                 | DocumentDeadlineWhereUniqueInput
                 | DocumentDeadlineWhereUniqueInput[];
         };
+
+    export type ActionLogUncheckedCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  ActionLogCreateWithoutDocumentInput,
+                  ActionLogUncheckedCreateWithoutDocumentInput
+              >
+            | ActionLogCreateWithoutDocumentInput[]
+            | ActionLogUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ActionLogCreateOrConnectWithoutDocumentInput
+            | ActionLogCreateOrConnectWithoutDocumentInput[];
+        createMany?: ActionLogCreateManyDocumentInputEnvelope;
+        connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+    };
 
     export type StringFieldUpdateOperationsInput = {
         set?: string;
@@ -10099,6 +10681,34 @@ export namespace Prisma {
             | DocumentDeadlineScalarWhereInput[];
     };
 
+    export type ActionLogUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  ActionLogCreateWithoutDocumentInput,
+                  ActionLogUncheckedCreateWithoutDocumentInput
+              >
+            | ActionLogCreateWithoutDocumentInput[]
+            | ActionLogUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ActionLogCreateOrConnectWithoutDocumentInput
+            | ActionLogCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | ActionLogUpsertWithWhereUniqueWithoutDocumentInput
+            | ActionLogUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: ActionLogCreateManyDocumentInputEnvelope;
+        set?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        disconnect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        delete?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        update?:
+            | ActionLogUpdateWithWhereUniqueWithoutDocumentInput
+            | ActionLogUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | ActionLogUpdateManyWithWhereWithoutDocumentInput
+            | ActionLogUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+    };
+
     export type DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput =
         {
             create?:
@@ -10177,6 +10787,34 @@ export namespace Prisma {
                 | DocumentDeadlineScalarWhereInput[];
         };
 
+    export type ActionLogUncheckedUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  ActionLogCreateWithoutDocumentInput,
+                  ActionLogUncheckedCreateWithoutDocumentInput
+              >
+            | ActionLogCreateWithoutDocumentInput[]
+            | ActionLogUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ActionLogCreateOrConnectWithoutDocumentInput
+            | ActionLogCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | ActionLogUpsertWithWhereUniqueWithoutDocumentInput
+            | ActionLogUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: ActionLogCreateManyDocumentInputEnvelope;
+        set?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        disconnect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        delete?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+        update?:
+            | ActionLogUpdateWithWhereUniqueWithoutDocumentInput
+            | ActionLogUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | ActionLogUpdateManyWithWhereWithoutDocumentInput
+            | ActionLogUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+    };
+
     export type DocumentCreateNestedOneWithoutDocumentExtractedFieldsInput = {
         create?: XOR<
             DocumentCreateWithoutDocumentExtractedFieldsInput,
@@ -10239,6 +10877,42 @@ export namespace Prisma {
                 DocumentUpdateWithoutDocumentDeadlinesInput
             >,
             DocumentUncheckedUpdateWithoutDocumentDeadlinesInput
+        >;
+    };
+
+    export type DocumentCreateNestedOneWithoutActionLogsInput = {
+        create?: XOR<
+            DocumentCreateWithoutActionLogsInput,
+            DocumentUncheckedCreateWithoutActionLogsInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutActionLogsInput;
+        connect?: DocumentWhereUniqueInput;
+    };
+
+    export type EnumActionLogTypesFieldUpdateOperationsInput = {
+        set?: $Enums.ActionLogTypes;
+    };
+
+    export type NullableStringFieldUpdateOperationsInput = {
+        set?: string | null;
+    };
+
+    export type DocumentUpdateOneWithoutActionLogsNestedInput = {
+        create?: XOR<
+            DocumentCreateWithoutActionLogsInput,
+            DocumentUncheckedCreateWithoutActionLogsInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutActionLogsInput;
+        upsert?: DocumentUpsertWithoutActionLogsInput;
+        disconnect?: DocumentWhereInput | boolean;
+        delete?: DocumentWhereInput | boolean;
+        connect?: DocumentWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                DocumentUpdateToOneWithWhereWithoutActionLogsInput,
+                DocumentUpdateWithoutActionLogsInput
+            >,
+            DocumentUncheckedUpdateWithoutActionLogsInput
         >;
     };
 
@@ -10518,6 +11192,76 @@ export namespace Prisma {
         _max?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
     };
 
+    export type NestedEnumActionLogTypesFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.ActionLogTypes
+            | EnumActionLogTypesFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumActionLogTypesFilter<$PrismaModel>
+            | $Enums.ActionLogTypes;
+    };
+
+    export type NestedStringNullableFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        contains?: string | StringFieldRefInput<$PrismaModel>;
+        startsWith?: string | StringFieldRefInput<$PrismaModel>;
+        endsWith?: string | StringFieldRefInput<$PrismaModel>;
+        not?: NestedStringNullableFilter<$PrismaModel> | string | null;
+    };
+
+    export type NestedEnumActionLogTypesWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?:
+            | $Enums.ActionLogTypes
+            | EnumActionLogTypesFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ActionLogTypes[]
+            | ListEnumActionLogTypesFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumActionLogTypesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ActionLogTypes;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedEnumActionLogTypesFilter<$PrismaModel>;
+        _max?: NestedEnumActionLogTypesFilter<$PrismaModel>;
+    };
+
+    export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> =
+        {
+            equals?: string | StringFieldRefInput<$PrismaModel> | null;
+            in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+            notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+            lt?: string | StringFieldRefInput<$PrismaModel>;
+            lte?: string | StringFieldRefInput<$PrismaModel>;
+            gt?: string | StringFieldRefInput<$PrismaModel>;
+            gte?: string | StringFieldRefInput<$PrismaModel>;
+            contains?: string | StringFieldRefInput<$PrismaModel>;
+            startsWith?: string | StringFieldRefInput<$PrismaModel>;
+            endsWith?: string | StringFieldRefInput<$PrismaModel>;
+            not?:
+                | NestedStringNullableWithAggregatesFilter<$PrismaModel>
+                | string
+                | null;
+            _count?: NestedIntNullableFilter<$PrismaModel>;
+            _min?: NestedStringNullableFilter<$PrismaModel>;
+            _max?: NestedStringNullableFilter<$PrismaModel>;
+        };
+
     export type DocumentExtractedFieldCreateWithoutDocumentInput = {
         id?: string;
         createdAt?: Date | string;
@@ -10585,6 +11329,49 @@ export namespace Prisma {
         data:
             | DocumentDeadlineCreateManyDocumentInput
             | DocumentDeadlineCreateManyDocumentInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type ActionLogCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
+    };
+
+    export type ActionLogUncheckedCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
+    };
+
+    export type ActionLogCreateOrConnectWithoutDocumentInput = {
+        where: ActionLogWhereUniqueInput;
+        create: XOR<
+            ActionLogCreateWithoutDocumentInput,
+            ActionLogUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type ActionLogCreateManyDocumentInputEnvelope = {
+        data:
+            | ActionLogCreateManyDocumentInput
+            | ActionLogCreateManyDocumentInput[];
         skipDuplicates?: boolean;
     };
 
@@ -10689,6 +11476,52 @@ export namespace Prisma {
         documentId?: StringFilter<"DocumentDeadline"> | string;
     };
 
+    export type ActionLogUpsertWithWhereUniqueWithoutDocumentInput = {
+        where: ActionLogWhereUniqueInput;
+        update: XOR<
+            ActionLogUpdateWithoutDocumentInput,
+            ActionLogUncheckedUpdateWithoutDocumentInput
+        >;
+        create: XOR<
+            ActionLogCreateWithoutDocumentInput,
+            ActionLogUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type ActionLogUpdateWithWhereUniqueWithoutDocumentInput = {
+        where: ActionLogWhereUniqueInput;
+        data: XOR<
+            ActionLogUpdateWithoutDocumentInput,
+            ActionLogUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type ActionLogUpdateManyWithWhereWithoutDocumentInput = {
+        where: ActionLogScalarWhereInput;
+        data: XOR<
+            ActionLogUpdateManyMutationInput,
+            ActionLogUncheckedUpdateManyWithoutDocumentInput
+        >;
+    };
+
+    export type ActionLogScalarWhereInput = {
+        AND?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+        OR?: ActionLogScalarWhereInput[];
+        NOT?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+        id?: StringFilter<"ActionLog"> | string;
+        createdAt?: DateTimeFilter<"ActionLog"> | Date | string;
+        updatedAt?: DateTimeFilter<"ActionLog"> | Date | string;
+        type?: EnumActionLogTypesFilter<"ActionLog"> | $Enums.ActionLogTypes;
+        documentName?: StringNullableFilter<"ActionLog"> | string | null;
+        documentId?: StringNullableFilter<"ActionLog"> | string | null;
+        actorId?: StringFilter<"ActionLog"> | string;
+        actorFullName?: StringFilter<"ActionLog"> | string;
+        actorAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+        userId?: StringNullableFilter<"ActionLog"> | string | null;
+        userFullName?: StringNullableFilter<"ActionLog"> | string | null;
+        userAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
+    };
+
     export type DocumentCreateWithoutDocumentExtractedFieldsInput = {
         id?: string;
         createdAt?: Date | string;
@@ -10704,6 +11537,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutDocumentExtractedFieldsInput = {
@@ -10721,6 +11555,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutDocumentExtractedFieldsInput = {
@@ -10769,6 +11604,7 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutDocumentExtractedFieldsInput = {
@@ -10788,6 +11624,7 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateWithoutDocumentDeadlinesInput = {
@@ -10805,6 +11642,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutDocumentDeadlinesInput = {
@@ -10822,6 +11660,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutDocumentDeadlinesInput = {
@@ -10869,6 +11708,7 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutDocumentDeadlinesInput = {
@@ -10888,6 +11728,111 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentCreateWithoutActionLogsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        expiredAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentUncheckedCreateWithoutActionLogsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        expiredAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentCreateOrConnectWithoutActionLogsInput = {
+        where: DocumentWhereUniqueInput;
+        create: XOR<
+            DocumentCreateWithoutActionLogsInput,
+            DocumentUncheckedCreateWithoutActionLogsInput
+        >;
+    };
+
+    export type DocumentUpsertWithoutActionLogsInput = {
+        update: XOR<
+            DocumentUpdateWithoutActionLogsInput,
+            DocumentUncheckedUpdateWithoutActionLogsInput
+        >;
+        create: XOR<
+            DocumentCreateWithoutActionLogsInput,
+            DocumentUncheckedCreateWithoutActionLogsInput
+        >;
+        where?: DocumentWhereInput;
+    };
+
+    export type DocumentUpdateToOneWithWhereWithoutActionLogsInput = {
+        where?: DocumentWhereInput;
+        data: XOR<
+            DocumentUpdateWithoutActionLogsInput,
+            DocumentUncheckedUpdateWithoutActionLogsInput
+        >;
+    };
+
+    export type DocumentUpdateWithoutActionLogsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentUncheckedUpdateWithoutActionLogsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentExtractedFieldCreateManyDocumentInput = {
@@ -10908,6 +11853,20 @@ export namespace Prisma {
         dueAt: Date | string;
         status: $Enums.DeadlineStatus;
         riskLevel: string;
+    };
+
+    export type ActionLogCreateManyDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        type: $Enums.ActionLogTypes;
+        documentName?: string | null;
+        actorId: string;
+        actorFullName: string;
+        actorAvatarUrl?: string | null;
+        userId?: string | null;
+        userFullName?: string | null;
+        userAvatarUrl?: string | null;
     };
 
     export type DocumentExtractedFieldUpdateWithoutDocumentInput = {
@@ -10987,6 +11946,72 @@ export namespace Prisma {
             | EnumDeadlineStatusFieldUpdateOperationsInput
             | $Enums.DeadlineStatus;
         riskLevel?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type ActionLogUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+    };
+
+    export type ActionLogUncheckedUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+    };
+
+    export type ActionLogUncheckedUpdateManyWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        type?:
+            | EnumActionLogTypesFieldUpdateOperationsInput
+            | $Enums.ActionLogTypes;
+        documentName?: NullableStringFieldUpdateOperationsInput | string | null;
+        actorId?: StringFieldUpdateOperationsInput | string;
+        actorFullName?: StringFieldUpdateOperationsInput | string;
+        actorAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        userId?: NullableStringFieldUpdateOperationsInput | string | null;
+        userFullName?: NullableStringFieldUpdateOperationsInput | string | null;
+        userAvatarUrl?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     /**

@@ -1,15 +1,18 @@
 import { randomUUID } from "crypto";
-import { FastifyBaseLogger } from "fastify";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { User } from "@/database/master/generated/index.js";
+import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { ApplicationService } from "../application/application.service.js";
-import { DocumentStatuses, Prisma } from "@/database/team/generated/index.js";
 import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
+import {
+    ActionLogTypes,
+    DocumentStatuses,
+    Prisma,
+} from "@/database/team/generated/index.js";
 import {
     DocumentParamsInput,
     FetchDocumentResponse,
@@ -22,26 +25,26 @@ import {
 export type DocumentService = {
     getDocument: (p: {
         params: DocumentParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchDocumentResponse>;
     deleteDocument: (p: {
         params: DocumentParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchDocumentResponse>;
     getDocuments: (p: {
         query: FetchDocumentsQueryInput;
         params: TeamParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchDocumentsResponse>;
     createDocument: (p: {
         body: CreateDocumentBodyInput;
         params: TeamParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchDocumentResponse>;
     updateDocument: (p: {
         params: DocumentParamsInput;
         body: UpdateDocumentBodyInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchDocumentResponse>;
 };
 
@@ -71,27 +74,42 @@ export const createDocumentService = (
         };
     },
 
-    deleteDocument: async ({ params }) => {
+    deleteDocument: async ({ params, initiator }) => {
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const document = await withRepositories(
-            [documentRepository],
-            async (documentRepo) => {
-                await documentRepo.findUniqueOrFail({
+        const client = await applicationService.initTeamTenantClient(
+            params.teamId
+        );
+
+        await withRepositories([documentRepository], (documentRepo) =>
+            documentRepo.findUniqueOrFail({
+                where: {
+                    id: params.documentId,
+                },
+            })
+        );
+
+        const document = await withRepositories([client], async (client) =>
+            client.$transaction(async (tx) => {
+                const document = await tx.document.delete({
                     where: {
                         id: params.documentId,
                     },
                 });
 
-                const document = await documentRepo.delete({
-                    where: {
-                        id: params.documentId,
+                await tx.actionLog.create({
+                    data: {
+                        type: ActionLogTypes.DELETE_DOCUMENT,
+                        actorId: initiator.id,
+                        actorAvatarUrl: initiator.avatar?.url || null,
+                        actorFullName: initiator.fullName,
+                        documentName: document.name,
                     },
                 });
 
                 return document;
-            }
+            })
         );
 
         try {
@@ -205,8 +223,12 @@ export const createDocumentService = (
         };
     },
 
-    createDocument: async ({ body, params }) => {
+    createDocument: async ({ body, params, initiator }) => {
         const documentId = randomUUID();
+
+        const client = await applicationService.initTeamTenantClient(
+            params.teamId
+        );
 
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
@@ -239,10 +261,9 @@ export const createDocumentService = (
             type: FileTypes.DOCUMENT,
         });
 
-        const document = await withRepositories(
-            [documentRepository],
-            (documentRepo) =>
-                documentRepo.create({
+        const document = await withRepositories([client], async (client) =>
+            client.$transaction(async (tx) => {
+                const document = await tx.document.create({
                     data: {
                         status: DocumentStatuses.PROCESSING,
                         tags: body.tags,
@@ -255,7 +276,21 @@ export const createDocumentService = (
                         width: body.file.width,
                         height: body.file.height,
                     },
-                })
+                });
+
+                await tx.actionLog.create({
+                    data: {
+                        type: ActionLogTypes.CREATE_DOCUMENT,
+                        actorId: initiator.id,
+                        actorAvatarUrl: initiator.avatar?.url || null,
+                        actorFullName: initiator.fullName,
+                        documentName: document.name,
+                        documentId: document.id,
+                    },
+                });
+
+                return document;
+            })
         );
 
         return {
@@ -266,20 +301,25 @@ export const createDocumentService = (
         };
     },
 
-    updateDocument: async ({ params, body }) => {
+    updateDocument: async ({ params, body, initiator }) => {
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const document = await withRepositories(
-            [documentRepository],
-            async (documentRepo) => {
-                await documentRepo.findUniqueOrFail({
-                    where: {
-                        id: params.documentId,
-                    },
-                });
+        const client = await applicationService.initTeamTenantClient(
+            params.teamId
+        );
 
-                return documentRepo.update({
+        await withRepositories([documentRepository], (documentRepo) =>
+            documentRepo.findUniqueOrFail({
+                where: {
+                    id: params.documentId,
+                },
+            })
+        );
+
+        const document = await withRepositories([client], async (client) =>
+            client.$transaction(async (tx) => {
+                const document = await tx.document.update({
                     where: {
                         id: params.documentId,
                     },
@@ -288,7 +328,31 @@ export const createDocumentService = (
                         name: body.name,
                     },
                 });
-            }
+
+                const updatedObjects: string[] = [];
+
+                if (body.name) {
+                    updatedObjects.push("name");
+                }
+
+                if (body.tags) {
+                    updatedObjects.push("tags");
+                }
+
+                if (updatedObjects.length > 0) {
+                    await tx.actionLog.create({
+                        data: {
+                            type: ActionLogTypes.UPDATE_DOCUMENT,
+                            actorId: initiator.id,
+                            actorAvatarUrl: initiator.avatar?.url || null,
+                            actorFullName: initiator.fullName,
+                            documentName: document.name,
+                        },
+                    });
+                }
+
+                return document;
+            })
         );
 
         return {

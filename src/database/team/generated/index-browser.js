@@ -154,14 +154,6 @@ exports.Prisma.DocumentDeadlineScalarFieldEnum = {
     documentId: "documentId",
 };
 
-exports.Prisma.ActionLogScalarFieldEnum = {
-    id: "id",
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-    payload: "payload",
-    userId: "userId",
-};
-
 exports.Prisma.NotificationScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -169,6 +161,21 @@ exports.Prisma.NotificationScalarFieldEnum = {
     title: "title",
     description: "description",
     userId: "userId",
+};
+
+exports.Prisma.ActionLogScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    type: "type",
+    documentName: "documentName",
+    documentId: "documentId",
+    actorId: "actorId",
+    actorFullName: "actorFullName",
+    actorAvatarUrl: "actorAvatarUrl",
+    userId: "userId",
+    userFullName: "userFullName",
+    userAvatarUrl: "userAvatarUrl",
 };
 
 exports.Prisma.SortOrder = {
@@ -211,12 +218,23 @@ exports.DeadlineStatus = exports.$Enums.DeadlineStatus = {
     OVERDUE: "OVERDUE",
 };
 
+exports.ActionLogTypes = exports.$Enums.ActionLogTypes = {
+    CREATE_TEAM: "CREATE_TEAM",
+    UPDATE_TEAM: "UPDATE_TEAM",
+    ADD_USER: "ADD_USER",
+    INVITE_USER: "INVITE_USER",
+    DELETE_USER: "DELETE_USER",
+    CREATE_DOCUMENT: "CREATE_DOCUMENT",
+    UPDATE_DOCUMENT: "UPDATE_DOCUMENT",
+    DELETE_DOCUMENT: "DELETE_DOCUMENT",
+};
+
 exports.Prisma.ModelName = {
     Document: "Document",
     DocumentExtractedField: "DocumentExtractedField",
     DocumentDeadline: "DocumentDeadline",
-    ActionLog: "ActionLog",
     Notification: "Notification",
+    ActionLog: "ActionLog",
 };
 
 /**

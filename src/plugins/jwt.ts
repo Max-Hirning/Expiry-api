@@ -6,6 +6,7 @@ import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { ForbiddenError, UnauthorizedError } from "@/lib/errors/errors.js";
 import { DocumentParamsInput } from "@/lib/validation/document/document.schema.js";
+import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
     InviteUserBodyInput,
     UserParamsInput,
@@ -55,7 +56,10 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     status: UserStatuses.ACTIVE,
                     refreshToken: { token: refreshToken },
                 },
-                select: { id: true, role: true },
+                select: {
+                    ...defaultUserSelector,
+                    avatar: true,
+                },
             });
 
             if (!user) {
@@ -65,7 +69,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                 throw new UnauthorizedError("Unauthorized");
             }
 
-            req.user = { id: user.id, role: user.role };
+            req.user = user;
             req.createNewTokens = false;
             req.updateToken = false;
             req.resetTokens = false;
@@ -80,7 +84,10 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         status: UserStatuses.ACTIVE,
                         refreshToken: { token: refreshToken },
                     },
-                    select: { id: true, role: true },
+                    select: {
+                        ...defaultUserSelector,
+                        avatar: true,
+                    },
                 });
 
                 if (!user) {
@@ -90,7 +97,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new UnauthorizedError("Unauthorized");
                 }
 
-                req.user = { id: user.id, role: user.role };
+                req.user = user;
                 req.createNewTokens = false;
                 req.updateToken = true;
                 req.resetTokens = false;

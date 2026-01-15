@@ -2,6 +2,8 @@
 import closeWithGrace from "close-with-grace";
 import { configureServer } from "./server.js";
 
+// TODO Recheck all Create action logs
+
 const main = async () => {
     const fastify = await configureServer();
 

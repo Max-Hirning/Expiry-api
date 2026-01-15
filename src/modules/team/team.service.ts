@@ -5,19 +5,23 @@ import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import { withRepositories } from "@/lib/utils/repository.js";
 import { migrateTenantDatabase } from "@/database/infra/tenant.js";
+import { ActionLogTypes } from "@/database/team/generated/index.js";
+import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
+import { ApplicationService } from "../application/application.service.js";
+import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
-import {
-    Logo,
-    Prisma,
-    User,
-    UserRoles,
-} from "@/database/master/generated/index.js";
 import {
     defaultTeamSelector,
     TeamRepository,
 } from "@/database/master/repositories/team/team.repository.js";
+import {
+    Logo,
+    Prisma as PrismaMaster,
+    TeamMember,
+    UserRoles,
+} from "@/database/master/generated/index.js";
 import {
     TeamParamsInput,
     FetchTeamResponse,
@@ -32,24 +36,24 @@ import {
 export type TeamService = {
     getTeam: (p: {
         params: TeamParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchTeamResponse>;
     deleteTeam: (p: {
         params: TeamParamsInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchTeamResponse>;
     getTeams: (p: {
         query: FetchTeamsQueryInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchTeamsResponse>;
     createTeam: (p: {
         body: CreateTeamBodyInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<CreateTeamResponse>;
     updateTeam: (p: {
         params: TeamParamsInput;
         body: UpdateTeamBodyInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<UpdateTeamResponse>;
 };
 
@@ -60,7 +64,8 @@ export const createTeamService = (
     teamRepository: TeamRepository,
     prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    applicationService: ApplicationService
 ): TeamService => {
     const checkTeamMembersRoles = async (teamMembersIds: string[]) => {
         const futureTeamMembers = await userRepository.findMany({
@@ -76,6 +81,104 @@ export const createTeamService = (
         }
 
         return true;
+    };
+
+    const configureFutureTeamMembers = async (
+        teamMembers: Pick<TeamMember, "userId" | "role">[],
+        initiator: FastifyRequest["user"]
+    ) => {
+        const futureTeamMembers = await userRepository.findMany({
+            where: {
+                id: {
+                    in: teamMembers.map(({ userId }) => userId),
+                },
+            },
+            select: {
+                id: true,
+                fullName: true,
+                avatar: true,
+            },
+        });
+
+        return futureTeamMembers.reduce<{
+            actionLogsData: PrismaTeam.ActionLogCreateManyInput[];
+            teamMembers: Omit<
+                PrismaMaster.TeamMemberCreateManyInput,
+                "teamId"
+            >[];
+        }>(
+            (res, user) => {
+                const foundUser = teamMembers.find(
+                    ({ userId }) => userId === user.id
+                );
+
+                if (foundUser) {
+                    res.actionLogsData.push({
+                        type: ActionLogTypes.ADD_USER,
+                        actorId: initiator.id,
+                        actorFullName: initiator.fullName,
+                        actorAvatarUrl: initiator.avatar?.url,
+                        userId: user.id,
+                        userFullName: user.fullName,
+                        userAvatarUrl: user.avatar?.url,
+                    });
+
+                    res.teamMembers.push({
+                        userId: foundUser.userId,
+                        role: foundUser.role,
+                    });
+                }
+
+                return res;
+            },
+            {
+                actionLogsData: [],
+                teamMembers: [],
+            }
+        );
+    };
+
+    const configureFutureTeamMembersToDisconnect = async (
+        teamMembersIds: string[],
+        initiator: FastifyRequest["user"]
+    ) => {
+        const futureTeamMembers = await userRepository.findMany({
+            where: {
+                id: {
+                    in: teamMembersIds,
+                },
+            },
+            select: {
+                id: true,
+                fullName: true,
+                avatar: true,
+            },
+        });
+
+        return futureTeamMembers.reduce<{
+            actionLogsData: PrismaTeam.ActionLogCreateManyInput[];
+        }>(
+            (res, user) => {
+                const foundUser = teamMembersIds.includes(user.id);
+
+                if (foundUser) {
+                    res.actionLogsData.push({
+                        type: ActionLogTypes.ADD_USER,
+                        actorId: initiator.id,
+                        actorFullName: initiator.fullName,
+                        actorAvatarUrl: initiator.avatar?.url,
+                        userId: user.id,
+                        userFullName: user.fullName,
+                        userAvatarUrl: user.avatar?.url,
+                    });
+                }
+
+                return res;
+            },
+            {
+                actionLogsData: [],
+            }
+        );
     };
 
     return {
@@ -117,7 +220,7 @@ export const createTeamService = (
 
             if (team.logo) {
                 try {
-                    await gcpService.deleteFile(team.logo.key);
+                    await gcpService.deleteFolder(`teams/${team.id}`);
                 } catch (error) {
                     log.error({ error }, "Failed to delete team logo");
                 }
@@ -132,7 +235,7 @@ export const createTeamService = (
         getTeams: async ({ query, initiator }) => {
             const skip = (query.page - 1) * query.perPage;
 
-            const where: Prisma.TeamWhereInput = {
+            const where: PrismaMaster.TeamWhereInput = {
                 teamMembers: {
                     some: {
                         userId: initiator.id,
@@ -189,7 +292,7 @@ export const createTeamService = (
                                 [query.sortField]: query.sortOrder,
                             }
                             : {
-                                createdAt: Prisma.SortOrder.desc,
+                                createdAt: PrismaMaster.SortOrder.desc,
                             }),
                     },
                     select: defaultTeamSelector,
@@ -219,7 +322,7 @@ export const createTeamService = (
             };
         },
 
-        createTeam: async ({ body }) => {
+        createTeam: async ({ body, initiator }) => {
             const teamId = randomUUID();
 
             await authService.checkIfTeamExists({
@@ -235,9 +338,22 @@ export const createTeamService = (
                 },
             });
 
+            const teamMembersIds =
+                body.teamMembers?.map(({ userId }) => userId) || [];
+
+            let futureTeamMembersRecords: Awaited<
+                ReturnType<typeof configureFutureTeamMembers>
+            > = {
+                teamMembers: [],
+                actionLogsData: [],
+            };
+
             if (body.teamMembers) {
-                await checkTeamMembersRoles(
-                    body.teamMembers.map(({ userId }) => userId)
+                await checkTeamMembersRoles(teamMembersIds);
+
+                futureTeamMembersRecords = await configureFutureTeamMembers(
+                    body.teamMembers || [],
+                    initiator
                 );
             }
 
@@ -286,13 +402,25 @@ export const createTeamService = (
                     config.DATABASE_URL.replace("/postgres", `/${teamId}`)
                 );
 
+                const activityLogRepository =
+                    await applicationService.initActionLogRepository(teamId);
+
+                await withRepositories(
+                    [activityLogRepository],
+                    (activityLogRepo) =>
+                        activityLogRepo.createMany({
+                            data: futureTeamMembersRecords.actionLogsData,
+                        })
+                );
+
                 const team = await teamRepository.create({
                     data: {
+                        id: teamId,
                         name: body.name,
                         ...(body.teamMembers && {
                             teamMembers: {
                                 createMany: {
-                                    data: body.teamMembers,
+                                    data: futureTeamMembersRecords.teamMembers,
                                 },
                             },
                         }),
@@ -342,7 +470,7 @@ export const createTeamService = (
             }
         },
 
-        updateTeam: async ({ params, body }) => {
+        updateTeam: async ({ params, body, initiator }) => {
             let logoPayload:
                 | (Pick<Logo, "url" | "key" | "expiredAt"> & {
                       uploadUrl: string;
@@ -371,10 +499,36 @@ export const createTeamService = (
                 };
             }
 
+            const teamMembersIds =
+                body.teamMembers?.map(({ userId }) => userId) || [];
+
+            let futureTeamMembersRecords: Awaited<
+                ReturnType<typeof configureFutureTeamMembers>
+            > = {
+                teamMembers: [],
+                actionLogsData: [],
+            };
+            let futureTeamMembersToDisconnectRecords: Awaited<
+                ReturnType<typeof configureFutureTeamMembersToDisconnect>
+            > = {
+                actionLogsData: [],
+            };
+
             if (body.teamMembers) {
-                await checkTeamMembersRoles(
-                    body.teamMembers.map(({ userId }) => userId)
+                await checkTeamMembersRoles(teamMembersIds);
+
+                futureTeamMembersRecords = await configureFutureTeamMembers(
+                    body.teamMembers || [],
+                    initiator
                 );
+            }
+
+            if (body.teamMembersToDeleteIds) {
+                futureTeamMembersToDisconnectRecords =
+                    await configureFutureTeamMembersToDisconnect(
+                        body.teamMembersToDeleteIds,
+                        initiator
+                    );
             }
 
             const team = await teamRepository.update({
@@ -415,9 +569,9 @@ export const createTeamService = (
                                     },
                                 },
                             }),
-                            ...(body.teamMembers && {
+                            ...(futureTeamMembersRecords.teamMembers && {
                                 createMany: {
-                                    data: body.teamMembers,
+                                    data: futureTeamMembersRecords.teamMembers,
                                 },
                             }),
                         },
@@ -425,6 +579,24 @@ export const createTeamService = (
                 },
                 select: defaultTeamSelector,
             });
+
+            const activityLogRepository =
+                await applicationService.initActionLogRepository(params.teamId);
+
+            await withRepositories([activityLogRepository], (activityLogRepo) =>
+                activityLogRepo.createMany({
+                    data: [
+                        ...futureTeamMembersRecords.actionLogsData,
+                        ...futureTeamMembersToDisconnectRecords.actionLogsData,
+                        {
+                            type: ActionLogTypes.UPDATE_TEAM,
+                            actorId: initiator.id,
+                            actorFullName: initiator.fullName,
+                            actorAvatarUrl: initiator.avatar?.url,
+                        },
+                    ],
+                })
+            );
 
             return {
                 message: "Team updated successfully.",

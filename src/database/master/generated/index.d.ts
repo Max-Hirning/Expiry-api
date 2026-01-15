@@ -12155,8 +12155,7 @@ export namespace Prisma {
     export type TeamMemberWhereUniqueInput = Prisma.AtLeast<
         {
             id?: string;
-            userId?: string;
-            teamId?: string;
+            userId_teamId?: TeamMemberUserIdTeamIdCompoundUniqueInput;
             AND?: TeamMemberWhereInput | TeamMemberWhereInput[];
             OR?: TeamMemberWhereInput[];
             NOT?: TeamMemberWhereInput | TeamMemberWhereInput[];
@@ -12165,10 +12164,12 @@ export namespace Prisma {
             role?:
                 | EnumTeamMemberRoleFilter<"TeamMember">
                 | $Enums.TeamMemberRole;
+            userId?: StringFilter<"TeamMember"> | string;
+            teamId?: StringFilter<"TeamMember"> | string;
             user?: XOR<UserScalarRelationFilter, UserWhereInput>;
             team?: XOR<TeamScalarRelationFilter, TeamWhereInput>;
         },
-        "id" | "userId" | "teamId"
+        "id" | "userId_teamId"
     >;
 
     export type TeamMemberOrderByWithAggregationInput = {
@@ -13237,6 +13238,11 @@ export namespace Prisma {
     export type TeamScalarRelationFilter = {
         is?: TeamWhereInput;
         isNot?: TeamWhereInput;
+    };
+
+    export type TeamMemberUserIdTeamIdCompoundUniqueInput = {
+        userId: string;
+        teamId: string;
     };
 
     export type TeamMemberCountOrderByAggregateInput = {

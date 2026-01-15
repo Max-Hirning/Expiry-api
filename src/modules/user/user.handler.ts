@@ -111,10 +111,11 @@ export const createHandler = (
         },
 
         deleteInvitedUser: async (request, reply) => {
-            const { params } = request;
+            const { params, user } = request;
 
             const data = await userService.deleteInvitedUser({
                 params,
+                initiator: user,
             });
 
             return reply.send(data);

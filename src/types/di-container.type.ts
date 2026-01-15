@@ -16,11 +16,14 @@ import { UserRepository } from "@/database/master/repositories/user/user.reposit
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
 import { DocumentRepository } from "@/database/team/repositories/document/docuement.repository.js";
+import { ActionLogRepository } from "@/database/team/repositories/action-log/action-log.repository.js";
 
 export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    actionLogRepository: ActionLogRepository;
 
     documentService: DocumentService;
     documentHandler: DocumentHandler;

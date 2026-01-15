@@ -1,11 +1,14 @@
 import { JWT } from "@fastify/jwt";
-import { FastifyBaseLogger } from "fastify";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { FastifyBaseLogger, FastifyRequest } from "fastify";
+import { withRepositories } from "@/lib/utils/repository.js";
 import { invitedRoles, toggleStatuses } from "./user.constants.js";
+import { ActionLogTypes } from "@/database/team/generated/index.js";
+import { ApplicationService } from "../application/application.service.js";
 import {
     defaultUserSelector,
     UserRepository,
@@ -20,7 +23,6 @@ import {
     Avatar,
     Prisma,
     TeamMemberRole,
-    User,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/edge.js";
@@ -47,6 +49,7 @@ export type UserService = {
     }) => Promise<FetchUserResponse>;
     deleteInvitedUser: (p: {
         params: UserParamsInput;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchUserResponse>;
     deleteUser: (p: { params: UserParamsInput }) => Promise<FetchUserResponse>;
     toggleUserStatus: (p: {
@@ -57,7 +60,7 @@ export type UserService = {
     }) => Promise<FetchUsersResponse>;
     inviteUser: (p: {
         body: InviteUserBodyInput;
-        initiator: Pick<User, "id" | "role">;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchUserResponse>;
 };
 
@@ -66,7 +69,8 @@ export const createService = (
     authService: AuthService,
     jwt: JWT,
     log: FastifyBaseLogger,
-    gcpService: GcpService
+    gcpService: GcpService,
+    applicationService: ApplicationService
 ): UserService => {
     const getUser = async (
         userId: string
@@ -298,13 +302,36 @@ export const createService = (
             // TODO
             console.log(invitationId);
 
+            if (body.teamId) {
+                const activityLogRepository =
+                    await applicationService.initActionLogRepository(
+                        body.teamId
+                    );
+
+                await withRepositories(
+                    [activityLogRepository],
+                    (activityLogRepo) =>
+                        activityLogRepo.create({
+                            data: {
+                                type: ActionLogTypes.INVITE_USER,
+                                actorId: initiator.id,
+                                actorFullName: initiator.fullName,
+                                actorAvatarUrl: initiator.avatar?.url,
+                                userId: user.id,
+                                userFullName: user.fullName,
+                                userAvatarUrl: user.avatar?.url,
+                            },
+                        })
+                );
+            }
+
             return {
                 message: "User invited successfully.",
                 data: { user },
             };
         },
 
-        deleteInvitedUser: async ({ params }) => {
+        deleteInvitedUser: async ({ params, initiator }) => {
             await userRepository.findFirstOrFail({
                 where: {
                     id: params.userId,
@@ -314,13 +341,49 @@ export const createService = (
 
             const user = await getUser(params.userId);
 
-            await userRepository.delete({
+            const deletedUser = await userRepository.delete({
                 where: {
                     id: params.userId,
                     status: UserStatuses.INVITED,
                 },
-                select: defaultUserSelector,
+                select: {
+                    ...defaultUserSelector,
+                    teamMembers: {
+                        where: {
+                            team: {
+                                teamMembers: {
+                                    some: {
+                                        userId: initiator.id,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             });
+
+            const teamId = deletedUser.teamMembers[0].teamId;
+
+            if (teamId) {
+                const activityLogRepository =
+                    await applicationService.initActionLogRepository(teamId);
+
+                await withRepositories(
+                    [activityLogRepository],
+                    (activityLogRepo) =>
+                        activityLogRepo.create({
+                            data: {
+                                type: ActionLogTypes.DELETE_USER,
+                                actorId: initiator.id,
+                                actorFullName: initiator.fullName,
+                                actorAvatarUrl: initiator.avatar?.url,
+                                userId: deletedUser.id,
+                                userFullName: deletedUser.fullName,
+                                userAvatarUrl: deletedUser.avatar?.url,
+                            },
+                        })
+                );
+            }
 
             return {
                 message: "Invitation deleted successfully.",

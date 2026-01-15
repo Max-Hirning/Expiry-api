@@ -3,7 +3,7 @@ import { EnvConfig } from "./env.type.ts";
 import { Cradle } from "./di-container.type.ts";
 import { Actions } from "@/modules/auth/auth.types.ts";
 import { TeamPrismaFactory } from "@/plugins/prisma.js";
-import type { User } from "@/database/master/generated/client.js";
+import type { Avatar, User } from "@/database/master/generated/client.js";
 import { PrismaClient as MasterPrisma } from "@/database/master/generated/client.js";
 
 declare module "@fastify/jwt" {
@@ -12,7 +12,9 @@ declare module "@fastify/jwt" {
             access_token?: string;
             refresh_token?: string;
         };
-        user: Pick<User, "id" | "role">;
+        user: Pick<User, "id" | "role" | "fullName"> & {
+            avatar: Avatar | null;
+        };
         createNewTokens: boolean;
         updateToken: boolean;
         updateUserSession: boolean;
@@ -40,7 +42,9 @@ declare module "fastify" {
             access_token?: string;
             refresh_token?: string;
         };
-        user: Pick<User, "id" | "role">;
+        user: Pick<User, "id" | "role" | "fullName"> & {
+            avatar: Avatar | null;
+        };
         createNewTokens: boolean;
         updateToken: boolean;
         updateUserSession: boolean;
