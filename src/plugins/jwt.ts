@@ -116,11 +116,38 @@ const configureJwt = async (fastify: FastifyInstance) => {
             action: Actions
         ): ((req: FastifyRequest, reply: FastifyReply) => Promise<void>) => {
             return async (req) => {
-                if (
-                    [Actions.GET_USERS, Actions.TOGGLE_USER_STATUS].includes(
-                        action
-                    )
-                ) {
+                if (Actions.TOGGLE_USER_STATUS === action) {
+                    const { role } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: UserParamsInput;
+                    }>;
+
+                    if (
+                        (
+                            [
+                                UserRoles.SUB_ADMIN,
+                                UserRoles.SUPER_ADMIN,
+                            ] as UserRoles[]
+                        ).includes(role)
+                    ) {
+                        const userToUpdate =
+                            await fastify.prisma.master.user.findFirst({
+                                where: {
+                                    id: params.userId,
+                                    role: UserRoles.SUB_ADMIN,
+                                },
+                            });
+
+                        if (userToUpdate) {
+                            return;
+                        }
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
+                if (Actions.GET_USERS === action) {
                     const { role } = req.user;
 
                     if (
