@@ -391,6 +391,7 @@ export const createService = (
             };
         },
 
+        // TODO add logs when user deletes his acc
         deleteUser: async ({ params }) => {
             await userRepository.findFirstOrFail({
                 where: {
@@ -404,7 +405,14 @@ export const createService = (
                 where: {
                     id: params.userId,
                 },
-                select: defaultUserSelector,
+                select: {
+                    ...defaultUserSelector,
+                    teamMembers: {
+                        select: {
+                            teamId: true,
+                        },
+                    },
+                },
             });
 
             if (deletedUser.avatar) {
@@ -412,6 +420,36 @@ export const createService = (
                     await gcpService.deleteFile(deletedUser.avatar.key);
                 } catch (error) {
                     log.error({ error }, "Failed to delete user avatar");
+                }
+            }
+
+            for (const { teamId } of deletedUser.teamMembers) {
+                try {
+                    const actionLogRepository =
+                        await applicationService.initActionLogRepository(
+                            teamId
+                        );
+
+                    await withRepositories(
+                        [actionLogRepository],
+                        (actionLogRepo) =>
+                            actionLogRepo.create({
+                                data: {
+                                    type: ActionLogTypes.DELETE_HIMSELF,
+                                    actorId: user.id,
+                                    actorAvatarUrl: user.avatar?.url || null,
+                                    actorFullName: user.fullName,
+                                    userId: user.id,
+                                    userAvatarUrl: user.avatar?.url || null,
+                                    userFullName: user.fullName,
+                                },
+                            })
+                    );
+                } catch (error) {
+                    log.error(
+                        { error },
+                        "Failed to create DELETE_HIMSELF action log"
+                    );
                 }
             }
 

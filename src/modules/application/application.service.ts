@@ -16,7 +16,7 @@ export type ApplicationService = {
     healthChecker: () => Promise<string>;
     initDocumentRepository: (teamId: string) => Promise<DocumentRepository>;
     initActionLogRepository: (teamId: string) => Promise<ActionLogRepository>;
-    initTeamTenantClient: (userId: string) => Promise<TeamPrisma>;
+    initTeamTenantClient: (teamId: string) => Promise<TeamPrisma>;
 };
 
 export const createApplicationService = (
