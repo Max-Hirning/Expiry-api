@@ -154,15 +154,6 @@ exports.Prisma.DocumentDeadlineScalarFieldEnum = {
     documentId: "documentId",
 };
 
-exports.Prisma.NotificationScalarFieldEnum = {
-    id: "id",
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-    title: "title",
-    description: "description",
-    userId: "userId",
-};
-
 exports.Prisma.ActionLogScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -234,7 +225,6 @@ exports.Prisma.ModelName = {
     Document: "Document",
     DocumentExtractedField: "DocumentExtractedField",
     DocumentDeadline: "DocumentDeadline",
-    Notification: "Notification",
     ActionLog: "ActionLog",
 };
 

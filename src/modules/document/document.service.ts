@@ -7,12 +7,21 @@ import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { ApplicationService } from "../application/application.service.js";
+import {
+    NotificationTypes,
+    TeamMemberRole,
+} from "@/database/master/generated/index.js";
 import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
     Prisma,
 } from "@/database/team/generated/index.js";
+import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import {
+    defaultTeamMemberSelector,
+    TeamMemberRepository,
+} from "@/database/master/repositories/team-member/team-member.repository.js";
 import {
     DocumentParamsInput,
     FetchDocumentResponse,
@@ -51,6 +60,8 @@ export type DocumentService = {
 export const createDocumentService = (
     applicationService: ApplicationService,
     gcpService: GcpService,
+    notificationRepository: NotificationRepository,
+    teamMemberRepository: TeamMemberRepository,
     log: FastifyBaseLogger
 ): DocumentService => ({
     getDocument: async ({ params }) => {
@@ -77,6 +88,21 @@ export const createDocumentService = (
     deleteDocument: async ({ params, initiator }) => {
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
+
+        const teamMembers = await teamMemberRepository.findMany({
+            where: {
+                teamId: params.teamId,
+                role: TeamMemberRole.ADMIN,
+                userId: {
+                    not: initiator.id,
+                },
+            },
+            select: {
+                ...defaultTeamMemberSelector,
+                user: true,
+                team: true,
+            },
+        });
 
         const client = await applicationService.initTeamTenantClient(
             params.teamId
@@ -111,6 +137,17 @@ export const createDocumentService = (
                 return document;
             })
         );
+
+        await notificationRepository.createMany({
+            data: teamMembers.map(({ user, team }) => ({
+                type: NotificationTypes.DELETE_DOCUMENT,
+                userId: user.id,
+                teamName: team.name,
+                teamId: team.id,
+                documentName: document.name,
+                documentId: document.id,
+            })),
+        });
 
         try {
             await gcpService.deleteFile(document.key);

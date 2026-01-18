@@ -12,13 +12,16 @@ import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
+import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultTeamSelector,
     TeamRepository,
 } from "@/database/master/repositories/team/team.repository.js";
 import {
     Logo,
+    NotificationTypes,
     Prisma as PrismaMaster,
+    Team,
     TeamMember,
     UserRoles,
 } from "@/database/master/generated/index.js";
@@ -64,6 +67,7 @@ export const createTeamService = (
     teamRepository: TeamRepository,
     prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger,
+    notificationRepository: NotificationRepository,
     userRepository: UserRepository,
     applicationService: ApplicationService
 ): TeamService => {
@@ -83,10 +87,15 @@ export const createTeamService = (
         return true;
     };
 
-    const configureFutureTeamMembers = async (
-        teamMembers: Pick<TeamMember, "userId" | "role">[],
-        initiator: FastifyRequest["user"]
-    ) => {
+    const configureFutureTeamMembers = async ({
+        teamMembers,
+        team,
+        initiator,
+    }: {
+        teamMembers: Pick<TeamMember, "userId" | "role">[];
+        team: Team;
+        initiator: FastifyRequest["user"];
+    }) => {
         const futureTeamMembers = await userRepository.findMany({
             where: {
                 id: {
@@ -106,6 +115,7 @@ export const createTeamService = (
                 PrismaMaster.TeamMemberCreateManyInput,
                 "teamId"
             >[];
+            notifications: PrismaMaster.NotificationCreateManyInput[];
         }>(
             (res, user) => {
                 const foundUser = teamMembers.find(
@@ -123,6 +133,13 @@ export const createTeamService = (
                         userAvatarUrl: user.avatar?.url,
                     });
 
+                    res.notifications.push({
+                        type: NotificationTypes.INVITE_USER_IN_TEAM,
+                        userId: user.id,
+                        teamName: team.name,
+                        teamId: team.id,
+                    });
+
                     res.teamMembers.push({
                         userId: foundUser.userId,
                         role: foundUser.role,
@@ -134,18 +151,24 @@ export const createTeamService = (
             {
                 actionLogsData: [],
                 teamMembers: [],
+                notifications: [],
             }
         );
     };
 
-    const configureFutureTeamMembersToDisconnect = async (
-        teamMembersIds: string[],
-        initiator: FastifyRequest["user"]
-    ) => {
+    const configureFutureTeamMembersToDisconnect = async ({
+        teamMembersUsersIds,
+        team,
+        initiator,
+    }: {
+        teamMembersUsersIds: string[];
+        team: Team;
+        initiator: FastifyRequest["user"];
+    }) => {
         const futureTeamMembers = await userRepository.findMany({
             where: {
                 id: {
-                    in: teamMembersIds,
+                    in: teamMembersUsersIds,
                 },
             },
             select: {
@@ -157,9 +180,10 @@ export const createTeamService = (
 
         return futureTeamMembers.reduce<{
             actionLogsData: PrismaTeam.ActionLogCreateManyInput[];
+            notifications: PrismaMaster.NotificationCreateManyInput[];
         }>(
             (res, user) => {
-                const foundUser = teamMembersIds.includes(user.id);
+                const foundUser = teamMembersUsersIds.includes(user.id);
 
                 if (foundUser) {
                     res.actionLogsData.push({
@@ -171,12 +195,20 @@ export const createTeamService = (
                         userFullName: user.fullName,
                         userAvatarUrl: user.avatar?.url,
                     });
+
+                    res.notifications.push({
+                        type: NotificationTypes.DELETE_USER_FROM_TEAM,
+                        userId: user.id,
+                        teamName: team.name,
+                        teamId: team.id,
+                    });
                 }
 
                 return res;
             },
             {
                 actionLogsData: [],
+                notifications: [],
             }
         );
     };
@@ -203,11 +235,26 @@ export const createTeamService = (
                 },
             });
 
-            const team = await teamRepository.delete({
-                where: {
-                    id: params.teamId,
-                },
-                select: defaultTeamSelector,
+            const team = await prisma.master.$transaction(async (tx) => {
+                const team = await tx.team.delete({
+                    where: {
+                        id: params.teamId,
+                    },
+                    select: {
+                        ...defaultTeamSelector,
+                        teamMembers: true,
+                    },
+                });
+
+                await tx.notification.createMany({
+                    data: team.teamMembers.map(({ userId }) => ({
+                        type: NotificationTypes.DELETE_TEAM,
+                        userId,
+                        teamName: team.name,
+                    })),
+                });
+
+                return team;
             });
 
             try {
@@ -346,16 +393,8 @@ export const createTeamService = (
             > = {
                 teamMembers: [],
                 actionLogsData: [],
+                notifications: [],
             };
-
-            if (body.teamMembers) {
-                await checkTeamMembersRoles(teamMembersIds);
-
-                futureTeamMembersRecords = await configureFutureTeamMembers(
-                    body.teamMembers || [],
-                    initiator
-                );
-            }
 
             let logoPayload:
                 | (Pick<Logo, "url" | "key" | "expiredAt"> & {
@@ -442,6 +481,22 @@ export const createTeamService = (
                     select: defaultTeamSelector,
                 });
 
+                if (body.teamMembers) {
+                    await checkTeamMembersRoles(teamMembersIds);
+
+                    futureTeamMembersRecords = await configureFutureTeamMembers(
+                        {
+                            teamMembers: body.teamMembers || [],
+                            team: team,
+                            initiator: initiator,
+                        }
+                    );
+                }
+
+                await notificationRepository.createMany({
+                    data: futureTeamMembersRecords.notifications,
+                });
+
                 return {
                     message: "Team created successfully.",
                     data: {
@@ -471,6 +526,12 @@ export const createTeamService = (
         },
 
         updateTeam: async ({ params, body, initiator }) => {
+            const teamToUpdate = await teamRepository.findUniqueOrFail({
+                where: {
+                    id: params.teamId,
+                },
+            });
+
             let logoPayload:
                 | (Pick<Logo, "url" | "key" | "expiredAt"> & {
                       uploadUrl: string;
@@ -507,77 +568,97 @@ export const createTeamService = (
             > = {
                 teamMembers: [],
                 actionLogsData: [],
+                notifications: [],
             };
             let futureTeamMembersToDisconnectRecords: Awaited<
                 ReturnType<typeof configureFutureTeamMembersToDisconnect>
             > = {
                 actionLogsData: [],
+                notifications: [],
             };
 
             if (body.teamMembers) {
                 await checkTeamMembersRoles(teamMembersIds);
 
-                futureTeamMembersRecords = await configureFutureTeamMembers(
-                    body.teamMembers || [],
-                    initiator
-                );
+                futureTeamMembersRecords = await configureFutureTeamMembers({
+                    teamMembers: body.teamMembers || [],
+                    team: teamToUpdate,
+                    initiator,
+                });
             }
 
-            if (body.teamMembersToDeleteIds) {
+            if (body.teamMembersUsersToDeleteIds) {
                 futureTeamMembersToDisconnectRecords =
-                    await configureFutureTeamMembersToDisconnect(
-                        body.teamMembersToDeleteIds,
-                        initiator
-                    );
+                    await configureFutureTeamMembersToDisconnect({
+                        teamMembersUsersIds:
+                            body.teamMembersUsersToDeleteIds || [],
+                        team: teamToUpdate,
+                        initiator,
+                    });
             }
 
-            const team = await teamRepository.update({
-                where: {
-                    id: params.teamId,
-                },
-                data: {
-                    name: body.name,
-                    ...(body.logo &&
-                        logoPayload && {
-                        logo: {
-                            create: {
-                                key: logoPayload.key,
-                                fileSize: body.logo.fileSize,
-                                mimeType: body.logo.mimeType,
-                                url: logoPayload.url,
-                                expiredAt: logoPayload.expiredAt,
-                                width: body.logo.width,
-                                height: body.logo.height,
+            const team = await prisma.master.$transaction(async (tx) => {
+                const team = await tx.team.update({
+                    where: {
+                        id: params.teamId,
+                    },
+                    data: {
+                        name: body.name,
+                        ...(body.logo &&
+                            logoPayload && {
+                            logo: {
+                                create: {
+                                    key: logoPayload.key,
+                                    fileSize: body.logo.fileSize,
+                                    mimeType: body.logo.mimeType,
+                                    url: logoPayload.url,
+                                    expiredAt: logoPayload.expiredAt,
+                                    width: body.logo.width,
+                                    height: body.logo.height,
+                                },
+                                update: {
+                                    key: logoPayload.key,
+                                    fileSize: body.logo.fileSize,
+                                    mimeType: body.logo.mimeType,
+                                    url: logoPayload.url,
+                                    expiredAt: logoPayload.expiredAt,
+                                    width: body.logo.width,
+                                    height: body.logo.height,
+                                },
                             },
-                            update: {
-                                key: logoPayload.key,
-                                fileSize: body.logo.fileSize,
-                                mimeType: body.logo.mimeType,
-                                url: logoPayload.url,
-                                expiredAt: logoPayload.expiredAt,
-                                width: body.logo.width,
-                                height: body.logo.height,
-                            },
-                        },
-                    }),
-                    ...((body.teamMembers || body.teamMembersToDeleteIds) && {
-                        teamMembers: {
-                            ...(body.teamMembersToDeleteIds && {
-                                deleteMany: {
-                                    id: {
-                                        in: body.teamMembersToDeleteIds,
+                        }),
+                        ...((futureTeamMembersRecords.teamMembers ||
+                            body.teamMembersUsersToDeleteIds) && {
+                            teamMembers: {
+                                ...(body.teamMembersUsersToDeleteIds && {
+                                    deleteMany: {
+                                        userId: {
+                                            in: body.teamMembersUsersToDeleteIds,
+                                        },
                                     },
-                                },
-                            }),
-                            ...(futureTeamMembersRecords.teamMembers && {
-                                createMany: {
-                                    data: futureTeamMembersRecords.teamMembers,
-                                },
-                            }),
-                        },
-                    }),
-                },
-                select: defaultTeamSelector,
+                                }),
+                                ...(futureTeamMembersRecords.teamMembers && {
+                                    createMany: {
+                                        data: futureTeamMembersRecords.teamMembers,
+                                    },
+                                }),
+                            },
+                        }),
+                    },
+                    select: {
+                        ...defaultTeamSelector,
+                        teamMembers: true,
+                    },
+                });
+
+                await tx.notification.createMany({
+                    data: [
+                        ...futureTeamMembersRecords.notifications,
+                        ...futureTeamMembersToDisconnectRecords.notifications,
+                    ],
+                });
+
+                return team;
             });
 
             const activityLogRepository =

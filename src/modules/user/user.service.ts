@@ -9,6 +9,7 @@ import { withRepositories } from "@/lib/utils/repository.js";
 import { invitedRoles, toggleStatuses } from "./user.constants.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
+import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     defaultUserSelector,
     UserRepository,
@@ -22,6 +23,7 @@ import {
 import {
     Avatar,
     Prisma,
+    Team,
     TeamMemberRole,
     UserRoles,
     UserStatuses,
@@ -70,6 +72,7 @@ export const createService = (
     jwt: JWT,
     log: FastifyBaseLogger,
     gcpService: GcpService,
+    teamRepository: TeamRepository,
     applicationService: ApplicationService
 ): UserService => {
     const getUser = async (
@@ -252,6 +255,16 @@ export const createService = (
                 body.teamId = undefined;
             }
 
+            let team: Team | null = null;
+
+            if (body.teamId) {
+                team = await teamRepository.findUniqueOrFail({
+                    where: {
+                        id: body.teamId,
+                    },
+                });
+            }
+
             await authService.checkIfUserExists({
                 where: {
                     OR: [
@@ -302,11 +315,9 @@ export const createService = (
             // TODO
             console.log(invitationId);
 
-            if (body.teamId) {
+            if (team) {
                 const activityLogRepository =
-                    await applicationService.initActionLogRepository(
-                        body.teamId
-                    );
+                    await applicationService.initActionLogRepository(team.id);
 
                 await withRepositories(
                     [activityLogRepository],
@@ -391,7 +402,6 @@ export const createService = (
             };
         },
 
-        // TODO add logs when user deletes his acc
         deleteUser: async ({ params }) => {
             await userRepository.findFirstOrFail({
                 where: {

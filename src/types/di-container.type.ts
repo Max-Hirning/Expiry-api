@@ -17,11 +17,17 @@ import { TeamRepository } from "@/database/master/repositories/team/team.reposit
 import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
 import { DocumentRepository } from "@/database/team/repositories/document/docuement.repository.js";
 import { ActionLogRepository } from "@/database/team/repositories/action-log/action-log.repository.js";
+import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
+import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 
 export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    teamMemberRepository: TeamMemberRepository;
+
+    notificationRepository: NotificationRepository;
 
     actionLogRepository: ActionLogRepository;
 

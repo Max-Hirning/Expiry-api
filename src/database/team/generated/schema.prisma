@@ -97,19 +97,6 @@ model DocumentDeadline {
   @@map("document_deadline")
 }
 
-model Notification {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  title       String
-  description String
-
-  userId String @map("user_id")
-
-  @@map("notifications")
-}
-
 enum ActionLogTypes {
   CREATE_TEAM
   UPDATE_TEAM

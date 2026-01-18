@@ -43,6 +43,7 @@ model User {
 
   refreshToken            RefreshToken?
   avatar                  Avatar?
+  notifications           Notification[]
   notificationPreferences NotificationPreference?
 
   @@map("users")
@@ -104,8 +105,9 @@ model Team {
 
   name String @unique
 
-  logo        Logo?
-  teamMembers TeamMember[]
+  logo          Logo?
+  notifications Notification[]
+  teamMembers   TeamMember[]
 
   @@map("teams")
 }
@@ -149,4 +151,33 @@ model Logo {
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("logos")
+}
+
+enum NotificationTypes {
+  INVITE_USER_IN_TEAM
+  DELETE_USER_FROM_TEAM
+
+  DELETE_DOCUMENT
+
+  DELETE_TEAM
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  type NotificationTypes
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  teamName String?
+  teamId   String? @map("team_id")
+  team     Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  documentName String?
+  documentId   String? @map("document_id")
+
+  @@map("notifications")
 }

@@ -46,7 +46,7 @@ const createTeamBodySchema = defaultTeamSchema
 type CreateTeamBodyInput = z.infer<typeof createTeamBodySchema>;
 
 const updateTeamBodySchema = createTeamBodySchema.partial().extend({
-    teamMembersToDeleteIds: z.array(z.uuid()).optional(),
+    teamMembersUsersToDeleteIds: z.array(z.uuid()).optional(),
 });
 
 type UpdateTeamBodyInput = z.infer<typeof updateTeamBodySchema>;

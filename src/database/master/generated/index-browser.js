@@ -192,6 +192,18 @@ exports.Prisma.LogoScalarFieldEnum = {
     teamId: "teamId",
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    type: "type",
+    userId: "userId",
+    teamName: "teamName",
+    teamId: "teamId",
+    documentName: "documentName",
+    documentId: "documentId",
+};
+
 exports.Prisma.SortOrder = {
     asc: "asc",
     desc: "desc",
@@ -200,6 +212,11 @@ exports.Prisma.SortOrder = {
 exports.Prisma.QueryMode = {
     default: "default",
     insensitive: "insensitive",
+};
+
+exports.Prisma.NullsOrder = {
+    first: "first",
+    last: "last",
 };
 exports.UserRoles = exports.$Enums.UserRoles = {
     SUPER_ADMIN: "SUPER_ADMIN",
@@ -218,6 +235,13 @@ exports.TeamMemberRole = exports.$Enums.TeamMemberRole = {
     STAFF: "STAFF",
 };
 
+exports.NotificationTypes = exports.$Enums.NotificationTypes = {
+    INVITE_USER_IN_TEAM: "INVITE_USER_IN_TEAM",
+    DELETE_USER_FROM_TEAM: "DELETE_USER_FROM_TEAM",
+    DELETE_DOCUMENT: "DELETE_DOCUMENT",
+    DELETE_TEAM: "DELETE_TEAM",
+};
+
 exports.Prisma.ModelName = {
     User: "User",
     RefreshToken: "RefreshToken",
@@ -226,6 +250,7 @@ exports.Prisma.ModelName = {
     Team: "Team",
     TeamMember: "TeamMember",
     Logo: "Logo",
+    Notification: "Notification",
 };
 
 /**
