@@ -197,6 +197,7 @@ exports.Prisma.NotificationScalarFieldEnum = {
     createdAt: "createdAt",
     updatedAt: "updatedAt",
     type: "type",
+    readAt: "readAt",
     userId: "userId",
     teamName: "teamName",
     teamId: "teamId",

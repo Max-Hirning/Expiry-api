@@ -12,6 +12,8 @@ import { DocumentService } from "@/modules/document/document.service.js";
 import { DocumentHandler } from "@/modules/document/document.handler.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 import { ApplicationHandler } from "@/modules/application/application.handler.js";
+import { NotificationService } from "@/modules/notification/notification.service.js";
+import { NotificationHandler } from "@/modules/notification/notification.handler.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
@@ -24,6 +26,9 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    notificationService: NotificationService;
+    notificationHandler: NotificationHandler;
 
     teamMemberRepository: TeamMemberRepository;
 

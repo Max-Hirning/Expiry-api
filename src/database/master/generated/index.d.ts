@@ -11668,6 +11668,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         type: $Enums.NotificationTypes | null;
+        readAt: Date | null;
         userId: string | null;
         teamName: string | null;
         teamId: string | null;
@@ -11680,6 +11681,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         type: $Enums.NotificationTypes | null;
+        readAt: Date | null;
         userId: string | null;
         teamName: string | null;
         teamId: string | null;
@@ -11692,6 +11694,7 @@ export namespace Prisma {
         createdAt: number;
         updatedAt: number;
         type: number;
+        readAt: number;
         userId: number;
         teamName: number;
         teamId: number;
@@ -11705,6 +11708,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         type?: true;
+        readAt?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -11717,6 +11721,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         type?: true;
+        readAt?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -11729,6 +11734,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         type?: true;
+        readAt?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -11823,6 +11829,7 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         type: $Enums.NotificationTypes;
+        readAt: Date | null;
         userId: string;
         teamName: string | null;
         teamId: string | null;
@@ -11858,6 +11865,7 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             type?: boolean;
+            readAt?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -11877,6 +11885,7 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             type?: boolean;
+            readAt?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -11896,6 +11905,7 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             type?: boolean;
+            readAt?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -11912,6 +11922,7 @@ export namespace Prisma {
         createdAt?: boolean;
         updatedAt?: boolean;
         type?: boolean;
+        readAt?: boolean;
         userId?: boolean;
         teamName?: boolean;
         teamId?: boolean;
@@ -11926,6 +11937,7 @@ export namespace Prisma {
         | "createdAt"
         | "updatedAt"
         | "type"
+        | "readAt"
         | "userId"
         | "teamName"
         | "teamId"
@@ -11966,6 +11978,7 @@ export namespace Prisma {
                 createdAt: Date;
                 updatedAt: Date;
                 type: $Enums.NotificationTypes;
+                readAt: Date | null;
                 userId: string;
                 teamName: string | null;
                 teamId: string | null;
@@ -12597,6 +12610,7 @@ export namespace Prisma {
         readonly createdAt: FieldRef<"Notification", "DateTime">;
         readonly updatedAt: FieldRef<"Notification", "DateTime">;
         readonly type: FieldRef<"Notification", "NotificationTypes">;
+        readonly readAt: FieldRef<"Notification", "DateTime">;
         readonly userId: FieldRef<"Notification", "String">;
         readonly teamName: FieldRef<"Notification", "String">;
         readonly teamId: FieldRef<"Notification", "String">;
@@ -13193,6 +13207,7 @@ export namespace Prisma {
         createdAt: "createdAt";
         updatedAt: "updatedAt";
         type: "type";
+        readAt: "readAt";
         userId: "userId";
         teamName: "teamName";
         teamId: "teamId";
@@ -13985,6 +14000,7 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFilter<"Notification">
             | $Enums.NotificationTypes;
+        readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null;
         userId?: StringFilter<"Notification"> | string;
         teamName?: StringNullableFilter<"Notification"> | string | null;
         teamId?: StringNullableFilter<"Notification"> | string | null;
@@ -13999,6 +14015,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         type?: SortOrder;
+        readAt?: SortOrderInput | SortOrder;
         userId?: SortOrder;
         teamName?: SortOrderInput | SortOrder;
         teamId?: SortOrderInput | SortOrder;
@@ -14019,6 +14036,11 @@ export namespace Prisma {
             type?:
                 | EnumNotificationTypesFilter<"Notification">
                 | $Enums.NotificationTypes;
+            readAt?:
+                | DateTimeNullableFilter<"Notification">
+                | Date
+                | string
+                | null;
             userId?: StringFilter<"Notification"> | string;
             teamName?: StringNullableFilter<"Notification"> | string | null;
             teamId?: StringNullableFilter<"Notification"> | string | null;
@@ -14035,6 +14057,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         type?: SortOrder;
+        readAt?: SortOrderInput | SortOrder;
         userId?: SortOrder;
         teamName?: SortOrderInput | SortOrder;
         teamId?: SortOrderInput | SortOrder;
@@ -14065,6 +14088,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesWithAggregatesFilter<"Notification">
             | $Enums.NotificationTypes;
+        readAt?:
+            | DateTimeNullableWithAggregatesFilter<"Notification">
+            | Date
+            | string
+            | null;
         userId?: StringWithAggregatesFilter<"Notification"> | string;
         teamName?:
             | StringNullableWithAggregatesFilter<"Notification">
@@ -14663,6 +14691,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -14675,6 +14704,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         userId: string;
         teamName?: string | null;
         teamId?: string | null;
@@ -14689,6 +14719,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -14703,6 +14738,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -14715,6 +14755,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         userId: string;
         teamName?: string | null;
         teamId?: string | null;
@@ -14729,6 +14770,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -14741,6 +14787,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -15255,6 +15306,21 @@ export namespace Prisma {
             | $Enums.NotificationTypes;
     };
 
+    export type DateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
+    };
+
     export type StringNullableFilter<$PrismaModel = never> = {
         equals?: string | StringFieldRefInput<$PrismaModel> | null;
         in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
@@ -15285,6 +15351,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         type?: SortOrder;
+        readAt?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -15297,6 +15364,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         type?: SortOrder;
+        readAt?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -15309,6 +15377,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         type?: SortOrder;
+        readAt?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -15334,6 +15403,28 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumNotificationTypesFilter<$PrismaModel>;
         _max?: NestedEnumNotificationTypesFilter<$PrismaModel>;
+    };
+
+    export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
     };
 
     export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -16154,6 +16245,10 @@ export namespace Prisma {
         set?: $Enums.NotificationTypes;
     };
 
+    export type NullableDateTimeFieldUpdateOperationsInput = {
+        set?: Date | string | null;
+    };
+
     export type NullableStringFieldUpdateOperationsInput = {
         set?: string | null;
     };
@@ -16412,6 +16507,21 @@ export namespace Prisma {
             | $Enums.NotificationTypes;
     };
 
+    export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
+    };
+
     export type NestedStringNullableFilter<$PrismaModel = never> = {
         equals?: string | StringFieldRefInput<$PrismaModel> | null;
         in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
@@ -16446,6 +16556,41 @@ export namespace Prisma {
         _max?: NestedEnumNotificationTypesFilter<$PrismaModel>;
     };
 
+    export type NestedDateTimeNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
+    };
+
+    export type NestedIntNullableFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel> | null;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
+    };
+
     export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> =
         {
             equals?: string | StringFieldRefInput<$PrismaModel> | null;
@@ -16466,17 +16611,6 @@ export namespace Prisma {
             _min?: NestedStringNullableFilter<$PrismaModel>;
             _max?: NestedStringNullableFilter<$PrismaModel>;
         };
-
-    export type NestedIntNullableFilter<$PrismaModel = never> = {
-        equals?: number | IntFieldRefInput<$PrismaModel> | null;
-        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        lt?: number | IntFieldRefInput<$PrismaModel>;
-        lte?: number | IntFieldRefInput<$PrismaModel>;
-        gt?: number | IntFieldRefInput<$PrismaModel>;
-        gte?: number | IntFieldRefInput<$PrismaModel>;
-        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
-    };
 
     export type TeamMemberCreateWithoutUserInput = {
         id?: string;
@@ -16570,6 +16704,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -16581,6 +16716,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         teamName?: string | null;
         teamId?: string | null;
         documentName?: string | null;
@@ -16790,6 +16926,7 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFilter<"Notification">
             | $Enums.NotificationTypes;
+        readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null;
         userId?: StringFilter<"Notification"> | string;
         teamName?: StringNullableFilter<"Notification"> | string | null;
         teamId?: StringNullableFilter<"Notification"> | string | null;
@@ -17164,6 +17301,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -17175,6 +17313,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         userId: string;
         teamName?: string | null;
         documentName?: string | null;
@@ -17724,6 +17863,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         teamName?: string | null;
         teamId?: string | null;
         documentName?: string | null;
@@ -17767,6 +17907,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17780,6 +17925,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17793,6 +17943,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17804,6 +17959,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
+        readAt?: Date | string | null;
         userId: string;
         teamName?: string | null;
         documentName?: string | null;
@@ -17825,6 +17981,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17838,6 +17999,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17851,6 +18017,11 @@ export namespace Prisma {
         type?:
             | EnumNotificationTypesFieldUpdateOperationsInput
             | $Enums.NotificationTypes;
+        readAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;

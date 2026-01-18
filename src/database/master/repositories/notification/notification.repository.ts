@@ -7,6 +7,7 @@ export const defaultNotificationSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    readAt: true,
     type: true,
     userId: true,
     teamName: true,

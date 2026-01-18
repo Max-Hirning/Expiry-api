@@ -167,7 +167,8 @@ model Notification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  type NotificationTypes
+  type   NotificationTypes
+  readAt DateTime?         @map("read_at")
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
