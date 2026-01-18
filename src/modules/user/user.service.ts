@@ -192,6 +192,21 @@ export const createService = (
                             },
                         },
                     }),
+                    ...(body.notificationPreferences && {
+                        notificationPreferences: {
+                            update: {
+                                teamNews: body.notificationPreferences.teamNews,
+                                documentNews:
+                                    body.notificationPreferences.documentNews,
+                                inAppNotifications:
+                                    body.notificationPreferences
+                                        .inAppNotifications,
+                                emailNotifications:
+                                    body.notificationPreferences
+                                        .emailNotifications,
+                            },
+                        },
+                    }),
                 },
                 select: defaultUserSelector,
             });
@@ -296,10 +311,10 @@ export const createService = (
                     }),
                     notificationPreferences: {
                         create: {
-                            offerUpdates: true,
-                            companyNews: true,
-                            comments: true,
-                            purchases: true,
+                            teamNews: true,
+                            documentNews: true,
+                            inAppNotifications: true,
+                            emailNotifications: true,
                         },
                     },
                 },

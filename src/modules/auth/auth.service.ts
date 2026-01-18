@@ -260,10 +260,10 @@ export const createAuthService = (
                                 }),
                                 notificationPreferences: {
                                     create: {
-                                        offerUpdates: true,
-                                        companyNews: true,
-                                        comments: true,
-                                        purchases: true,
+                                        teamNews: true,
+                                        documentNews: true,
+                                        inAppNotifications: true,
+                                        emailNotifications: true,
                                     },
                                 },
                             },

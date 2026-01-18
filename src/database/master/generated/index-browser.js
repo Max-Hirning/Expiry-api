@@ -155,10 +155,10 @@ exports.Prisma.NotificationPreferenceScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
     updatedAt: "updatedAt",
-    offerUpdates: "offerUpdates",
-    companyNews: "companyNews",
-    comments: "comments",
-    purchases: "purchases",
+    teamNews: "teamNews",
+    documentNews: "documentNews",
+    inAppNotifications: "inAppNotifications",
+    emailNotifications: "emailNotifications",
     userId: "userId",
 };
 

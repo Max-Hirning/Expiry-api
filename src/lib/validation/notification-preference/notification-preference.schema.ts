@@ -4,10 +4,10 @@ const defaultNotificationPreferenceSchema = z.object({
     id: z.uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    offerUpdates: z.boolean(),
-    companyNews: z.boolean(),
-    comments: z.boolean(),
-    purchases: z.boolean(),
+    teamNews: z.boolean(),
+    documentNews: z.boolean(),
+    inAppNotifications: z.boolean(),
+    emailNotifications: z.boolean(),
 });
 
 export { defaultNotificationPreferenceSchema };

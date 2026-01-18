@@ -38,6 +38,7 @@ const updateUserBodySchema = defaultUserSchema
         fullName: true,
         email: true,
         phoneNumber: true,
+        notificationPreferences: true,
     })
     .extend({
         avatar: defaultAvatarSchema.pick({

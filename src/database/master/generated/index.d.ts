@@ -6081,10 +6081,10 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
-        offerUpdates: boolean | null;
-        companyNews: boolean | null;
-        comments: boolean | null;
-        purchases: boolean | null;
+        teamNews: boolean | null;
+        documentNews: boolean | null;
+        inAppNotifications: boolean | null;
+        emailNotifications: boolean | null;
         userId: string | null;
     };
 
@@ -6092,10 +6092,10 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
-        offerUpdates: boolean | null;
-        companyNews: boolean | null;
-        comments: boolean | null;
-        purchases: boolean | null;
+        teamNews: boolean | null;
+        documentNews: boolean | null;
+        inAppNotifications: boolean | null;
+        emailNotifications: boolean | null;
         userId: string | null;
     };
 
@@ -6103,10 +6103,10 @@ export namespace Prisma {
         id: number;
         createdAt: number;
         updatedAt: number;
-        offerUpdates: number;
-        companyNews: number;
-        comments: number;
-        purchases: number;
+        teamNews: number;
+        documentNews: number;
+        inAppNotifications: number;
+        emailNotifications: number;
         userId: number;
         _all: number;
     };
@@ -6115,10 +6115,10 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
-        offerUpdates?: true;
-        companyNews?: true;
-        comments?: true;
-        purchases?: true;
+        teamNews?: true;
+        documentNews?: true;
+        inAppNotifications?: true;
+        emailNotifications?: true;
         userId?: true;
     };
 
@@ -6126,10 +6126,10 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
-        offerUpdates?: true;
-        companyNews?: true;
-        comments?: true;
-        purchases?: true;
+        teamNews?: true;
+        documentNews?: true;
+        inAppNotifications?: true;
+        emailNotifications?: true;
         userId?: true;
     };
 
@@ -6137,10 +6137,10 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
-        offerUpdates?: true;
-        companyNews?: true;
-        comments?: true;
-        purchases?: true;
+        teamNews?: true;
+        documentNews?: true;
+        inAppNotifications?: true;
+        emailNotifications?: true;
         userId?: true;
         _all?: true;
     };
@@ -6232,10 +6232,10 @@ export namespace Prisma {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
         userId: string;
         _count: NotificationPreferenceCountAggregateOutputType | null;
         _min: NotificationPreferenceMinAggregateOutputType | null;
@@ -6270,10 +6270,10 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
-            offerUpdates?: boolean;
-            companyNews?: boolean;
-            comments?: boolean;
-            purchases?: boolean;
+            teamNews?: boolean;
+            documentNews?: boolean;
+            inAppNotifications?: boolean;
+            emailNotifications?: boolean;
             userId?: boolean;
             user?: boolean | UserDefaultArgs<ExtArgs>;
         },
@@ -6287,10 +6287,10 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
-            offerUpdates?: boolean;
-            companyNews?: boolean;
-            comments?: boolean;
-            purchases?: boolean;
+            teamNews?: boolean;
+            documentNews?: boolean;
+            inAppNotifications?: boolean;
+            emailNotifications?: boolean;
             userId?: boolean;
             user?: boolean | UserDefaultArgs<ExtArgs>;
         },
@@ -6304,10 +6304,10 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
-            offerUpdates?: boolean;
-            companyNews?: boolean;
-            comments?: boolean;
-            purchases?: boolean;
+            teamNews?: boolean;
+            documentNews?: boolean;
+            inAppNotifications?: boolean;
+            emailNotifications?: boolean;
             userId?: boolean;
             user?: boolean | UserDefaultArgs<ExtArgs>;
         },
@@ -6318,10 +6318,10 @@ export namespace Prisma {
         id?: boolean;
         createdAt?: boolean;
         updatedAt?: boolean;
-        offerUpdates?: boolean;
-        companyNews?: boolean;
-        comments?: boolean;
-        purchases?: boolean;
+        teamNews?: boolean;
+        documentNews?: boolean;
+        inAppNotifications?: boolean;
+        emailNotifications?: boolean;
         userId?: boolean;
     };
 
@@ -6331,10 +6331,10 @@ export namespace Prisma {
         | "id"
         | "createdAt"
         | "updatedAt"
-        | "offerUpdates"
-        | "companyNews"
-        | "comments"
-        | "purchases"
+        | "teamNews"
+        | "documentNews"
+        | "inAppNotifications"
+        | "emailNotifications"
         | "userId",
         ExtArgs["result"]["notificationPreference"]
     >;
@@ -6366,10 +6366,10 @@ export namespace Prisma {
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
-                offerUpdates: boolean;
-                companyNews: boolean;
-                comments: boolean;
-                purchases: boolean;
+                teamNews: boolean;
+                documentNews: boolean;
+                inAppNotifications: boolean;
+                emailNotifications: boolean;
                 userId: string;
             },
             ExtArgs["result"]["notificationPreference"]
@@ -7015,10 +7015,16 @@ export namespace Prisma {
         readonly id: FieldRef<"NotificationPreference", "String">;
         readonly createdAt: FieldRef<"NotificationPreference", "DateTime">;
         readonly updatedAt: FieldRef<"NotificationPreference", "DateTime">;
-        readonly offerUpdates: FieldRef<"NotificationPreference", "Boolean">;
-        readonly companyNews: FieldRef<"NotificationPreference", "Boolean">;
-        readonly comments: FieldRef<"NotificationPreference", "Boolean">;
-        readonly purchases: FieldRef<"NotificationPreference", "Boolean">;
+        readonly teamNews: FieldRef<"NotificationPreference", "Boolean">;
+        readonly documentNews: FieldRef<"NotificationPreference", "Boolean">;
+        readonly inAppNotifications: FieldRef<
+            "NotificationPreference",
+            "Boolean"
+        >;
+        readonly emailNotifications: FieldRef<
+            "NotificationPreference",
+            "Boolean"
+        >;
         readonly userId: FieldRef<"NotificationPreference", "String">;
     }
 
@@ -13153,10 +13159,10 @@ export namespace Prisma {
         id: "id";
         createdAt: "createdAt";
         updatedAt: "updatedAt";
-        offerUpdates: "offerUpdates";
-        companyNews: "companyNews";
-        comments: "comments";
-        purchases: "purchases";
+        teamNews: "teamNews";
+        documentNews: "documentNews";
+        inAppNotifications: "inAppNotifications";
+        emailNotifications: "emailNotifications";
         userId: "userId";
     };
 
@@ -13666,10 +13672,10 @@ export namespace Prisma {
         id?: StringFilter<"NotificationPreference"> | string;
         createdAt?: DateTimeFilter<"NotificationPreference"> | Date | string;
         updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string;
-        offerUpdates?: BoolFilter<"NotificationPreference"> | boolean;
-        companyNews?: BoolFilter<"NotificationPreference"> | boolean;
-        comments?: BoolFilter<"NotificationPreference"> | boolean;
-        purchases?: BoolFilter<"NotificationPreference"> | boolean;
+        teamNews?: BoolFilter<"NotificationPreference"> | boolean;
+        documentNews?: BoolFilter<"NotificationPreference"> | boolean;
+        inAppNotifications?: BoolFilter<"NotificationPreference"> | boolean;
+        emailNotifications?: BoolFilter<"NotificationPreference"> | boolean;
         userId?: StringFilter<"NotificationPreference"> | string;
         user?: XOR<UserScalarRelationFilter, UserWhereInput>;
     };
@@ -13678,10 +13684,10 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
-        offerUpdates?: SortOrder;
-        companyNews?: SortOrder;
-        comments?: SortOrder;
-        purchases?: SortOrder;
+        teamNews?: SortOrder;
+        documentNews?: SortOrder;
+        inAppNotifications?: SortOrder;
+        emailNotifications?: SortOrder;
         userId?: SortOrder;
         user?: UserOrderByWithRelationInput;
     };
@@ -13705,10 +13711,10 @@ export namespace Prisma {
                 | DateTimeFilter<"NotificationPreference">
                 | Date
                 | string;
-            offerUpdates?: BoolFilter<"NotificationPreference"> | boolean;
-            companyNews?: BoolFilter<"NotificationPreference"> | boolean;
-            comments?: BoolFilter<"NotificationPreference"> | boolean;
-            purchases?: BoolFilter<"NotificationPreference"> | boolean;
+            teamNews?: BoolFilter<"NotificationPreference"> | boolean;
+            documentNews?: BoolFilter<"NotificationPreference"> | boolean;
+            inAppNotifications?: BoolFilter<"NotificationPreference"> | boolean;
+            emailNotifications?: BoolFilter<"NotificationPreference"> | boolean;
             user?: XOR<UserScalarRelationFilter, UserWhereInput>;
         },
         "id" | "userId"
@@ -13718,10 +13724,10 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
-        offerUpdates?: SortOrder;
-        companyNews?: SortOrder;
-        comments?: SortOrder;
-        purchases?: SortOrder;
+        teamNews?: SortOrder;
+        documentNews?: SortOrder;
+        inAppNotifications?: SortOrder;
+        emailNotifications?: SortOrder;
         userId?: SortOrder;
         _count?: NotificationPreferenceCountOrderByAggregateInput;
         _max?: NotificationPreferenceMaxOrderByAggregateInput;
@@ -13745,14 +13751,14 @@ export namespace Prisma {
             | DateTimeWithAggregatesFilter<"NotificationPreference">
             | Date
             | string;
-        offerUpdates?:
+        teamNews?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean;
+        documentNews?:
             | BoolWithAggregatesFilter<"NotificationPreference">
             | boolean;
-        companyNews?:
+        inAppNotifications?:
             | BoolWithAggregatesFilter<"NotificationPreference">
             | boolean;
-        comments?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean;
-        purchases?:
+        emailNotifications?:
             | BoolWithAggregatesFilter<"NotificationPreference">
             | boolean;
         userId?: StringWithAggregatesFilter<"NotificationPreference"> | string;
@@ -14387,10 +14393,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
         user: UserCreateNestedOneWithoutNotificationPreferencesInput;
     };
 
@@ -14398,10 +14404,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
         userId: string;
     };
 
@@ -14409,10 +14415,10 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
         user?: UserUpdateOneRequiredWithoutNotificationPreferencesNestedInput;
     };
 
@@ -14420,10 +14426,10 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -14431,10 +14437,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
         userId: string;
     };
 
@@ -14442,20 +14448,20 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
     };
 
     export type NotificationPreferenceUncheckedUpdateManyInput = {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -15104,10 +15110,10 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
-        offerUpdates?: SortOrder;
-        companyNews?: SortOrder;
-        comments?: SortOrder;
-        purchases?: SortOrder;
+        teamNews?: SortOrder;
+        documentNews?: SortOrder;
+        inAppNotifications?: SortOrder;
+        emailNotifications?: SortOrder;
         userId?: SortOrder;
     };
 
@@ -15115,10 +15121,10 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
-        offerUpdates?: SortOrder;
-        companyNews?: SortOrder;
-        comments?: SortOrder;
-        purchases?: SortOrder;
+        teamNews?: SortOrder;
+        documentNews?: SortOrder;
+        inAppNotifications?: SortOrder;
+        emailNotifications?: SortOrder;
         userId?: SortOrder;
     };
 
@@ -15126,10 +15132,10 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
-        offerUpdates?: SortOrder;
-        companyNews?: SortOrder;
-        comments?: SortOrder;
-        purchases?: SortOrder;
+        teamNews?: SortOrder;
+        documentNews?: SortOrder;
+        inAppNotifications?: SortOrder;
+        emailNotifications?: SortOrder;
         userId?: SortOrder;
     };
 
@@ -16742,20 +16748,20 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
     };
 
     export type NotificationPreferenceUncheckedCreateWithoutUserInput = {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        offerUpdates: boolean;
-        companyNews: boolean;
-        comments: boolean;
-        purchases: boolean;
+        teamNews: boolean;
+        documentNews: boolean;
+        inAppNotifications: boolean;
+        emailNotifications: boolean;
     };
 
     export type NotificationPreferenceCreateOrConnectWithoutUserInput = {
@@ -16958,20 +16964,20 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
     };
 
     export type NotificationPreferenceUncheckedUpdateWithoutUserInput = {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        offerUpdates?: BoolFieldUpdateOperationsInput | boolean;
-        companyNews?: BoolFieldUpdateOperationsInput | boolean;
-        comments?: BoolFieldUpdateOperationsInput | boolean;
-        purchases?: BoolFieldUpdateOperationsInput | boolean;
+        teamNews?: BoolFieldUpdateOperationsInput | boolean;
+        documentNews?: BoolFieldUpdateOperationsInput | boolean;
+        inAppNotifications?: BoolFieldUpdateOperationsInput | boolean;
+        emailNotifications?: BoolFieldUpdateOperationsInput | boolean;
     };
 
     export type UserCreateWithoutRefreshTokenInput = {
