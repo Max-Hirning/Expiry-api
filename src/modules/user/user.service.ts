@@ -10,6 +10,7 @@ import { invitedRoles, toggleStatuses } from "./user.constants.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
+import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultUserSelector,
     UserRepository,
@@ -69,6 +70,7 @@ export type UserService = {
 export const createService = (
     userRepository: UserRepository,
     authService: AuthService,
+    notificationRepository: NotificationRepository,
     jwt: JWT,
     log: FastifyBaseLogger,
     gcpService: GcpService,
@@ -78,15 +80,23 @@ export const createService = (
     const getUser = async (
         userId: string
     ): Promise<FetchUserResponse["data"]["user"]> => {
-        const user = await userRepository.findUniqueOrFail({
-            where: {
-                id: userId,
-                notificationPreferences: {
-                    isNot: null,
+        const [user, unReadNotifications] = await Promise.all([
+            userRepository.findUniqueOrFail({
+                where: {
+                    id: userId,
+                    notificationPreferences: {
+                        isNot: null,
+                    },
                 },
-            },
-            select: defaultUserSelector,
-        });
+                select: defaultUserSelector,
+            }),
+            notificationRepository.count({
+                where: {
+                    userId,
+                    readAt: null,
+                },
+            }),
+        ]);
 
         const notificationPreferences = user.notificationPreferences;
 
@@ -98,6 +108,7 @@ export const createService = (
 
         return {
             ...user,
+            unReadNotifications,
             notificationPreferences,
         };
     };

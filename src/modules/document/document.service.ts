@@ -7,17 +7,19 @@ import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { ApplicationService } from "../application/application.service.js";
+import { Prisma as PrismaMaster } from "@/database/master/generated/index.js";
+import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
     NotificationTypes,
     TeamMemberRole,
 } from "@/database/master/generated/index.js";
 import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
+import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
-    Prisma,
+    Prisma as PrismaTeam,
 } from "@/database/team/generated/index.js";
-import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultTeamMemberSelector,
     TeamMemberRepository,
@@ -113,7 +115,12 @@ export const createDocumentService = (
             },
             select: {
                 ...defaultTeamMemberSelector,
-                user: true,
+                user: {
+                    select: {
+                        ...defaultUserSelector,
+                        notificationPreferences: true,
+                    },
+                },
                 team: true,
             },
         });
@@ -163,14 +170,25 @@ export const createDocumentService = (
         );
 
         await notificationRepository.createMany({
-            data: teamMembers.map(({ user, team }) => ({
-                type: NotificationTypes.DELETE_DOCUMENT,
-                userId: user.id,
-                teamName: team.name,
-                teamId: team.id,
-                documentName: document.name,
-                documentId: document.id,
-            })),
+            data: teamMembers.reduce<
+                PrismaMaster.NotificationCreateManyInput[]
+            >((res, { user, team }) => {
+                if (
+                    user.notificationPreferences?.documentNews &&
+                    user.notificationPreferences?.inAppNotifications
+                ) {
+                    res.push({
+                        type: NotificationTypes.DELETE_DOCUMENT,
+                        userId: user.id,
+                        teamName: team.name,
+                        teamId: team.id,
+                        documentName: document.name,
+                        documentId: document.id,
+                    });
+                }
+
+                return res;
+            }, []),
         });
 
         try {
@@ -195,7 +213,7 @@ export const createDocumentService = (
     getDocuments: async ({ query, params }) => {
         const skip = (query.page - 1) * query.perPage;
 
-        const where: Prisma.DocumentWhereInput = {
+        const where: PrismaTeam.DocumentWhereInput = {
             ...(query.search && {
                 OR: [
                     {
@@ -262,7 +280,7 @@ export const createDocumentService = (
                                     [query.sortField]: query.sortOrder,
                                 }
                                 : {
-                                    createdAt: Prisma.SortOrder.desc,
+                                    createdAt: PrismaTeam.SortOrder.desc,
                                 }),
                         },
                         select: defaultDocumentSelector,

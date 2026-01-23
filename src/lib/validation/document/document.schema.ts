@@ -19,6 +19,9 @@ const defaultDocumentSchema = z.object({
     name: z.string(),
     expiresAt: z.date().nullable(),
     riskLevel: z.enum(RiskLevel).nullable(),
+    documentExtractedFields: z.array(defaultDocumentExtractedFieldSchema),
+    files: z.array(defaultFileSchema),
+    tags: z.array(z.string()),
 });
 
 const documentParamsSchema = z.object({
@@ -118,7 +121,13 @@ type FetchDocumentsQueryInput = z.infer<typeof fetchDocumentsQuerySchema>;
 const fetchDocumentsResponseSchema = z.object({
     message: z.string(),
     data: z.object({
-        documents: z.array(defaultDocumentSchema),
+        documents: z.array(
+            defaultDocumentSchema.omit({
+                documentExtractedFields: true,
+                files: true,
+                tags: true,
+            })
+        ),
         pagination: paginationResponseSchema,
     }),
 });

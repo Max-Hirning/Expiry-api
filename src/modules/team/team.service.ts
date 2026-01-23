@@ -106,6 +106,7 @@ export const createTeamService = (
                 id: true,
                 fullName: true,
                 avatar: true,
+                notificationPreferences: true,
             },
         });
 
@@ -122,7 +123,11 @@ export const createTeamService = (
                     ({ userId }) => userId === user.id
                 );
 
-                if (foundUser) {
+                if (
+                    foundUser &&
+                    user.notificationPreferences?.teamNews &&
+                    user.notificationPreferences?.inAppNotifications
+                ) {
                     res.actionLogsData.push({
                         type: ActionLogTypes.ADD_USER,
                         actorId: initiator.id,

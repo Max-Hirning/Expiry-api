@@ -19,6 +19,7 @@ const defaultUserSchema = z.object({
     status: z.enum(UserStatuses),
     avatar: defaultAvatarSchema.nullable(),
     notificationPreferences: defaultNotificationPreferenceSchema,
+    unReadNotifications: z.int(),
 });
 
 const inviteUserBodySchema = defaultUserSchema
@@ -115,7 +116,11 @@ type FetchInvitedUserQueryInput = z.infer<typeof fetchInvitedUserQuerySchema>;
 const fetchUsersResponseSchema = z.object({
     message: z.string(),
     data: z.object({
-        users: z.array(defaultUserSchema),
+        users: z.array(
+            defaultUserSchema.omit({
+                unReadNotifications: true,
+            })
+        ),
         pagination: paginationResponseSchema,
     }),
 });
