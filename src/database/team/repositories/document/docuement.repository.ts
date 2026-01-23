@@ -9,7 +9,6 @@ export const defaultDocumentSelector = {
     createdAt: true,
     updatedAt: true,
     status: true,
-    tags: true,
     name: true,
     expiresAt: true,
     riskLevel: true,

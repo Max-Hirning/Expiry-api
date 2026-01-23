@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
+import { defaultFileSchema } from "../file/file.schema.js";
 import {
     DocumentStatuses,
     RiskLevel,
@@ -8,6 +9,7 @@ import {
     paginationQuerySchema,
     paginationResponseSchema,
 } from "../pagination/pagination.schema.js";
+import { defaultDocumentExtractedFieldSchema } from "../document-extracted-field/document-extracted-field.schema.js";
 
 const defaultDocumentSchema = z.object({
     id: z.uuid(),
@@ -51,6 +53,9 @@ const createDocumentBodySchema = defaultDocumentSchema
 type CreateDocumentBodyInput = z.infer<typeof createDocumentBodySchema>;
 
 const updateDocumentBodySchema = createDocumentBodySchema
+    .omit({
+        files: true,
+    })
     .extend({
         tagsToDelete: z.array(z.string()),
     })
@@ -75,7 +80,13 @@ type UpdateDocumentResponse = z.infer<typeof updateDocumentResponseSchema>;
 const fetchDocumentResponseSchema = z.object({
     message: z.string(),
     data: z.object({
-        document: defaultDocumentSchema,
+        document: defaultDocumentSchema.extend({
+            documentExtractedFields: z.array(
+                defaultDocumentExtractedFieldSchema
+            ),
+            files: z.array(defaultFileSchema),
+            tags: z.array(z.string()),
+        }),
     }),
 });
 

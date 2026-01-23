@@ -121,7 +121,6 @@ exports.Prisma.DocumentScalarFieldEnum = {
     createdAt: "createdAt",
     updatedAt: "updatedAt",
     status: "status",
-    tags: "tags",
     name: "name",
     expiresAt: "expiresAt",
     riskLevel: "riskLevel",

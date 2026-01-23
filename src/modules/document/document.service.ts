@@ -75,13 +75,27 @@ export const createDocumentService = (
                     where: {
                         id: params.documentId,
                     },
-                    select: defaultDocumentSelector,
+                    select: {
+                        ...defaultDocumentSelector,
+                        files: true,
+                        documentExtractedFields: true,
+                        documentTags: {
+                            select: {
+                                tag: true,
+                            },
+                        },
+                    },
                 })
         );
 
         return {
             message: "Document fetched successfully.",
-            data: { document },
+            data: {
+                document: {
+                    ...document,
+                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                },
+            },
         };
     },
 
@@ -122,6 +136,16 @@ export const createDocumentService = (
                     where: {
                         id: params.documentId,
                     },
+                    select: {
+                        ...defaultDocumentSelector,
+                        files: true,
+                        documentExtractedFields: true,
+                        documentTags: {
+                            select: {
+                                tag: true,
+                            },
+                        },
+                    },
                 });
 
                 await tx.actionLog.create({
@@ -159,7 +183,12 @@ export const createDocumentService = (
 
         return {
             message: "Document deleted successfully.",
-            data: { document },
+            data: {
+                document: {
+                    ...document,
+                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                },
+            },
         };
     },
 
@@ -346,6 +375,16 @@ export const createDocumentService = (
                         status: DocumentStatuses.PROCESSING,
                         name: body.name,
                     },
+                    select: {
+                        ...defaultDocumentSelector,
+                        files: true,
+                        documentExtractedFields: true,
+                        documentTags: {
+                            select: {
+                                tag: true,
+                            },
+                        },
+                    },
                 });
 
                 let tagsIds = [...existedTagsIds];
@@ -404,7 +443,10 @@ export const createDocumentService = (
         return {
             message: "Document created successfully.",
             data: {
-                document,
+                document: {
+                    ...document,
+                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                },
             },
         };
     },
@@ -449,44 +491,8 @@ export const createDocumentService = (
             }
         );
 
-        const documentsUploadPayload = await Promise.all(
-            (body.files || []).map(async (file) => {
-                const documentUploadPayload = await gcpService.uploadFile({
-                    keyPayload: {
-                        type: FileTypes.DOCUMENT,
-                        documentId: params.documentId,
-                        teamId: params.teamId,
-                        fileName: file.id,
-                    },
-                    mimeType: file.mimeType,
-                });
-
-                const documentReadPayload = await gcpService.getFileUrl({
-                    key: documentUploadPayload.key,
-                    type: FileTypes.DOCUMENT,
-                });
-
-                return {
-                    ...file,
-                    ...documentReadPayload,
-                    key: documentUploadPayload.key,
-                    uploadUrl: documentUploadPayload.url,
-                };
-            })
-        );
-
         const document = await withRepositories([client], async (client) =>
             client.$transaction(async (tx) => {
-                const document = await tx.document.update({
-                    where: {
-                        id: params.documentId,
-                    },
-                    data: {
-                        tags: body.tags,
-                        name: body.name,
-                    },
-                });
-
                 let tagsIds = [...existedTagsIds];
 
                 if (newTags.length > 0) {
@@ -524,19 +530,6 @@ export const createDocumentService = (
                     });
                 }
 
-                await tx.file.createMany({
-                    data: documentsUploadPayload.map((file) => ({
-                        key: file.key,
-                        fileSize: file.fileSize,
-                        mimeType: file.mimeType,
-                        url: file.url,
-                        urlExpiresAt: file.expiredAt,
-                        width: file.width,
-                        height: file.height,
-                        documentId: document.id,
-                    })),
-                });
-
                 const updatedObjects: string[] = [];
 
                 if (body.name) {
@@ -546,6 +539,25 @@ export const createDocumentService = (
                 if (body.tags) {
                     updatedObjects.push("tags");
                 }
+
+                const document = await tx.document.update({
+                    where: {
+                        id: params.documentId,
+                    },
+                    data: {
+                        name: body.name,
+                    },
+                    select: {
+                        ...defaultDocumentSelector,
+                        files: true,
+                        documentExtractedFields: true,
+                        documentTags: {
+                            select: {
+                                tag: true,
+                            },
+                        },
+                    },
+                });
 
                 if (updatedObjects.length > 0) {
                     await tx.actionLog.create({
@@ -566,7 +578,10 @@ export const createDocumentService = (
         return {
             message: "Document updated successfully.",
             data: {
-                document,
+                document: {
+                    ...document,
+                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                },
             },
         };
     },

@@ -43,7 +43,6 @@ model Document {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   status    DocumentStatuses
-  tags      String[]
   name      String           @unique
   expiresAt DateTime?        @map("expires_at")
   riskLevel RiskLevel?       @map("risk_level")

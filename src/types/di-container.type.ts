@@ -15,6 +15,7 @@ import { ApplicationHandler } from "@/modules/application/application.handler.js
 import { TagRepository } from "@/database/team/repositories/tag/tag.repository.js";
 import { NotificationService } from "@/modules/notification/notification.service.js";
 import { NotificationHandler } from "@/modules/notification/notification.handler.js";
+import { FileRepository } from "@/database/team/repositories/file/file.repository.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
@@ -23,11 +24,16 @@ import { ActionLogRepository } from "@/database/team/repositories/action-log/act
 import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
 import { DocumentTagRepository } from "@/database/team/repositories/document-tag/document-tag.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import { DocumentExtractedFieldRepository } from "@/database/team/repositories/document-extracted-field/document-extracted-field.repository.js";
 
 export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    documentExtractedFieldRepository: DocumentExtractedFieldRepository;
+
+    fileRepository: FileRepository;
 
     documentTagRepository: DocumentTagRepository;
 

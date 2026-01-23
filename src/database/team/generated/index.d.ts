@@ -1644,7 +1644,6 @@ export namespace Prisma {
         createdAt: number;
         updatedAt: number;
         status: number;
-        tags: number;
         name: number;
         expiresAt: number;
         riskLevel: number;
@@ -1676,7 +1675,6 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         status?: true;
-        tags?: true;
         name?: true;
         expiresAt?: true;
         riskLevel?: true;
@@ -1765,7 +1763,6 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         status: $Enums.DocumentStatuses;
-        tags: string[];
         name: string;
         expiresAt: Date | null;
         riskLevel: $Enums.RiskLevel | null;
@@ -1796,7 +1793,6 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             status?: boolean;
-            tags?: boolean;
             name?: boolean;
             expiresAt?: boolean;
             riskLevel?: boolean;
@@ -1819,7 +1815,6 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             status?: boolean;
-            tags?: boolean;
             name?: boolean;
             expiresAt?: boolean;
             riskLevel?: boolean;
@@ -1835,7 +1830,6 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             status?: boolean;
-            tags?: boolean;
             name?: boolean;
             expiresAt?: boolean;
             riskLevel?: boolean;
@@ -1848,7 +1842,6 @@ export namespace Prisma {
         createdAt?: boolean;
         updatedAt?: boolean;
         status?: boolean;
-        tags?: boolean;
         name?: boolean;
         expiresAt?: boolean;
         riskLevel?: boolean;
@@ -1861,7 +1854,6 @@ export namespace Prisma {
         | "createdAt"
         | "updatedAt"
         | "status"
-        | "tags"
         | "name"
         | "expiresAt"
         | "riskLevel",
@@ -1901,7 +1893,6 @@ export namespace Prisma {
                 createdAt: Date;
                 updatedAt: Date;
                 status: $Enums.DocumentStatuses;
-                tags: string[];
                 name: string;
                 expiresAt: Date | null;
                 riskLevel: $Enums.RiskLevel | null;
@@ -2550,7 +2541,6 @@ export namespace Prisma {
         readonly createdAt: FieldRef<"Document", "DateTime">;
         readonly updatedAt: FieldRef<"Document", "DateTime">;
         readonly status: FieldRef<"Document", "DocumentStatuses">;
-        readonly tags: FieldRef<"Document", "String[]">;
         readonly name: FieldRef<"Document", "String">;
         readonly expiresAt: FieldRef<"Document", "DateTime">;
         readonly riskLevel: FieldRef<"Document", "RiskLevel">;
@@ -10098,7 +10088,6 @@ export namespace Prisma {
         createdAt: "createdAt";
         updatedAt: "updatedAt";
         status: "status";
-        tags: "tags";
         name: "name";
         expiresAt: "expiresAt";
         riskLevel: "riskLevel";
@@ -10342,7 +10331,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFilter<"Document">
             | $Enums.DocumentStatuses;
-        tags?: StringNullableListFilter<"Document">;
         name?: StringFilter<"Document"> | string;
         expiresAt?: DateTimeNullableFilter<"Document"> | Date | string | null;
         riskLevel?:
@@ -10360,7 +10348,6 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         status?: SortOrder;
-        tags?: SortOrder;
         name?: SortOrder;
         expiresAt?: SortOrderInput | SortOrder;
         riskLevel?: SortOrderInput | SortOrder;
@@ -10382,7 +10369,6 @@ export namespace Prisma {
             status?:
                 | EnumDocumentStatusesFilter<"Document">
                 | $Enums.DocumentStatuses;
-            tags?: StringNullableListFilter<"Document">;
             expiresAt?:
                 | DateTimeNullableFilter<"Document">
                 | Date
@@ -10405,7 +10391,6 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         status?: SortOrder;
-        tags?: SortOrder;
         name?: SortOrder;
         expiresAt?: SortOrderInput | SortOrder;
         riskLevel?: SortOrderInput | SortOrder;
@@ -10428,7 +10413,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesWithAggregatesFilter<"Document">
             | $Enums.DocumentStatuses;
-        tags?: StringNullableListFilter<"Document">;
         name?: StringWithAggregatesFilter<"Document"> | string;
         expiresAt?:
             | DateTimeNullableWithAggregatesFilter<"Document">
@@ -10902,7 +10886,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -10917,7 +10900,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -10934,7 +10916,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -10958,7 +10939,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -10980,7 +10960,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -10993,7 +10972,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -11013,7 +10991,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -11499,14 +11476,6 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
     };
 
-    export type StringNullableListFilter<$PrismaModel = never> = {
-        equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        has?: string | StringFieldRefInput<$PrismaModel> | null;
-        hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>;
-        hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>;
-        isEmpty?: boolean;
-    };
-
     export type DateTimeNullableFilter<$PrismaModel = never> = {
         equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
         in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
@@ -11591,7 +11560,6 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         status?: SortOrder;
-        tags?: SortOrder;
         name?: SortOrder;
         expiresAt?: SortOrder;
         riskLevel?: SortOrder;
@@ -12110,10 +12078,6 @@ export namespace Prisma {
         _max?: NestedStringNullableFilter<$PrismaModel>;
     };
 
-    export type DocumentCreatetagsInput = {
-        set: string[];
-    };
-
     export type DocumentExtractedFieldCreateNestedManyWithoutDocumentInput = {
         create?:
             | XOR<
@@ -12249,11 +12213,6 @@ export namespace Prisma {
 
     export type EnumDocumentStatusesFieldUpdateOperationsInput = {
         set?: $Enums.DocumentStatuses;
-    };
-
-    export type DocumentUpdatetagsInput = {
-        set?: string[];
-        push?: string | string[];
     };
 
     export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -13503,7 +13462,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13517,7 +13475,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13583,7 +13540,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13606,7 +13562,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13716,7 +13671,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13730,7 +13684,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13774,7 +13727,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13797,7 +13749,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13818,7 +13769,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13832,7 +13782,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13877,7 +13826,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13900,7 +13848,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -13921,7 +13868,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13935,7 +13881,6 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
         name: string;
         expiresAt?: Date | string | null;
         riskLevel?: $Enums.RiskLevel | null;
@@ -13979,7 +13924,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
@@ -14002,7 +13946,6 @@ export namespace Prisma {
         status?:
             | EnumDocumentStatusesFieldUpdateOperationsInput
             | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
         expiresAt?:
             | NullableDateTimeFieldUpdateOperationsInput
