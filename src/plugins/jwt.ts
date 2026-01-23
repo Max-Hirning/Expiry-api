@@ -24,8 +24,11 @@ const configureJwt = async (fastify: FastifyInstance) => {
     });
 
     fastify.decorate("authorization", async (req: FastifyRequest) => {
-        const accessToken =
-            req.cookies?.access_token || req.headers.authorization;
+        const authHeader = req.headers.authorization;
+
+        const accessToken = authHeader?.startsWith("Bearer ")
+            ? authHeader.slice(7)
+            : authHeader;
 
         const refreshToken =
             req.cookies.refresh_token ||
@@ -38,69 +41,21 @@ const configureJwt = async (fastify: FastifyInstance) => {
             throw new UnauthorizedError("Unauthorized");
         }
 
-        await fastify.prisma.master.refreshToken.deleteMany({
-            where: {
-                expiresAt: {
-                    lte: new Date(),
-                },
-            },
-        });
+        let tokenPayload: Pick<User, "id"> | null = null;
 
         try {
-            const tokenPayload =
-                fastify.jwt.verify<Pick<User, "id">>(accessToken);
-
-            const user = await fastify.prisma.master.user.findUnique({
-                where: {
-                    id: tokenPayload.id,
-                    status: UserStatuses.ACTIVE,
-                    refreshToken: { token: refreshToken },
-                },
-                select: {
-                    ...defaultUserSelector,
-                    avatar: true,
-                },
-            });
-
-            if (!user) {
-                req.createNewTokens = false;
-                req.updateToken = false;
-                req.resetTokens = true;
-                throw new UnauthorizedError("Unauthorized");
-            }
-
-            req.user = user;
-            req.createNewTokens = false;
-            req.updateToken = false;
-            req.resetTokens = false;
+            tokenPayload = fastify.jwt.verify<Pick<User, "id">>(accessToken);
         } catch {
             try {
-                const tokenPayload =
+                tokenPayload =
                     fastify.jwt.verify<Pick<User, "id">>(refreshToken);
 
-                const user = await fastify.prisma.master.user.findUnique({
+                await fastify.prisma.master.refreshToken.findUniqueOrThrow({
                     where: {
-                        id: tokenPayload.id,
-                        status: UserStatuses.ACTIVE,
-                        refreshToken: { token: refreshToken },
-                    },
-                    select: {
-                        ...defaultUserSelector,
-                        avatar: true,
+                        userId: tokenPayload.id,
+                        token: refreshToken,
                     },
                 });
-
-                if (!user) {
-                    req.createNewTokens = false;
-                    req.updateToken = false;
-                    req.resetTokens = true;
-                    throw new UnauthorizedError("Unauthorized");
-                }
-
-                req.user = user;
-                req.createNewTokens = false;
-                req.updateToken = true;
-                req.resetTokens = false;
             } catch {
                 req.createNewTokens = false;
                 req.updateToken = false;
@@ -108,6 +63,30 @@ const configureJwt = async (fastify: FastifyInstance) => {
                 throw new UnauthorizedError("Unauthorized");
             }
         }
+
+        const user = await fastify.prisma.master.user.findUnique({
+            where: {
+                id: tokenPayload.id,
+                status: UserStatuses.ACTIVE,
+                refreshToken: { token: refreshToken },
+            },
+            select: {
+                ...defaultUserSelector,
+                avatar: true,
+            },
+        });
+
+        if (!user) {
+            req.createNewTokens = false;
+            req.updateToken = false;
+            req.resetTokens = true;
+            throw new UnauthorizedError("Unauthorized");
+        }
+
+        req.user = user;
+        req.createNewTokens = false;
+        req.updateToken = false;
+        req.resetTokens = false;
     });
 
     fastify.decorate(
