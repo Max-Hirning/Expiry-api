@@ -13,7 +13,7 @@ type PaginationResponse = z.infer<typeof paginationResponseSchema>;
 
 const paginationQuerySchema = z.object({
     page: z.int(),
-    perPage: z.int().max(25),
+    perPage: z.int().max(25).default(10),
 });
 
 type PaginationQueryInput = z.infer<typeof paginationQuerySchema>;

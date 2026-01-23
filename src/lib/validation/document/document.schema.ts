@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
-import { DocumentStatuses } from "@/database/team/generated/index.js";
+import {
+    DocumentStatuses,
+    RiskLevel,
+} from "@/database/team/generated/index.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
@@ -8,16 +11,12 @@ import {
 
 const defaultDocumentSchema = z.object({
     id: z.uuid(),
-    name: z.string(),
     createdAt: z.date(),
     updatedAt: z.date(),
     status: z.enum(DocumentStatuses),
-    tags: z.array(z.string()),
-    fileSize: z.number(),
-    mimeType: z.string(),
-    url: z.url(),
-    width: z.number().nullable(),
-    height: z.number().nullable(),
+    name: z.string(),
+    expiresAt: z.date().nullable(),
+    riskLevel: z.enum(RiskLevel).nullable(),
 });
 
 const documentParamsSchema = z.object({
@@ -29,29 +28,32 @@ type DocumentParamsInput = z.infer<typeof documentParamsSchema>;
 
 const createDocumentBodySchema = defaultDocumentSchema
     .pick({
-        tags: true,
+        name: true,
     })
     .extend({
-        file: defaultDocumentSchema.pick({
-            mimeType: true,
-            fileSize: true,
-            width: true,
-            name: true,
-            height: true,
-        }),
+        files: z
+            .array(
+                z
+                    .object({
+                        mimeType: z.string(),
+                        fileSize: z.number(),
+                        width: z.number(),
+                        height: z.number(),
+                    })
+                    .extend({
+                        id: z.uuid(),
+                    })
+            )
+            .min(1),
+        tags: z.array(z.string()),
     });
 
 type CreateDocumentBodyInput = z.infer<typeof createDocumentBodySchema>;
 
 const updateDocumentBodySchema = createDocumentBodySchema
-    .pick({
-        tags: true,
+    .extend({
+        tagsToDelete: z.array(z.string()),
     })
-    .extend(
-        defaultDocumentSchema.pick({
-            name: true,
-        }).shape
-    )
     .partial();
 
 type UpdateDocumentBodyInput = z.infer<typeof updateDocumentBodySchema>;
@@ -86,9 +88,10 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
             z.enum(DocumentStatuses).transform((val) => [val]),
             z.array(z.enum(DocumentStatuses)),
         ]),
-        tags: z.union([
-            z.string().transform((val) => [val]),
-            z.array(z.string()),
+        expiresAtDateRange: z.union([z.coerce.date(), z.coerce.date()]),
+        riskLevel: z.union([
+            z.enum(RiskLevel).transform((val) => [val]),
+            z.array(z.enum(RiskLevel)),
         ]),
         sortOrder: z.enum(Prisma.SortOrder),
         sortField: z.enum(Prisma.DocumentScalarFieldEnum),

@@ -16,11 +16,25 @@ datasource db {
   provider = "postgresql"
 }
 
+// Document lifecycle statuses.
+// PROCESSING   — files uploaded, analysis in progress
+// ACTIVE       — document analyzed and valid
+// NEEDS_REVIEW — low confidence or conflicting data detected
+// FAILED       — processing error
+// ARCHIVED     — manually archived by user
+
 enum DocumentStatuses {
   PROCESSING
   ACTIVE
   ARCHIVED
   FAILED
+  NEEDS_REVIEW
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 model Document {
@@ -29,21 +43,61 @@ model Document {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   status    DocumentStatuses
-  tags      String[]
   name      String           @unique
-  key       String           @unique
-  fileSize  Float            @map("file_size")
-  mimeType  String           @map("mime_type")
-  url       String
-  expiredAt DateTime         @map("expired_at")
-  width     Float?
-  height    Float?
+  expiresAt DateTime?        @map("expires_at")
+  riskLevel RiskLevel?       @map("risk_level")
 
   documentExtractedFields DocumentExtractedField[]
-  documentDeadlines       DocumentDeadline[]
   actionLogs              ActionLog[]
+  files                   File[]
+  documentTags            DocumentTag[]
 
   @@map("documents")
+}
+
+model DocumentTag {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  tagId String @map("tag_id")
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@map("document_tags")
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  tag String @unique
+
+  documentTags DocumentTag[]
+
+  @@map("tags")
+}
+
+model File {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  key          String   @unique
+  fileSize     Float    @map("file_size")
+  mimeType     String   @map("mime_type")
+  url          String
+  urlExpiresAt DateTime @map("url_expires_at")
+  width        Float?
+  height       Float?
+
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("files")
 }
 
 enum ExtractedFieldType {
@@ -66,6 +120,7 @@ model DocumentExtractedField {
 
   type       ExtractedFieldType
   value      String
+  // TODO add in migration Confidence score in range [0.0 - 1.0]
   confidence Float
   source     ExtractedFieldSource
 
@@ -73,28 +128,6 @@ model DocumentExtractedField {
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@map("document_extracted_fields")
-}
-
-enum DeadlineStatus {
-  ACTIVE
-  COMPLETED
-  OVERDUE
-}
-
-model DocumentDeadline {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  name      String
-  dueAt     DateTime       @map("due_at")
-  status    DeadlineStatus
-  riskLevel String         @map("risk_level")
-
-  documentId String   @map("document_id")
-  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-
-  @@map("document_deadline")
 }
 
 enum ActionLogTypes {

@@ -123,13 +123,37 @@ exports.Prisma.DocumentScalarFieldEnum = {
     status: "status",
     tags: "tags",
     name: "name",
+    expiresAt: "expiresAt",
+    riskLevel: "riskLevel",
+};
+
+exports.Prisma.DocumentTagScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    documentId: "documentId",
+    tagId: "tagId",
+};
+
+exports.Prisma.TagScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    tag: "tag",
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
     key: "key",
     fileSize: "fileSize",
     mimeType: "mimeType",
     url: "url",
-    expiredAt: "expiredAt",
+    urlExpiresAt: "urlExpiresAt",
     width: "width",
     height: "height",
+    documentId: "documentId",
 };
 
 exports.Prisma.DocumentExtractedFieldScalarFieldEnum = {
@@ -140,17 +164,6 @@ exports.Prisma.DocumentExtractedFieldScalarFieldEnum = {
     value: "value",
     confidence: "confidence",
     source: "source",
-    documentId: "documentId",
-};
-
-exports.Prisma.DocumentDeadlineScalarFieldEnum = {
-    id: "id",
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-    name: "name",
-    dueAt: "dueAt",
-    status: "status",
-    riskLevel: "riskLevel",
     documentId: "documentId",
 };
 
@@ -188,6 +201,13 @@ exports.DocumentStatuses = exports.$Enums.DocumentStatuses = {
     ACTIVE: "ACTIVE",
     ARCHIVED: "ARCHIVED",
     FAILED: "FAILED",
+    NEEDS_REVIEW: "NEEDS_REVIEW",
+};
+
+exports.RiskLevel = exports.$Enums.RiskLevel = {
+    LOW: "LOW",
+    MEDIUM: "MEDIUM",
+    HIGH: "HIGH",
 };
 
 exports.ExtractedFieldType = exports.$Enums.ExtractedFieldType = {
@@ -201,12 +221,6 @@ exports.ExtractedFieldSource = exports.$Enums.ExtractedFieldSource = {
     OCR: "OCR",
     REGEX: "REGEX",
     MANUAL: "MANUAL",
-};
-
-exports.DeadlineStatus = exports.$Enums.DeadlineStatus = {
-    ACTIVE: "ACTIVE",
-    COMPLETED: "COMPLETED",
-    OVERDUE: "OVERDUE",
 };
 
 exports.ActionLogTypes = exports.$Enums.ActionLogTypes = {
@@ -223,8 +237,10 @@ exports.ActionLogTypes = exports.$Enums.ActionLogTypes = {
 
 exports.Prisma.ModelName = {
     Document: "Document",
+    DocumentTag: "DocumentTag",
+    Tag: "Tag",
+    File: "File",
     DocumentExtractedField: "DocumentExtractedField",
-    DocumentDeadline: "DocumentDeadline",
     ActionLog: "ActionLog",
 };
 

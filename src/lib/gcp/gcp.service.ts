@@ -38,7 +38,7 @@ const createGcpService = (config: EnvConfig): GcpService => {
         }
 
         if (p.type === FileTypes.DOCUMENT) {
-            return `teams/${p.teamId}/documents/${p.documentId}`;
+            return `teams/${p.teamId}/documents/${p.documentId}/${p.fileName}`;
         }
 
         throw new InternalServerError("Type for file key is required");

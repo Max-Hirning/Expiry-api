@@ -8,16 +8,11 @@ export const defaultDocumentSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
-    name: true,
     status: true,
     tags: true,
-    key: true,
-    fileSize: true,
-    mimeType: true,
-    url: true,
-    expiredAt: true,
-    width: true,
-    height: true,
+    name: true,
+    expiresAt: true,
+    riskLevel: true,
 } satisfies Prisma.DocumentSelect;
 
 export type DocumentRepository = BaseRepository<"document"> & {

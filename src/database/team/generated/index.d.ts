@@ -17,17 +17,26 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>;
  */
 export type Document = $Result.DefaultSelection<Prisma.$DocumentPayload>;
 /**
+ * Model DocumentTag
+ *
+ */
+export type DocumentTag = $Result.DefaultSelection<Prisma.$DocumentTagPayload>;
+/**
+ * Model Tag
+ *
+ */
+export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>;
+/**
+ * Model File
+ *
+ */
+export type File = $Result.DefaultSelection<Prisma.$FilePayload>;
+/**
  * Model DocumentExtractedField
  *
  */
 export type DocumentExtractedField =
     $Result.DefaultSelection<Prisma.$DocumentExtractedFieldPayload>;
-/**
- * Model DocumentDeadline
- *
- */
-export type DocumentDeadline =
-    $Result.DefaultSelection<Prisma.$DocumentDeadlinePayload>;
 /**
  * Model ActionLog
  *
@@ -43,10 +52,19 @@ export namespace $Enums {
         ACTIVE: "ACTIVE";
         ARCHIVED: "ARCHIVED";
         FAILED: "FAILED";
+        NEEDS_REVIEW: "NEEDS_REVIEW";
     };
 
     export type DocumentStatuses =
         (typeof DocumentStatuses)[keyof typeof DocumentStatuses];
+
+    export const RiskLevel: {
+        LOW: "LOW";
+        MEDIUM: "MEDIUM";
+        HIGH: "HIGH";
+    };
+
+    export type RiskLevel = (typeof RiskLevel)[keyof typeof RiskLevel];
 
     export const ExtractedFieldType: {
         EXPIRY_DATE: "EXPIRY_DATE";
@@ -66,15 +84,6 @@ export namespace $Enums {
 
     export type ExtractedFieldSource =
         (typeof ExtractedFieldSource)[keyof typeof ExtractedFieldSource];
-
-    export const DeadlineStatus: {
-        ACTIVE: "ACTIVE";
-        COMPLETED: "COMPLETED";
-        OVERDUE: "OVERDUE";
-    };
-
-    export type DeadlineStatus =
-        (typeof DeadlineStatus)[keyof typeof DeadlineStatus];
 
     export const ActionLogTypes: {
         CREATE_TEAM: "CREATE_TEAM";
@@ -96,6 +105,10 @@ export type DocumentStatuses = $Enums.DocumentStatuses;
 
 export const DocumentStatuses: typeof $Enums.DocumentStatuses;
 
+export type RiskLevel = $Enums.RiskLevel;
+
+export const RiskLevel: typeof $Enums.RiskLevel;
+
 export type ExtractedFieldType = $Enums.ExtractedFieldType;
 
 export const ExtractedFieldType: typeof $Enums.ExtractedFieldType;
@@ -103,10 +116,6 @@ export const ExtractedFieldType: typeof $Enums.ExtractedFieldType;
 export type ExtractedFieldSource = $Enums.ExtractedFieldSource;
 
 export const ExtractedFieldSource: typeof $Enums.ExtractedFieldSource;
-
-export type DeadlineStatus = $Enums.DeadlineStatus;
-
-export const DeadlineStatus: typeof $Enums.DeadlineStatus;
 
 export type ActionLogTypes = $Enums.ActionLogTypes;
 
@@ -285,6 +294,36 @@ export class PrismaClient<
     get document(): Prisma.DocumentDelegate<ExtArgs, ClientOptions>;
 
     /**
+     * `prisma.documentTag`: Exposes CRUD operations for the **DocumentTag** model.
+     * Example usage:
+     * ```ts
+     * // Fetch zero or more DocumentTags
+     * const documentTags = await prisma.documentTag.findMany()
+     * ```
+     */
+    get documentTag(): Prisma.DocumentTagDelegate<ExtArgs, ClientOptions>;
+
+    /**
+     * `prisma.tag`: Exposes CRUD operations for the **Tag** model.
+     * Example usage:
+     * ```ts
+     * // Fetch zero or more Tags
+     * const tags = await prisma.tag.findMany()
+     * ```
+     */
+    get tag(): Prisma.TagDelegate<ExtArgs, ClientOptions>;
+
+    /**
+     * `prisma.file`: Exposes CRUD operations for the **File** model.
+     * Example usage:
+     * ```ts
+     * // Fetch zero or more Files
+     * const files = await prisma.file.findMany()
+     * ```
+     */
+    get file(): Prisma.FileDelegate<ExtArgs, ClientOptions>;
+
+    /**
      * `prisma.documentExtractedField`: Exposes CRUD operations for the **DocumentExtractedField** model.
      * Example usage:
      * ```ts
@@ -293,19 +332,6 @@ export class PrismaClient<
      * ```
      */
     get documentExtractedField(): Prisma.DocumentExtractedFieldDelegate<
-        ExtArgs,
-        ClientOptions
-    >;
-
-    /**
-     * `prisma.documentDeadline`: Exposes CRUD operations for the **DocumentDeadline** model.
-     * Example usage:
-     * ```ts
-     * // Fetch zero or more DocumentDeadlines
-     * const documentDeadlines = await prisma.documentDeadline.findMany()
-     * ```
-     */
-    get documentDeadline(): Prisma.DocumentDeadlineDelegate<
         ExtArgs,
         ClientOptions
     >;
@@ -775,8 +801,10 @@ export namespace Prisma {
 
     export const ModelName: {
         Document: "Document";
+        DocumentTag: "DocumentTag";
+        Tag: "Tag";
+        File: "File";
         DocumentExtractedField: "DocumentExtractedField";
-        DocumentDeadline: "DocumentDeadline";
         ActionLog: "ActionLog";
     };
 
@@ -803,8 +831,10 @@ export namespace Prisma {
         meta: {
             modelProps:
                 | "document"
+                | "documentTag"
+                | "tag"
+                | "file"
                 | "documentExtractedField"
-                | "documentDeadline"
                 | "actionLog";
             txIsolationLevel: Prisma.TransactionIsolationLevel;
         };
@@ -885,6 +915,234 @@ export namespace Prisma {
                     };
                 };
             };
+            DocumentTag: {
+                payload: Prisma.$DocumentTagPayload<ExtArgs>;
+                fields: Prisma.DocumentTagFieldRefs;
+                operations: {
+                    findUnique: {
+                        args: Prisma.DocumentTagFindUniqueArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload> | null;
+                    };
+                    findUniqueOrThrow: {
+                        args: Prisma.DocumentTagFindUniqueOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    findFirst: {
+                        args: Prisma.DocumentTagFindFirstArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload> | null;
+                    };
+                    findFirstOrThrow: {
+                        args: Prisma.DocumentTagFindFirstOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    findMany: {
+                        args: Prisma.DocumentTagFindManyArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>[];
+                    };
+                    create: {
+                        args: Prisma.DocumentTagCreateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    createMany: {
+                        args: Prisma.DocumentTagCreateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    createManyAndReturn: {
+                        args: Prisma.DocumentTagCreateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>[];
+                    };
+                    delete: {
+                        args: Prisma.DocumentTagDeleteArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    update: {
+                        args: Prisma.DocumentTagUpdateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    deleteMany: {
+                        args: Prisma.DocumentTagDeleteManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateMany: {
+                        args: Prisma.DocumentTagUpdateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateManyAndReturn: {
+                        args: Prisma.DocumentTagUpdateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>[];
+                    };
+                    upsert: {
+                        args: Prisma.DocumentTagUpsertArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$DocumentTagPayload>;
+                    };
+                    aggregate: {
+                        args: Prisma.DocumentTagAggregateArgs<ExtArgs>;
+                        result: $Utils.Optional<AggregateDocumentTag>;
+                    };
+                    groupBy: {
+                        args: Prisma.DocumentTagGroupByArgs<ExtArgs>;
+                        result: $Utils.Optional<DocumentTagGroupByOutputType>[];
+                    };
+                    count: {
+                        args: Prisma.DocumentTagCountArgs<ExtArgs>;
+                        result:
+                            | $Utils.Optional<DocumentTagCountAggregateOutputType>
+                            | number;
+                    };
+                };
+            };
+            Tag: {
+                payload: Prisma.$TagPayload<ExtArgs>;
+                fields: Prisma.TagFieldRefs;
+                operations: {
+                    findUnique: {
+                        args: Prisma.TagFindUniqueArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload> | null;
+                    };
+                    findUniqueOrThrow: {
+                        args: Prisma.TagFindUniqueOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    findFirst: {
+                        args: Prisma.TagFindFirstArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload> | null;
+                    };
+                    findFirstOrThrow: {
+                        args: Prisma.TagFindFirstOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    findMany: {
+                        args: Prisma.TagFindManyArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>[];
+                    };
+                    create: {
+                        args: Prisma.TagCreateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    createMany: {
+                        args: Prisma.TagCreateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    createManyAndReturn: {
+                        args: Prisma.TagCreateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>[];
+                    };
+                    delete: {
+                        args: Prisma.TagDeleteArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    update: {
+                        args: Prisma.TagUpdateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    deleteMany: {
+                        args: Prisma.TagDeleteManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateMany: {
+                        args: Prisma.TagUpdateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateManyAndReturn: {
+                        args: Prisma.TagUpdateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>[];
+                    };
+                    upsert: {
+                        args: Prisma.TagUpsertArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TagPayload>;
+                    };
+                    aggregate: {
+                        args: Prisma.TagAggregateArgs<ExtArgs>;
+                        result: $Utils.Optional<AggregateTag>;
+                    };
+                    groupBy: {
+                        args: Prisma.TagGroupByArgs<ExtArgs>;
+                        result: $Utils.Optional<TagGroupByOutputType>[];
+                    };
+                    count: {
+                        args: Prisma.TagCountArgs<ExtArgs>;
+                        result:
+                            | $Utils.Optional<TagCountAggregateOutputType>
+                            | number;
+                    };
+                };
+            };
+            File: {
+                payload: Prisma.$FilePayload<ExtArgs>;
+                fields: Prisma.FileFieldRefs;
+                operations: {
+                    findUnique: {
+                        args: Prisma.FileFindUniqueArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload> | null;
+                    };
+                    findUniqueOrThrow: {
+                        args: Prisma.FileFindUniqueOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    findFirst: {
+                        args: Prisma.FileFindFirstArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload> | null;
+                    };
+                    findFirstOrThrow: {
+                        args: Prisma.FileFindFirstOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    findMany: {
+                        args: Prisma.FileFindManyArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>[];
+                    };
+                    create: {
+                        args: Prisma.FileCreateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    createMany: {
+                        args: Prisma.FileCreateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    createManyAndReturn: {
+                        args: Prisma.FileCreateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>[];
+                    };
+                    delete: {
+                        args: Prisma.FileDeleteArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    update: {
+                        args: Prisma.FileUpdateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    deleteMany: {
+                        args: Prisma.FileDeleteManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateMany: {
+                        args: Prisma.FileUpdateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateManyAndReturn: {
+                        args: Prisma.FileUpdateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>[];
+                    };
+                    upsert: {
+                        args: Prisma.FileUpsertArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$FilePayload>;
+                    };
+                    aggregate: {
+                        args: Prisma.FileAggregateArgs<ExtArgs>;
+                        result: $Utils.Optional<AggregateFile>;
+                    };
+                    groupBy: {
+                        args: Prisma.FileGroupByArgs<ExtArgs>;
+                        result: $Utils.Optional<FileGroupByOutputType>[];
+                    };
+                    count: {
+                        args: Prisma.FileCountArgs<ExtArgs>;
+                        result:
+                            | $Utils.Optional<FileCountAggregateOutputType>
+                            | number;
+                    };
+                };
+            };
             DocumentExtractedField: {
                 payload: Prisma.$DocumentExtractedFieldPayload<ExtArgs>;
                 fields: Prisma.DocumentExtractedFieldFieldRefs;
@@ -957,82 +1215,6 @@ export namespace Prisma {
                         args: Prisma.DocumentExtractedFieldCountArgs<ExtArgs>;
                         result:
                             | $Utils.Optional<DocumentExtractedFieldCountAggregateOutputType>
-                            | number;
-                    };
-                };
-            };
-            DocumentDeadline: {
-                payload: Prisma.$DocumentDeadlinePayload<ExtArgs>;
-                fields: Prisma.DocumentDeadlineFieldRefs;
-                operations: {
-                    findUnique: {
-                        args: Prisma.DocumentDeadlineFindUniqueArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload> | null;
-                    };
-                    findUniqueOrThrow: {
-                        args: Prisma.DocumentDeadlineFindUniqueOrThrowArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    findFirst: {
-                        args: Prisma.DocumentDeadlineFindFirstArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload> | null;
-                    };
-                    findFirstOrThrow: {
-                        args: Prisma.DocumentDeadlineFindFirstOrThrowArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    findMany: {
-                        args: Prisma.DocumentDeadlineFindManyArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>[];
-                    };
-                    create: {
-                        args: Prisma.DocumentDeadlineCreateArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    createMany: {
-                        args: Prisma.DocumentDeadlineCreateManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    createManyAndReturn: {
-                        args: Prisma.DocumentDeadlineCreateManyAndReturnArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>[];
-                    };
-                    delete: {
-                        args: Prisma.DocumentDeadlineDeleteArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    update: {
-                        args: Prisma.DocumentDeadlineUpdateArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    deleteMany: {
-                        args: Prisma.DocumentDeadlineDeleteManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    updateMany: {
-                        args: Prisma.DocumentDeadlineUpdateManyArgs<ExtArgs>;
-                        result: BatchPayload;
-                    };
-                    updateManyAndReturn: {
-                        args: Prisma.DocumentDeadlineUpdateManyAndReturnArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>[];
-                    };
-                    upsert: {
-                        args: Prisma.DocumentDeadlineUpsertArgs<ExtArgs>;
-                        result: $Utils.PayloadToResult<Prisma.$DocumentDeadlinePayload>;
-                    };
-                    aggregate: {
-                        args: Prisma.DocumentDeadlineAggregateArgs<ExtArgs>;
-                        result: $Utils.Optional<AggregateDocumentDeadline>;
-                    };
-                    groupBy: {
-                        args: Prisma.DocumentDeadlineGroupByArgs<ExtArgs>;
-                        result: $Utils.Optional<DocumentDeadlineGroupByOutputType>[];
-                    };
-                    count: {
-                        args: Prisma.DocumentDeadlineCountArgs<ExtArgs>;
-                        result:
-                            | $Utils.Optional<DocumentDeadlineCountAggregateOutputType>
                             | number;
                     };
                 };
@@ -1232,8 +1414,10 @@ export namespace Prisma {
     }
     export type GlobalOmitConfig = {
         document?: DocumentOmit;
+        documentTag?: DocumentTagOmit;
+        tag?: TagOmit;
+        file?: FileOmit;
         documentExtractedField?: DocumentExtractedFieldOmit;
-        documentDeadline?: DocumentDeadlineOmit;
         actionLog?: ActionLogOmit;
     };
 
@@ -1320,8 +1504,9 @@ export namespace Prisma {
 
     export type DocumentCountOutputType = {
         documentExtractedFields: number;
-        documentDeadlines: number;
         actionLogs: number;
+        files: number;
+        documentTags: number;
     };
 
     export type DocumentCountOutputTypeSelect<
@@ -1330,10 +1515,9 @@ export namespace Prisma {
         documentExtractedFields?:
             | boolean
             | DocumentCountOutputTypeCountDocumentExtractedFieldsArgs;
-        documentDeadlines?:
-            | boolean
-            | DocumentCountOutputTypeCountDocumentDeadlinesArgs;
         actionLogs?: boolean | DocumentCountOutputTypeCountActionLogsArgs;
+        files?: boolean | DocumentCountOutputTypeCountFilesArgs;
+        documentTags?: boolean | DocumentCountOutputTypeCountDocumentTagsArgs;
     };
 
     // Custom InputTypes
@@ -1361,19 +1545,64 @@ export namespace Prisma {
     /**
      * DocumentCountOutputType without action
      */
-    export type DocumentCountOutputTypeCountDocumentDeadlinesArgs<
+    export type DocumentCountOutputTypeCountActionLogsArgs<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
-        where?: DocumentDeadlineWhereInput;
+        where?: ActionLogWhereInput;
     };
 
     /**
      * DocumentCountOutputType without action
      */
-    export type DocumentCountOutputTypeCountActionLogsArgs<
+    export type DocumentCountOutputTypeCountFilesArgs<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
-        where?: ActionLogWhereInput;
+        where?: FileWhereInput;
+    };
+
+    /**
+     * DocumentCountOutputType without action
+     */
+    export type DocumentCountOutputTypeCountDocumentTagsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: DocumentTagWhereInput;
+    };
+
+    /**
+     * Count Type TagCountOutputType
+     */
+
+    export type TagCountOutputType = {
+        documentTags: number;
+    };
+
+    export type TagCountOutputTypeSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        documentTags?: boolean | TagCountOutputTypeCountDocumentTagsArgs;
+    };
+
+    // Custom InputTypes
+    /**
+     * TagCountOutputType without action
+     */
+    export type TagCountOutputTypeDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TagCountOutputType
+         */
+        select?: TagCountOutputTypeSelect<ExtArgs> | null;
+    };
+
+    /**
+     * TagCountOutputType without action
+     */
+    export type TagCountOutputTypeCountDocumentTagsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: DocumentTagWhereInput;
     };
 
     /**
@@ -1386,22 +1615,8 @@ export namespace Prisma {
 
     export type AggregateDocument = {
         _count: DocumentCountAggregateOutputType | null;
-        _avg: DocumentAvgAggregateOutputType | null;
-        _sum: DocumentSumAggregateOutputType | null;
         _min: DocumentMinAggregateOutputType | null;
         _max: DocumentMaxAggregateOutputType | null;
-    };
-
-    export type DocumentAvgAggregateOutputType = {
-        fileSize: number | null;
-        width: number | null;
-        height: number | null;
-    };
-
-    export type DocumentSumAggregateOutputType = {
-        fileSize: number | null;
-        width: number | null;
-        height: number | null;
     };
 
     export type DocumentMinAggregateOutputType = {
@@ -1410,13 +1625,8 @@ export namespace Prisma {
         updatedAt: Date | null;
         status: $Enums.DocumentStatuses | null;
         name: string | null;
-        key: string | null;
-        fileSize: number | null;
-        mimeType: string | null;
-        url: string | null;
-        expiredAt: Date | null;
-        width: number | null;
-        height: number | null;
+        expiresAt: Date | null;
+        riskLevel: $Enums.RiskLevel | null;
     };
 
     export type DocumentMaxAggregateOutputType = {
@@ -1425,13 +1635,8 @@ export namespace Prisma {
         updatedAt: Date | null;
         status: $Enums.DocumentStatuses | null;
         name: string | null;
-        key: string | null;
-        fileSize: number | null;
-        mimeType: string | null;
-        url: string | null;
-        expiredAt: Date | null;
-        width: number | null;
-        height: number | null;
+        expiresAt: Date | null;
+        riskLevel: $Enums.RiskLevel | null;
     };
 
     export type DocumentCountAggregateOutputType = {
@@ -1441,26 +1646,9 @@ export namespace Prisma {
         status: number;
         tags: number;
         name: number;
-        key: number;
-        fileSize: number;
-        mimeType: number;
-        url: number;
-        expiredAt: number;
-        width: number;
-        height: number;
+        expiresAt: number;
+        riskLevel: number;
         _all: number;
-    };
-
-    export type DocumentAvgAggregateInputType = {
-        fileSize?: true;
-        width?: true;
-        height?: true;
-    };
-
-    export type DocumentSumAggregateInputType = {
-        fileSize?: true;
-        width?: true;
-        height?: true;
     };
 
     export type DocumentMinAggregateInputType = {
@@ -1469,13 +1657,8 @@ export namespace Prisma {
         updatedAt?: true;
         status?: true;
         name?: true;
-        key?: true;
-        fileSize?: true;
-        mimeType?: true;
-        url?: true;
-        expiredAt?: true;
-        width?: true;
-        height?: true;
+        expiresAt?: true;
+        riskLevel?: true;
     };
 
     export type DocumentMaxAggregateInputType = {
@@ -1484,13 +1667,8 @@ export namespace Prisma {
         updatedAt?: true;
         status?: true;
         name?: true;
-        key?: true;
-        fileSize?: true;
-        mimeType?: true;
-        url?: true;
-        expiredAt?: true;
-        width?: true;
-        height?: true;
+        expiresAt?: true;
+        riskLevel?: true;
     };
 
     export type DocumentCountAggregateInputType = {
@@ -1500,13 +1678,8 @@ export namespace Prisma {
         status?: true;
         tags?: true;
         name?: true;
-        key?: true;
-        fileSize?: true;
-        mimeType?: true;
-        url?: true;
-        expiredAt?: true;
-        width?: true;
-        height?: true;
+        expiresAt?: true;
+        riskLevel?: true;
         _all?: true;
     };
 
@@ -1552,18 +1725,6 @@ export namespace Prisma {
         /**
          * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
          *
-         * Select which fields to average
-         **/
-        _avg?: DocumentAvgAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Select which fields to sum
-         **/
-        _sum?: DocumentSumAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
          * Select which fields to find the minimum value
          **/
         _min?: DocumentMinAggregateInputType;
@@ -1595,8 +1756,6 @@ export namespace Prisma {
         take?: number;
         skip?: number;
         _count?: DocumentCountAggregateInputType | true;
-        _avg?: DocumentAvgAggregateInputType;
-        _sum?: DocumentSumAggregateInputType;
         _min?: DocumentMinAggregateInputType;
         _max?: DocumentMaxAggregateInputType;
     };
@@ -1608,16 +1767,9 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags: string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date;
-        width: number | null;
-        height: number | null;
+        expiresAt: Date | null;
+        riskLevel: $Enums.RiskLevel | null;
         _count: DocumentCountAggregateOutputType | null;
-        _avg: DocumentAvgAggregateOutputType | null;
-        _sum: DocumentSumAggregateOutputType | null;
         _min: DocumentMinAggregateOutputType | null;
         _max: DocumentMaxAggregateOutputType | null;
     };
@@ -1646,20 +1798,14 @@ export namespace Prisma {
             status?: boolean;
             tags?: boolean;
             name?: boolean;
-            key?: boolean;
-            fileSize?: boolean;
-            mimeType?: boolean;
-            url?: boolean;
-            expiredAt?: boolean;
-            width?: boolean;
-            height?: boolean;
+            expiresAt?: boolean;
+            riskLevel?: boolean;
             documentExtractedFields?:
                 | boolean
                 | Document$documentExtractedFieldsArgs<ExtArgs>;
-            documentDeadlines?:
-                | boolean
-                | Document$documentDeadlinesArgs<ExtArgs>;
             actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
+            files?: boolean | Document$filesArgs<ExtArgs>;
+            documentTags?: boolean | Document$documentTagsArgs<ExtArgs>;
             _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
         },
         ExtArgs["result"]["document"]
@@ -1675,13 +1821,8 @@ export namespace Prisma {
             status?: boolean;
             tags?: boolean;
             name?: boolean;
-            key?: boolean;
-            fileSize?: boolean;
-            mimeType?: boolean;
-            url?: boolean;
-            expiredAt?: boolean;
-            width?: boolean;
-            height?: boolean;
+            expiresAt?: boolean;
+            riskLevel?: boolean;
         },
         ExtArgs["result"]["document"]
     >;
@@ -1696,13 +1837,8 @@ export namespace Prisma {
             status?: boolean;
             tags?: boolean;
             name?: boolean;
-            key?: boolean;
-            fileSize?: boolean;
-            mimeType?: boolean;
-            url?: boolean;
-            expiredAt?: boolean;
-            width?: boolean;
-            height?: boolean;
+            expiresAt?: boolean;
+            riskLevel?: boolean;
         },
         ExtArgs["result"]["document"]
     >;
@@ -1714,13 +1850,8 @@ export namespace Prisma {
         status?: boolean;
         tags?: boolean;
         name?: boolean;
-        key?: boolean;
-        fileSize?: boolean;
-        mimeType?: boolean;
-        url?: boolean;
-        expiredAt?: boolean;
-        width?: boolean;
-        height?: boolean;
+        expiresAt?: boolean;
+        riskLevel?: boolean;
     };
 
     export type DocumentOmit<
@@ -1732,13 +1863,8 @@ export namespace Prisma {
         | "status"
         | "tags"
         | "name"
-        | "key"
-        | "fileSize"
-        | "mimeType"
-        | "url"
-        | "expiredAt"
-        | "width"
-        | "height",
+        | "expiresAt"
+        | "riskLevel",
         ExtArgs["result"]["document"]
     >;
     export type DocumentInclude<
@@ -1747,8 +1873,9 @@ export namespace Prisma {
         documentExtractedFields?:
             | boolean
             | Document$documentExtractedFieldsArgs<ExtArgs>;
-        documentDeadlines?: boolean | Document$documentDeadlinesArgs<ExtArgs>;
         actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
+        files?: boolean | Document$filesArgs<ExtArgs>;
+        documentTags?: boolean | Document$documentTagsArgs<ExtArgs>;
         _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type DocumentIncludeCreateManyAndReturn<
@@ -1764,8 +1891,9 @@ export namespace Prisma {
         name: "Document";
         objects: {
             documentExtractedFields: Prisma.$DocumentExtractedFieldPayload<ExtArgs>[];
-            documentDeadlines: Prisma.$DocumentDeadlinePayload<ExtArgs>[];
             actionLogs: Prisma.$ActionLogPayload<ExtArgs>[];
+            files: Prisma.$FilePayload<ExtArgs>[];
+            documentTags: Prisma.$DocumentTagPayload<ExtArgs>[];
         };
         scalars: $Extensions.GetPayloadResult<
             {
@@ -1775,13 +1903,8 @@ export namespace Prisma {
                 status: $Enums.DocumentStatuses;
                 tags: string[];
                 name: string;
-                key: string;
-                fileSize: number;
-                mimeType: string;
-                url: string;
-                expiredAt: Date;
-                width: number | null;
-                height: number | null;
+                expiresAt: Date | null;
+                riskLevel: $Enums.RiskLevel | null;
             },
             ExtArgs["result"]["document"]
         >;
@@ -2348,24 +2471,33 @@ export namespace Prisma {
               >
             | Null
         >;
-        documentDeadlines<
-            T extends Document$documentDeadlinesArgs<ExtArgs> = {},
-        >(
-            args?: Subset<T, Document$documentDeadlinesArgs<ExtArgs>>
+        actionLogs<T extends Document$actionLogsArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$actionLogsArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
             | $Result.GetResult<
-                  Prisma.$DocumentDeadlinePayload<ExtArgs>,
+                  Prisma.$ActionLogPayload<ExtArgs>,
                   T,
                   "findMany",
                   GlobalOmitOptions
               >
             | Null
         >;
-        actionLogs<T extends Document$actionLogsArgs<ExtArgs> = {}>(
-            args?: Subset<T, Document$actionLogsArgs<ExtArgs>>
+        files<T extends Document$filesArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$filesArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
             | $Result.GetResult<
-                  Prisma.$ActionLogPayload<ExtArgs>,
+                  Prisma.$FilePayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
+        documentTags<T extends Document$documentTagsArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$documentTagsArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$DocumentTagPayload<ExtArgs>,
                   T,
                   "findMany",
                   GlobalOmitOptions
@@ -2420,13 +2552,8 @@ export namespace Prisma {
         readonly status: FieldRef<"Document", "DocumentStatuses">;
         readonly tags: FieldRef<"Document", "String[]">;
         readonly name: FieldRef<"Document", "String">;
-        readonly key: FieldRef<"Document", "String">;
-        readonly fileSize: FieldRef<"Document", "Float">;
-        readonly mimeType: FieldRef<"Document", "String">;
-        readonly url: FieldRef<"Document", "String">;
-        readonly expiredAt: FieldRef<"Document", "DateTime">;
-        readonly width: FieldRef<"Document", "Float">;
-        readonly height: FieldRef<"Document", "Float">;
+        readonly expiresAt: FieldRef<"Document", "DateTime">;
+        readonly riskLevel: FieldRef<"Document", "RiskLevel">;
     }
 
     // Custom InputTypes
@@ -2884,36 +3011,6 @@ export namespace Prisma {
     };
 
     /**
-     * Document.documentDeadlines
-     */
-    export type Document$documentDeadlinesArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        where?: DocumentDeadlineWhereInput;
-        orderBy?:
-            | DocumentDeadlineOrderByWithRelationInput
-            | DocumentDeadlineOrderByWithRelationInput[];
-        cursor?: DocumentDeadlineWhereUniqueInput;
-        take?: number;
-        skip?: number;
-        distinct?:
-            | DocumentDeadlineScalarFieldEnum
-            | DocumentDeadlineScalarFieldEnum[];
-    };
-
-    /**
      * Document.actionLogs
      */
     export type Document$actionLogsArgs<
@@ -2942,6 +3039,60 @@ export namespace Prisma {
     };
 
     /**
+     * Document.files
+     */
+    export type Document$filesArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        where?: FileWhereInput;
+        orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[];
+        cursor?: FileWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: FileScalarFieldEnum | FileScalarFieldEnum[];
+    };
+
+    /**
+     * Document.documentTags
+     */
+    export type Document$documentTagsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        where?: DocumentTagWhereInput;
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        cursor?: DocumentTagWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
      * Document without action
      */
     export type DocumentDefaultArgs<
@@ -2959,6 +3110,4069 @@ export namespace Prisma {
          * Choose, which related nodes to fetch as well
          */
         include?: DocumentInclude<ExtArgs> | null;
+    };
+
+    /**
+     * Model DocumentTag
+     */
+
+    export type AggregateDocumentTag = {
+        _count: DocumentTagCountAggregateOutputType | null;
+        _min: DocumentTagMinAggregateOutputType | null;
+        _max: DocumentTagMaxAggregateOutputType | null;
+    };
+
+    export type DocumentTagMinAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        documentId: string | null;
+        tagId: string | null;
+    };
+
+    export type DocumentTagMaxAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        documentId: string | null;
+        tagId: string | null;
+    };
+
+    export type DocumentTagCountAggregateOutputType = {
+        id: number;
+        createdAt: number;
+        updatedAt: number;
+        documentId: number;
+        tagId: number;
+        _all: number;
+    };
+
+    export type DocumentTagMinAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        documentId?: true;
+        tagId?: true;
+    };
+
+    export type DocumentTagMaxAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        documentId?: true;
+        tagId?: true;
+    };
+
+    export type DocumentTagCountAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        documentId?: true;
+        tagId?: true;
+        _all?: true;
+    };
+
+    export type DocumentTagAggregateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which DocumentTag to aggregate.
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of DocumentTags to fetch.
+         */
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the start position
+         */
+        cursor?: DocumentTagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` DocumentTags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` DocumentTags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Count returned DocumentTags
+         **/
+        _count?: true | DocumentTagCountAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the minimum value
+         **/
+        _min?: DocumentTagMinAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the maximum value
+         **/
+        _max?: DocumentTagMaxAggregateInputType;
+    };
+
+    export type GetDocumentTagAggregateType<
+        T extends DocumentTagAggregateArgs,
+    > = {
+        [P in keyof T & keyof AggregateDocumentTag]: P extends
+            | "_count"
+            | "count"
+            ? T[P] extends true
+                ? number
+                : GetScalarType<T[P], AggregateDocumentTag[P]>
+            : GetScalarType<T[P], AggregateDocumentTag[P]>;
+    };
+
+    export type DocumentTagGroupByArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: DocumentTagWhereInput;
+        orderBy?:
+            | DocumentTagOrderByWithAggregationInput
+            | DocumentTagOrderByWithAggregationInput[];
+        by: DocumentTagScalarFieldEnum[] | DocumentTagScalarFieldEnum;
+        having?: DocumentTagScalarWhereWithAggregatesInput;
+        take?: number;
+        skip?: number;
+        _count?: DocumentTagCountAggregateInputType | true;
+        _min?: DocumentTagMinAggregateInputType;
+        _max?: DocumentTagMaxAggregateInputType;
+    };
+
+    export type DocumentTagGroupByOutputType = {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        documentId: string;
+        tagId: string;
+        _count: DocumentTagCountAggregateOutputType | null;
+        _min: DocumentTagMinAggregateOutputType | null;
+        _max: DocumentTagMaxAggregateOutputType | null;
+    };
+
+    type GetDocumentTagGroupByPayload<T extends DocumentTagGroupByArgs> =
+        Prisma.PrismaPromise<
+            Array<
+                PickEnumerable<DocumentTagGroupByOutputType, T["by"]> & {
+                    [P in keyof T &
+                        keyof DocumentTagGroupByOutputType]: P extends "_count"
+                        ? T[P] extends boolean
+                            ? number
+                            : GetScalarType<
+                                  T[P],
+                                  DocumentTagGroupByOutputType[P]
+                              >
+                        : GetScalarType<T[P], DocumentTagGroupByOutputType[P]>;
+                }
+            >
+        >;
+
+    export type DocumentTagSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            documentId?: boolean;
+            tagId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+            tag?: boolean | TagDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["documentTag"]
+    >;
+
+    export type DocumentTagSelectCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            documentId?: boolean;
+            tagId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+            tag?: boolean | TagDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["documentTag"]
+    >;
+
+    export type DocumentTagSelectUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            documentId?: boolean;
+            tagId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+            tag?: boolean | TagDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["documentTag"]
+    >;
+
+    export type DocumentTagSelectScalar = {
+        id?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        documentId?: boolean;
+        tagId?: boolean;
+    };
+
+    export type DocumentTagOmit<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetOmit<
+        "id" | "createdAt" | "updatedAt" | "documentId" | "tagId",
+        ExtArgs["result"]["documentTag"]
+    >;
+    export type DocumentTagInclude<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        tag?: boolean | TagDefaultArgs<ExtArgs>;
+    };
+    export type DocumentTagIncludeCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        tag?: boolean | TagDefaultArgs<ExtArgs>;
+    };
+    export type DocumentTagIncludeUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        tag?: boolean | TagDefaultArgs<ExtArgs>;
+    };
+
+    export type $DocumentTagPayload<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        name: "DocumentTag";
+        objects: {
+            document: Prisma.$DocumentPayload<ExtArgs>;
+            tag: Prisma.$TagPayload<ExtArgs>;
+        };
+        scalars: $Extensions.GetPayloadResult<
+            {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                documentId: string;
+                tagId: string;
+            },
+            ExtArgs["result"]["documentTag"]
+        >;
+        composites: {};
+    };
+
+    type DocumentTagGetPayload<
+        S extends boolean | null | undefined | DocumentTagDefaultArgs,
+    > = $Result.GetResult<Prisma.$DocumentTagPayload, S>;
+
+    type DocumentTagCountArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = Omit<
+        DocumentTagFindManyArgs,
+        "select" | "include" | "distinct" | "omit"
+    > & {
+        select?: DocumentTagCountAggregateInputType | true;
+    };
+
+    export interface DocumentTagDelegate<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > {
+        [K: symbol]: {
+            types: Prisma.TypeMap<ExtArgs>["model"]["DocumentTag"];
+            meta: { name: "DocumentTag" };
+        };
+        /**
+         * Find zero or one DocumentTag that matches the filter.
+         * @param {DocumentTagFindUniqueArgs} args - Arguments to find a DocumentTag
+         * @example
+         * // Get one DocumentTag
+         * const documentTag = await prisma.documentTag.findUnique({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUnique<T extends DocumentTagFindUniqueArgs>(
+            args: SelectSubset<T, DocumentTagFindUniqueArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "findUnique",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find one DocumentTag that matches the filter or throw an error with `error.code='P2025'`
+         * if no matches were found.
+         * @param {DocumentTagFindUniqueOrThrowArgs} args - Arguments to find a DocumentTag
+         * @example
+         * // Get one DocumentTag
+         * const documentTag = await prisma.documentTag.findUniqueOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUniqueOrThrow<T extends DocumentTagFindUniqueOrThrowArgs>(
+            args: SelectSubset<T, DocumentTagFindUniqueOrThrowArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first DocumentTag that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagFindFirstArgs} args - Arguments to find a DocumentTag
+         * @example
+         * // Get one DocumentTag
+         * const documentTag = await prisma.documentTag.findFirst({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirst<T extends DocumentTagFindFirstArgs>(
+            args?: SelectSubset<T, DocumentTagFindFirstArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "findFirst",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first DocumentTag that matches the filter or
+         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagFindFirstOrThrowArgs} args - Arguments to find a DocumentTag
+         * @example
+         * // Get one DocumentTag
+         * const documentTag = await prisma.documentTag.findFirstOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirstOrThrow<T extends DocumentTagFindFirstOrThrowArgs>(
+            args?: SelectSubset<T, DocumentTagFindFirstOrThrowArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "findFirstOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find zero or more DocumentTags that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagFindManyArgs} args - Arguments to filter and select certain fields only.
+         * @example
+         * // Get all DocumentTags
+         * const documentTags = await prisma.documentTag.findMany()
+         *
+         * // Get first 10 DocumentTags
+         * const documentTags = await prisma.documentTag.findMany({ take: 10 })
+         *
+         * // Only select the `id`
+         * const documentTagWithIdOnly = await prisma.documentTag.findMany({ select: { id: true } })
+         *
+         */
+        findMany<T extends DocumentTagFindManyArgs>(
+            args?: SelectSubset<T, DocumentTagFindManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "findMany",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create a DocumentTag.
+         * @param {DocumentTagCreateArgs} args - Arguments to create a DocumentTag.
+         * @example
+         * // Create one DocumentTag
+         * const DocumentTag = await prisma.documentTag.create({
+         *   data: {
+         *     // ... data to create a DocumentTag
+         *   }
+         * })
+         *
+         */
+        create<T extends DocumentTagCreateArgs>(
+            args: SelectSubset<T, DocumentTagCreateArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "create",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Create many DocumentTags.
+         * @param {DocumentTagCreateManyArgs} args - Arguments to create many DocumentTags.
+         * @example
+         * // Create many DocumentTags
+         * const documentTag = await prisma.documentTag.createMany({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         */
+        createMany<T extends DocumentTagCreateManyArgs>(
+            args?: SelectSubset<T, DocumentTagCreateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Create many DocumentTags and returns the data saved in the database.
+         * @param {DocumentTagCreateManyAndReturnArgs} args - Arguments to create many DocumentTags.
+         * @example
+         * // Create many DocumentTags
+         * const documentTag = await prisma.documentTag.createManyAndReturn({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Create many DocumentTags and only return the `id`
+         * const documentTagWithIdOnly = await prisma.documentTag.createManyAndReturn({
+         *   select: { id: true },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        createManyAndReturn<T extends DocumentTagCreateManyAndReturnArgs>(
+            args?: SelectSubset<T, DocumentTagCreateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "createManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Delete a DocumentTag.
+         * @param {DocumentTagDeleteArgs} args - Arguments to delete one DocumentTag.
+         * @example
+         * // Delete one DocumentTag
+         * const DocumentTag = await prisma.documentTag.delete({
+         *   where: {
+         *     // ... filter to delete one DocumentTag
+         *   }
+         * })
+         *
+         */
+        delete<T extends DocumentTagDeleteArgs>(
+            args: SelectSubset<T, DocumentTagDeleteArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "delete",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Update one DocumentTag.
+         * @param {DocumentTagUpdateArgs} args - Arguments to update one DocumentTag.
+         * @example
+         * // Update one DocumentTag
+         * const documentTag = await prisma.documentTag.update({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        update<T extends DocumentTagUpdateArgs>(
+            args: SelectSubset<T, DocumentTagUpdateArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "update",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Delete zero or more DocumentTags.
+         * @param {DocumentTagDeleteManyArgs} args - Arguments to filter DocumentTags to delete.
+         * @example
+         * // Delete a few DocumentTags
+         * const { count } = await prisma.documentTag.deleteMany({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         *
+         */
+        deleteMany<T extends DocumentTagDeleteManyArgs>(
+            args?: SelectSubset<T, DocumentTagDeleteManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more DocumentTags.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagUpdateManyArgs} args - Arguments to update one or more rows.
+         * @example
+         * // Update many DocumentTags
+         * const documentTag = await prisma.documentTag.updateMany({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        updateMany<T extends DocumentTagUpdateManyArgs>(
+            args: SelectSubset<T, DocumentTagUpdateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more DocumentTags and returns the data updated in the database.
+         * @param {DocumentTagUpdateManyAndReturnArgs} args - Arguments to update many DocumentTags.
+         * @example
+         * // Update many DocumentTags
+         * const documentTag = await prisma.documentTag.updateManyAndReturn({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Update zero or more DocumentTags and only return the `id`
+         * const documentTagWithIdOnly = await prisma.documentTag.updateManyAndReturn({
+         *   select: { id: true },
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        updateManyAndReturn<T extends DocumentTagUpdateManyAndReturnArgs>(
+            args: SelectSubset<T, DocumentTagUpdateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "updateManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create or update one DocumentTag.
+         * @param {DocumentTagUpsertArgs} args - Arguments to update or create a DocumentTag.
+         * @example
+         * // Update or create a DocumentTag
+         * const documentTag = await prisma.documentTag.upsert({
+         *   create: {
+         *     // ... data to create a DocumentTag
+         *   },
+         *   update: {
+         *     // ... in case it already exists, update
+         *   },
+         *   where: {
+         *     // ... the filter for the DocumentTag we want to update
+         *   }
+         * })
+         */
+        upsert<T extends DocumentTagUpsertArgs>(
+            args: SelectSubset<T, DocumentTagUpsertArgs<ExtArgs>>
+        ): Prisma__DocumentTagClient<
+            $Result.GetResult<
+                Prisma.$DocumentTagPayload<ExtArgs>,
+                T,
+                "upsert",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Count the number of DocumentTags.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagCountArgs} args - Arguments to filter DocumentTags to count.
+         * @example
+         * // Count the number of DocumentTags
+         * const count = await prisma.documentTag.count({
+         *   where: {
+         *     // ... the filter for the DocumentTags we want to count
+         *   }
+         * })
+         **/
+        count<T extends DocumentTagCountArgs>(
+            args?: Subset<T, DocumentTagCountArgs>
+        ): Prisma.PrismaPromise<
+            T extends $Utils.Record<"select", any>
+                ? T["select"] extends true
+                    ? number
+                    : GetScalarType<
+                          T["select"],
+                          DocumentTagCountAggregateOutputType
+                      >
+                : number
+        >;
+
+        /**
+         * Allows you to perform aggregations operations on a DocumentTag.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+         * @example
+         * // Ordered by age ascending
+         * // Where email contains prisma.io
+         * // Limited to the 10 users
+         * const aggregations = await prisma.user.aggregate({
+         *   _avg: {
+         *     age: true,
+         *   },
+         *   where: {
+         *     email: {
+         *       contains: "prisma.io",
+         *     },
+         *   },
+         *   orderBy: {
+         *     age: "asc",
+         *   },
+         *   take: 10,
+         * })
+         **/
+        aggregate<T extends DocumentTagAggregateArgs>(
+            args: Subset<T, DocumentTagAggregateArgs>
+        ): Prisma.PrismaPromise<GetDocumentTagAggregateType<T>>;
+
+        /**
+         * Group by DocumentTag.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {DocumentTagGroupByArgs} args - Group by arguments.
+         * @example
+         * // Group by city, order by createdAt, get count
+         * const result = await prisma.user.groupBy({
+         *   by: ['city', 'createdAt'],
+         *   orderBy: {
+         *     createdAt: true
+         *   },
+         *   _count: {
+         *     _all: true
+         *   },
+         * })
+         *
+         **/
+        groupBy<
+            T extends DocumentTagGroupByArgs,
+            HasSelectOrTake extends Or<
+                Extends<"skip", Keys<T>>,
+                Extends<"take", Keys<T>>
+            >,
+            OrderByArg extends True extends HasSelectOrTake
+                ? { orderBy: DocumentTagGroupByArgs["orderBy"] }
+                : { orderBy?: DocumentTagGroupByArgs["orderBy"] },
+            OrderFields extends ExcludeUnderscoreKeys<
+                Keys<MaybeTupleToUnion<T["orderBy"]>>
+            >,
+            ByFields extends MaybeTupleToUnion<T["by"]>,
+            ByValid extends Has<ByFields, OrderFields>,
+            HavingFields extends GetHavingFields<T["having"]>,
+            HavingValid extends Has<ByFields, HavingFields>,
+            ByEmpty extends T["by"] extends never[] ? True : False,
+            InputErrors extends ByEmpty extends True
+                ? `Error: "by" must not be empty.`
+                : HavingValid extends False
+                  ? {
+                        [P in HavingFields]: P extends ByFields
+                            ? never
+                            : P extends string
+                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+                              : [
+                                    Error,
+                                    "Field ",
+                                    P,
+                                    ` in "having" needs to be provided in "by"`,
+                                ];
+                    }[HavingFields]
+                  : "take" extends Keys<T>
+                    ? "orderBy" extends Keys<T>
+                        ? ByValid extends True
+                            ? {}
+                            : {
+                                  [P in OrderFields]: P extends ByFields
+                                      ? never
+                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                              }[OrderFields]
+                        : 'Error: If you provide "take", you also need to provide "orderBy"'
+                    : "skip" extends Keys<T>
+                      ? "orderBy" extends Keys<T>
+                          ? ByValid extends True
+                              ? {}
+                              : {
+                                    [P in OrderFields]: P extends ByFields
+                                        ? never
+                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                                }[OrderFields]
+                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+                      : ByValid extends True
+                        ? {}
+                        : {
+                              [P in OrderFields]: P extends ByFields
+                                  ? never
+                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                          }[OrderFields],
+        >(
+            args: SubsetIntersection<T, DocumentTagGroupByArgs, OrderByArg> &
+                InputErrors
+        ): {} extends InputErrors
+            ? GetDocumentTagGroupByPayload<T>
+            : Prisma.PrismaPromise<InputErrors>;
+        /**
+         * Fields of the DocumentTag model
+         */
+        readonly fields: DocumentTagFieldRefs;
+    }
+
+    /**
+     * The delegate class that acts as a "Promise-like" for DocumentTag.
+     * Why is this prefixed with `Prisma__`?
+     * Because we want to prevent naming conflicts as mentioned in
+     * https://github.com/prisma/prisma-client-js/issues/707
+     */
+    export interface Prisma__DocumentTagClient<
+        T,
+        Null = never,
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > extends Prisma.PrismaPromise<T> {
+        readonly [Symbol.toStringTag]: "PrismaPromise";
+        document<T extends DocumentDefaultArgs<ExtArgs> = {}>(
+            args?: Subset<T, DocumentDefaultArgs<ExtArgs>>
+        ): Prisma__DocumentClient<
+            | $Result.GetResult<
+                  Prisma.$DocumentPayload<ExtArgs>,
+                  T,
+                  "findUniqueOrThrow",
+                  GlobalOmitOptions
+              >
+            | Null,
+            Null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        tag<T extends TagDefaultArgs<ExtArgs> = {}>(
+            args?: Subset<T, TagDefaultArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            | $Result.GetResult<
+                  Prisma.$TagPayload<ExtArgs>,
+                  T,
+                  "findUniqueOrThrow",
+                  GlobalOmitOptions
+              >
+            | Null,
+            Null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        /**
+         * Attaches callbacks for the resolution and/or rejection of the Promise.
+         * @param onfulfilled The callback to execute when the Promise is resolved.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of which ever callback is executed.
+         */
+        then<TResult1 = T, TResult2 = never>(
+            onfulfilled?:
+                | ((value: T) => TResult1 | PromiseLike<TResult1>)
+                | undefined
+                | null,
+            onrejected?:
+                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<TResult1 | TResult2>;
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?:
+                | ((reason: any) => TResult | PromiseLike<TResult>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<T | TResult>;
+        /**
+         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+         * resolved value cannot be modified from the callback.
+         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+         * @returns A Promise for the completion of the callback.
+         */
+        finally(
+            onfinally?: (() => void) | undefined | null
+        ): $Utils.JsPromise<T>;
+    }
+
+    /**
+     * Fields of the DocumentTag model
+     */
+    interface DocumentTagFieldRefs {
+        readonly id: FieldRef<"DocumentTag", "String">;
+        readonly createdAt: FieldRef<"DocumentTag", "DateTime">;
+        readonly updatedAt: FieldRef<"DocumentTag", "DateTime">;
+        readonly documentId: FieldRef<"DocumentTag", "String">;
+        readonly tagId: FieldRef<"DocumentTag", "String">;
+    }
+
+    // Custom InputTypes
+    /**
+     * DocumentTag findUnique
+     */
+    export type DocumentTagFindUniqueArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter, which DocumentTag to fetch.
+         */
+        where: DocumentTagWhereUniqueInput;
+    };
+
+    /**
+     * DocumentTag findUniqueOrThrow
+     */
+    export type DocumentTagFindUniqueOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter, which DocumentTag to fetch.
+         */
+        where: DocumentTagWhereUniqueInput;
+    };
+
+    /**
+     * DocumentTag findFirst
+     */
+    export type DocumentTagFindFirstArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter, which DocumentTag to fetch.
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of DocumentTags to fetch.
+         */
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for DocumentTags.
+         */
+        cursor?: DocumentTagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` DocumentTags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` DocumentTags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of DocumentTags.
+         */
+        distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
+     * DocumentTag findFirstOrThrow
+     */
+    export type DocumentTagFindFirstOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter, which DocumentTag to fetch.
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of DocumentTags to fetch.
+         */
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for DocumentTags.
+         */
+        cursor?: DocumentTagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` DocumentTags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` DocumentTags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of DocumentTags.
+         */
+        distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
+     * DocumentTag findMany
+     */
+    export type DocumentTagFindManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter, which DocumentTags to fetch.
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of DocumentTags to fetch.
+         */
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for listing DocumentTags.
+         */
+        cursor?: DocumentTagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` DocumentTags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` DocumentTags.
+         */
+        skip?: number;
+        distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
+     * DocumentTag create
+     */
+    export type DocumentTagCreateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * The data needed to create a DocumentTag.
+         */
+        data: XOR<DocumentTagCreateInput, DocumentTagUncheckedCreateInput>;
+    };
+
+    /**
+     * DocumentTag createMany
+     */
+    export type DocumentTagCreateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to create many DocumentTags.
+         */
+        data: DocumentTagCreateManyInput | DocumentTagCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * DocumentTag createManyAndReturn
+     */
+    export type DocumentTagCreateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelectCreateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * The data used to create many DocumentTags.
+         */
+        data: DocumentTagCreateManyInput | DocumentTagCreateManyInput[];
+        skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagIncludeCreateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * DocumentTag update
+     */
+    export type DocumentTagUpdateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * The data needed to update a DocumentTag.
+         */
+        data: XOR<DocumentTagUpdateInput, DocumentTagUncheckedUpdateInput>;
+        /**
+         * Choose, which DocumentTag to update.
+         */
+        where: DocumentTagWhereUniqueInput;
+    };
+
+    /**
+     * DocumentTag updateMany
+     */
+    export type DocumentTagUpdateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to update DocumentTags.
+         */
+        data: XOR<
+            DocumentTagUpdateManyMutationInput,
+            DocumentTagUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which DocumentTags to update
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * Limit how many DocumentTags to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * DocumentTag updateManyAndReturn
+     */
+    export type DocumentTagUpdateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelectUpdateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * The data used to update DocumentTags.
+         */
+        data: XOR<
+            DocumentTagUpdateManyMutationInput,
+            DocumentTagUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which DocumentTags to update
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * Limit how many DocumentTags to update.
+         */
+        limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagIncludeUpdateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * DocumentTag upsert
+     */
+    export type DocumentTagUpsertArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * The filter to search for the DocumentTag to update in case it exists.
+         */
+        where: DocumentTagWhereUniqueInput;
+        /**
+         * In case the DocumentTag found by the `where` argument doesn't exist, create a new DocumentTag with this data.
+         */
+        create: XOR<DocumentTagCreateInput, DocumentTagUncheckedCreateInput>;
+        /**
+         * In case the DocumentTag was found with the provided `where` argument, update it with this data.
+         */
+        update: XOR<DocumentTagUpdateInput, DocumentTagUncheckedUpdateInput>;
+    };
+
+    /**
+     * DocumentTag delete
+     */
+    export type DocumentTagDeleteArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        /**
+         * Filter which DocumentTag to delete.
+         */
+        where: DocumentTagWhereUniqueInput;
+    };
+
+    /**
+     * DocumentTag deleteMany
+     */
+    export type DocumentTagDeleteManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which DocumentTags to delete
+         */
+        where?: DocumentTagWhereInput;
+        /**
+         * Limit how many DocumentTags to delete.
+         */
+        limit?: number;
+    };
+
+    /**
+     * DocumentTag without action
+     */
+    export type DocumentTagDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+    };
+
+    /**
+     * Model Tag
+     */
+
+    export type AggregateTag = {
+        _count: TagCountAggregateOutputType | null;
+        _min: TagMinAggregateOutputType | null;
+        _max: TagMaxAggregateOutputType | null;
+    };
+
+    export type TagMinAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        tag: string | null;
+    };
+
+    export type TagMaxAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        tag: string | null;
+    };
+
+    export type TagCountAggregateOutputType = {
+        id: number;
+        createdAt: number;
+        updatedAt: number;
+        tag: number;
+        _all: number;
+    };
+
+    export type TagMinAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        tag?: true;
+    };
+
+    export type TagMaxAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        tag?: true;
+    };
+
+    export type TagCountAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        tag?: true;
+        _all?: true;
+    };
+
+    export type TagAggregateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which Tag to aggregate.
+         */
+        where?: TagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Tags to fetch.
+         */
+        orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the start position
+         */
+        cursor?: TagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Tags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Tags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Count returned Tags
+         **/
+        _count?: true | TagCountAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the minimum value
+         **/
+        _min?: TagMinAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the maximum value
+         **/
+        _max?: TagMaxAggregateInputType;
+    };
+
+    export type GetTagAggregateType<T extends TagAggregateArgs> = {
+        [P in keyof T & keyof AggregateTag]: P extends "_count" | "count"
+            ? T[P] extends true
+                ? number
+                : GetScalarType<T[P], AggregateTag[P]>
+            : GetScalarType<T[P], AggregateTag[P]>;
+    };
+
+    export type TagGroupByArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: TagWhereInput;
+        orderBy?:
+            | TagOrderByWithAggregationInput
+            | TagOrderByWithAggregationInput[];
+        by: TagScalarFieldEnum[] | TagScalarFieldEnum;
+        having?: TagScalarWhereWithAggregatesInput;
+        take?: number;
+        skip?: number;
+        _count?: TagCountAggregateInputType | true;
+        _min?: TagMinAggregateInputType;
+        _max?: TagMaxAggregateInputType;
+    };
+
+    export type TagGroupByOutputType = {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tag: string;
+        _count: TagCountAggregateOutputType | null;
+        _min: TagMinAggregateOutputType | null;
+        _max: TagMaxAggregateOutputType | null;
+    };
+
+    type GetTagGroupByPayload<T extends TagGroupByArgs> = Prisma.PrismaPromise<
+        Array<
+            PickEnumerable<TagGroupByOutputType, T["by"]> & {
+                [P in keyof T & keyof TagGroupByOutputType]: P extends "_count"
+                    ? T[P] extends boolean
+                        ? number
+                        : GetScalarType<T[P], TagGroupByOutputType[P]>
+                    : GetScalarType<T[P], TagGroupByOutputType[P]>;
+            }
+        >
+    >;
+
+    export type TagSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            tag?: boolean;
+            documentTags?: boolean | Tag$documentTagsArgs<ExtArgs>;
+            _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["tag"]
+    >;
+
+    export type TagSelectCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            tag?: boolean;
+        },
+        ExtArgs["result"]["tag"]
+    >;
+
+    export type TagSelectUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            tag?: boolean;
+        },
+        ExtArgs["result"]["tag"]
+    >;
+
+    export type TagSelectScalar = {
+        id?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        tag?: boolean;
+    };
+
+    export type TagOmit<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetOmit<
+        "id" | "createdAt" | "updatedAt" | "tag",
+        ExtArgs["result"]["tag"]
+    >;
+    export type TagInclude<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        documentTags?: boolean | Tag$documentTagsArgs<ExtArgs>;
+        _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>;
+    };
+    export type TagIncludeCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {};
+    export type TagIncludeUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {};
+
+    export type $TagPayload<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        name: "Tag";
+        objects: {
+            documentTags: Prisma.$DocumentTagPayload<ExtArgs>[];
+        };
+        scalars: $Extensions.GetPayloadResult<
+            {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                tag: string;
+            },
+            ExtArgs["result"]["tag"]
+        >;
+        composites: {};
+    };
+
+    type TagGetPayload<S extends boolean | null | undefined | TagDefaultArgs> =
+        $Result.GetResult<Prisma.$TagPayload, S>;
+
+    type TagCountArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = Omit<TagFindManyArgs, "select" | "include" | "distinct" | "omit"> & {
+        select?: TagCountAggregateInputType | true;
+    };
+
+    export interface TagDelegate<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > {
+        [K: symbol]: {
+            types: Prisma.TypeMap<ExtArgs>["model"]["Tag"];
+            meta: { name: "Tag" };
+        };
+        /**
+         * Find zero or one Tag that matches the filter.
+         * @param {TagFindUniqueArgs} args - Arguments to find a Tag
+         * @example
+         * // Get one Tag
+         * const tag = await prisma.tag.findUnique({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUnique<T extends TagFindUniqueArgs>(
+            args: SelectSubset<T, TagFindUniqueArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "findUnique",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find one Tag that matches the filter or throw an error with `error.code='P2025'`
+         * if no matches were found.
+         * @param {TagFindUniqueOrThrowArgs} args - Arguments to find a Tag
+         * @example
+         * // Get one Tag
+         * const tag = await prisma.tag.findUniqueOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUniqueOrThrow<T extends TagFindUniqueOrThrowArgs>(
+            args: SelectSubset<T, TagFindUniqueOrThrowArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first Tag that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagFindFirstArgs} args - Arguments to find a Tag
+         * @example
+         * // Get one Tag
+         * const tag = await prisma.tag.findFirst({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirst<T extends TagFindFirstArgs>(
+            args?: SelectSubset<T, TagFindFirstArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "findFirst",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first Tag that matches the filter or
+         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagFindFirstOrThrowArgs} args - Arguments to find a Tag
+         * @example
+         * // Get one Tag
+         * const tag = await prisma.tag.findFirstOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirstOrThrow<T extends TagFindFirstOrThrowArgs>(
+            args?: SelectSubset<T, TagFindFirstOrThrowArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "findFirstOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find zero or more Tags that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagFindManyArgs} args - Arguments to filter and select certain fields only.
+         * @example
+         * // Get all Tags
+         * const tags = await prisma.tag.findMany()
+         *
+         * // Get first 10 Tags
+         * const tags = await prisma.tag.findMany({ take: 10 })
+         *
+         * // Only select the `id`
+         * const tagWithIdOnly = await prisma.tag.findMany({ select: { id: true } })
+         *
+         */
+        findMany<T extends TagFindManyArgs>(
+            args?: SelectSubset<T, TagFindManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "findMany",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create a Tag.
+         * @param {TagCreateArgs} args - Arguments to create a Tag.
+         * @example
+         * // Create one Tag
+         * const Tag = await prisma.tag.create({
+         *   data: {
+         *     // ... data to create a Tag
+         *   }
+         * })
+         *
+         */
+        create<T extends TagCreateArgs>(
+            args: SelectSubset<T, TagCreateArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "create",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Create many Tags.
+         * @param {TagCreateManyArgs} args - Arguments to create many Tags.
+         * @example
+         * // Create many Tags
+         * const tag = await prisma.tag.createMany({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         */
+        createMany<T extends TagCreateManyArgs>(
+            args?: SelectSubset<T, TagCreateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Create many Tags and returns the data saved in the database.
+         * @param {TagCreateManyAndReturnArgs} args - Arguments to create many Tags.
+         * @example
+         * // Create many Tags
+         * const tag = await prisma.tag.createManyAndReturn({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Create many Tags and only return the `id`
+         * const tagWithIdOnly = await prisma.tag.createManyAndReturn({
+         *   select: { id: true },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        createManyAndReturn<T extends TagCreateManyAndReturnArgs>(
+            args?: SelectSubset<T, TagCreateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "createManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Delete a Tag.
+         * @param {TagDeleteArgs} args - Arguments to delete one Tag.
+         * @example
+         * // Delete one Tag
+         * const Tag = await prisma.tag.delete({
+         *   where: {
+         *     // ... filter to delete one Tag
+         *   }
+         * })
+         *
+         */
+        delete<T extends TagDeleteArgs>(
+            args: SelectSubset<T, TagDeleteArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "delete",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Update one Tag.
+         * @param {TagUpdateArgs} args - Arguments to update one Tag.
+         * @example
+         * // Update one Tag
+         * const tag = await prisma.tag.update({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        update<T extends TagUpdateArgs>(
+            args: SelectSubset<T, TagUpdateArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "update",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Delete zero or more Tags.
+         * @param {TagDeleteManyArgs} args - Arguments to filter Tags to delete.
+         * @example
+         * // Delete a few Tags
+         * const { count } = await prisma.tag.deleteMany({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         *
+         */
+        deleteMany<T extends TagDeleteManyArgs>(
+            args?: SelectSubset<T, TagDeleteManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more Tags.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagUpdateManyArgs} args - Arguments to update one or more rows.
+         * @example
+         * // Update many Tags
+         * const tag = await prisma.tag.updateMany({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        updateMany<T extends TagUpdateManyArgs>(
+            args: SelectSubset<T, TagUpdateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more Tags and returns the data updated in the database.
+         * @param {TagUpdateManyAndReturnArgs} args - Arguments to update many Tags.
+         * @example
+         * // Update many Tags
+         * const tag = await prisma.tag.updateManyAndReturn({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Update zero or more Tags and only return the `id`
+         * const tagWithIdOnly = await prisma.tag.updateManyAndReturn({
+         *   select: { id: true },
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        updateManyAndReturn<T extends TagUpdateManyAndReturnArgs>(
+            args: SelectSubset<T, TagUpdateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "updateManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create or update one Tag.
+         * @param {TagUpsertArgs} args - Arguments to update or create a Tag.
+         * @example
+         * // Update or create a Tag
+         * const tag = await prisma.tag.upsert({
+         *   create: {
+         *     // ... data to create a Tag
+         *   },
+         *   update: {
+         *     // ... in case it already exists, update
+         *   },
+         *   where: {
+         *     // ... the filter for the Tag we want to update
+         *   }
+         * })
+         */
+        upsert<T extends TagUpsertArgs>(
+            args: SelectSubset<T, TagUpsertArgs<ExtArgs>>
+        ): Prisma__TagClient<
+            $Result.GetResult<
+                Prisma.$TagPayload<ExtArgs>,
+                T,
+                "upsert",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Count the number of Tags.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagCountArgs} args - Arguments to filter Tags to count.
+         * @example
+         * // Count the number of Tags
+         * const count = await prisma.tag.count({
+         *   where: {
+         *     // ... the filter for the Tags we want to count
+         *   }
+         * })
+         **/
+        count<T extends TagCountArgs>(
+            args?: Subset<T, TagCountArgs>
+        ): Prisma.PrismaPromise<
+            T extends $Utils.Record<"select", any>
+                ? T["select"] extends true
+                    ? number
+                    : GetScalarType<T["select"], TagCountAggregateOutputType>
+                : number
+        >;
+
+        /**
+         * Allows you to perform aggregations operations on a Tag.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+         * @example
+         * // Ordered by age ascending
+         * // Where email contains prisma.io
+         * // Limited to the 10 users
+         * const aggregations = await prisma.user.aggregate({
+         *   _avg: {
+         *     age: true,
+         *   },
+         *   where: {
+         *     email: {
+         *       contains: "prisma.io",
+         *     },
+         *   },
+         *   orderBy: {
+         *     age: "asc",
+         *   },
+         *   take: 10,
+         * })
+         **/
+        aggregate<T extends TagAggregateArgs>(
+            args: Subset<T, TagAggregateArgs>
+        ): Prisma.PrismaPromise<GetTagAggregateType<T>>;
+
+        /**
+         * Group by Tag.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TagGroupByArgs} args - Group by arguments.
+         * @example
+         * // Group by city, order by createdAt, get count
+         * const result = await prisma.user.groupBy({
+         *   by: ['city', 'createdAt'],
+         *   orderBy: {
+         *     createdAt: true
+         *   },
+         *   _count: {
+         *     _all: true
+         *   },
+         * })
+         *
+         **/
+        groupBy<
+            T extends TagGroupByArgs,
+            HasSelectOrTake extends Or<
+                Extends<"skip", Keys<T>>,
+                Extends<"take", Keys<T>>
+            >,
+            OrderByArg extends True extends HasSelectOrTake
+                ? { orderBy: TagGroupByArgs["orderBy"] }
+                : { orderBy?: TagGroupByArgs["orderBy"] },
+            OrderFields extends ExcludeUnderscoreKeys<
+                Keys<MaybeTupleToUnion<T["orderBy"]>>
+            >,
+            ByFields extends MaybeTupleToUnion<T["by"]>,
+            ByValid extends Has<ByFields, OrderFields>,
+            HavingFields extends GetHavingFields<T["having"]>,
+            HavingValid extends Has<ByFields, HavingFields>,
+            ByEmpty extends T["by"] extends never[] ? True : False,
+            InputErrors extends ByEmpty extends True
+                ? `Error: "by" must not be empty.`
+                : HavingValid extends False
+                  ? {
+                        [P in HavingFields]: P extends ByFields
+                            ? never
+                            : P extends string
+                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+                              : [
+                                    Error,
+                                    "Field ",
+                                    P,
+                                    ` in "having" needs to be provided in "by"`,
+                                ];
+                    }[HavingFields]
+                  : "take" extends Keys<T>
+                    ? "orderBy" extends Keys<T>
+                        ? ByValid extends True
+                            ? {}
+                            : {
+                                  [P in OrderFields]: P extends ByFields
+                                      ? never
+                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                              }[OrderFields]
+                        : 'Error: If you provide "take", you also need to provide "orderBy"'
+                    : "skip" extends Keys<T>
+                      ? "orderBy" extends Keys<T>
+                          ? ByValid extends True
+                              ? {}
+                              : {
+                                    [P in OrderFields]: P extends ByFields
+                                        ? never
+                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                                }[OrderFields]
+                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+                      : ByValid extends True
+                        ? {}
+                        : {
+                              [P in OrderFields]: P extends ByFields
+                                  ? never
+                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                          }[OrderFields],
+        >(
+            args: SubsetIntersection<T, TagGroupByArgs, OrderByArg> &
+                InputErrors
+        ): {} extends InputErrors
+            ? GetTagGroupByPayload<T>
+            : Prisma.PrismaPromise<InputErrors>;
+        /**
+         * Fields of the Tag model
+         */
+        readonly fields: TagFieldRefs;
+    }
+
+    /**
+     * The delegate class that acts as a "Promise-like" for Tag.
+     * Why is this prefixed with `Prisma__`?
+     * Because we want to prevent naming conflicts as mentioned in
+     * https://github.com/prisma/prisma-client-js/issues/707
+     */
+    export interface Prisma__TagClient<
+        T,
+        Null = never,
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > extends Prisma.PrismaPromise<T> {
+        readonly [Symbol.toStringTag]: "PrismaPromise";
+        documentTags<T extends Tag$documentTagsArgs<ExtArgs> = {}>(
+            args?: Subset<T, Tag$documentTagsArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$DocumentTagPayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
+        /**
+         * Attaches callbacks for the resolution and/or rejection of the Promise.
+         * @param onfulfilled The callback to execute when the Promise is resolved.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of which ever callback is executed.
+         */
+        then<TResult1 = T, TResult2 = never>(
+            onfulfilled?:
+                | ((value: T) => TResult1 | PromiseLike<TResult1>)
+                | undefined
+                | null,
+            onrejected?:
+                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<TResult1 | TResult2>;
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?:
+                | ((reason: any) => TResult | PromiseLike<TResult>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<T | TResult>;
+        /**
+         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+         * resolved value cannot be modified from the callback.
+         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+         * @returns A Promise for the completion of the callback.
+         */
+        finally(
+            onfinally?: (() => void) | undefined | null
+        ): $Utils.JsPromise<T>;
+    }
+
+    /**
+     * Fields of the Tag model
+     */
+    interface TagFieldRefs {
+        readonly id: FieldRef<"Tag", "String">;
+        readonly createdAt: FieldRef<"Tag", "DateTime">;
+        readonly updatedAt: FieldRef<"Tag", "DateTime">;
+        readonly tag: FieldRef<"Tag", "String">;
+    }
+
+    // Custom InputTypes
+    /**
+     * Tag findUnique
+     */
+    export type TagFindUniqueArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter, which Tag to fetch.
+         */
+        where: TagWhereUniqueInput;
+    };
+
+    /**
+     * Tag findUniqueOrThrow
+     */
+    export type TagFindUniqueOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter, which Tag to fetch.
+         */
+        where: TagWhereUniqueInput;
+    };
+
+    /**
+     * Tag findFirst
+     */
+    export type TagFindFirstArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter, which Tag to fetch.
+         */
+        where?: TagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Tags to fetch.
+         */
+        orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for Tags.
+         */
+        cursor?: TagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Tags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Tags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of Tags.
+         */
+        distinct?: TagScalarFieldEnum | TagScalarFieldEnum[];
+    };
+
+    /**
+     * Tag findFirstOrThrow
+     */
+    export type TagFindFirstOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter, which Tag to fetch.
+         */
+        where?: TagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Tags to fetch.
+         */
+        orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for Tags.
+         */
+        cursor?: TagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Tags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Tags.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of Tags.
+         */
+        distinct?: TagScalarFieldEnum | TagScalarFieldEnum[];
+    };
+
+    /**
+     * Tag findMany
+     */
+    export type TagFindManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter, which Tags to fetch.
+         */
+        where?: TagWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Tags to fetch.
+         */
+        orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for listing Tags.
+         */
+        cursor?: TagWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Tags from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Tags.
+         */
+        skip?: number;
+        distinct?: TagScalarFieldEnum | TagScalarFieldEnum[];
+    };
+
+    /**
+     * Tag create
+     */
+    export type TagCreateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * The data needed to create a Tag.
+         */
+        data: XOR<TagCreateInput, TagUncheckedCreateInput>;
+    };
+
+    /**
+     * Tag createMany
+     */
+    export type TagCreateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to create many Tags.
+         */
+        data: TagCreateManyInput | TagCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * Tag createManyAndReturn
+     */
+    export type TagCreateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelectCreateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * The data used to create many Tags.
+         */
+        data: TagCreateManyInput | TagCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * Tag update
+     */
+    export type TagUpdateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * The data needed to update a Tag.
+         */
+        data: XOR<TagUpdateInput, TagUncheckedUpdateInput>;
+        /**
+         * Choose, which Tag to update.
+         */
+        where: TagWhereUniqueInput;
+    };
+
+    /**
+     * Tag updateMany
+     */
+    export type TagUpdateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to update Tags.
+         */
+        data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>;
+        /**
+         * Filter which Tags to update
+         */
+        where?: TagWhereInput;
+        /**
+         * Limit how many Tags to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * Tag updateManyAndReturn
+     */
+    export type TagUpdateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelectUpdateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * The data used to update Tags.
+         */
+        data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>;
+        /**
+         * Filter which Tags to update
+         */
+        where?: TagWhereInput;
+        /**
+         * Limit how many Tags to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * Tag upsert
+     */
+    export type TagUpsertArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * The filter to search for the Tag to update in case it exists.
+         */
+        where: TagWhereUniqueInput;
+        /**
+         * In case the Tag found by the `where` argument doesn't exist, create a new Tag with this data.
+         */
+        create: XOR<TagCreateInput, TagUncheckedCreateInput>;
+        /**
+         * In case the Tag was found with the provided `where` argument, update it with this data.
+         */
+        update: XOR<TagUpdateInput, TagUncheckedUpdateInput>;
+    };
+
+    /**
+     * Tag delete
+     */
+    export type TagDeleteArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+        /**
+         * Filter which Tag to delete.
+         */
+        where: TagWhereUniqueInput;
+    };
+
+    /**
+     * Tag deleteMany
+     */
+    export type TagDeleteManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which Tags to delete
+         */
+        where?: TagWhereInput;
+        /**
+         * Limit how many Tags to delete.
+         */
+        limit?: number;
+    };
+
+    /**
+     * Tag.documentTags
+     */
+    export type Tag$documentTagsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the DocumentTag
+         */
+        select?: DocumentTagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the DocumentTag
+         */
+        omit?: DocumentTagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentTagInclude<ExtArgs> | null;
+        where?: DocumentTagWhereInput;
+        orderBy?:
+            | DocumentTagOrderByWithRelationInput
+            | DocumentTagOrderByWithRelationInput[];
+        cursor?: DocumentTagWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
+     * Tag without action
+     */
+    export type TagDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Tag
+         */
+        select?: TagSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Tag
+         */
+        omit?: TagOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TagInclude<ExtArgs> | null;
+    };
+
+    /**
+     * Model File
+     */
+
+    export type AggregateFile = {
+        _count: FileCountAggregateOutputType | null;
+        _avg: FileAvgAggregateOutputType | null;
+        _sum: FileSumAggregateOutputType | null;
+        _min: FileMinAggregateOutputType | null;
+        _max: FileMaxAggregateOutputType | null;
+    };
+
+    export type FileAvgAggregateOutputType = {
+        fileSize: number | null;
+        width: number | null;
+        height: number | null;
+    };
+
+    export type FileSumAggregateOutputType = {
+        fileSize: number | null;
+        width: number | null;
+        height: number | null;
+    };
+
+    export type FileMinAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        key: string | null;
+        fileSize: number | null;
+        mimeType: string | null;
+        url: string | null;
+        urlExpiresAt: Date | null;
+        width: number | null;
+        height: number | null;
+        documentId: string | null;
+    };
+
+    export type FileMaxAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        key: string | null;
+        fileSize: number | null;
+        mimeType: string | null;
+        url: string | null;
+        urlExpiresAt: Date | null;
+        width: number | null;
+        height: number | null;
+        documentId: string | null;
+    };
+
+    export type FileCountAggregateOutputType = {
+        id: number;
+        createdAt: number;
+        updatedAt: number;
+        key: number;
+        fileSize: number;
+        mimeType: number;
+        url: number;
+        urlExpiresAt: number;
+        width: number;
+        height: number;
+        documentId: number;
+        _all: number;
+    };
+
+    export type FileAvgAggregateInputType = {
+        fileSize?: true;
+        width?: true;
+        height?: true;
+    };
+
+    export type FileSumAggregateInputType = {
+        fileSize?: true;
+        width?: true;
+        height?: true;
+    };
+
+    export type FileMinAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        key?: true;
+        fileSize?: true;
+        mimeType?: true;
+        url?: true;
+        urlExpiresAt?: true;
+        width?: true;
+        height?: true;
+        documentId?: true;
+    };
+
+    export type FileMaxAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        key?: true;
+        fileSize?: true;
+        mimeType?: true;
+        url?: true;
+        urlExpiresAt?: true;
+        width?: true;
+        height?: true;
+        documentId?: true;
+    };
+
+    export type FileCountAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        key?: true;
+        fileSize?: true;
+        mimeType?: true;
+        url?: true;
+        urlExpiresAt?: true;
+        width?: true;
+        height?: true;
+        documentId?: true;
+        _all?: true;
+    };
+
+    export type FileAggregateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which File to aggregate.
+         */
+        where?: FileWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Files to fetch.
+         */
+        orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the start position
+         */
+        cursor?: FileWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Files from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Files.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Count returned Files
+         **/
+        _count?: true | FileCountAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to average
+         **/
+        _avg?: FileAvgAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to sum
+         **/
+        _sum?: FileSumAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the minimum value
+         **/
+        _min?: FileMinAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the maximum value
+         **/
+        _max?: FileMaxAggregateInputType;
+    };
+
+    export type GetFileAggregateType<T extends FileAggregateArgs> = {
+        [P in keyof T & keyof AggregateFile]: P extends "_count" | "count"
+            ? T[P] extends true
+                ? number
+                : GetScalarType<T[P], AggregateFile[P]>
+            : GetScalarType<T[P], AggregateFile[P]>;
+    };
+
+    export type FileGroupByArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: FileWhereInput;
+        orderBy?:
+            | FileOrderByWithAggregationInput
+            | FileOrderByWithAggregationInput[];
+        by: FileScalarFieldEnum[] | FileScalarFieldEnum;
+        having?: FileScalarWhereWithAggregatesInput;
+        take?: number;
+        skip?: number;
+        _count?: FileCountAggregateInputType | true;
+        _avg?: FileAvgAggregateInputType;
+        _sum?: FileSumAggregateInputType;
+        _min?: FileMinAggregateInputType;
+        _max?: FileMaxAggregateInputType;
+    };
+
+    export type FileGroupByOutputType = {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date;
+        width: number | null;
+        height: number | null;
+        documentId: string;
+        _count: FileCountAggregateOutputType | null;
+        _avg: FileAvgAggregateOutputType | null;
+        _sum: FileSumAggregateOutputType | null;
+        _min: FileMinAggregateOutputType | null;
+        _max: FileMaxAggregateOutputType | null;
+    };
+
+    type GetFileGroupByPayload<T extends FileGroupByArgs> =
+        Prisma.PrismaPromise<
+            Array<
+                PickEnumerable<FileGroupByOutputType, T["by"]> & {
+                    [P in keyof T &
+                        keyof FileGroupByOutputType]: P extends "_count"
+                        ? T[P] extends boolean
+                            ? number
+                            : GetScalarType<T[P], FileGroupByOutputType[P]>
+                        : GetScalarType<T[P], FileGroupByOutputType[P]>;
+                }
+            >
+        >;
+
+    export type FileSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            key?: boolean;
+            fileSize?: boolean;
+            mimeType?: boolean;
+            url?: boolean;
+            urlExpiresAt?: boolean;
+            width?: boolean;
+            height?: boolean;
+            documentId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["file"]
+    >;
+
+    export type FileSelectCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            key?: boolean;
+            fileSize?: boolean;
+            mimeType?: boolean;
+            url?: boolean;
+            urlExpiresAt?: boolean;
+            width?: boolean;
+            height?: boolean;
+            documentId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["file"]
+    >;
+
+    export type FileSelectUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            key?: boolean;
+            fileSize?: boolean;
+            mimeType?: boolean;
+            url?: boolean;
+            urlExpiresAt?: boolean;
+            width?: boolean;
+            height?: boolean;
+            documentId?: boolean;
+            document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["file"]
+    >;
+
+    export type FileSelectScalar = {
+        id?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        key?: boolean;
+        fileSize?: boolean;
+        mimeType?: boolean;
+        url?: boolean;
+        urlExpiresAt?: boolean;
+        width?: boolean;
+        height?: boolean;
+        documentId?: boolean;
+    };
+
+    export type FileOmit<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetOmit<
+        | "id"
+        | "createdAt"
+        | "updatedAt"
+        | "key"
+        | "fileSize"
+        | "mimeType"
+        | "url"
+        | "urlExpiresAt"
+        | "width"
+        | "height"
+        | "documentId",
+        ExtArgs["result"]["file"]
+    >;
+    export type FileInclude<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+    };
+    export type FileIncludeCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+    };
+    export type FileIncludeUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        document?: boolean | DocumentDefaultArgs<ExtArgs>;
+    };
+
+    export type $FilePayload<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        name: "File";
+        objects: {
+            document: Prisma.$DocumentPayload<ExtArgs>;
+        };
+        scalars: $Extensions.GetPayloadResult<
+            {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                key: string;
+                fileSize: number;
+                mimeType: string;
+                url: string;
+                urlExpiresAt: Date;
+                width: number | null;
+                height: number | null;
+                documentId: string;
+            },
+            ExtArgs["result"]["file"]
+        >;
+        composites: {};
+    };
+
+    type FileGetPayload<
+        S extends boolean | null | undefined | FileDefaultArgs,
+    > = $Result.GetResult<Prisma.$FilePayload, S>;
+
+    type FileCountArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = Omit<FileFindManyArgs, "select" | "include" | "distinct" | "omit"> & {
+        select?: FileCountAggregateInputType | true;
+    };
+
+    export interface FileDelegate<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > {
+        [K: symbol]: {
+            types: Prisma.TypeMap<ExtArgs>["model"]["File"];
+            meta: { name: "File" };
+        };
+        /**
+         * Find zero or one File that matches the filter.
+         * @param {FileFindUniqueArgs} args - Arguments to find a File
+         * @example
+         * // Get one File
+         * const file = await prisma.file.findUnique({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUnique<T extends FileFindUniqueArgs>(
+            args: SelectSubset<T, FileFindUniqueArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findUnique",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find one File that matches the filter or throw an error with `error.code='P2025'`
+         * if no matches were found.
+         * @param {FileFindUniqueOrThrowArgs} args - Arguments to find a File
+         * @example
+         * // Get one File
+         * const file = await prisma.file.findUniqueOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUniqueOrThrow<T extends FileFindUniqueOrThrowArgs>(
+            args: SelectSubset<T, FileFindUniqueOrThrowArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first File that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileFindFirstArgs} args - Arguments to find a File
+         * @example
+         * // Get one File
+         * const file = await prisma.file.findFirst({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirst<T extends FileFindFirstArgs>(
+            args?: SelectSubset<T, FileFindFirstArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findFirst",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first File that matches the filter or
+         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileFindFirstOrThrowArgs} args - Arguments to find a File
+         * @example
+         * // Get one File
+         * const file = await prisma.file.findFirstOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirstOrThrow<T extends FileFindFirstOrThrowArgs>(
+            args?: SelectSubset<T, FileFindFirstOrThrowArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findFirstOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find zero or more Files that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileFindManyArgs} args - Arguments to filter and select certain fields only.
+         * @example
+         * // Get all Files
+         * const files = await prisma.file.findMany()
+         *
+         * // Get first 10 Files
+         * const files = await prisma.file.findMany({ take: 10 })
+         *
+         * // Only select the `id`
+         * const fileWithIdOnly = await prisma.file.findMany({ select: { id: true } })
+         *
+         */
+        findMany<T extends FileFindManyArgs>(
+            args?: SelectSubset<T, FileFindManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findMany",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create a File.
+         * @param {FileCreateArgs} args - Arguments to create a File.
+         * @example
+         * // Create one File
+         * const File = await prisma.file.create({
+         *   data: {
+         *     // ... data to create a File
+         *   }
+         * })
+         *
+         */
+        create<T extends FileCreateArgs>(
+            args: SelectSubset<T, FileCreateArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "create",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Create many Files.
+         * @param {FileCreateManyArgs} args - Arguments to create many Files.
+         * @example
+         * // Create many Files
+         * const file = await prisma.file.createMany({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         */
+        createMany<T extends FileCreateManyArgs>(
+            args?: SelectSubset<T, FileCreateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Create many Files and returns the data saved in the database.
+         * @param {FileCreateManyAndReturnArgs} args - Arguments to create many Files.
+         * @example
+         * // Create many Files
+         * const file = await prisma.file.createManyAndReturn({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Create many Files and only return the `id`
+         * const fileWithIdOnly = await prisma.file.createManyAndReturn({
+         *   select: { id: true },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        createManyAndReturn<T extends FileCreateManyAndReturnArgs>(
+            args?: SelectSubset<T, FileCreateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "createManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Delete a File.
+         * @param {FileDeleteArgs} args - Arguments to delete one File.
+         * @example
+         * // Delete one File
+         * const File = await prisma.file.delete({
+         *   where: {
+         *     // ... filter to delete one File
+         *   }
+         * })
+         *
+         */
+        delete<T extends FileDeleteArgs>(
+            args: SelectSubset<T, FileDeleteArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "delete",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Update one File.
+         * @param {FileUpdateArgs} args - Arguments to update one File.
+         * @example
+         * // Update one File
+         * const file = await prisma.file.update({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        update<T extends FileUpdateArgs>(
+            args: SelectSubset<T, FileUpdateArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "update",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Delete zero or more Files.
+         * @param {FileDeleteManyArgs} args - Arguments to filter Files to delete.
+         * @example
+         * // Delete a few Files
+         * const { count } = await prisma.file.deleteMany({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         *
+         */
+        deleteMany<T extends FileDeleteManyArgs>(
+            args?: SelectSubset<T, FileDeleteManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more Files.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileUpdateManyArgs} args - Arguments to update one or more rows.
+         * @example
+         * // Update many Files
+         * const file = await prisma.file.updateMany({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        updateMany<T extends FileUpdateManyArgs>(
+            args: SelectSubset<T, FileUpdateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more Files and returns the data updated in the database.
+         * @param {FileUpdateManyAndReturnArgs} args - Arguments to update many Files.
+         * @example
+         * // Update many Files
+         * const file = await prisma.file.updateManyAndReturn({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Update zero or more Files and only return the `id`
+         * const fileWithIdOnly = await prisma.file.updateManyAndReturn({
+         *   select: { id: true },
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        updateManyAndReturn<T extends FileUpdateManyAndReturnArgs>(
+            args: SelectSubset<T, FileUpdateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "updateManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create or update one File.
+         * @param {FileUpsertArgs} args - Arguments to update or create a File.
+         * @example
+         * // Update or create a File
+         * const file = await prisma.file.upsert({
+         *   create: {
+         *     // ... data to create a File
+         *   },
+         *   update: {
+         *     // ... in case it already exists, update
+         *   },
+         *   where: {
+         *     // ... the filter for the File we want to update
+         *   }
+         * })
+         */
+        upsert<T extends FileUpsertArgs>(
+            args: SelectSubset<T, FileUpsertArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "upsert",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Count the number of Files.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileCountArgs} args - Arguments to filter Files to count.
+         * @example
+         * // Count the number of Files
+         * const count = await prisma.file.count({
+         *   where: {
+         *     // ... the filter for the Files we want to count
+         *   }
+         * })
+         **/
+        count<T extends FileCountArgs>(
+            args?: Subset<T, FileCountArgs>
+        ): Prisma.PrismaPromise<
+            T extends $Utils.Record<"select", any>
+                ? T["select"] extends true
+                    ? number
+                    : GetScalarType<T["select"], FileCountAggregateOutputType>
+                : number
+        >;
+
+        /**
+         * Allows you to perform aggregations operations on a File.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+         * @example
+         * // Ordered by age ascending
+         * // Where email contains prisma.io
+         * // Limited to the 10 users
+         * const aggregations = await prisma.user.aggregate({
+         *   _avg: {
+         *     age: true,
+         *   },
+         *   where: {
+         *     email: {
+         *       contains: "prisma.io",
+         *     },
+         *   },
+         *   orderBy: {
+         *     age: "asc",
+         *   },
+         *   take: 10,
+         * })
+         **/
+        aggregate<T extends FileAggregateArgs>(
+            args: Subset<T, FileAggregateArgs>
+        ): Prisma.PrismaPromise<GetFileAggregateType<T>>;
+
+        /**
+         * Group by File.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {FileGroupByArgs} args - Group by arguments.
+         * @example
+         * // Group by city, order by createdAt, get count
+         * const result = await prisma.user.groupBy({
+         *   by: ['city', 'createdAt'],
+         *   orderBy: {
+         *     createdAt: true
+         *   },
+         *   _count: {
+         *     _all: true
+         *   },
+         * })
+         *
+         **/
+        groupBy<
+            T extends FileGroupByArgs,
+            HasSelectOrTake extends Or<
+                Extends<"skip", Keys<T>>,
+                Extends<"take", Keys<T>>
+            >,
+            OrderByArg extends True extends HasSelectOrTake
+                ? { orderBy: FileGroupByArgs["orderBy"] }
+                : { orderBy?: FileGroupByArgs["orderBy"] },
+            OrderFields extends ExcludeUnderscoreKeys<
+                Keys<MaybeTupleToUnion<T["orderBy"]>>
+            >,
+            ByFields extends MaybeTupleToUnion<T["by"]>,
+            ByValid extends Has<ByFields, OrderFields>,
+            HavingFields extends GetHavingFields<T["having"]>,
+            HavingValid extends Has<ByFields, HavingFields>,
+            ByEmpty extends T["by"] extends never[] ? True : False,
+            InputErrors extends ByEmpty extends True
+                ? `Error: "by" must not be empty.`
+                : HavingValid extends False
+                  ? {
+                        [P in HavingFields]: P extends ByFields
+                            ? never
+                            : P extends string
+                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+                              : [
+                                    Error,
+                                    "Field ",
+                                    P,
+                                    ` in "having" needs to be provided in "by"`,
+                                ];
+                    }[HavingFields]
+                  : "take" extends Keys<T>
+                    ? "orderBy" extends Keys<T>
+                        ? ByValid extends True
+                            ? {}
+                            : {
+                                  [P in OrderFields]: P extends ByFields
+                                      ? never
+                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                              }[OrderFields]
+                        : 'Error: If you provide "take", you also need to provide "orderBy"'
+                    : "skip" extends Keys<T>
+                      ? "orderBy" extends Keys<T>
+                          ? ByValid extends True
+                              ? {}
+                              : {
+                                    [P in OrderFields]: P extends ByFields
+                                        ? never
+                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                                }[OrderFields]
+                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+                      : ByValid extends True
+                        ? {}
+                        : {
+                              [P in OrderFields]: P extends ByFields
+                                  ? never
+                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                          }[OrderFields],
+        >(
+            args: SubsetIntersection<T, FileGroupByArgs, OrderByArg> &
+                InputErrors
+        ): {} extends InputErrors
+            ? GetFileGroupByPayload<T>
+            : Prisma.PrismaPromise<InputErrors>;
+        /**
+         * Fields of the File model
+         */
+        readonly fields: FileFieldRefs;
+    }
+
+    /**
+     * The delegate class that acts as a "Promise-like" for File.
+     * Why is this prefixed with `Prisma__`?
+     * Because we want to prevent naming conflicts as mentioned in
+     * https://github.com/prisma/prisma-client-js/issues/707
+     */
+    export interface Prisma__FileClient<
+        T,
+        Null = never,
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > extends Prisma.PrismaPromise<T> {
+        readonly [Symbol.toStringTag]: "PrismaPromise";
+        document<T extends DocumentDefaultArgs<ExtArgs> = {}>(
+            args?: Subset<T, DocumentDefaultArgs<ExtArgs>>
+        ): Prisma__DocumentClient<
+            | $Result.GetResult<
+                  Prisma.$DocumentPayload<ExtArgs>,
+                  T,
+                  "findUniqueOrThrow",
+                  GlobalOmitOptions
+              >
+            | Null,
+            Null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        /**
+         * Attaches callbacks for the resolution and/or rejection of the Promise.
+         * @param onfulfilled The callback to execute when the Promise is resolved.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of which ever callback is executed.
+         */
+        then<TResult1 = T, TResult2 = never>(
+            onfulfilled?:
+                | ((value: T) => TResult1 | PromiseLike<TResult1>)
+                | undefined
+                | null,
+            onrejected?:
+                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<TResult1 | TResult2>;
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?:
+                | ((reason: any) => TResult | PromiseLike<TResult>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<T | TResult>;
+        /**
+         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+         * resolved value cannot be modified from the callback.
+         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+         * @returns A Promise for the completion of the callback.
+         */
+        finally(
+            onfinally?: (() => void) | undefined | null
+        ): $Utils.JsPromise<T>;
+    }
+
+    /**
+     * Fields of the File model
+     */
+    interface FileFieldRefs {
+        readonly id: FieldRef<"File", "String">;
+        readonly createdAt: FieldRef<"File", "DateTime">;
+        readonly updatedAt: FieldRef<"File", "DateTime">;
+        readonly key: FieldRef<"File", "String">;
+        readonly fileSize: FieldRef<"File", "Float">;
+        readonly mimeType: FieldRef<"File", "String">;
+        readonly url: FieldRef<"File", "String">;
+        readonly urlExpiresAt: FieldRef<"File", "DateTime">;
+        readonly width: FieldRef<"File", "Float">;
+        readonly height: FieldRef<"File", "Float">;
+        readonly documentId: FieldRef<"File", "String">;
+    }
+
+    // Custom InputTypes
+    /**
+     * File findUnique
+     */
+    export type FileFindUniqueArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter, which File to fetch.
+         */
+        where: FileWhereUniqueInput;
+    };
+
+    /**
+     * File findUniqueOrThrow
+     */
+    export type FileFindUniqueOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter, which File to fetch.
+         */
+        where: FileWhereUniqueInput;
+    };
+
+    /**
+     * File findFirst
+     */
+    export type FileFindFirstArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter, which File to fetch.
+         */
+        where?: FileWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Files to fetch.
+         */
+        orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for Files.
+         */
+        cursor?: FileWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Files from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Files.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of Files.
+         */
+        distinct?: FileScalarFieldEnum | FileScalarFieldEnum[];
+    };
+
+    /**
+     * File findFirstOrThrow
+     */
+    export type FileFindFirstOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter, which File to fetch.
+         */
+        where?: FileWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Files to fetch.
+         */
+        orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for Files.
+         */
+        cursor?: FileWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Files from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Files.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of Files.
+         */
+        distinct?: FileScalarFieldEnum | FileScalarFieldEnum[];
+    };
+
+    /**
+     * File findMany
+     */
+    export type FileFindManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter, which Files to fetch.
+         */
+        where?: FileWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of Files to fetch.
+         */
+        orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for listing Files.
+         */
+        cursor?: FileWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` Files from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` Files.
+         */
+        skip?: number;
+        distinct?: FileScalarFieldEnum | FileScalarFieldEnum[];
+    };
+
+    /**
+     * File create
+     */
+    export type FileCreateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * The data needed to create a File.
+         */
+        data: XOR<FileCreateInput, FileUncheckedCreateInput>;
+    };
+
+    /**
+     * File createMany
+     */
+    export type FileCreateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to create many Files.
+         */
+        data: FileCreateManyInput | FileCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * File createManyAndReturn
+     */
+    export type FileCreateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelectCreateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * The data used to create many Files.
+         */
+        data: FileCreateManyInput | FileCreateManyInput[];
+        skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileIncludeCreateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * File update
+     */
+    export type FileUpdateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * The data needed to update a File.
+         */
+        data: XOR<FileUpdateInput, FileUncheckedUpdateInput>;
+        /**
+         * Choose, which File to update.
+         */
+        where: FileWhereUniqueInput;
+    };
+
+    /**
+     * File updateMany
+     */
+    export type FileUpdateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to update Files.
+         */
+        data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>;
+        /**
+         * Filter which Files to update
+         */
+        where?: FileWhereInput;
+        /**
+         * Limit how many Files to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * File updateManyAndReturn
+     */
+    export type FileUpdateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelectUpdateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * The data used to update Files.
+         */
+        data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>;
+        /**
+         * Filter which Files to update
+         */
+        where?: FileWhereInput;
+        /**
+         * Limit how many Files to update.
+         */
+        limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileIncludeUpdateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * File upsert
+     */
+    export type FileUpsertArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * The filter to search for the File to update in case it exists.
+         */
+        where: FileWhereUniqueInput;
+        /**
+         * In case the File found by the `where` argument doesn't exist, create a new File with this data.
+         */
+        create: XOR<FileCreateInput, FileUncheckedCreateInput>;
+        /**
+         * In case the File was found with the provided `where` argument, update it with this data.
+         */
+        update: XOR<FileUpdateInput, FileUncheckedUpdateInput>;
+    };
+
+    /**
+     * File delete
+     */
+    export type FileDeleteArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        /**
+         * Filter which File to delete.
+         */
+        where: FileWhereUniqueInput;
+    };
+
+    /**
+     * File deleteMany
+     */
+    export type FileDeleteManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which Files to delete
+         */
+        where?: FileWhereInput;
+        /**
+         * Limit how many Files to delete.
+         */
+        limit?: number;
+    };
+
+    /**
+     * File without action
+     */
+    export type FileDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
     };
 
     /**
@@ -4428,1414 +8642,6 @@ export namespace Prisma {
     };
 
     /**
-     * Model DocumentDeadline
-     */
-
-    export type AggregateDocumentDeadline = {
-        _count: DocumentDeadlineCountAggregateOutputType | null;
-        _min: DocumentDeadlineMinAggregateOutputType | null;
-        _max: DocumentDeadlineMaxAggregateOutputType | null;
-    };
-
-    export type DocumentDeadlineMinAggregateOutputType = {
-        id: string | null;
-        createdAt: Date | null;
-        updatedAt: Date | null;
-        name: string | null;
-        dueAt: Date | null;
-        status: $Enums.DeadlineStatus | null;
-        riskLevel: string | null;
-        documentId: string | null;
-    };
-
-    export type DocumentDeadlineMaxAggregateOutputType = {
-        id: string | null;
-        createdAt: Date | null;
-        updatedAt: Date | null;
-        name: string | null;
-        dueAt: Date | null;
-        status: $Enums.DeadlineStatus | null;
-        riskLevel: string | null;
-        documentId: string | null;
-    };
-
-    export type DocumentDeadlineCountAggregateOutputType = {
-        id: number;
-        createdAt: number;
-        updatedAt: number;
-        name: number;
-        dueAt: number;
-        status: number;
-        riskLevel: number;
-        documentId: number;
-        _all: number;
-    };
-
-    export type DocumentDeadlineMinAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        name?: true;
-        dueAt?: true;
-        status?: true;
-        riskLevel?: true;
-        documentId?: true;
-    };
-
-    export type DocumentDeadlineMaxAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        name?: true;
-        dueAt?: true;
-        status?: true;
-        riskLevel?: true;
-        documentId?: true;
-    };
-
-    export type DocumentDeadlineCountAggregateInputType = {
-        id?: true;
-        createdAt?: true;
-        updatedAt?: true;
-        name?: true;
-        dueAt?: true;
-        status?: true;
-        riskLevel?: true;
-        documentId?: true;
-        _all?: true;
-    };
-
-    export type DocumentDeadlineAggregateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Filter which DocumentDeadline to aggregate.
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of DocumentDeadlines to fetch.
-         */
-        orderBy?:
-            | DocumentDeadlineOrderByWithRelationInput
-            | DocumentDeadlineOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the start position
-         */
-        cursor?: DocumentDeadlineWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` DocumentDeadlines from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` DocumentDeadlines.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Count returned DocumentDeadlines
-         **/
-        _count?: true | DocumentDeadlineCountAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Select which fields to find the minimum value
-         **/
-        _min?: DocumentDeadlineMinAggregateInputType;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-         *
-         * Select which fields to find the maximum value
-         **/
-        _max?: DocumentDeadlineMaxAggregateInputType;
-    };
-
-    export type GetDocumentDeadlineAggregateType<
-        T extends DocumentDeadlineAggregateArgs,
-    > = {
-        [P in keyof T & keyof AggregateDocumentDeadline]: P extends
-            | "_count"
-            | "count"
-            ? T[P] extends true
-                ? number
-                : GetScalarType<T[P], AggregateDocumentDeadline[P]>
-            : GetScalarType<T[P], AggregateDocumentDeadline[P]>;
-    };
-
-    export type DocumentDeadlineGroupByArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        where?: DocumentDeadlineWhereInput;
-        orderBy?:
-            | DocumentDeadlineOrderByWithAggregationInput
-            | DocumentDeadlineOrderByWithAggregationInput[];
-        by: DocumentDeadlineScalarFieldEnum[] | DocumentDeadlineScalarFieldEnum;
-        having?: DocumentDeadlineScalarWhereWithAggregatesInput;
-        take?: number;
-        skip?: number;
-        _count?: DocumentDeadlineCountAggregateInputType | true;
-        _min?: DocumentDeadlineMinAggregateInputType;
-        _max?: DocumentDeadlineMaxAggregateInputType;
-    };
-
-    export type DocumentDeadlineGroupByOutputType = {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string;
-        dueAt: Date;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-        documentId: string;
-        _count: DocumentDeadlineCountAggregateOutputType | null;
-        _min: DocumentDeadlineMinAggregateOutputType | null;
-        _max: DocumentDeadlineMaxAggregateOutputType | null;
-    };
-
-    type GetDocumentDeadlineGroupByPayload<
-        T extends DocumentDeadlineGroupByArgs,
-    > = Prisma.PrismaPromise<
-        Array<
-            PickEnumerable<DocumentDeadlineGroupByOutputType, T["by"]> & {
-                [P in keyof T &
-                    keyof DocumentDeadlineGroupByOutputType]: P extends "_count"
-                    ? T[P] extends boolean
-                        ? number
-                        : GetScalarType<
-                              T[P],
-                              DocumentDeadlineGroupByOutputType[P]
-                          >
-                    : GetScalarType<T[P], DocumentDeadlineGroupByOutputType[P]>;
-            }
-        >
-    >;
-
-    export type DocumentDeadlineSelect<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            name?: boolean;
-            dueAt?: boolean;
-            status?: boolean;
-            riskLevel?: boolean;
-            documentId?: boolean;
-            document?: boolean | DocumentDefaultArgs<ExtArgs>;
-        },
-        ExtArgs["result"]["documentDeadline"]
-    >;
-
-    export type DocumentDeadlineSelectCreateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            name?: boolean;
-            dueAt?: boolean;
-            status?: boolean;
-            riskLevel?: boolean;
-            documentId?: boolean;
-            document?: boolean | DocumentDefaultArgs<ExtArgs>;
-        },
-        ExtArgs["result"]["documentDeadline"]
-    >;
-
-    export type DocumentDeadlineSelectUpdateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetSelect<
-        {
-            id?: boolean;
-            createdAt?: boolean;
-            updatedAt?: boolean;
-            name?: boolean;
-            dueAt?: boolean;
-            status?: boolean;
-            riskLevel?: boolean;
-            documentId?: boolean;
-            document?: boolean | DocumentDefaultArgs<ExtArgs>;
-        },
-        ExtArgs["result"]["documentDeadline"]
-    >;
-
-    export type DocumentDeadlineSelectScalar = {
-        id?: boolean;
-        createdAt?: boolean;
-        updatedAt?: boolean;
-        name?: boolean;
-        dueAt?: boolean;
-        status?: boolean;
-        riskLevel?: boolean;
-        documentId?: boolean;
-    };
-
-    export type DocumentDeadlineOmit<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = $Extensions.GetOmit<
-        | "id"
-        | "createdAt"
-        | "updatedAt"
-        | "name"
-        | "dueAt"
-        | "status"
-        | "riskLevel"
-        | "documentId",
-        ExtArgs["result"]["documentDeadline"]
-    >;
-    export type DocumentDeadlineInclude<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        document?: boolean | DocumentDefaultArgs<ExtArgs>;
-    };
-    export type DocumentDeadlineIncludeCreateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        document?: boolean | DocumentDefaultArgs<ExtArgs>;
-    };
-    export type DocumentDeadlineIncludeUpdateManyAndReturn<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        document?: boolean | DocumentDefaultArgs<ExtArgs>;
-    };
-
-    export type $DocumentDeadlinePayload<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        name: "DocumentDeadline";
-        objects: {
-            document: Prisma.$DocumentPayload<ExtArgs>;
-        };
-        scalars: $Extensions.GetPayloadResult<
-            {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                name: string;
-                dueAt: Date;
-                status: $Enums.DeadlineStatus;
-                riskLevel: string;
-                documentId: string;
-            },
-            ExtArgs["result"]["documentDeadline"]
-        >;
-        composites: {};
-    };
-
-    type DocumentDeadlineGetPayload<
-        S extends boolean | null | undefined | DocumentDeadlineDefaultArgs,
-    > = $Result.GetResult<Prisma.$DocumentDeadlinePayload, S>;
-
-    type DocumentDeadlineCountArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = Omit<
-        DocumentDeadlineFindManyArgs,
-        "select" | "include" | "distinct" | "omit"
-    > & {
-        select?: DocumentDeadlineCountAggregateInputType | true;
-    };
-
-    export interface DocumentDeadlineDelegate<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-        GlobalOmitOptions = {},
-    > {
-        [K: symbol]: {
-            types: Prisma.TypeMap<ExtArgs>["model"]["DocumentDeadline"];
-            meta: { name: "DocumentDeadline" };
-        };
-        /**
-         * Find zero or one DocumentDeadline that matches the filter.
-         * @param {DocumentDeadlineFindUniqueArgs} args - Arguments to find a DocumentDeadline
-         * @example
-         * // Get one DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.findUnique({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findUnique<T extends DocumentDeadlineFindUniqueArgs>(
-            args: SelectSubset<T, DocumentDeadlineFindUniqueArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "findUnique",
-                GlobalOmitOptions
-            > | null,
-            null,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find one DocumentDeadline that matches the filter or throw an error with `error.code='P2025'`
-         * if no matches were found.
-         * @param {DocumentDeadlineFindUniqueOrThrowArgs} args - Arguments to find a DocumentDeadline
-         * @example
-         * // Get one DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.findUniqueOrThrow({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findUniqueOrThrow<T extends DocumentDeadlineFindUniqueOrThrowArgs>(
-            args: SelectSubset<
-                T,
-                DocumentDeadlineFindUniqueOrThrowArgs<ExtArgs>
-            >
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "findUniqueOrThrow",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find the first DocumentDeadline that matches the filter.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineFindFirstArgs} args - Arguments to find a DocumentDeadline
-         * @example
-         * // Get one DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.findFirst({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findFirst<T extends DocumentDeadlineFindFirstArgs>(
-            args?: SelectSubset<T, DocumentDeadlineFindFirstArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "findFirst",
-                GlobalOmitOptions
-            > | null,
-            null,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find the first DocumentDeadline that matches the filter or
-         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineFindFirstOrThrowArgs} args - Arguments to find a DocumentDeadline
-         * @example
-         * // Get one DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.findFirstOrThrow({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         */
-        findFirstOrThrow<T extends DocumentDeadlineFindFirstOrThrowArgs>(
-            args?: SelectSubset<
-                T,
-                DocumentDeadlineFindFirstOrThrowArgs<ExtArgs>
-            >
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "findFirstOrThrow",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Find zero or more DocumentDeadlines that matches the filter.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineFindManyArgs} args - Arguments to filter and select certain fields only.
-         * @example
-         * // Get all DocumentDeadlines
-         * const documentDeadlines = await prisma.documentDeadline.findMany()
-         *
-         * // Get first 10 DocumentDeadlines
-         * const documentDeadlines = await prisma.documentDeadline.findMany({ take: 10 })
-         *
-         * // Only select the `id`
-         * const documentDeadlineWithIdOnly = await prisma.documentDeadline.findMany({ select: { id: true } })
-         *
-         */
-        findMany<T extends DocumentDeadlineFindManyArgs>(
-            args?: SelectSubset<T, DocumentDeadlineFindManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "findMany",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Create a DocumentDeadline.
-         * @param {DocumentDeadlineCreateArgs} args - Arguments to create a DocumentDeadline.
-         * @example
-         * // Create one DocumentDeadline
-         * const DocumentDeadline = await prisma.documentDeadline.create({
-         *   data: {
-         *     // ... data to create a DocumentDeadline
-         *   }
-         * })
-         *
-         */
-        create<T extends DocumentDeadlineCreateArgs>(
-            args: SelectSubset<T, DocumentDeadlineCreateArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "create",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Create many DocumentDeadlines.
-         * @param {DocumentDeadlineCreateManyArgs} args - Arguments to create many DocumentDeadlines.
-         * @example
-         * // Create many DocumentDeadlines
-         * const documentDeadline = await prisma.documentDeadline.createMany({
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         */
-        createMany<T extends DocumentDeadlineCreateManyArgs>(
-            args?: SelectSubset<T, DocumentDeadlineCreateManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Create many DocumentDeadlines and returns the data saved in the database.
-         * @param {DocumentDeadlineCreateManyAndReturnArgs} args - Arguments to create many DocumentDeadlines.
-         * @example
-         * // Create many DocumentDeadlines
-         * const documentDeadline = await prisma.documentDeadline.createManyAndReturn({
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         * // Create many DocumentDeadlines and only return the `id`
-         * const documentDeadlineWithIdOnly = await prisma.documentDeadline.createManyAndReturn({
-         *   select: { id: true },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         *
-         */
-        createManyAndReturn<T extends DocumentDeadlineCreateManyAndReturnArgs>(
-            args?: SelectSubset<
-                T,
-                DocumentDeadlineCreateManyAndReturnArgs<ExtArgs>
-            >
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "createManyAndReturn",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Delete a DocumentDeadline.
-         * @param {DocumentDeadlineDeleteArgs} args - Arguments to delete one DocumentDeadline.
-         * @example
-         * // Delete one DocumentDeadline
-         * const DocumentDeadline = await prisma.documentDeadline.delete({
-         *   where: {
-         *     // ... filter to delete one DocumentDeadline
-         *   }
-         * })
-         *
-         */
-        delete<T extends DocumentDeadlineDeleteArgs>(
-            args: SelectSubset<T, DocumentDeadlineDeleteArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "delete",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Update one DocumentDeadline.
-         * @param {DocumentDeadlineUpdateArgs} args - Arguments to update one DocumentDeadline.
-         * @example
-         * // Update one DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.update({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: {
-         *     // ... provide data here
-         *   }
-         * })
-         *
-         */
-        update<T extends DocumentDeadlineUpdateArgs>(
-            args: SelectSubset<T, DocumentDeadlineUpdateArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "update",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Delete zero or more DocumentDeadlines.
-         * @param {DocumentDeadlineDeleteManyArgs} args - Arguments to filter DocumentDeadlines to delete.
-         * @example
-         * // Delete a few DocumentDeadlines
-         * const { count } = await prisma.documentDeadline.deleteMany({
-         *   where: {
-         *     // ... provide filter here
-         *   }
-         * })
-         *
-         */
-        deleteMany<T extends DocumentDeadlineDeleteManyArgs>(
-            args?: SelectSubset<T, DocumentDeadlineDeleteManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Update zero or more DocumentDeadlines.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineUpdateManyArgs} args - Arguments to update one or more rows.
-         * @example
-         * // Update many DocumentDeadlines
-         * const documentDeadline = await prisma.documentDeadline.updateMany({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: {
-         *     // ... provide data here
-         *   }
-         * })
-         *
-         */
-        updateMany<T extends DocumentDeadlineUpdateManyArgs>(
-            args: SelectSubset<T, DocumentDeadlineUpdateManyArgs<ExtArgs>>
-        ): Prisma.PrismaPromise<BatchPayload>;
-
-        /**
-         * Update zero or more DocumentDeadlines and returns the data updated in the database.
-         * @param {DocumentDeadlineUpdateManyAndReturnArgs} args - Arguments to update many DocumentDeadlines.
-         * @example
-         * // Update many DocumentDeadlines
-         * const documentDeadline = await prisma.documentDeadline.updateManyAndReturn({
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         *
-         * // Update zero or more DocumentDeadlines and only return the `id`
-         * const documentDeadlineWithIdOnly = await prisma.documentDeadline.updateManyAndReturn({
-         *   select: { id: true },
-         *   where: {
-         *     // ... provide filter here
-         *   },
-         *   data: [
-         *     // ... provide data here
-         *   ]
-         * })
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         *
-         */
-        updateManyAndReturn<T extends DocumentDeadlineUpdateManyAndReturnArgs>(
-            args: SelectSubset<
-                T,
-                DocumentDeadlineUpdateManyAndReturnArgs<ExtArgs>
-            >
-        ): Prisma.PrismaPromise<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "updateManyAndReturn",
-                GlobalOmitOptions
-            >
-        >;
-
-        /**
-         * Create or update one DocumentDeadline.
-         * @param {DocumentDeadlineUpsertArgs} args - Arguments to update or create a DocumentDeadline.
-         * @example
-         * // Update or create a DocumentDeadline
-         * const documentDeadline = await prisma.documentDeadline.upsert({
-         *   create: {
-         *     // ... data to create a DocumentDeadline
-         *   },
-         *   update: {
-         *     // ... in case it already exists, update
-         *   },
-         *   where: {
-         *     // ... the filter for the DocumentDeadline we want to update
-         *   }
-         * })
-         */
-        upsert<T extends DocumentDeadlineUpsertArgs>(
-            args: SelectSubset<T, DocumentDeadlineUpsertArgs<ExtArgs>>
-        ): Prisma__DocumentDeadlineClient<
-            $Result.GetResult<
-                Prisma.$DocumentDeadlinePayload<ExtArgs>,
-                T,
-                "upsert",
-                GlobalOmitOptions
-            >,
-            never,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-
-        /**
-         * Count the number of DocumentDeadlines.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineCountArgs} args - Arguments to filter DocumentDeadlines to count.
-         * @example
-         * // Count the number of DocumentDeadlines
-         * const count = await prisma.documentDeadline.count({
-         *   where: {
-         *     // ... the filter for the DocumentDeadlines we want to count
-         *   }
-         * })
-         **/
-        count<T extends DocumentDeadlineCountArgs>(
-            args?: Subset<T, DocumentDeadlineCountArgs>
-        ): Prisma.PrismaPromise<
-            T extends $Utils.Record<"select", any>
-                ? T["select"] extends true
-                    ? number
-                    : GetScalarType<
-                          T["select"],
-                          DocumentDeadlineCountAggregateOutputType
-                      >
-                : number
-        >;
-
-        /**
-         * Allows you to perform aggregations operations on a DocumentDeadline.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-         * @example
-         * // Ordered by age ascending
-         * // Where email contains prisma.io
-         * // Limited to the 10 users
-         * const aggregations = await prisma.user.aggregate({
-         *   _avg: {
-         *     age: true,
-         *   },
-         *   where: {
-         *     email: {
-         *       contains: "prisma.io",
-         *     },
-         *   },
-         *   orderBy: {
-         *     age: "asc",
-         *   },
-         *   take: 10,
-         * })
-         **/
-        aggregate<T extends DocumentDeadlineAggregateArgs>(
-            args: Subset<T, DocumentDeadlineAggregateArgs>
-        ): Prisma.PrismaPromise<GetDocumentDeadlineAggregateType<T>>;
-
-        /**
-         * Group by DocumentDeadline.
-         * Note, that providing `undefined` is treated as the value not being there.
-         * Read more here: https://pris.ly/d/null-undefined
-         * @param {DocumentDeadlineGroupByArgs} args - Group by arguments.
-         * @example
-         * // Group by city, order by createdAt, get count
-         * const result = await prisma.user.groupBy({
-         *   by: ['city', 'createdAt'],
-         *   orderBy: {
-         *     createdAt: true
-         *   },
-         *   _count: {
-         *     _all: true
-         *   },
-         * })
-         *
-         **/
-        groupBy<
-            T extends DocumentDeadlineGroupByArgs,
-            HasSelectOrTake extends Or<
-                Extends<"skip", Keys<T>>,
-                Extends<"take", Keys<T>>
-            >,
-            OrderByArg extends True extends HasSelectOrTake
-                ? { orderBy: DocumentDeadlineGroupByArgs["orderBy"] }
-                : { orderBy?: DocumentDeadlineGroupByArgs["orderBy"] },
-            OrderFields extends ExcludeUnderscoreKeys<
-                Keys<MaybeTupleToUnion<T["orderBy"]>>
-            >,
-            ByFields extends MaybeTupleToUnion<T["by"]>,
-            ByValid extends Has<ByFields, OrderFields>,
-            HavingFields extends GetHavingFields<T["having"]>,
-            HavingValid extends Has<ByFields, HavingFields>,
-            ByEmpty extends T["by"] extends never[] ? True : False,
-            InputErrors extends ByEmpty extends True
-                ? `Error: "by" must not be empty.`
-                : HavingValid extends False
-                  ? {
-                        [P in HavingFields]: P extends ByFields
-                            ? never
-                            : P extends string
-                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-                              : [
-                                    Error,
-                                    "Field ",
-                                    P,
-                                    ` in "having" needs to be provided in "by"`,
-                                ];
-                    }[HavingFields]
-                  : "take" extends Keys<T>
-                    ? "orderBy" extends Keys<T>
-                        ? ByValid extends True
-                            ? {}
-                            : {
-                                  [P in OrderFields]: P extends ByFields
-                                      ? never
-                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                              }[OrderFields]
-                        : 'Error: If you provide "take", you also need to provide "orderBy"'
-                    : "skip" extends Keys<T>
-                      ? "orderBy" extends Keys<T>
-                          ? ByValid extends True
-                              ? {}
-                              : {
-                                    [P in OrderFields]: P extends ByFields
-                                        ? never
-                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                                }[OrderFields]
-                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
-                      : ByValid extends True
-                        ? {}
-                        : {
-                              [P in OrderFields]: P extends ByFields
-                                  ? never
-                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                          }[OrderFields],
-        >(
-            args: SubsetIntersection<
-                T,
-                DocumentDeadlineGroupByArgs,
-                OrderByArg
-            > &
-                InputErrors
-        ): {} extends InputErrors
-            ? GetDocumentDeadlineGroupByPayload<T>
-            : Prisma.PrismaPromise<InputErrors>;
-        /**
-         * Fields of the DocumentDeadline model
-         */
-        readonly fields: DocumentDeadlineFieldRefs;
-    }
-
-    /**
-     * The delegate class that acts as a "Promise-like" for DocumentDeadline.
-     * Why is this prefixed with `Prisma__`?
-     * Because we want to prevent naming conflicts as mentioned in
-     * https://github.com/prisma/prisma-client-js/issues/707
-     */
-    export interface Prisma__DocumentDeadlineClient<
-        T,
-        Null = never,
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-        GlobalOmitOptions = {},
-    > extends Prisma.PrismaPromise<T> {
-        readonly [Symbol.toStringTag]: "PrismaPromise";
-        document<T extends DocumentDefaultArgs<ExtArgs> = {}>(
-            args?: Subset<T, DocumentDefaultArgs<ExtArgs>>
-        ): Prisma__DocumentClient<
-            | $Result.GetResult<
-                  Prisma.$DocumentPayload<ExtArgs>,
-                  T,
-                  "findUniqueOrThrow",
-                  GlobalOmitOptions
-              >
-            | Null,
-            Null,
-            ExtArgs,
-            GlobalOmitOptions
-        >;
-        /**
-         * Attaches callbacks for the resolution and/or rejection of the Promise.
-         * @param onfulfilled The callback to execute when the Promise is resolved.
-         * @param onrejected The callback to execute when the Promise is rejected.
-         * @returns A Promise for the completion of which ever callback is executed.
-         */
-        then<TResult1 = T, TResult2 = never>(
-            onfulfilled?:
-                | ((value: T) => TResult1 | PromiseLike<TResult1>)
-                | undefined
-                | null,
-            onrejected?:
-                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
-                | undefined
-                | null
-        ): $Utils.JsPromise<TResult1 | TResult2>;
-        /**
-         * Attaches a callback for only the rejection of the Promise.
-         * @param onrejected The callback to execute when the Promise is rejected.
-         * @returns A Promise for the completion of the callback.
-         */
-        catch<TResult = never>(
-            onrejected?:
-                | ((reason: any) => TResult | PromiseLike<TResult>)
-                | undefined
-                | null
-        ): $Utils.JsPromise<T | TResult>;
-        /**
-         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-         * resolved value cannot be modified from the callback.
-         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-         * @returns A Promise for the completion of the callback.
-         */
-        finally(
-            onfinally?: (() => void) | undefined | null
-        ): $Utils.JsPromise<T>;
-    }
-
-    /**
-     * Fields of the DocumentDeadline model
-     */
-    interface DocumentDeadlineFieldRefs {
-        readonly id: FieldRef<"DocumentDeadline", "String">;
-        readonly createdAt: FieldRef<"DocumentDeadline", "DateTime">;
-        readonly updatedAt: FieldRef<"DocumentDeadline", "DateTime">;
-        readonly name: FieldRef<"DocumentDeadline", "String">;
-        readonly dueAt: FieldRef<"DocumentDeadline", "DateTime">;
-        readonly status: FieldRef<"DocumentDeadline", "DeadlineStatus">;
-        readonly riskLevel: FieldRef<"DocumentDeadline", "String">;
-        readonly documentId: FieldRef<"DocumentDeadline", "String">;
-    }
-
-    // Custom InputTypes
-    /**
-     * DocumentDeadline findUnique
-     */
-    export type DocumentDeadlineFindUniqueArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter, which DocumentDeadline to fetch.
-         */
-        where: DocumentDeadlineWhereUniqueInput;
-    };
-
-    /**
-     * DocumentDeadline findUniqueOrThrow
-     */
-    export type DocumentDeadlineFindUniqueOrThrowArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter, which DocumentDeadline to fetch.
-         */
-        where: DocumentDeadlineWhereUniqueInput;
-    };
-
-    /**
-     * DocumentDeadline findFirst
-     */
-    export type DocumentDeadlineFindFirstArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter, which DocumentDeadline to fetch.
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of DocumentDeadlines to fetch.
-         */
-        orderBy?:
-            | DocumentDeadlineOrderByWithRelationInput
-            | DocumentDeadlineOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for searching for DocumentDeadlines.
-         */
-        cursor?: DocumentDeadlineWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` DocumentDeadlines from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` DocumentDeadlines.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-         *
-         * Filter by unique combinations of DocumentDeadlines.
-         */
-        distinct?:
-            | DocumentDeadlineScalarFieldEnum
-            | DocumentDeadlineScalarFieldEnum[];
-    };
-
-    /**
-     * DocumentDeadline findFirstOrThrow
-     */
-    export type DocumentDeadlineFindFirstOrThrowArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter, which DocumentDeadline to fetch.
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of DocumentDeadlines to fetch.
-         */
-        orderBy?:
-            | DocumentDeadlineOrderByWithRelationInput
-            | DocumentDeadlineOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for searching for DocumentDeadlines.
-         */
-        cursor?: DocumentDeadlineWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` DocumentDeadlines from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` DocumentDeadlines.
-         */
-        skip?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-         *
-         * Filter by unique combinations of DocumentDeadlines.
-         */
-        distinct?:
-            | DocumentDeadlineScalarFieldEnum
-            | DocumentDeadlineScalarFieldEnum[];
-    };
-
-    /**
-     * DocumentDeadline findMany
-     */
-    export type DocumentDeadlineFindManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter, which DocumentDeadlines to fetch.
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-         *
-         * Determine the order of DocumentDeadlines to fetch.
-         */
-        orderBy?:
-            | DocumentDeadlineOrderByWithRelationInput
-            | DocumentDeadlineOrderByWithRelationInput[];
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-         *
-         * Sets the position for listing DocumentDeadlines.
-         */
-        cursor?: DocumentDeadlineWhereUniqueInput;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Take `±n` DocumentDeadlines from the position of the cursor.
-         */
-        take?: number;
-        /**
-         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-         *
-         * Skip the first `n` DocumentDeadlines.
-         */
-        skip?: number;
-        distinct?:
-            | DocumentDeadlineScalarFieldEnum
-            | DocumentDeadlineScalarFieldEnum[];
-    };
-
-    /**
-     * DocumentDeadline create
-     */
-    export type DocumentDeadlineCreateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * The data needed to create a DocumentDeadline.
-         */
-        data: XOR<
-            DocumentDeadlineCreateInput,
-            DocumentDeadlineUncheckedCreateInput
-        >;
-    };
-
-    /**
-     * DocumentDeadline createMany
-     */
-    export type DocumentDeadlineCreateManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * The data used to create many DocumentDeadlines.
-         */
-        data:
-            | DocumentDeadlineCreateManyInput
-            | DocumentDeadlineCreateManyInput[];
-        skipDuplicates?: boolean;
-    };
-
-    /**
-     * DocumentDeadline createManyAndReturn
-     */
-    export type DocumentDeadlineCreateManyAndReturnArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelectCreateManyAndReturn<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * The data used to create many DocumentDeadlines.
-         */
-        data:
-            | DocumentDeadlineCreateManyInput
-            | DocumentDeadlineCreateManyInput[];
-        skipDuplicates?: boolean;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineIncludeCreateManyAndReturn<ExtArgs> | null;
-    };
-
-    /**
-     * DocumentDeadline update
-     */
-    export type DocumentDeadlineUpdateArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * The data needed to update a DocumentDeadline.
-         */
-        data: XOR<
-            DocumentDeadlineUpdateInput,
-            DocumentDeadlineUncheckedUpdateInput
-        >;
-        /**
-         * Choose, which DocumentDeadline to update.
-         */
-        where: DocumentDeadlineWhereUniqueInput;
-    };
-
-    /**
-     * DocumentDeadline updateMany
-     */
-    export type DocumentDeadlineUpdateManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * The data used to update DocumentDeadlines.
-         */
-        data: XOR<
-            DocumentDeadlineUpdateManyMutationInput,
-            DocumentDeadlineUncheckedUpdateManyInput
-        >;
-        /**
-         * Filter which DocumentDeadlines to update
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * Limit how many DocumentDeadlines to update.
-         */
-        limit?: number;
-    };
-
-    /**
-     * DocumentDeadline updateManyAndReturn
-     */
-    export type DocumentDeadlineUpdateManyAndReturnArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelectUpdateManyAndReturn<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * The data used to update DocumentDeadlines.
-         */
-        data: XOR<
-            DocumentDeadlineUpdateManyMutationInput,
-            DocumentDeadlineUncheckedUpdateManyInput
-        >;
-        /**
-         * Filter which DocumentDeadlines to update
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * Limit how many DocumentDeadlines to update.
-         */
-        limit?: number;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineIncludeUpdateManyAndReturn<ExtArgs> | null;
-    };
-
-    /**
-     * DocumentDeadline upsert
-     */
-    export type DocumentDeadlineUpsertArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * The filter to search for the DocumentDeadline to update in case it exists.
-         */
-        where: DocumentDeadlineWhereUniqueInput;
-        /**
-         * In case the DocumentDeadline found by the `where` argument doesn't exist, create a new DocumentDeadline with this data.
-         */
-        create: XOR<
-            DocumentDeadlineCreateInput,
-            DocumentDeadlineUncheckedCreateInput
-        >;
-        /**
-         * In case the DocumentDeadline was found with the provided `where` argument, update it with this data.
-         */
-        update: XOR<
-            DocumentDeadlineUpdateInput,
-            DocumentDeadlineUncheckedUpdateInput
-        >;
-    };
-
-    /**
-     * DocumentDeadline delete
-     */
-    export type DocumentDeadlineDeleteArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-        /**
-         * Filter which DocumentDeadline to delete.
-         */
-        where: DocumentDeadlineWhereUniqueInput;
-    };
-
-    /**
-     * DocumentDeadline deleteMany
-     */
-    export type DocumentDeadlineDeleteManyArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Filter which DocumentDeadlines to delete
-         */
-        where?: DocumentDeadlineWhereInput;
-        /**
-         * Limit how many DocumentDeadlines to delete.
-         */
-        limit?: number;
-    };
-
-    /**
-     * DocumentDeadline without action
-     */
-    export type DocumentDeadlineDefaultArgs<
-        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {
-        /**
-         * Select specific fields to fetch from the DocumentDeadline
-         */
-        select?: DocumentDeadlineSelect<ExtArgs> | null;
-        /**
-         * Omit specific fields from the DocumentDeadline
-         */
-        omit?: DocumentDeadlineOmit<ExtArgs> | null;
-        /**
-         * Choose, which related nodes to fetch as well
-         */
-        include?: DocumentDeadlineInclude<ExtArgs> | null;
-    };
-
-    /**
      * Model ActionLog
      */
 
@@ -7294,17 +10100,50 @@ export namespace Prisma {
         status: "status";
         tags: "tags";
         name: "name";
-        key: "key";
-        fileSize: "fileSize";
-        mimeType: "mimeType";
-        url: "url";
-        expiredAt: "expiredAt";
-        width: "width";
-        height: "height";
+        expiresAt: "expiresAt";
+        riskLevel: "riskLevel";
     };
 
     export type DocumentScalarFieldEnum =
         (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum];
+
+    export const DocumentTagScalarFieldEnum: {
+        id: "id";
+        createdAt: "createdAt";
+        updatedAt: "updatedAt";
+        documentId: "documentId";
+        tagId: "tagId";
+    };
+
+    export type DocumentTagScalarFieldEnum =
+        (typeof DocumentTagScalarFieldEnum)[keyof typeof DocumentTagScalarFieldEnum];
+
+    export const TagScalarFieldEnum: {
+        id: "id";
+        createdAt: "createdAt";
+        updatedAt: "updatedAt";
+        tag: "tag";
+    };
+
+    export type TagScalarFieldEnum =
+        (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum];
+
+    export const FileScalarFieldEnum: {
+        id: "id";
+        createdAt: "createdAt";
+        updatedAt: "updatedAt";
+        key: "key";
+        fileSize: "fileSize";
+        mimeType: "mimeType";
+        url: "url";
+        urlExpiresAt: "urlExpiresAt";
+        width: "width";
+        height: "height";
+        documentId: "documentId";
+    };
+
+    export type FileScalarFieldEnum =
+        (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum];
 
     export const DocumentExtractedFieldScalarFieldEnum: {
         id: "id";
@@ -7319,20 +10158,6 @@ export namespace Prisma {
 
     export type DocumentExtractedFieldScalarFieldEnum =
         (typeof DocumentExtractedFieldScalarFieldEnum)[keyof typeof DocumentExtractedFieldScalarFieldEnum];
-
-    export const DocumentDeadlineScalarFieldEnum: {
-        id: "id";
-        createdAt: "createdAt";
-        updatedAt: "updatedAt";
-        name: "name";
-        dueAt: "dueAt";
-        status: "status";
-        riskLevel: "riskLevel";
-        documentId: "documentId";
-    };
-
-    export type DocumentDeadlineScalarFieldEnum =
-        (typeof DocumentDeadlineScalarFieldEnum)[keyof typeof DocumentDeadlineScalarFieldEnum];
 
     export const ActionLogScalarFieldEnum: {
         id: "id";
@@ -7422,6 +10247,20 @@ export namespace Prisma {
         FieldRefInputType<$PrismaModel, "DocumentStatuses[]">;
 
     /**
+     * Reference to a field of type 'RiskLevel'
+     */
+    export type EnumRiskLevelFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "RiskLevel"
+    >;
+
+    /**
+     * Reference to a field of type 'RiskLevel[]'
+     */
+    export type ListEnumRiskLevelFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "RiskLevel[]">;
+
+    /**
      * Reference to a field of type 'Float'
      */
     export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -7460,18 +10299,6 @@ export namespace Prisma {
      */
     export type ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel> =
         FieldRefInputType<$PrismaModel, "ExtractedFieldSource[]">;
-
-    /**
-     * Reference to a field of type 'DeadlineStatus'
-     */
-    export type EnumDeadlineStatusFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "DeadlineStatus">;
-
-    /**
-     * Reference to a field of type 'DeadlineStatus[]'
-     */
-    export type ListEnumDeadlineStatusFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "DeadlineStatus[]">;
 
     /**
      * Reference to a field of type 'ActionLogTypes'
@@ -7517,16 +10344,15 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: StringNullableListFilter<"Document">;
         name?: StringFilter<"Document"> | string;
-        key?: StringFilter<"Document"> | string;
-        fileSize?: FloatFilter<"Document"> | number;
-        mimeType?: StringFilter<"Document"> | string;
-        url?: StringFilter<"Document"> | string;
-        expiredAt?: DateTimeFilter<"Document"> | Date | string;
-        width?: FloatNullableFilter<"Document"> | number | null;
-        height?: FloatNullableFilter<"Document"> | number | null;
+        expiresAt?: DateTimeNullableFilter<"Document"> | Date | string | null;
+        riskLevel?:
+            | EnumRiskLevelNullableFilter<"Document">
+            | $Enums.RiskLevel
+            | null;
         documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
-        documentDeadlines?: DocumentDeadlineListRelationFilter;
         actionLogs?: ActionLogListRelationFilter;
+        files?: FileListRelationFilter;
+        documentTags?: DocumentTagListRelationFilter;
     };
 
     export type DocumentOrderByWithRelationInput = {
@@ -7536,23 +10362,18 @@ export namespace Prisma {
         status?: SortOrder;
         tags?: SortOrder;
         name?: SortOrder;
-        key?: SortOrder;
-        fileSize?: SortOrder;
-        mimeType?: SortOrder;
-        url?: SortOrder;
-        expiredAt?: SortOrder;
-        width?: SortOrderInput | SortOrder;
-        height?: SortOrderInput | SortOrder;
+        expiresAt?: SortOrderInput | SortOrder;
+        riskLevel?: SortOrderInput | SortOrder;
         documentExtractedFields?: DocumentExtractedFieldOrderByRelationAggregateInput;
-        documentDeadlines?: DocumentDeadlineOrderByRelationAggregateInput;
         actionLogs?: ActionLogOrderByRelationAggregateInput;
+        files?: FileOrderByRelationAggregateInput;
+        documentTags?: DocumentTagOrderByRelationAggregateInput;
     };
 
     export type DocumentWhereUniqueInput = Prisma.AtLeast<
         {
             id?: string;
             name?: string;
-            key?: string;
             AND?: DocumentWhereInput | DocumentWhereInput[];
             OR?: DocumentWhereInput[];
             NOT?: DocumentWhereInput | DocumentWhereInput[];
@@ -7562,17 +10383,21 @@ export namespace Prisma {
                 | EnumDocumentStatusesFilter<"Document">
                 | $Enums.DocumentStatuses;
             tags?: StringNullableListFilter<"Document">;
-            fileSize?: FloatFilter<"Document"> | number;
-            mimeType?: StringFilter<"Document"> | string;
-            url?: StringFilter<"Document"> | string;
-            expiredAt?: DateTimeFilter<"Document"> | Date | string;
-            width?: FloatNullableFilter<"Document"> | number | null;
-            height?: FloatNullableFilter<"Document"> | number | null;
+            expiresAt?:
+                | DateTimeNullableFilter<"Document">
+                | Date
+                | string
+                | null;
+            riskLevel?:
+                | EnumRiskLevelNullableFilter<"Document">
+                | $Enums.RiskLevel
+                | null;
             documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
-            documentDeadlines?: DocumentDeadlineListRelationFilter;
             actionLogs?: ActionLogListRelationFilter;
+            files?: FileListRelationFilter;
+            documentTags?: DocumentTagListRelationFilter;
         },
-        "id" | "name" | "key"
+        "id" | "name"
     >;
 
     export type DocumentOrderByWithAggregationInput = {
@@ -7582,18 +10407,11 @@ export namespace Prisma {
         status?: SortOrder;
         tags?: SortOrder;
         name?: SortOrder;
-        key?: SortOrder;
-        fileSize?: SortOrder;
-        mimeType?: SortOrder;
-        url?: SortOrder;
-        expiredAt?: SortOrder;
-        width?: SortOrderInput | SortOrder;
-        height?: SortOrderInput | SortOrder;
+        expiresAt?: SortOrderInput | SortOrder;
+        riskLevel?: SortOrderInput | SortOrder;
         _count?: DocumentCountOrderByAggregateInput;
-        _avg?: DocumentAvgOrderByAggregateInput;
         _max?: DocumentMaxOrderByAggregateInput;
         _min?: DocumentMinOrderByAggregateInput;
-        _sum?: DocumentSumOrderByAggregateInput;
     };
 
     export type DocumentScalarWhereWithAggregatesInput = {
@@ -7612,13 +10430,231 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: StringNullableListFilter<"Document">;
         name?: StringWithAggregatesFilter<"Document"> | string;
-        key?: StringWithAggregatesFilter<"Document"> | string;
-        fileSize?: FloatWithAggregatesFilter<"Document"> | number;
-        mimeType?: StringWithAggregatesFilter<"Document"> | string;
-        url?: StringWithAggregatesFilter<"Document"> | string;
-        expiredAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string;
-        width?: FloatNullableWithAggregatesFilter<"Document"> | number | null;
-        height?: FloatNullableWithAggregatesFilter<"Document"> | number | null;
+        expiresAt?:
+            | DateTimeNullableWithAggregatesFilter<"Document">
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | EnumRiskLevelNullableWithAggregatesFilter<"Document">
+            | $Enums.RiskLevel
+            | null;
+    };
+
+    export type DocumentTagWhereInput = {
+        AND?: DocumentTagWhereInput | DocumentTagWhereInput[];
+        OR?: DocumentTagWhereInput[];
+        NOT?: DocumentTagWhereInput | DocumentTagWhereInput[];
+        id?: StringFilter<"DocumentTag"> | string;
+        createdAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+        updatedAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+        documentId?: StringFilter<"DocumentTag"> | string;
+        tagId?: StringFilter<"DocumentTag"> | string;
+        document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+        tag?: XOR<TagScalarRelationFilter, TagWhereInput>;
+    };
+
+    export type DocumentTagOrderByWithRelationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        documentId?: SortOrder;
+        tagId?: SortOrder;
+        document?: DocumentOrderByWithRelationInput;
+        tag?: TagOrderByWithRelationInput;
+    };
+
+    export type DocumentTagWhereUniqueInput = Prisma.AtLeast<
+        {
+            id?: string;
+            AND?: DocumentTagWhereInput | DocumentTagWhereInput[];
+            OR?: DocumentTagWhereInput[];
+            NOT?: DocumentTagWhereInput | DocumentTagWhereInput[];
+            createdAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+            updatedAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+            documentId?: StringFilter<"DocumentTag"> | string;
+            tagId?: StringFilter<"DocumentTag"> | string;
+            document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+            tag?: XOR<TagScalarRelationFilter, TagWhereInput>;
+        },
+        "id"
+    >;
+
+    export type DocumentTagOrderByWithAggregationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        documentId?: SortOrder;
+        tagId?: SortOrder;
+        _count?: DocumentTagCountOrderByAggregateInput;
+        _max?: DocumentTagMaxOrderByAggregateInput;
+        _min?: DocumentTagMinOrderByAggregateInput;
+    };
+
+    export type DocumentTagScalarWhereWithAggregatesInput = {
+        AND?:
+            | DocumentTagScalarWhereWithAggregatesInput
+            | DocumentTagScalarWhereWithAggregatesInput[];
+        OR?: DocumentTagScalarWhereWithAggregatesInput[];
+        NOT?:
+            | DocumentTagScalarWhereWithAggregatesInput
+            | DocumentTagScalarWhereWithAggregatesInput[];
+        id?: StringWithAggregatesFilter<"DocumentTag"> | string;
+        createdAt?: DateTimeWithAggregatesFilter<"DocumentTag"> | Date | string;
+        updatedAt?: DateTimeWithAggregatesFilter<"DocumentTag"> | Date | string;
+        documentId?: StringWithAggregatesFilter<"DocumentTag"> | string;
+        tagId?: StringWithAggregatesFilter<"DocumentTag"> | string;
+    };
+
+    export type TagWhereInput = {
+        AND?: TagWhereInput | TagWhereInput[];
+        OR?: TagWhereInput[];
+        NOT?: TagWhereInput | TagWhereInput[];
+        id?: StringFilter<"Tag"> | string;
+        createdAt?: DateTimeFilter<"Tag"> | Date | string;
+        updatedAt?: DateTimeFilter<"Tag"> | Date | string;
+        tag?: StringFilter<"Tag"> | string;
+        documentTags?: DocumentTagListRelationFilter;
+    };
+
+    export type TagOrderByWithRelationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        tag?: SortOrder;
+        documentTags?: DocumentTagOrderByRelationAggregateInput;
+    };
+
+    export type TagWhereUniqueInput = Prisma.AtLeast<
+        {
+            id?: string;
+            tag?: string;
+            AND?: TagWhereInput | TagWhereInput[];
+            OR?: TagWhereInput[];
+            NOT?: TagWhereInput | TagWhereInput[];
+            createdAt?: DateTimeFilter<"Tag"> | Date | string;
+            updatedAt?: DateTimeFilter<"Tag"> | Date | string;
+            documentTags?: DocumentTagListRelationFilter;
+        },
+        "id" | "tag"
+    >;
+
+    export type TagOrderByWithAggregationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        tag?: SortOrder;
+        _count?: TagCountOrderByAggregateInput;
+        _max?: TagMaxOrderByAggregateInput;
+        _min?: TagMinOrderByAggregateInput;
+    };
+
+    export type TagScalarWhereWithAggregatesInput = {
+        AND?:
+            | TagScalarWhereWithAggregatesInput
+            | TagScalarWhereWithAggregatesInput[];
+        OR?: TagScalarWhereWithAggregatesInput[];
+        NOT?:
+            | TagScalarWhereWithAggregatesInput
+            | TagScalarWhereWithAggregatesInput[];
+        id?: StringWithAggregatesFilter<"Tag"> | string;
+        createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string;
+        updatedAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string;
+        tag?: StringWithAggregatesFilter<"Tag"> | string;
+    };
+
+    export type FileWhereInput = {
+        AND?: FileWhereInput | FileWhereInput[];
+        OR?: FileWhereInput[];
+        NOT?: FileWhereInput | FileWhereInput[];
+        id?: StringFilter<"File"> | string;
+        createdAt?: DateTimeFilter<"File"> | Date | string;
+        updatedAt?: DateTimeFilter<"File"> | Date | string;
+        key?: StringFilter<"File"> | string;
+        fileSize?: FloatFilter<"File"> | number;
+        mimeType?: StringFilter<"File"> | string;
+        url?: StringFilter<"File"> | string;
+        urlExpiresAt?: DateTimeFilter<"File"> | Date | string;
+        width?: FloatNullableFilter<"File"> | number | null;
+        height?: FloatNullableFilter<"File"> | number | null;
+        documentId?: StringFilter<"File"> | string;
+        document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+    };
+
+    export type FileOrderByWithRelationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        key?: SortOrder;
+        fileSize?: SortOrder;
+        mimeType?: SortOrder;
+        url?: SortOrder;
+        urlExpiresAt?: SortOrder;
+        width?: SortOrderInput | SortOrder;
+        height?: SortOrderInput | SortOrder;
+        documentId?: SortOrder;
+        document?: DocumentOrderByWithRelationInput;
+    };
+
+    export type FileWhereUniqueInput = Prisma.AtLeast<
+        {
+            id?: string;
+            key?: string;
+            AND?: FileWhereInput | FileWhereInput[];
+            OR?: FileWhereInput[];
+            NOT?: FileWhereInput | FileWhereInput[];
+            createdAt?: DateTimeFilter<"File"> | Date | string;
+            updatedAt?: DateTimeFilter<"File"> | Date | string;
+            fileSize?: FloatFilter<"File"> | number;
+            mimeType?: StringFilter<"File"> | string;
+            url?: StringFilter<"File"> | string;
+            urlExpiresAt?: DateTimeFilter<"File"> | Date | string;
+            width?: FloatNullableFilter<"File"> | number | null;
+            height?: FloatNullableFilter<"File"> | number | null;
+            documentId?: StringFilter<"File"> | string;
+            document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+        },
+        "id" | "key"
+    >;
+
+    export type FileOrderByWithAggregationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        key?: SortOrder;
+        fileSize?: SortOrder;
+        mimeType?: SortOrder;
+        url?: SortOrder;
+        urlExpiresAt?: SortOrder;
+        width?: SortOrderInput | SortOrder;
+        height?: SortOrderInput | SortOrder;
+        documentId?: SortOrder;
+        _count?: FileCountOrderByAggregateInput;
+        _avg?: FileAvgOrderByAggregateInput;
+        _max?: FileMaxOrderByAggregateInput;
+        _min?: FileMinOrderByAggregateInput;
+        _sum?: FileSumOrderByAggregateInput;
+    };
+
+    export type FileScalarWhereWithAggregatesInput = {
+        AND?:
+            | FileScalarWhereWithAggregatesInput
+            | FileScalarWhereWithAggregatesInput[];
+        OR?: FileScalarWhereWithAggregatesInput[];
+        NOT?:
+            | FileScalarWhereWithAggregatesInput
+            | FileScalarWhereWithAggregatesInput[];
+        id?: StringWithAggregatesFilter<"File"> | string;
+        createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string;
+        updatedAt?: DateTimeWithAggregatesFilter<"File"> | Date | string;
+        key?: StringWithAggregatesFilter<"File"> | string;
+        fileSize?: FloatWithAggregatesFilter<"File"> | number;
+        mimeType?: StringWithAggregatesFilter<"File"> | string;
+        url?: StringWithAggregatesFilter<"File"> | string;
+        urlExpiresAt?: DateTimeWithAggregatesFilter<"File"> | Date | string;
+        width?: FloatNullableWithAggregatesFilter<"File"> | number | null;
+        height?: FloatNullableWithAggregatesFilter<"File"> | number | null;
+        documentId?: StringWithAggregatesFilter<"File"> | string;
     };
 
     export type DocumentExtractedFieldWhereInput = {
@@ -7734,98 +10770,6 @@ export namespace Prisma {
         documentId?:
             | StringWithAggregatesFilter<"DocumentExtractedField">
             | string;
-    };
-
-    export type DocumentDeadlineWhereInput = {
-        AND?: DocumentDeadlineWhereInput | DocumentDeadlineWhereInput[];
-        OR?: DocumentDeadlineWhereInput[];
-        NOT?: DocumentDeadlineWhereInput | DocumentDeadlineWhereInput[];
-        id?: StringFilter<"DocumentDeadline"> | string;
-        createdAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        updatedAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        name?: StringFilter<"DocumentDeadline"> | string;
-        dueAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        status?:
-            | EnumDeadlineStatusFilter<"DocumentDeadline">
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFilter<"DocumentDeadline"> | string;
-        documentId?: StringFilter<"DocumentDeadline"> | string;
-        document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
-    };
-
-    export type DocumentDeadlineOrderByWithRelationInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        name?: SortOrder;
-        dueAt?: SortOrder;
-        status?: SortOrder;
-        riskLevel?: SortOrder;
-        documentId?: SortOrder;
-        document?: DocumentOrderByWithRelationInput;
-    };
-
-    export type DocumentDeadlineWhereUniqueInput = Prisma.AtLeast<
-        {
-            id?: string;
-            AND?: DocumentDeadlineWhereInput | DocumentDeadlineWhereInput[];
-            OR?: DocumentDeadlineWhereInput[];
-            NOT?: DocumentDeadlineWhereInput | DocumentDeadlineWhereInput[];
-            createdAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-            updatedAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-            name?: StringFilter<"DocumentDeadline"> | string;
-            dueAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-            status?:
-                | EnumDeadlineStatusFilter<"DocumentDeadline">
-                | $Enums.DeadlineStatus;
-            riskLevel?: StringFilter<"DocumentDeadline"> | string;
-            documentId?: StringFilter<"DocumentDeadline"> | string;
-            document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
-        },
-        "id"
-    >;
-
-    export type DocumentDeadlineOrderByWithAggregationInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        name?: SortOrder;
-        dueAt?: SortOrder;
-        status?: SortOrder;
-        riskLevel?: SortOrder;
-        documentId?: SortOrder;
-        _count?: DocumentDeadlineCountOrderByAggregateInput;
-        _max?: DocumentDeadlineMaxOrderByAggregateInput;
-        _min?: DocumentDeadlineMinOrderByAggregateInput;
-    };
-
-    export type DocumentDeadlineScalarWhereWithAggregatesInput = {
-        AND?:
-            | DocumentDeadlineScalarWhereWithAggregatesInput
-            | DocumentDeadlineScalarWhereWithAggregatesInput[];
-        OR?: DocumentDeadlineScalarWhereWithAggregatesInput[];
-        NOT?:
-            | DocumentDeadlineScalarWhereWithAggregatesInput
-            | DocumentDeadlineScalarWhereWithAggregatesInput[];
-        id?: StringWithAggregatesFilter<"DocumentDeadline"> | string;
-        createdAt?:
-            | DateTimeWithAggregatesFilter<"DocumentDeadline">
-            | Date
-            | string;
-        updatedAt?:
-            | DateTimeWithAggregatesFilter<"DocumentDeadline">
-            | Date
-            | string;
-        name?: StringWithAggregatesFilter<"DocumentDeadline"> | string;
-        dueAt?:
-            | DateTimeWithAggregatesFilter<"DocumentDeadline">
-            | Date
-            | string;
-        status?:
-            | EnumDeadlineStatusWithAggregatesFilter<"DocumentDeadline">
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringWithAggregatesFilter<"DocumentDeadline"> | string;
-        documentId?: StringWithAggregatesFilter<"DocumentDeadline"> | string;
     };
 
     export type ActionLogWhereInput = {
@@ -7960,16 +10904,12 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
-        documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateInput = {
@@ -7979,16 +10919,12 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
-        documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUpdateInput = {
@@ -8000,16 +10936,19 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
-        documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateInput = {
@@ -8021,16 +10960,19 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
-        documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateManyInput = {
@@ -8040,13 +10982,8 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
     };
 
     export type DocumentUpdateManyMutationInput = {
@@ -8058,13 +10995,15 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
     };
 
     export type DocumentUncheckedUpdateManyInput = {
@@ -8076,13 +11015,219 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
+    };
+
+    export type DocumentTagCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        document: DocumentCreateNestedOneWithoutDocumentTagsInput;
+        tag: TagCreateNestedOneWithoutDocumentTagsInput;
+    };
+
+    export type DocumentTagUncheckedCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        documentId: string;
+        tagId: string;
+    };
+
+    export type DocumentTagUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        document?: DocumentUpdateOneRequiredWithoutDocumentTagsNestedInput;
+        tag?: TagUpdateOneRequiredWithoutDocumentTagsNestedInput;
+    };
+
+    export type DocumentTagUncheckedUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        documentId?: StringFieldUpdateOperationsInput | string;
+        tagId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type DocumentTagCreateManyInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        documentId: string;
+        tagId: string;
+    };
+
+    export type DocumentTagUpdateManyMutationInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    };
+
+    export type DocumentTagUncheckedUpdateManyInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        documentId?: StringFieldUpdateOperationsInput | string;
+        tagId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type TagCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: string;
+        documentTags?: DocumentTagCreateNestedManyWithoutTagInput;
+    };
+
+    export type TagUncheckedCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: string;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutTagInput;
+    };
+
+    export type TagUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+        documentTags?: DocumentTagUpdateManyWithoutTagNestedInput;
+    };
+
+    export type TagUncheckedUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutTagNestedInput;
+    };
+
+    export type TagCreateManyInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: string;
+    };
+
+    export type TagUpdateManyMutationInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type TagUncheckedUpdateManyInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type FileCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        document: DocumentCreateNestedOneWithoutFilesInput;
+    };
+
+    export type FileUncheckedCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        documentId: string;
+    };
+
+    export type FileUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         key?: StringFieldUpdateOperationsInput | string;
         fileSize?: FloatFieldUpdateOperationsInput | number;
         mimeType?: StringFieldUpdateOperationsInput | string;
         url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        document?: DocumentUpdateOneRequiredWithoutFilesNestedInput;
+    };
+
+    export type FileUncheckedUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        documentId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type FileCreateManyInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        documentId: string;
+    };
+
+    export type FileUpdateManyMutationInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+    };
+
+    export type FileUncheckedUpdateManyInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        documentId?: StringFieldUpdateOperationsInput | string;
     };
 
     export type DocumentExtractedFieldCreateInput = {
@@ -8174,90 +11319,6 @@ export namespace Prisma {
         source?:
             | EnumExtractedFieldSourceFieldUpdateOperationsInput
             | $Enums.ExtractedFieldSource;
-        documentId?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type DocumentDeadlineCreateInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-        document: DocumentCreateNestedOneWithoutDocumentDeadlinesInput;
-    };
-
-    export type DocumentDeadlineUncheckedCreateInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-        documentId: string;
-    };
-
-    export type DocumentDeadlineUpdateInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-        document?: DocumentUpdateOneRequiredWithoutDocumentDeadlinesNestedInput;
-    };
-
-    export type DocumentDeadlineUncheckedUpdateInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-        documentId?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type DocumentDeadlineCreateManyInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-        documentId: string;
-    };
-
-    export type DocumentDeadlineUpdateManyMutationInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type DocumentDeadlineUncheckedUpdateManyInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
         documentId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -8446,26 +11507,38 @@ export namespace Prisma {
         isEmpty?: boolean;
     };
 
-    export type FloatFilter<$PrismaModel = never> = {
-        equals?: number | FloatFieldRefInput<$PrismaModel>;
-        in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
-        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>;
-        lt?: number | FloatFieldRefInput<$PrismaModel>;
-        lte?: number | FloatFieldRefInput<$PrismaModel>;
-        gt?: number | FloatFieldRefInput<$PrismaModel>;
-        gte?: number | FloatFieldRefInput<$PrismaModel>;
-        not?: NestedFloatFilter<$PrismaModel> | number;
+    export type DateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
     };
 
-    export type FloatNullableFilter<$PrismaModel = never> = {
-        equals?: number | FloatFieldRefInput<$PrismaModel> | null;
-        in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
-        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
-        lt?: number | FloatFieldRefInput<$PrismaModel>;
-        lte?: number | FloatFieldRefInput<$PrismaModel>;
-        gt?: number | FloatFieldRefInput<$PrismaModel>;
-        gte?: number | FloatFieldRefInput<$PrismaModel>;
-        not?: NestedFloatNullableFilter<$PrismaModel> | number | null;
+    export type EnumRiskLevelNullableFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.RiskLevel
+            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumRiskLevelNullableFilter<$PrismaModel>
+            | $Enums.RiskLevel
+            | null;
     };
 
     export type DocumentExtractedFieldListRelationFilter = {
@@ -8474,16 +11547,22 @@ export namespace Prisma {
         none?: DocumentExtractedFieldWhereInput;
     };
 
-    export type DocumentDeadlineListRelationFilter = {
-        every?: DocumentDeadlineWhereInput;
-        some?: DocumentDeadlineWhereInput;
-        none?: DocumentDeadlineWhereInput;
-    };
-
     export type ActionLogListRelationFilter = {
         every?: ActionLogWhereInput;
         some?: ActionLogWhereInput;
         none?: ActionLogWhereInput;
+    };
+
+    export type FileListRelationFilter = {
+        every?: FileWhereInput;
+        some?: FileWhereInput;
+        none?: FileWhereInput;
+    };
+
+    export type DocumentTagListRelationFilter = {
+        every?: DocumentTagWhereInput;
+        some?: DocumentTagWhereInput;
+        none?: DocumentTagWhereInput;
     };
 
     export type SortOrderInput = {
@@ -8495,11 +11574,15 @@ export namespace Prisma {
         _count?: SortOrder;
     };
 
-    export type DocumentDeadlineOrderByRelationAggregateInput = {
+    export type ActionLogOrderByRelationAggregateInput = {
         _count?: SortOrder;
     };
 
-    export type ActionLogOrderByRelationAggregateInput = {
+    export type FileOrderByRelationAggregateInput = {
+        _count?: SortOrder;
+    };
+
+    export type DocumentTagOrderByRelationAggregateInput = {
         _count?: SortOrder;
     };
 
@@ -8510,19 +11593,8 @@ export namespace Prisma {
         status?: SortOrder;
         tags?: SortOrder;
         name?: SortOrder;
-        key?: SortOrder;
-        fileSize?: SortOrder;
-        mimeType?: SortOrder;
-        url?: SortOrder;
-        expiredAt?: SortOrder;
-        width?: SortOrder;
-        height?: SortOrder;
-    };
-
-    export type DocumentAvgOrderByAggregateInput = {
-        fileSize?: SortOrder;
-        width?: SortOrder;
-        height?: SortOrder;
+        expiresAt?: SortOrder;
+        riskLevel?: SortOrder;
     };
 
     export type DocumentMaxOrderByAggregateInput = {
@@ -8531,13 +11603,8 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         status?: SortOrder;
         name?: SortOrder;
-        key?: SortOrder;
-        fileSize?: SortOrder;
-        mimeType?: SortOrder;
-        url?: SortOrder;
-        expiredAt?: SortOrder;
-        width?: SortOrder;
-        height?: SortOrder;
+        expiresAt?: SortOrder;
+        riskLevel?: SortOrder;
     };
 
     export type DocumentMinOrderByAggregateInput = {
@@ -8546,19 +11613,8 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         status?: SortOrder;
         name?: SortOrder;
-        key?: SortOrder;
-        fileSize?: SortOrder;
-        mimeType?: SortOrder;
-        url?: SortOrder;
-        expiredAt?: SortOrder;
-        width?: SortOrder;
-        height?: SortOrder;
-    };
-
-    export type DocumentSumOrderByAggregateInput = {
-        fileSize?: SortOrder;
-        width?: SortOrder;
-        height?: SortOrder;
+        expiresAt?: SortOrder;
+        riskLevel?: SortOrder;
     };
 
     export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -8611,6 +11667,183 @@ export namespace Prisma {
             _min?: NestedEnumDocumentStatusesFilter<$PrismaModel>;
             _max?: NestedEnumDocumentStatusesFilter<$PrismaModel>;
         };
+
+    export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
+    };
+
+    export type EnumRiskLevelNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?:
+            | $Enums.RiskLevel
+            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumRiskLevelNullableWithAggregatesFilter<$PrismaModel>
+            | $Enums.RiskLevel
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+        _max?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+    };
+
+    export type DocumentScalarRelationFilter = {
+        is?: DocumentWhereInput;
+        isNot?: DocumentWhereInput;
+    };
+
+    export type TagScalarRelationFilter = {
+        is?: TagWhereInput;
+        isNot?: TagWhereInput;
+    };
+
+    export type DocumentTagCountOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        documentId?: SortOrder;
+        tagId?: SortOrder;
+    };
+
+    export type DocumentTagMaxOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        documentId?: SortOrder;
+        tagId?: SortOrder;
+    };
+
+    export type DocumentTagMinOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        documentId?: SortOrder;
+        tagId?: SortOrder;
+    };
+
+    export type TagCountOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        tag?: SortOrder;
+    };
+
+    export type TagMaxOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        tag?: SortOrder;
+    };
+
+    export type TagMinOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        tag?: SortOrder;
+    };
+
+    export type FloatFilter<$PrismaModel = never> = {
+        equals?: number | FloatFieldRefInput<$PrismaModel>;
+        in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
+        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>;
+        lt?: number | FloatFieldRefInput<$PrismaModel>;
+        lte?: number | FloatFieldRefInput<$PrismaModel>;
+        gt?: number | FloatFieldRefInput<$PrismaModel>;
+        gte?: number | FloatFieldRefInput<$PrismaModel>;
+        not?: NestedFloatFilter<$PrismaModel> | number;
+    };
+
+    export type FloatNullableFilter<$PrismaModel = never> = {
+        equals?: number | FloatFieldRefInput<$PrismaModel> | null;
+        in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+        lt?: number | FloatFieldRefInput<$PrismaModel>;
+        lte?: number | FloatFieldRefInput<$PrismaModel>;
+        gt?: number | FloatFieldRefInput<$PrismaModel>;
+        gte?: number | FloatFieldRefInput<$PrismaModel>;
+        not?: NestedFloatNullableFilter<$PrismaModel> | number | null;
+    };
+
+    export type FileCountOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        key?: SortOrder;
+        fileSize?: SortOrder;
+        mimeType?: SortOrder;
+        url?: SortOrder;
+        urlExpiresAt?: SortOrder;
+        width?: SortOrder;
+        height?: SortOrder;
+        documentId?: SortOrder;
+    };
+
+    export type FileAvgOrderByAggregateInput = {
+        fileSize?: SortOrder;
+        width?: SortOrder;
+        height?: SortOrder;
+    };
+
+    export type FileMaxOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        key?: SortOrder;
+        fileSize?: SortOrder;
+        mimeType?: SortOrder;
+        url?: SortOrder;
+        urlExpiresAt?: SortOrder;
+        width?: SortOrder;
+        height?: SortOrder;
+        documentId?: SortOrder;
+    };
+
+    export type FileMinOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        key?: SortOrder;
+        fileSize?: SortOrder;
+        mimeType?: SortOrder;
+        url?: SortOrder;
+        urlExpiresAt?: SortOrder;
+        width?: SortOrder;
+        height?: SortOrder;
+        documentId?: SortOrder;
+    };
+
+    export type FileSumOrderByAggregateInput = {
+        fileSize?: SortOrder;
+        width?: SortOrder;
+        height?: SortOrder;
+    };
 
     export type FloatWithAggregatesFilter<$PrismaModel = never> = {
         equals?: number | FloatFieldRefInput<$PrismaModel>;
@@ -8675,11 +11908,6 @@ export namespace Prisma {
         not?:
             | NestedEnumExtractedFieldSourceFilter<$PrismaModel>
             | $Enums.ExtractedFieldSource;
-    };
-
-    export type DocumentScalarRelationFilter = {
-        is?: DocumentWhereInput;
-        isNot?: DocumentWhereInput;
     };
 
     export type DocumentExtractedFieldCountOrderByAggregateInput = {
@@ -8761,72 +11989,6 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
         _max?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
-    };
-
-    export type EnumDeadlineStatusFilter<$PrismaModel = never> = {
-        equals?:
-            | $Enums.DeadlineStatus
-            | EnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        in?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        notIn?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedEnumDeadlineStatusFilter<$PrismaModel>
-            | $Enums.DeadlineStatus;
-    };
-
-    export type DocumentDeadlineCountOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        name?: SortOrder;
-        dueAt?: SortOrder;
-        status?: SortOrder;
-        riskLevel?: SortOrder;
-        documentId?: SortOrder;
-    };
-
-    export type DocumentDeadlineMaxOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        name?: SortOrder;
-        dueAt?: SortOrder;
-        status?: SortOrder;
-        riskLevel?: SortOrder;
-        documentId?: SortOrder;
-    };
-
-    export type DocumentDeadlineMinOrderByAggregateInput = {
-        id?: SortOrder;
-        createdAt?: SortOrder;
-        updatedAt?: SortOrder;
-        name?: SortOrder;
-        dueAt?: SortOrder;
-        status?: SortOrder;
-        riskLevel?: SortOrder;
-        documentId?: SortOrder;
-    };
-
-    export type EnumDeadlineStatusWithAggregatesFilter<$PrismaModel = never> = {
-        equals?:
-            | $Enums.DeadlineStatus
-            | EnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        in?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        notIn?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedEnumDeadlineStatusWithAggregatesFilter<$PrismaModel>
-            | $Enums.DeadlineStatus;
-        _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
-        _max?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
     };
 
     export type EnumActionLogTypesFilter<$PrismaModel = never> = {
@@ -8969,23 +12131,6 @@ export namespace Prisma {
             | DocumentExtractedFieldWhereUniqueInput[];
     };
 
-    export type DocumentDeadlineCreateNestedManyWithoutDocumentInput = {
-        create?:
-            | XOR<
-                  DocumentDeadlineCreateWithoutDocumentInput,
-                  DocumentDeadlineUncheckedCreateWithoutDocumentInput
-              >
-            | DocumentDeadlineCreateWithoutDocumentInput[]
-            | DocumentDeadlineUncheckedCreateWithoutDocumentInput[];
-        connectOrCreate?:
-            | DocumentDeadlineCreateOrConnectWithoutDocumentInput
-            | DocumentDeadlineCreateOrConnectWithoutDocumentInput[];
-        createMany?: DocumentDeadlineCreateManyDocumentInputEnvelope;
-        connect?:
-            | DocumentDeadlineWhereUniqueInput
-            | DocumentDeadlineWhereUniqueInput[];
-    };
-
     export type ActionLogCreateNestedManyWithoutDocumentInput = {
         create?:
             | XOR<
@@ -8999,6 +12144,36 @@ export namespace Prisma {
             | ActionLogCreateOrConnectWithoutDocumentInput[];
         createMany?: ActionLogCreateManyDocumentInputEnvelope;
         connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+    };
+
+    export type FileCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  FileCreateWithoutDocumentInput,
+                  FileUncheckedCreateWithoutDocumentInput
+              >
+            | FileCreateWithoutDocumentInput[]
+            | FileUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | FileCreateOrConnectWithoutDocumentInput
+            | FileCreateOrConnectWithoutDocumentInput[];
+        createMany?: FileCreateManyDocumentInputEnvelope;
+        connect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+    };
+
+    export type DocumentTagCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutDocumentInput,
+                  DocumentTagUncheckedCreateWithoutDocumentInput
+              >
+            | DocumentTagCreateWithoutDocumentInput[]
+            | DocumentTagUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutDocumentInput
+            | DocumentTagCreateOrConnectWithoutDocumentInput[];
+        createMany?: DocumentTagCreateManyDocumentInputEnvelope;
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
     };
 
     export type DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput =
@@ -9019,24 +12194,6 @@ export namespace Prisma {
                 | DocumentExtractedFieldWhereUniqueInput[];
         };
 
-    export type DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput =
-        {
-            create?:
-                | XOR<
-                      DocumentDeadlineCreateWithoutDocumentInput,
-                      DocumentDeadlineUncheckedCreateWithoutDocumentInput
-                  >
-                | DocumentDeadlineCreateWithoutDocumentInput[]
-                | DocumentDeadlineUncheckedCreateWithoutDocumentInput[];
-            connectOrCreate?:
-                | DocumentDeadlineCreateOrConnectWithoutDocumentInput
-                | DocumentDeadlineCreateOrConnectWithoutDocumentInput[];
-            createMany?: DocumentDeadlineCreateManyDocumentInputEnvelope;
-            connect?:
-                | DocumentDeadlineWhereUniqueInput
-                | DocumentDeadlineWhereUniqueInput[];
-        };
-
     export type ActionLogUncheckedCreateNestedManyWithoutDocumentInput = {
         create?:
             | XOR<
@@ -9050,6 +12207,36 @@ export namespace Prisma {
             | ActionLogCreateOrConnectWithoutDocumentInput[];
         createMany?: ActionLogCreateManyDocumentInputEnvelope;
         connect?: ActionLogWhereUniqueInput | ActionLogWhereUniqueInput[];
+    };
+
+    export type FileUncheckedCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  FileCreateWithoutDocumentInput,
+                  FileUncheckedCreateWithoutDocumentInput
+              >
+            | FileCreateWithoutDocumentInput[]
+            | FileUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | FileCreateOrConnectWithoutDocumentInput
+            | FileCreateOrConnectWithoutDocumentInput[];
+        createMany?: FileCreateManyDocumentInputEnvelope;
+        connect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+    };
+
+    export type DocumentTagUncheckedCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutDocumentInput,
+                  DocumentTagUncheckedCreateWithoutDocumentInput
+              >
+            | DocumentTagCreateWithoutDocumentInput[]
+            | DocumentTagUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutDocumentInput
+            | DocumentTagCreateOrConnectWithoutDocumentInput[];
+        createMany?: DocumentTagCreateManyDocumentInputEnvelope;
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
     };
 
     export type StringFieldUpdateOperationsInput = {
@@ -9069,20 +12256,12 @@ export namespace Prisma {
         push?: string | string[];
     };
 
-    export type FloatFieldUpdateOperationsInput = {
-        set?: number;
-        increment?: number;
-        decrement?: number;
-        multiply?: number;
-        divide?: number;
+    export type NullableDateTimeFieldUpdateOperationsInput = {
+        set?: Date | string | null;
     };
 
-    export type NullableFloatFieldUpdateOperationsInput = {
-        set?: number | null;
-        increment?: number;
-        decrement?: number;
-        multiply?: number;
-        divide?: number;
+    export type NullableEnumRiskLevelFieldUpdateOperationsInput = {
+        set?: $Enums.RiskLevel | null;
     };
 
     export type DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput = {
@@ -9123,44 +12302,6 @@ export namespace Prisma {
             | DocumentExtractedFieldScalarWhereInput[];
     };
 
-    export type DocumentDeadlineUpdateManyWithoutDocumentNestedInput = {
-        create?:
-            | XOR<
-                  DocumentDeadlineCreateWithoutDocumentInput,
-                  DocumentDeadlineUncheckedCreateWithoutDocumentInput
-              >
-            | DocumentDeadlineCreateWithoutDocumentInput[]
-            | DocumentDeadlineUncheckedCreateWithoutDocumentInput[];
-        connectOrCreate?:
-            | DocumentDeadlineCreateOrConnectWithoutDocumentInput
-            | DocumentDeadlineCreateOrConnectWithoutDocumentInput[];
-        upsert?:
-            | DocumentDeadlineUpsertWithWhereUniqueWithoutDocumentInput
-            | DocumentDeadlineUpsertWithWhereUniqueWithoutDocumentInput[];
-        createMany?: DocumentDeadlineCreateManyDocumentInputEnvelope;
-        set?:
-            | DocumentDeadlineWhereUniqueInput
-            | DocumentDeadlineWhereUniqueInput[];
-        disconnect?:
-            | DocumentDeadlineWhereUniqueInput
-            | DocumentDeadlineWhereUniqueInput[];
-        delete?:
-            | DocumentDeadlineWhereUniqueInput
-            | DocumentDeadlineWhereUniqueInput[];
-        connect?:
-            | DocumentDeadlineWhereUniqueInput
-            | DocumentDeadlineWhereUniqueInput[];
-        update?:
-            | DocumentDeadlineUpdateWithWhereUniqueWithoutDocumentInput
-            | DocumentDeadlineUpdateWithWhereUniqueWithoutDocumentInput[];
-        updateMany?:
-            | DocumentDeadlineUpdateManyWithWhereWithoutDocumentInput
-            | DocumentDeadlineUpdateManyWithWhereWithoutDocumentInput[];
-        deleteMany?:
-            | DocumentDeadlineScalarWhereInput
-            | DocumentDeadlineScalarWhereInput[];
-    };
-
     export type ActionLogUpdateManyWithoutDocumentNestedInput = {
         create?:
             | XOR<
@@ -9187,6 +12328,66 @@ export namespace Prisma {
             | ActionLogUpdateManyWithWhereWithoutDocumentInput
             | ActionLogUpdateManyWithWhereWithoutDocumentInput[];
         deleteMany?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+    };
+
+    export type FileUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  FileCreateWithoutDocumentInput,
+                  FileUncheckedCreateWithoutDocumentInput
+              >
+            | FileCreateWithoutDocumentInput[]
+            | FileUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | FileCreateOrConnectWithoutDocumentInput
+            | FileCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | FileUpsertWithWhereUniqueWithoutDocumentInput
+            | FileUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: FileCreateManyDocumentInputEnvelope;
+        set?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        delete?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        connect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        update?:
+            | FileUpdateWithWhereUniqueWithoutDocumentInput
+            | FileUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | FileUpdateManyWithWhereWithoutDocumentInput
+            | FileUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?: FileScalarWhereInput | FileScalarWhereInput[];
+    };
+
+    export type DocumentTagUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutDocumentInput,
+                  DocumentTagUncheckedCreateWithoutDocumentInput
+              >
+            | DocumentTagCreateWithoutDocumentInput[]
+            | DocumentTagUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutDocumentInput
+            | DocumentTagCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | DocumentTagUpsertWithWhereUniqueWithoutDocumentInput
+            | DocumentTagUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: DocumentTagCreateManyDocumentInputEnvelope;
+        set?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        disconnect?:
+            | DocumentTagWhereUniqueInput
+            | DocumentTagWhereUniqueInput[];
+        delete?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        update?:
+            | DocumentTagUpdateWithWhereUniqueWithoutDocumentInput
+            | DocumentTagUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | DocumentTagUpdateManyWithWhereWithoutDocumentInput
+            | DocumentTagUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?:
+            | DocumentTagScalarWhereInput
+            | DocumentTagScalarWhereInput[];
     };
 
     export type DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput =
@@ -9228,45 +12429,6 @@ export namespace Prisma {
                 | DocumentExtractedFieldScalarWhereInput[];
         };
 
-    export type DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput =
-        {
-            create?:
-                | XOR<
-                      DocumentDeadlineCreateWithoutDocumentInput,
-                      DocumentDeadlineUncheckedCreateWithoutDocumentInput
-                  >
-                | DocumentDeadlineCreateWithoutDocumentInput[]
-                | DocumentDeadlineUncheckedCreateWithoutDocumentInput[];
-            connectOrCreate?:
-                | DocumentDeadlineCreateOrConnectWithoutDocumentInput
-                | DocumentDeadlineCreateOrConnectWithoutDocumentInput[];
-            upsert?:
-                | DocumentDeadlineUpsertWithWhereUniqueWithoutDocumentInput
-                | DocumentDeadlineUpsertWithWhereUniqueWithoutDocumentInput[];
-            createMany?: DocumentDeadlineCreateManyDocumentInputEnvelope;
-            set?:
-                | DocumentDeadlineWhereUniqueInput
-                | DocumentDeadlineWhereUniqueInput[];
-            disconnect?:
-                | DocumentDeadlineWhereUniqueInput
-                | DocumentDeadlineWhereUniqueInput[];
-            delete?:
-                | DocumentDeadlineWhereUniqueInput
-                | DocumentDeadlineWhereUniqueInput[];
-            connect?:
-                | DocumentDeadlineWhereUniqueInput
-                | DocumentDeadlineWhereUniqueInput[];
-            update?:
-                | DocumentDeadlineUpdateWithWhereUniqueWithoutDocumentInput
-                | DocumentDeadlineUpdateWithWhereUniqueWithoutDocumentInput[];
-            updateMany?:
-                | DocumentDeadlineUpdateManyWithWhereWithoutDocumentInput
-                | DocumentDeadlineUpdateManyWithWhereWithoutDocumentInput[];
-            deleteMany?:
-                | DocumentDeadlineScalarWhereInput
-                | DocumentDeadlineScalarWhereInput[];
-        };
-
     export type ActionLogUncheckedUpdateManyWithoutDocumentNestedInput = {
         create?:
             | XOR<
@@ -9293,6 +12455,254 @@ export namespace Prisma {
             | ActionLogUpdateManyWithWhereWithoutDocumentInput
             | ActionLogUpdateManyWithWhereWithoutDocumentInput[];
         deleteMany?: ActionLogScalarWhereInput | ActionLogScalarWhereInput[];
+    };
+
+    export type FileUncheckedUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  FileCreateWithoutDocumentInput,
+                  FileUncheckedCreateWithoutDocumentInput
+              >
+            | FileCreateWithoutDocumentInput[]
+            | FileUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | FileCreateOrConnectWithoutDocumentInput
+            | FileCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | FileUpsertWithWhereUniqueWithoutDocumentInput
+            | FileUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: FileCreateManyDocumentInputEnvelope;
+        set?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        delete?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        connect?: FileWhereUniqueInput | FileWhereUniqueInput[];
+        update?:
+            | FileUpdateWithWhereUniqueWithoutDocumentInput
+            | FileUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | FileUpdateManyWithWhereWithoutDocumentInput
+            | FileUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?: FileScalarWhereInput | FileScalarWhereInput[];
+    };
+
+    export type DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutDocumentInput,
+                  DocumentTagUncheckedCreateWithoutDocumentInput
+              >
+            | DocumentTagCreateWithoutDocumentInput[]
+            | DocumentTagUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutDocumentInput
+            | DocumentTagCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | DocumentTagUpsertWithWhereUniqueWithoutDocumentInput
+            | DocumentTagUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: DocumentTagCreateManyDocumentInputEnvelope;
+        set?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        disconnect?:
+            | DocumentTagWhereUniqueInput
+            | DocumentTagWhereUniqueInput[];
+        delete?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        update?:
+            | DocumentTagUpdateWithWhereUniqueWithoutDocumentInput
+            | DocumentTagUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | DocumentTagUpdateManyWithWhereWithoutDocumentInput
+            | DocumentTagUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?:
+            | DocumentTagScalarWhereInput
+            | DocumentTagScalarWhereInput[];
+    };
+
+    export type DocumentCreateNestedOneWithoutDocumentTagsInput = {
+        create?: XOR<
+            DocumentCreateWithoutDocumentTagsInput,
+            DocumentUncheckedCreateWithoutDocumentTagsInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutDocumentTagsInput;
+        connect?: DocumentWhereUniqueInput;
+    };
+
+    export type TagCreateNestedOneWithoutDocumentTagsInput = {
+        create?: XOR<
+            TagCreateWithoutDocumentTagsInput,
+            TagUncheckedCreateWithoutDocumentTagsInput
+        >;
+        connectOrCreate?: TagCreateOrConnectWithoutDocumentTagsInput;
+        connect?: TagWhereUniqueInput;
+    };
+
+    export type DocumentUpdateOneRequiredWithoutDocumentTagsNestedInput = {
+        create?: XOR<
+            DocumentCreateWithoutDocumentTagsInput,
+            DocumentUncheckedCreateWithoutDocumentTagsInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutDocumentTagsInput;
+        upsert?: DocumentUpsertWithoutDocumentTagsInput;
+        connect?: DocumentWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                DocumentUpdateToOneWithWhereWithoutDocumentTagsInput,
+                DocumentUpdateWithoutDocumentTagsInput
+            >,
+            DocumentUncheckedUpdateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type TagUpdateOneRequiredWithoutDocumentTagsNestedInput = {
+        create?: XOR<
+            TagCreateWithoutDocumentTagsInput,
+            TagUncheckedCreateWithoutDocumentTagsInput
+        >;
+        connectOrCreate?: TagCreateOrConnectWithoutDocumentTagsInput;
+        upsert?: TagUpsertWithoutDocumentTagsInput;
+        connect?: TagWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                TagUpdateToOneWithWhereWithoutDocumentTagsInput,
+                TagUpdateWithoutDocumentTagsInput
+            >,
+            TagUncheckedUpdateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type DocumentTagCreateNestedManyWithoutTagInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutTagInput,
+                  DocumentTagUncheckedCreateWithoutTagInput
+              >
+            | DocumentTagCreateWithoutTagInput[]
+            | DocumentTagUncheckedCreateWithoutTagInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutTagInput
+            | DocumentTagCreateOrConnectWithoutTagInput[];
+        createMany?: DocumentTagCreateManyTagInputEnvelope;
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+    };
+
+    export type DocumentTagUncheckedCreateNestedManyWithoutTagInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutTagInput,
+                  DocumentTagUncheckedCreateWithoutTagInput
+              >
+            | DocumentTagCreateWithoutTagInput[]
+            | DocumentTagUncheckedCreateWithoutTagInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutTagInput
+            | DocumentTagCreateOrConnectWithoutTagInput[];
+        createMany?: DocumentTagCreateManyTagInputEnvelope;
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+    };
+
+    export type DocumentTagUpdateManyWithoutTagNestedInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutTagInput,
+                  DocumentTagUncheckedCreateWithoutTagInput
+              >
+            | DocumentTagCreateWithoutTagInput[]
+            | DocumentTagUncheckedCreateWithoutTagInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutTagInput
+            | DocumentTagCreateOrConnectWithoutTagInput[];
+        upsert?:
+            | DocumentTagUpsertWithWhereUniqueWithoutTagInput
+            | DocumentTagUpsertWithWhereUniqueWithoutTagInput[];
+        createMany?: DocumentTagCreateManyTagInputEnvelope;
+        set?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        disconnect?:
+            | DocumentTagWhereUniqueInput
+            | DocumentTagWhereUniqueInput[];
+        delete?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        update?:
+            | DocumentTagUpdateWithWhereUniqueWithoutTagInput
+            | DocumentTagUpdateWithWhereUniqueWithoutTagInput[];
+        updateMany?:
+            | DocumentTagUpdateManyWithWhereWithoutTagInput
+            | DocumentTagUpdateManyWithWhereWithoutTagInput[];
+        deleteMany?:
+            | DocumentTagScalarWhereInput
+            | DocumentTagScalarWhereInput[];
+    };
+
+    export type DocumentTagUncheckedUpdateManyWithoutTagNestedInput = {
+        create?:
+            | XOR<
+                  DocumentTagCreateWithoutTagInput,
+                  DocumentTagUncheckedCreateWithoutTagInput
+              >
+            | DocumentTagCreateWithoutTagInput[]
+            | DocumentTagUncheckedCreateWithoutTagInput[];
+        connectOrCreate?:
+            | DocumentTagCreateOrConnectWithoutTagInput
+            | DocumentTagCreateOrConnectWithoutTagInput[];
+        upsert?:
+            | DocumentTagUpsertWithWhereUniqueWithoutTagInput
+            | DocumentTagUpsertWithWhereUniqueWithoutTagInput[];
+        createMany?: DocumentTagCreateManyTagInputEnvelope;
+        set?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        disconnect?:
+            | DocumentTagWhereUniqueInput
+            | DocumentTagWhereUniqueInput[];
+        delete?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+        update?:
+            | DocumentTagUpdateWithWhereUniqueWithoutTagInput
+            | DocumentTagUpdateWithWhereUniqueWithoutTagInput[];
+        updateMany?:
+            | DocumentTagUpdateManyWithWhereWithoutTagInput
+            | DocumentTagUpdateManyWithWhereWithoutTagInput[];
+        deleteMany?:
+            | DocumentTagScalarWhereInput
+            | DocumentTagScalarWhereInput[];
+    };
+
+    export type DocumentCreateNestedOneWithoutFilesInput = {
+        create?: XOR<
+            DocumentCreateWithoutFilesInput,
+            DocumentUncheckedCreateWithoutFilesInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutFilesInput;
+        connect?: DocumentWhereUniqueInput;
+    };
+
+    export type FloatFieldUpdateOperationsInput = {
+        set?: number;
+        increment?: number;
+        decrement?: number;
+        multiply?: number;
+        divide?: number;
+    };
+
+    export type NullableFloatFieldUpdateOperationsInput = {
+        set?: number | null;
+        increment?: number;
+        decrement?: number;
+        multiply?: number;
+        divide?: number;
+    };
+
+    export type DocumentUpdateOneRequiredWithoutFilesNestedInput = {
+        create?: XOR<
+            DocumentCreateWithoutFilesInput,
+            DocumentUncheckedCreateWithoutFilesInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutFilesInput;
+        upsert?: DocumentUpsertWithoutFilesInput;
+        connect?: DocumentWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                DocumentUpdateToOneWithWhereWithoutFilesInput,
+                DocumentUpdateWithoutFilesInput
+            >,
+            DocumentUncheckedUpdateWithoutFilesInput
+        >;
     };
 
     export type DocumentCreateNestedOneWithoutDocumentExtractedFieldsInput = {
@@ -9329,36 +12739,6 @@ export namespace Prisma {
                 DocumentUncheckedUpdateWithoutDocumentExtractedFieldsInput
             >;
         };
-
-    export type DocumentCreateNestedOneWithoutDocumentDeadlinesInput = {
-        create?: XOR<
-            DocumentCreateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedCreateWithoutDocumentDeadlinesInput
-        >;
-        connectOrCreate?: DocumentCreateOrConnectWithoutDocumentDeadlinesInput;
-        connect?: DocumentWhereUniqueInput;
-    };
-
-    export type EnumDeadlineStatusFieldUpdateOperationsInput = {
-        set?: $Enums.DeadlineStatus;
-    };
-
-    export type DocumentUpdateOneRequiredWithoutDocumentDeadlinesNestedInput = {
-        create?: XOR<
-            DocumentCreateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedCreateWithoutDocumentDeadlinesInput
-        >;
-        connectOrCreate?: DocumentCreateOrConnectWithoutDocumentDeadlinesInput;
-        upsert?: DocumentUpsertWithoutDocumentDeadlinesInput;
-        connect?: DocumentWhereUniqueInput;
-        update?: XOR<
-            XOR<
-                DocumentUpdateToOneWithWhereWithoutDocumentDeadlinesInput,
-                DocumentUpdateWithoutDocumentDeadlinesInput
-            >,
-            DocumentUncheckedUpdateWithoutDocumentDeadlinesInput
-        >;
-    };
 
     export type DocumentCreateNestedOneWithoutActionLogsInput = {
         create?: XOR<
@@ -9436,26 +12816,38 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
     };
 
-    export type NestedFloatFilter<$PrismaModel = never> = {
-        equals?: number | FloatFieldRefInput<$PrismaModel>;
-        in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
-        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>;
-        lt?: number | FloatFieldRefInput<$PrismaModel>;
-        lte?: number | FloatFieldRefInput<$PrismaModel>;
-        gt?: number | FloatFieldRefInput<$PrismaModel>;
-        gte?: number | FloatFieldRefInput<$PrismaModel>;
-        not?: NestedFloatFilter<$PrismaModel> | number;
+    export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
     };
 
-    export type NestedFloatNullableFilter<$PrismaModel = never> = {
-        equals?: number | FloatFieldRefInput<$PrismaModel> | null;
-        in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
-        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
-        lt?: number | FloatFieldRefInput<$PrismaModel>;
-        lte?: number | FloatFieldRefInput<$PrismaModel>;
-        gt?: number | FloatFieldRefInput<$PrismaModel>;
-        gte?: number | FloatFieldRefInput<$PrismaModel>;
-        not?: NestedFloatNullableFilter<$PrismaModel> | number | null;
+    export type NestedEnumRiskLevelNullableFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.RiskLevel
+            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumRiskLevelNullableFilter<$PrismaModel>
+            | $Enums.RiskLevel
+            | null;
     };
 
     export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -9520,6 +12912,87 @@ export namespace Prisma {
         _max?: NestedEnumDocumentStatusesFilter<$PrismaModel>;
     };
 
+    export type NestedDateTimeNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
+    };
+
+    export type NestedIntNullableFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel> | null;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
+    };
+
+    export type NestedEnumRiskLevelNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?:
+            | $Enums.RiskLevel
+            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.RiskLevel[]
+            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumRiskLevelNullableWithAggregatesFilter<$PrismaModel>
+            | $Enums.RiskLevel
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+        _max?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+    };
+
+    export type NestedFloatFilter<$PrismaModel = never> = {
+        equals?: number | FloatFieldRefInput<$PrismaModel>;
+        in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
+        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>;
+        lt?: number | FloatFieldRefInput<$PrismaModel>;
+        lte?: number | FloatFieldRefInput<$PrismaModel>;
+        gt?: number | FloatFieldRefInput<$PrismaModel>;
+        gte?: number | FloatFieldRefInput<$PrismaModel>;
+        not?: NestedFloatFilter<$PrismaModel> | number;
+    };
+
+    export type NestedFloatNullableFilter<$PrismaModel = never> = {
+        equals?: number | FloatFieldRefInput<$PrismaModel> | null;
+        in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+        notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+        lt?: number | FloatFieldRefInput<$PrismaModel>;
+        lte?: number | FloatFieldRefInput<$PrismaModel>;
+        gt?: number | FloatFieldRefInput<$PrismaModel>;
+        gte?: number | FloatFieldRefInput<$PrismaModel>;
+        not?: NestedFloatNullableFilter<$PrismaModel> | number | null;
+    };
+
     export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
         equals?: number | FloatFieldRefInput<$PrismaModel>;
         in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
@@ -9555,17 +13028,6 @@ export namespace Prisma {
             _min?: NestedFloatNullableFilter<$PrismaModel>;
             _max?: NestedFloatNullableFilter<$PrismaModel>;
         };
-
-    export type NestedIntNullableFilter<$PrismaModel = never> = {
-        equals?: number | IntFieldRefInput<$PrismaModel> | null;
-        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        lt?: number | IntFieldRefInput<$PrismaModel>;
-        lte?: number | IntFieldRefInput<$PrismaModel>;
-        gt?: number | IntFieldRefInput<$PrismaModel>;
-        gte?: number | IntFieldRefInput<$PrismaModel>;
-        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
-    };
 
     export type NestedEnumExtractedFieldTypeFilter<$PrismaModel = never> = {
         equals?:
@@ -9635,41 +13097,6 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
         _max?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
-    };
-
-    export type NestedEnumDeadlineStatusFilter<$PrismaModel = never> = {
-        equals?:
-            | $Enums.DeadlineStatus
-            | EnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        in?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        notIn?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedEnumDeadlineStatusFilter<$PrismaModel>
-            | $Enums.DeadlineStatus;
-    };
-
-    export type NestedEnumDeadlineStatusWithAggregatesFilter<
-        $PrismaModel = never,
-    > = {
-        equals?:
-            | $Enums.DeadlineStatus
-            | EnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        in?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        notIn?:
-            | $Enums.DeadlineStatus[]
-            | ListEnumDeadlineStatusFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedEnumDeadlineStatusWithAggregatesFilter<$PrismaModel>
-            | $Enums.DeadlineStatus;
-        _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
-        _max?: NestedEnumDeadlineStatusFilter<$PrismaModel>;
     };
 
     export type NestedEnumActionLogTypesFilter<$PrismaModel = never> = {
@@ -9777,41 +13204,6 @@ export namespace Prisma {
         skipDuplicates?: boolean;
     };
 
-    export type DocumentDeadlineCreateWithoutDocumentInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-    };
-
-    export type DocumentDeadlineUncheckedCreateWithoutDocumentInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
-    };
-
-    export type DocumentDeadlineCreateOrConnectWithoutDocumentInput = {
-        where: DocumentDeadlineWhereUniqueInput;
-        create: XOR<
-            DocumentDeadlineCreateWithoutDocumentInput,
-            DocumentDeadlineUncheckedCreateWithoutDocumentInput
-        >;
-    };
-
-    export type DocumentDeadlineCreateManyDocumentInputEnvelope = {
-        data:
-            | DocumentDeadlineCreateManyDocumentInput
-            | DocumentDeadlineCreateManyDocumentInput[];
-        skipDuplicates?: boolean;
-    };
-
     export type ActionLogCreateWithoutDocumentInput = {
         id?: string;
         createdAt?: Date | string;
@@ -9852,6 +13244,74 @@ export namespace Prisma {
         data:
             | ActionLogCreateManyDocumentInput
             | ActionLogCreateManyDocumentInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type FileCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+    };
+
+    export type FileUncheckedCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+    };
+
+    export type FileCreateOrConnectWithoutDocumentInput = {
+        where: FileWhereUniqueInput;
+        create: XOR<
+            FileCreateWithoutDocumentInput,
+            FileUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type FileCreateManyDocumentInputEnvelope = {
+        data: FileCreateManyDocumentInput | FileCreateManyDocumentInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type DocumentTagCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: TagCreateNestedOneWithoutDocumentTagsInput;
+    };
+
+    export type DocumentTagUncheckedCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tagId: string;
+    };
+
+    export type DocumentTagCreateOrConnectWithoutDocumentInput = {
+        where: DocumentTagWhereUniqueInput;
+        create: XOR<
+            DocumentTagCreateWithoutDocumentInput,
+            DocumentTagUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type DocumentTagCreateManyDocumentInputEnvelope = {
+        data:
+            | DocumentTagCreateManyDocumentInput
+            | DocumentTagCreateManyDocumentInput[];
         skipDuplicates?: boolean;
     };
 
@@ -9908,54 +13368,6 @@ export namespace Prisma {
         documentId?: StringFilter<"DocumentExtractedField"> | string;
     };
 
-    export type DocumentDeadlineUpsertWithWhereUniqueWithoutDocumentInput = {
-        where: DocumentDeadlineWhereUniqueInput;
-        update: XOR<
-            DocumentDeadlineUpdateWithoutDocumentInput,
-            DocumentDeadlineUncheckedUpdateWithoutDocumentInput
-        >;
-        create: XOR<
-            DocumentDeadlineCreateWithoutDocumentInput,
-            DocumentDeadlineUncheckedCreateWithoutDocumentInput
-        >;
-    };
-
-    export type DocumentDeadlineUpdateWithWhereUniqueWithoutDocumentInput = {
-        where: DocumentDeadlineWhereUniqueInput;
-        data: XOR<
-            DocumentDeadlineUpdateWithoutDocumentInput,
-            DocumentDeadlineUncheckedUpdateWithoutDocumentInput
-        >;
-    };
-
-    export type DocumentDeadlineUpdateManyWithWhereWithoutDocumentInput = {
-        where: DocumentDeadlineScalarWhereInput;
-        data: XOR<
-            DocumentDeadlineUpdateManyMutationInput,
-            DocumentDeadlineUncheckedUpdateManyWithoutDocumentInput
-        >;
-    };
-
-    export type DocumentDeadlineScalarWhereInput = {
-        AND?:
-            | DocumentDeadlineScalarWhereInput
-            | DocumentDeadlineScalarWhereInput[];
-        OR?: DocumentDeadlineScalarWhereInput[];
-        NOT?:
-            | DocumentDeadlineScalarWhereInput
-            | DocumentDeadlineScalarWhereInput[];
-        id?: StringFilter<"DocumentDeadline"> | string;
-        createdAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        updatedAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        name?: StringFilter<"DocumentDeadline"> | string;
-        dueAt?: DateTimeFilter<"DocumentDeadline"> | Date | string;
-        status?:
-            | EnumDeadlineStatusFilter<"DocumentDeadline">
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFilter<"DocumentDeadline"> | string;
-        documentId?: StringFilter<"DocumentDeadline"> | string;
-    };
-
     export type ActionLogUpsertWithWhereUniqueWithoutDocumentInput = {
         where: ActionLogWhereUniqueInput;
         update: XOR<
@@ -10002,6 +13414,405 @@ export namespace Prisma {
         userAvatarUrl?: StringNullableFilter<"ActionLog"> | string | null;
     };
 
+    export type FileUpsertWithWhereUniqueWithoutDocumentInput = {
+        where: FileWhereUniqueInput;
+        update: XOR<
+            FileUpdateWithoutDocumentInput,
+            FileUncheckedUpdateWithoutDocumentInput
+        >;
+        create: XOR<
+            FileCreateWithoutDocumentInput,
+            FileUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type FileUpdateWithWhereUniqueWithoutDocumentInput = {
+        where: FileWhereUniqueInput;
+        data: XOR<
+            FileUpdateWithoutDocumentInput,
+            FileUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type FileUpdateManyWithWhereWithoutDocumentInput = {
+        where: FileScalarWhereInput;
+        data: XOR<
+            FileUpdateManyMutationInput,
+            FileUncheckedUpdateManyWithoutDocumentInput
+        >;
+    };
+
+    export type FileScalarWhereInput = {
+        AND?: FileScalarWhereInput | FileScalarWhereInput[];
+        OR?: FileScalarWhereInput[];
+        NOT?: FileScalarWhereInput | FileScalarWhereInput[];
+        id?: StringFilter<"File"> | string;
+        createdAt?: DateTimeFilter<"File"> | Date | string;
+        updatedAt?: DateTimeFilter<"File"> | Date | string;
+        key?: StringFilter<"File"> | string;
+        fileSize?: FloatFilter<"File"> | number;
+        mimeType?: StringFilter<"File"> | string;
+        url?: StringFilter<"File"> | string;
+        urlExpiresAt?: DateTimeFilter<"File"> | Date | string;
+        width?: FloatNullableFilter<"File"> | number | null;
+        height?: FloatNullableFilter<"File"> | number | null;
+        documentId?: StringFilter<"File"> | string;
+    };
+
+    export type DocumentTagUpsertWithWhereUniqueWithoutDocumentInput = {
+        where: DocumentTagWhereUniqueInput;
+        update: XOR<
+            DocumentTagUpdateWithoutDocumentInput,
+            DocumentTagUncheckedUpdateWithoutDocumentInput
+        >;
+        create: XOR<
+            DocumentTagCreateWithoutDocumentInput,
+            DocumentTagUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type DocumentTagUpdateWithWhereUniqueWithoutDocumentInput = {
+        where: DocumentTagWhereUniqueInput;
+        data: XOR<
+            DocumentTagUpdateWithoutDocumentInput,
+            DocumentTagUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type DocumentTagUpdateManyWithWhereWithoutDocumentInput = {
+        where: DocumentTagScalarWhereInput;
+        data: XOR<
+            DocumentTagUpdateManyMutationInput,
+            DocumentTagUncheckedUpdateManyWithoutDocumentInput
+        >;
+    };
+
+    export type DocumentTagScalarWhereInput = {
+        AND?: DocumentTagScalarWhereInput | DocumentTagScalarWhereInput[];
+        OR?: DocumentTagScalarWhereInput[];
+        NOT?: DocumentTagScalarWhereInput | DocumentTagScalarWhereInput[];
+        id?: StringFilter<"DocumentTag"> | string;
+        createdAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+        updatedAt?: DateTimeFilter<"DocumentTag"> | Date | string;
+        documentId?: StringFilter<"DocumentTag"> | string;
+        tagId?: StringFilter<"DocumentTag"> | string;
+    };
+
+    export type DocumentCreateWithoutDocumentTagsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
+        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentUncheckedCreateWithoutDocumentTagsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentCreateOrConnectWithoutDocumentTagsInput = {
+        where: DocumentWhereUniqueInput;
+        create: XOR<
+            DocumentCreateWithoutDocumentTagsInput,
+            DocumentUncheckedCreateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type TagCreateWithoutDocumentTagsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: string;
+    };
+
+    export type TagUncheckedCreateWithoutDocumentTagsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tag: string;
+    };
+
+    export type TagCreateOrConnectWithoutDocumentTagsInput = {
+        where: TagWhereUniqueInput;
+        create: XOR<
+            TagCreateWithoutDocumentTagsInput,
+            TagUncheckedCreateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type DocumentUpsertWithoutDocumentTagsInput = {
+        update: XOR<
+            DocumentUpdateWithoutDocumentTagsInput,
+            DocumentUncheckedUpdateWithoutDocumentTagsInput
+        >;
+        create: XOR<
+            DocumentCreateWithoutDocumentTagsInput,
+            DocumentUncheckedCreateWithoutDocumentTagsInput
+        >;
+        where?: DocumentWhereInput;
+    };
+
+    export type DocumentUpdateToOneWithWhereWithoutDocumentTagsInput = {
+        where?: DocumentWhereInput;
+        data: XOR<
+            DocumentUpdateWithoutDocumentTagsInput,
+            DocumentUncheckedUpdateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type DocumentUpdateWithoutDocumentTagsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentUncheckedUpdateWithoutDocumentTagsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type TagUpsertWithoutDocumentTagsInput = {
+        update: XOR<
+            TagUpdateWithoutDocumentTagsInput,
+            TagUncheckedUpdateWithoutDocumentTagsInput
+        >;
+        create: XOR<
+            TagCreateWithoutDocumentTagsInput,
+            TagUncheckedCreateWithoutDocumentTagsInput
+        >;
+        where?: TagWhereInput;
+    };
+
+    export type TagUpdateToOneWithWhereWithoutDocumentTagsInput = {
+        where?: TagWhereInput;
+        data: XOR<
+            TagUpdateWithoutDocumentTagsInput,
+            TagUncheckedUpdateWithoutDocumentTagsInput
+        >;
+    };
+
+    export type TagUpdateWithoutDocumentTagsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type TagUncheckedUpdateWithoutDocumentTagsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type DocumentTagCreateWithoutTagInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        document: DocumentCreateNestedOneWithoutDocumentTagsInput;
+    };
+
+    export type DocumentTagUncheckedCreateWithoutTagInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        documentId: string;
+    };
+
+    export type DocumentTagCreateOrConnectWithoutTagInput = {
+        where: DocumentTagWhereUniqueInput;
+        create: XOR<
+            DocumentTagCreateWithoutTagInput,
+            DocumentTagUncheckedCreateWithoutTagInput
+        >;
+    };
+
+    export type DocumentTagCreateManyTagInputEnvelope = {
+        data: DocumentTagCreateManyTagInput | DocumentTagCreateManyTagInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type DocumentTagUpsertWithWhereUniqueWithoutTagInput = {
+        where: DocumentTagWhereUniqueInput;
+        update: XOR<
+            DocumentTagUpdateWithoutTagInput,
+            DocumentTagUncheckedUpdateWithoutTagInput
+        >;
+        create: XOR<
+            DocumentTagCreateWithoutTagInput,
+            DocumentTagUncheckedCreateWithoutTagInput
+        >;
+    };
+
+    export type DocumentTagUpdateWithWhereUniqueWithoutTagInput = {
+        where: DocumentTagWhereUniqueInput;
+        data: XOR<
+            DocumentTagUpdateWithoutTagInput,
+            DocumentTagUncheckedUpdateWithoutTagInput
+        >;
+    };
+
+    export type DocumentTagUpdateManyWithWhereWithoutTagInput = {
+        where: DocumentTagScalarWhereInput;
+        data: XOR<
+            DocumentTagUpdateManyMutationInput,
+            DocumentTagUncheckedUpdateManyWithoutTagInput
+        >;
+    };
+
+    export type DocumentCreateWithoutFilesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
+        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentUncheckedCreateWithoutFilesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        tags?: DocumentCreatetagsInput | string[];
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentCreateOrConnectWithoutFilesInput = {
+        where: DocumentWhereUniqueInput;
+        create: XOR<
+            DocumentCreateWithoutFilesInput,
+            DocumentUncheckedCreateWithoutFilesInput
+        >;
+    };
+
+    export type DocumentUpsertWithoutFilesInput = {
+        update: XOR<
+            DocumentUpdateWithoutFilesInput,
+            DocumentUncheckedUpdateWithoutFilesInput
+        >;
+        create: XOR<
+            DocumentCreateWithoutFilesInput,
+            DocumentUncheckedCreateWithoutFilesInput
+        >;
+        where?: DocumentWhereInput;
+    };
+
+    export type DocumentUpdateToOneWithWhereWithoutFilesInput = {
+        where?: DocumentWhereInput;
+        data: XOR<
+            DocumentUpdateWithoutFilesInput,
+            DocumentUncheckedUpdateWithoutFilesInput
+        >;
+    };
+
+    export type DocumentUpdateWithoutFilesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentUncheckedUpdateWithoutFilesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        tags?: DocumentUpdatetagsInput | string[];
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
     export type DocumentCreateWithoutDocumentExtractedFieldsInput = {
         id?: string;
         createdAt?: Date | string;
@@ -10009,15 +13820,11 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
-        documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutDocumentExtractedFieldsInput = {
@@ -10027,15 +13834,11 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
-        documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutDocumentExtractedFieldsInput = {
@@ -10076,15 +13879,18 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
-        documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutDocumentExtractedFieldsInput = {
@@ -10096,119 +13902,18 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
-        documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
-    };
-
-    export type DocumentCreateWithoutDocumentDeadlinesInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
-        name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
-        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
-        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
-    };
-
-    export type DocumentUncheckedCreateWithoutDocumentDeadlinesInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        status: $Enums.DocumentStatuses;
-        tags?: DocumentCreatetagsInput | string[];
-        name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
-        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
-        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
-    };
-
-    export type DocumentCreateOrConnectWithoutDocumentDeadlinesInput = {
-        where: DocumentWhereUniqueInput;
-        create: XOR<
-            DocumentCreateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedCreateWithoutDocumentDeadlinesInput
-        >;
-    };
-
-    export type DocumentUpsertWithoutDocumentDeadlinesInput = {
-        update: XOR<
-            DocumentUpdateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedUpdateWithoutDocumentDeadlinesInput
-        >;
-        create: XOR<
-            DocumentCreateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedCreateWithoutDocumentDeadlinesInput
-        >;
-        where?: DocumentWhereInput;
-    };
-
-    export type DocumentUpdateToOneWithWhereWithoutDocumentDeadlinesInput = {
-        where?: DocumentWhereInput;
-        data: XOR<
-            DocumentUpdateWithoutDocumentDeadlinesInput,
-            DocumentUncheckedUpdateWithoutDocumentDeadlinesInput
-        >;
-    };
-
-    export type DocumentUpdateWithoutDocumentDeadlinesInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDocumentStatusesFieldUpdateOperationsInput
-            | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
-        name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
-        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
-        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
-    };
-
-    export type DocumentUncheckedUpdateWithoutDocumentDeadlinesInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDocumentStatusesFieldUpdateOperationsInput
-            | $Enums.DocumentStatuses;
-        tags?: DocumentUpdatetagsInput | string[];
-        name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
-        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
-        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateWithoutActionLogsInput = {
@@ -10218,15 +13923,11 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
-        documentDeadlines?: DocumentDeadlineCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutActionLogsInput = {
@@ -10236,15 +13937,11 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         tags?: DocumentCreatetagsInput | string[];
         name: string;
-        key: string;
-        fileSize: number;
-        mimeType: string;
-        url: string;
-        expiredAt: Date | string;
-        width?: number | null;
-        height?: number | null;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevel | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
-        documentDeadlines?: DocumentDeadlineUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutActionLogsInput = {
@@ -10284,15 +13981,18 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
-        documentDeadlines?: DocumentDeadlineUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutActionLogsInput = {
@@ -10304,15 +14004,18 @@ export namespace Prisma {
             | $Enums.DocumentStatuses;
         tags?: DocumentUpdatetagsInput | string[];
         name?: StringFieldUpdateOperationsInput | string;
-        key?: StringFieldUpdateOperationsInput | string;
-        fileSize?: FloatFieldUpdateOperationsInput | number;
-        mimeType?: StringFieldUpdateOperationsInput | string;
-        url?: StringFieldUpdateOperationsInput | string;
-        expiredAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        width?: NullableFloatFieldUpdateOperationsInput | number | null;
-        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelFieldUpdateOperationsInput
+            | $Enums.RiskLevel
+            | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
-        documentDeadlines?: DocumentDeadlineUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentExtractedFieldCreateManyDocumentInput = {
@@ -10323,16 +14026,6 @@ export namespace Prisma {
         value: string;
         confidence: number;
         source: $Enums.ExtractedFieldSource;
-    };
-
-    export type DocumentDeadlineCreateManyDocumentInput = {
-        id?: string;
-        createdAt?: Date | string;
-        updatedAt?: Date | string;
-        name: string;
-        dueAt: Date | string;
-        status: $Enums.DeadlineStatus;
-        riskLevel: string;
     };
 
     export type ActionLogCreateManyDocumentInput = {
@@ -10347,6 +14040,26 @@ export namespace Prisma {
         userId?: string | null;
         userFullName?: string | null;
         userAvatarUrl?: string | null;
+    };
+
+    export type FileCreateManyDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+    };
+
+    export type DocumentTagCreateManyDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        tagId: string;
     };
 
     export type DocumentExtractedFieldUpdateWithoutDocumentInput = {
@@ -10391,42 +14104,6 @@ export namespace Prisma {
                 | EnumExtractedFieldSourceFieldUpdateOperationsInput
                 | $Enums.ExtractedFieldSource;
         };
-
-    export type DocumentDeadlineUpdateWithoutDocumentInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type DocumentDeadlineUncheckedUpdateWithoutDocumentInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-    };
-
-    export type DocumentDeadlineUncheckedUpdateManyWithoutDocumentInput = {
-        id?: StringFieldUpdateOperationsInput | string;
-        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        name?: StringFieldUpdateOperationsInput | string;
-        dueAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-        status?:
-            | EnumDeadlineStatusFieldUpdateOperationsInput
-            | $Enums.DeadlineStatus;
-        riskLevel?: StringFieldUpdateOperationsInput | string;
-    };
 
     export type ActionLogUpdateWithoutDocumentInput = {
         id?: StringFieldUpdateOperationsInput | string;
@@ -10492,6 +14169,94 @@ export namespace Prisma {
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
+    };
+
+    export type FileUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+    };
+
+    export type FileUncheckedUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+    };
+
+    export type FileUncheckedUpdateManyWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+    };
+
+    export type DocumentTagUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tag?: TagUpdateOneRequiredWithoutDocumentTagsNestedInput;
+    };
+
+    export type DocumentTagUncheckedUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tagId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type DocumentTagUncheckedUpdateManyWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        tagId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type DocumentTagCreateManyTagInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        documentId: string;
+    };
+
+    export type DocumentTagUpdateWithoutTagInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        document?: DocumentUpdateOneRequiredWithoutDocumentTagsNestedInput;
+    };
+
+    export type DocumentTagUncheckedUpdateWithoutTagInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        documentId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type DocumentTagUncheckedUpdateManyWithoutTagInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        documentId?: StringFieldUpdateOperationsInput | string;
     };
 
     /**

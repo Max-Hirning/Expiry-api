@@ -150,7 +150,9 @@ export const createDocumentService = (
         });
 
         try {
-            await gcpService.deleteFile(document.key);
+            await gcpService.deleteFolder(
+                `teams/${params.teamId}/documents/${params.documentId}`
+            );
         } catch (error) {
             log.error({ error }, "Failed to delete document");
         }
@@ -174,8 +176,15 @@ export const createDocumentService = (
                         },
                     },
                     {
-                        tags: {
-                            has: query.search,
+                        documentTags: {
+                            some: {
+                                tag: {
+                                    tag: {
+                                        mode: "insensitive",
+                                        contains: query.search,
+                                    },
+                                },
+                            },
                         },
                     },
                     {
@@ -189,9 +198,9 @@ export const createDocumentService = (
                         },
                     },
                     {
-                        documentDeadlines: {
+                        documentExtractedFields: {
                             some: {
-                                name: {
+                                value: {
                                     mode: "insensitive",
                                     contains: query.search,
                                 },
@@ -203,11 +212,6 @@ export const createDocumentService = (
             ...(query.statuses && {
                 status: {
                     in: query.statuses,
-                },
-            }),
-            ...(query.tags && {
-                tags: {
-                    hasSome: query.tags,
                 },
             }),
         };
@@ -270,49 +274,116 @@ export const createDocumentService = (
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        await withRepositories([documentRepository], async (documentRepo) => {
-            const existedDocument = await documentRepo.findFirst({
-                where: {
-                    name: body.file.name,
-                },
-            });
+        const tagRepository = await applicationService.initTagRepository(
+            params.teamId
+        );
 
-            if (existedDocument) {
-                throw new ConflictError(
-                    "Document with this name already exists"
-                );
+        const { existedTagsIds, newTags } = await withRepositories(
+            [documentRepository, tagRepository],
+            async (documentRepo, tagRepository) => {
+                const existedDocument = await documentRepo.findFirst({
+                    where: {
+                        name: body.name,
+                    },
+                });
+
+                if (existedDocument) {
+                    throw new ConflictError(
+                        "Document with this name already exists"
+                    );
+                }
+
+                const existedTags = await tagRepository.findMany({
+                    where: {
+                        tag: {
+                            in: body.tags,
+                        },
+                    },
+                });
+
+                const existedTagsTags = existedTags.map(({ tag }) => tag);
+
+                return {
+                    existedTagsIds: existedTags.map(({ id }) => id),
+                    newTags: body.tags.filter(
+                        (tag) => !existedTagsTags.includes(tag)
+                    ),
+                };
             }
-        });
+        );
 
-        const documentUploadPayload = await gcpService.uploadFile({
-            keyPayload: {
-                type: FileTypes.DOCUMENT,
-                documentId,
-                teamId: params.teamId,
-            },
-            mimeType: body.file.mimeType,
-        });
+        const documentsUploadPayload = await Promise.all(
+            body.files.map(async (file) => {
+                const documentUploadPayload = await gcpService.uploadFile({
+                    keyPayload: {
+                        type: FileTypes.DOCUMENT,
+                        documentId,
+                        teamId: params.teamId,
+                        fileName: file.id,
+                    },
+                    mimeType: file.mimeType,
+                });
 
-        const documentReadPayload = await gcpService.getFileUrl({
-            key: documentUploadPayload.key,
-            type: FileTypes.DOCUMENT,
-        });
+                const documentReadPayload = await gcpService.getFileUrl({
+                    key: documentUploadPayload.key,
+                    type: FileTypes.DOCUMENT,
+                });
+
+                return {
+                    ...file,
+                    ...documentReadPayload,
+                    key: documentUploadPayload.key,
+                    uploadUrl: documentUploadPayload.url,
+                };
+            })
+        );
 
         const document = await withRepositories([client], async (client) =>
             client.$transaction(async (tx) => {
                 const document = await tx.document.create({
                     data: {
+                        id: documentId,
                         status: DocumentStatuses.PROCESSING,
-                        tags: body.tags,
-                        name: body.file.name,
-                        key: documentUploadPayload.key,
-                        fileSize: body.file.fileSize,
-                        mimeType: body.file.mimeType,
-                        url: documentReadPayload.url,
-                        expiredAt: documentReadPayload.expiredAt,
-                        width: body.file.width,
-                        height: body.file.height,
+                        name: body.name,
                     },
+                });
+
+                let tagsIds = [...existedTagsIds];
+
+                if (newTags.length > 0) {
+                    const newCreatedTags = await tx.tag.createManyAndReturn({
+                        data: newTags.map((tag) => ({
+                            tag,
+                        })),
+                        skipDuplicates: true,
+                    });
+
+                    tagsIds = tagsIds.concat(
+                        newCreatedTags.map(({ id }) => id)
+                    );
+                }
+
+                if (tagsIds.length > 0) {
+                    await tx.documentTag.createMany({
+                        data: tagsIds.map((id) => ({
+                            tagId: id,
+                            documentId,
+                        })),
+                        skipDuplicates: true,
+                    });
+                }
+
+                await tx.file.createMany({
+                    data: documentsUploadPayload.map((file) => ({
+                        key: file.key,
+                        fileSize: file.fileSize,
+                        mimeType: file.mimeType,
+                        url: file.url,
+                        urlExpiresAt: file.expiredAt,
+                        width: file.width,
+                        height: file.height,
+                        documentId,
+                    })),
                 });
 
                 await tx.actionLog.create({
@@ -346,11 +417,61 @@ export const createDocumentService = (
             params.teamId
         );
 
-        await withRepositories([documentRepository], (documentRepo) =>
-            documentRepo.findUniqueOrFail({
-                where: {
-                    id: params.documentId,
-                },
+        const tagRepository = await applicationService.initTagRepository(
+            params.teamId
+        );
+
+        const { existedTagsIds, newTags } = await withRepositories(
+            [documentRepository, tagRepository],
+            async (documentRepo, tagRepository) => {
+                await documentRepo.findUniqueOrFail({
+                    where: {
+                        id: params.documentId,
+                    },
+                });
+
+                const existedTags = await tagRepository.findMany({
+                    where: {
+                        tag: {
+                            in: body.tags,
+                        },
+                    },
+                });
+
+                const existedTagsTags = existedTags.map(({ tag }) => tag);
+
+                return {
+                    existedTagsIds: existedTags.map(({ id }) => id),
+                    newTags: (body.tags || []).filter(
+                        (tag) => !existedTagsTags.includes(tag)
+                    ),
+                };
+            }
+        );
+
+        const documentsUploadPayload = await Promise.all(
+            (body.files || []).map(async (file) => {
+                const documentUploadPayload = await gcpService.uploadFile({
+                    keyPayload: {
+                        type: FileTypes.DOCUMENT,
+                        documentId: params.documentId,
+                        teamId: params.teamId,
+                        fileName: file.id,
+                    },
+                    mimeType: file.mimeType,
+                });
+
+                const documentReadPayload = await gcpService.getFileUrl({
+                    key: documentUploadPayload.key,
+                    type: FileTypes.DOCUMENT,
+                });
+
+                return {
+                    ...file,
+                    ...documentReadPayload,
+                    key: documentUploadPayload.key,
+                    uploadUrl: documentUploadPayload.url,
+                };
             })
         );
 
@@ -364,6 +485,56 @@ export const createDocumentService = (
                         tags: body.tags,
                         name: body.name,
                     },
+                });
+
+                let tagsIds = [...existedTagsIds];
+
+                if (newTags.length > 0) {
+                    const newCreatedTags = await tx.tag.createManyAndReturn({
+                        data: newTags.map((tag) => ({
+                            tag,
+                        })),
+                        skipDuplicates: true,
+                    });
+
+                    tagsIds = tagsIds.concat(
+                        newCreatedTags.map(({ id }) => id)
+                    );
+                }
+
+                if (tagsIds.length > 0) {
+                    await tx.documentTag.createMany({
+                        data: tagsIds.map((id) => ({
+                            tagId: id,
+                            documentId: document.id,
+                        })),
+                        skipDuplicates: true,
+                    });
+                }
+
+                if (body.tagsToDelete && body.tagsToDelete.length > 0) {
+                    await tx.documentTag.deleteMany({
+                        where: {
+                            tag: {
+                                tag: {
+                                    in: body.tagsToDelete,
+                                },
+                            },
+                        },
+                    });
+                }
+
+                await tx.file.createMany({
+                    data: documentsUploadPayload.map((file) => ({
+                        key: file.key,
+                        fileSize: file.fileSize,
+                        mimeType: file.mimeType,
+                        url: file.url,
+                        urlExpiresAt: file.expiredAt,
+                        width: file.width,
+                        height: file.height,
+                        documentId: document.id,
+                    })),
                 });
 
                 const updatedObjects: string[] = [];
