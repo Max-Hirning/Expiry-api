@@ -1,6 +1,7 @@
+import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { Prisma, PrismaClient } from "@/database/master/generated/client.js";
+import { Prisma } from "@/database/master/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
 export const defaultNotificationSelector = {
@@ -25,9 +26,9 @@ export type NotificationRepository = BaseRepository<"notification"> & {
     ) => Promise<Prisma.NotificationGetPayload<TArgs>>;
 };
 
-export const createNotificationRepository = (
-    prisma: PrismaClient
-): NotificationRepository => {
+export const createNotificationRepository = ({
+    master: prisma,
+}: FastifyInstance["prisma"]): NotificationRepository => {
     const repository = generateRepository(prisma, "Notification");
 
     return {

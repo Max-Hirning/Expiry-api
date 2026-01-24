@@ -37,9 +37,11 @@ export const generateRepository = <T extends Model>(
     prisma: PrismaClient,
     model: T
 ): BaseRepository<Uncapitalize<T>> => {
-    const modelInstanceName = uncapitalizeString(model);
+    const modelInstanceName = unCapitalizeString(model);
 
     const delegate = prisma[modelInstanceName];
+
+    console.log(modelInstanceName, delegate);
 
     const count = delegate["count"] as (typeof delegate)["count"];
 
@@ -89,6 +91,6 @@ export const generateRepository = <T extends Model>(
     };
 };
 
-const uncapitalizeString = <T extends string>(str: T): Uncapitalize<T> => {
+const unCapitalizeString = <T extends string>(str: T): Uncapitalize<T> => {
     return (str.charAt(0).toLowerCase() + str.slice(1)) as Uncapitalize<T>;
 };

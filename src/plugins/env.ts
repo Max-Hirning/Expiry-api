@@ -11,7 +11,8 @@ const configureEnv = async (fastify: FastifyInstance) => {
                 "NODE_ENV",
                 S.string().enum(["development", "production", "test"])
             )
-            .prop("DATABASE_URL", S.string())
+            .prop("MASTER_DATABASE_URL", S.string())
+            .prop("TEAM_MASTER_DATABASE_URL", S.string())
             .prop("APPLICATION_SECRET", S.string())
             .prop("APPLICATION_URL", S.string())
             .prop("GCP_BUCKET", S.string())
@@ -20,14 +21,15 @@ const configureEnv = async (fastify: FastifyInstance) => {
             .prop("HOST", S.string().default("0.0.0.0"))
             .required([
                 "NODE_ENV",
-                "DATABASE_URL",
-                "GCP_BUCKET",
+                "MASTER_DATABASE_URL",
+                "TEAM_MASTER_DATABASE_URL",
                 "APPLICATION_SECRET",
                 "APPLICATION_URL",
+                "GCP_BUCKET",
                 "PORT",
             ])
             .valueOf(),
-        dotenv: false,
+        dotenv: true,
     });
 };
 

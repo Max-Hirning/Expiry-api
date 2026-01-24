@@ -32,10 +32,7 @@ const envToLogger = {
 
 export const configureServer = async (): Promise<FastifyInstance> => {
     const fastify = Fastify({
-        logger:
-            envToLogger[
-                process.env.NODE_ENV as "development" | "production" | "test"
-            ] ?? true,
+        logger: envToLogger.development,
     });
 
     try {

@@ -4,11 +4,13 @@ import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 
 const generateDatabaseURL = (schema: string) => {
-    if (!process.env.DATABASE_URL) {
-        throw new Error("Please provide a DATABASE_URL environment variable.");
+    if (!process.env.MASTER_DATABASE_URL) {
+        throw new Error(
+            "Please provide a MASTER_DATABASE_URL environment variable."
+        );
     }
 
-    const url = new URL(process.env.DATABASE_URL);
+    const url = new URL(process.env.MASTER_DATABASE_URL);
 
     url.searchParams.set("schema", schema);
 
@@ -73,7 +75,7 @@ export const setupDatabase = async (): Promise<() => Promise<void>> => {
 
     await client.connect();
 
-    process.env.DATABASE_URL = databaseURL;
+    process.env.MASTER_DATABASE_URL = databaseURL;
 
     await runMigrationFiles(client, schema);
 

@@ -1,6 +1,7 @@
+import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { Prisma, PrismaClient } from "@/database/master/generated/client.js";
+import { Prisma } from "@/database/master/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
 export const defaultTeamMemberSelector = {
@@ -21,9 +22,9 @@ export type TeamMemberRepository = BaseRepository<"teamMember"> & {
     ) => Promise<Prisma.TeamMemberGetPayload<TArgs>>;
 };
 
-export const createTeamMemberRepository = (
-    prisma: PrismaClient
-): TeamMemberRepository => {
+export const createTeamMemberRepository = ({
+    master: prisma,
+}: FastifyInstance["prisma"]): TeamMemberRepository => {
     const repository = generateRepository(prisma, "TeamMember");
 
     return {

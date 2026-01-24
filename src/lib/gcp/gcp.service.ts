@@ -24,7 +24,7 @@ export type GcpService = {
     deleteFolder: (prefix: string) => Promise<void>;
 };
 
-const createGcpService = (config: EnvConfig): GcpService => {
+export const createGcpService = (config: EnvConfig): GcpService => {
     const storage = new Storage();
     const BUCKET_NAME = config.GCP_BUCKET;
 
@@ -120,4 +120,4 @@ const createGcpService = (config: EnvConfig): GcpService => {
     };
 };
 
-addDIResolverName(createGcpService, "createGcpService");
+addDIResolverName(createGcpService, "gcpService");

@@ -10,13 +10,28 @@ export type TeamPrismaFactory = (
 ) => InstanceType<typeof TeamPrisma>;
 
 const configurePrisma = async (fastify: FastifyInstance) => {
-    const masterPrisma = new MasterPrisma();
+    const schema = new URL(fastify.config.MASTER_DATABASE_URL).searchParams.get(
+        "schema"
+    );
+
+    const adapter = new PrismaPg(
+        {
+            connectionString: fastify.config.MASTER_DATABASE_URL,
+        },
+        {
+            ...(schema && {
+                schema,
+            }),
+        }
+    );
+
+    const masterPrisma = new MasterPrisma({ adapter });
     await masterPrisma.$connect();
 
     const createTeamPrisma: TeamPrismaFactory = (schema) => {
         const adapter = new PrismaPg(
             {
-                connectionString: fastify.config.DATABASE_URL,
+                connectionString: fastify.config.MASTER_DATABASE_URL,
             },
             {
                 schema,

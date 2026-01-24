@@ -1,3 +1,4 @@
+import { JWT } from "@fastify/jwt";
 import { EnvConfig } from "./env.type.js";
 import { FastifyBaseLogger } from "fastify";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
@@ -30,6 +31,8 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+    jwt: JWT;
+    gcpService: GcpService;
 
     documentExtractedFieldRepository: DocumentExtractedFieldRepository;
 

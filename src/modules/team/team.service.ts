@@ -1,12 +1,11 @@
 import { randomUUID } from "crypto";
 import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
-import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { UserService } from "../user/user.service.js";
 import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { migrateTenantDatabase } from "@/database/infra/tenant.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
@@ -17,6 +16,11 @@ import {
     defaultTeamSelector,
     TeamRepository,
 } from "@/database/master/repositories/team/team.repository.js";
+import {
+    createTenantDatabase,
+    dropTenantDatabase,
+    migrateTenantDatabase,
+} from "@/database/infra/tenant.js";
 import {
     Logo,
     NotificationTypes,
@@ -61,7 +65,7 @@ export type TeamService = {
 };
 
 export const createTeamService = (
-    authService: AuthService,
+    userService: UserService,
     gcpService: GcpService,
     config: EnvConfig,
     teamRepository: TeamRepository,
@@ -263,9 +267,7 @@ export const createTeamService = (
             });
 
             try {
-                await prisma.master.$queryRaw`
-                DROP DATABASE IF EXISTS ${team.id};
-            `;
+                await dropTenantDatabase(team.id);
             } catch (error) {
                 log.error({ error }, "Failed to delete team DB");
             }
@@ -377,7 +379,7 @@ export const createTeamService = (
         createTeam: async ({ body, initiator }) => {
             const teamId = randomUUID();
 
-            await authService.checkIfTeamExists({
+            await userService.checkIfTeamExists({
                 where: {
                     OR: [
                         {
@@ -432,18 +434,13 @@ export const createTeamService = (
                     };
                 }
 
-                await prisma.master.$queryRaw`
-                    DO $$
-                    BEGIN
-                        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ${teamId}) THEN
-                            EXECUTE format('CREATE DATABASE %I', ${teamId});
-                        END IF;
-                    END
-                    $$;
-                `;
+                await createTenantDatabase(teamId);
 
                 await migrateTenantDatabase(
-                    config.DATABASE_URL.replace("/postgres", `/${teamId}`)
+                    config.MASTER_DATABASE_URL.replace(
+                        "/postgres",
+                        `/${teamId}`
+                    )
                 );
 
                 const activityLogRepository =
@@ -511,9 +508,7 @@ export const createTeamService = (
                 };
             } catch (error) {
                 try {
-                    await prisma.master.$queryRaw`
-                    DROP DATABASE IF EXISTS ${teamId};
-                `;
+                    await dropTenantDatabase(teamId);
                 } catch (error) {
                     log.error({ error }, "Failed to delete team DB");
                 }

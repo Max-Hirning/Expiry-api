@@ -32,11 +32,11 @@ Inside the Node.js container, use `postgresdb` as the database host.
 
 To run migrations from a host machine:
 1. Launch docker containers - `docker compose up`;
-2. Update the `.env` file, changing `DATABASE_URL` host from `postgresdb` to `localhost`;
+2. Update the `.env` file, changing `MASTER_DATABASE_URL` host from `postgresdb` to `localhost`;
 3. Run `npm run prisma:migrate:create` - create SQL migration file;
 4. Name the new migration and verify the SQL code generated;
 5. Run `npm run prisma:migrate:apply` - apply the migration to the database;
-6. Revert the `DATABASE_URL` in `.env`  back to `postgresdb` so that the Node.js container can connect to the database after a rebuild.
+6. Revert the `MASTER_DATABASE_URL` in `.env`  back to `postgresdb` so that the Node.js container can connect to the database after a rebuild.
 
 ### 🧪 Running Tests
 The template uses a Vitest testing framework for test coverage.

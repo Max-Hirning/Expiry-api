@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import { EnvConfig } from "@/types/env.type.js";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { UserService } from "../user/user.service.js";
@@ -7,9 +6,7 @@ import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { migrateTenantDatabase } from "@/database/infra/tenant.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
-import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     SignInBodyInput,
     SignUpBodyInput,
@@ -20,64 +17,29 @@ import {
 } from "@/database/master/repositories/user/user.repository.js";
 import {
     Avatar,
-    Prisma,
     TeamMemberRole,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/index.js";
+import {
+    createTenantDatabase,
+    dropTenantDatabase,
+    migrateTenantDatabase,
+} from "@/database/infra/tenant.js";
 
 export type AuthService = {
-    checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
-    checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
     signIn: (p: { body: SignInBodyInput }) => Promise<FetchUserResponse>;
     signUp: (p: { body: SignUpBodyInput }) => Promise<FetchUserResponse>;
 };
 
 export const createAuthService = (
-    teamRepository: TeamRepository,
     userRepository: UserRepository,
     userService: UserService,
     gcpService: GcpService,
     log: FastifyBaseLogger,
-    config: EnvConfig,
     prisma: FastifyInstance["prisma"]
 ): AuthService => {
-    const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
-        const existedUser = await userRepository.findFirst(args);
-
-        if (existedUser) {
-            if (existedUser.email === args.where?.email) {
-                throw new ConflictError("User with such email already exists");
-            }
-
-            if (existedUser.phoneNumber === args.where?.phoneNumber) {
-                throw new ConflictError(
-                    "User with such phone number already exists"
-                );
-            }
-
-            throw new ConflictError(
-                "User with such credentials already exists"
-            );
-        }
-
-        return false;
-    };
-
-    const checkIfTeamExists = async (args: Prisma.TeamFindFirstArgs) => {
-        const existedTeam = await teamRepository.findFirst(args);
-
-        if (existedTeam) {
-            throw new ConflictError("Team with such name already exists");
-        }
-
-        return false;
-    };
-
     return {
-        checkIfUserExists,
-        checkIfTeamExists,
-
         signIn: async ({ body }) => {
             const userToSignIn = await userRepository.findFirstOrFail({
                 where: {
@@ -122,7 +84,7 @@ export const createAuthService = (
             const userId = invitationId || randomUUID();
 
             await Promise.all([
-                checkIfTeamExists({
+                userService.checkIfTeamExists({
                     where: {
                         OR: [
                             {
@@ -134,7 +96,7 @@ export const createAuthService = (
                         ],
                     },
                 }),
-                checkIfUserExists({
+                userService.checkIfUserExists({
                     where: {
                         OR: [
                             {
@@ -183,19 +145,9 @@ export const createAuthService = (
                     };
                 }
 
-                await prisma.master.$queryRaw`
-                    DO $$
-                    BEGIN
-                        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = ${teamId}) THEN
-                            EXECUTE format('CREATE DATABASE %I', ${teamId});
-                        END IF;
-                    END
-                    $$;
-                `;
+                await createTenantDatabase(teamId);
 
-                await migrateTenantDatabase(
-                    config.DATABASE_URL.replace("/postgres", `/${teamId}`)
-                );
+                await migrateTenantDatabase(teamId);
 
                 const createdUser = await prisma.master.$transaction(
                     async (tx) => {
@@ -286,9 +238,7 @@ export const createAuthService = (
                 };
             } catch (error) {
                 try {
-                    await prisma.master.$queryRaw`
-                        DROP DATABASE IF EXISTS ${teamId};
-                    `;
+                    await dropTenantDatabase(teamId);
                 } catch (error) {
                     log.error({ error }, "Failed to delete team DB");
                 }

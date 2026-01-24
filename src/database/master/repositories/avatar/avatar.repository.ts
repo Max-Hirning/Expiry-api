@@ -1,6 +1,7 @@
+import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { Prisma, PrismaClient } from "@/database/master/generated/client.js";
+import { Prisma } from "@/database/master/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
 export const defaultAvatarSelector = {
@@ -25,9 +26,9 @@ export type AvatarRepository = BaseRepository<"avatar"> & {
     ) => Promise<Prisma.AvatarGetPayload<TArgs>>;
 };
 
-export const createAvatarRepository = (
-    prisma: PrismaClient
-): AvatarRepository => {
+export const createAvatarRepository = ({
+    master: prisma,
+}: FastifyInstance["prisma"]): AvatarRepository => {
     const repository = generateRepository(prisma, "Avatar");
 
     return {

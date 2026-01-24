@@ -41,7 +41,7 @@ export const createApplicationService = (
     },
     initTeamTenantClient: async (teamId: string) => {
         return prisma.team(
-            config.DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
         );
     },
     initActionLogRepository: async (teamId: string) => {
@@ -53,7 +53,7 @@ export const createApplicationService = (
 
         const repository = createActionLogRepository(
             prisma,
-            config.DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
         );
 
         return repository;
@@ -67,7 +67,7 @@ export const createApplicationService = (
 
         const repository = createDocumentRepository(
             prisma,
-            config.DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
         );
 
         return repository;
@@ -81,7 +81,7 @@ export const createApplicationService = (
 
         const repository = createTagRepository(
             prisma,
-            config.DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
         );
 
         return repository;
@@ -95,7 +95,7 @@ export const createApplicationService = (
 
         const repository = createDocumentTagRepository(
             prisma,
-            config.DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
         );
 
         return repository;

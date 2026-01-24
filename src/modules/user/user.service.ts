@@ -1,7 +1,6 @@
 import { JWT } from "@fastify/jwt";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
-import { AuthService } from "../auth/auth.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
@@ -65,11 +64,12 @@ export type UserService = {
         body: InviteUserBodyInput;
         initiator: FastifyRequest["user"];
     }) => Promise<FetchUserResponse>;
+    checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
+    checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
 };
 
 export const createService = (
     userRepository: UserRepository,
-    authService: AuthService,
     notificationRepository: NotificationRepository,
     jwt: JWT,
     log: FastifyBaseLogger,
@@ -113,7 +113,41 @@ export const createService = (
         };
     };
 
+    const checkIfUserExists = async (args: Prisma.UserFindFirstArgs) => {
+        const existedUser = await userRepository.findFirst(args);
+
+        if (existedUser) {
+            if (existedUser.email === args.where?.email) {
+                throw new ConflictError("User with such email already exists");
+            }
+
+            if (existedUser.phoneNumber === args.where?.phoneNumber) {
+                throw new ConflictError(
+                    "User with such phone number already exists"
+                );
+            }
+
+            throw new ConflictError(
+                "User with such credentials already exists"
+            );
+        }
+
+        return false;
+    };
+
+    const checkIfTeamExists = async (args: Prisma.TeamFindFirstArgs) => {
+        const existedTeam = await teamRepository.findFirst(args);
+
+        if (existedTeam) {
+            throw new ConflictError("Team with such name already exists");
+        }
+
+        return false;
+    };
+
     return {
+        checkIfUserExists,
+        checkIfTeamExists,
         updateUser: async ({ params, body }) => {
             await userRepository.findFirstOrFail({
                 where: {
@@ -122,7 +156,7 @@ export const createService = (
             });
 
             if (body.email || body.phoneNumber) {
-                await authService.checkIfUserExists({
+                await checkIfUserExists({
                     where: {
                         OR: [
                             ...(body.email
@@ -291,7 +325,7 @@ export const createService = (
                 });
             }
 
-            await authService.checkIfUserExists({
+            await checkIfUserExists({
                 where: {
                     OR: [
                         {

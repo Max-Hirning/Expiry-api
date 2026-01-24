@@ -23,6 +23,7 @@ const configureAwilix = async (fastify: FastifyInstance) => {
         log: asValue(fastify.log),
         prisma: asValue(fastify.prisma),
         config: asValue(fastify.config),
+        jwt: asValue(fastify.jwt),
     });
 
     // Register dependencies from the application: repositories, services, route handlers
@@ -31,7 +32,11 @@ const configureAwilix = async (fastify: FastifyInstance) => {
             path.join(__dirname, "../modules/**/*.{service,handler}.{js,ts}"),
             path.join(
                 __dirname,
-                "../database/repositories/{*,**/*}.repository.{js,ts}"
+                "../database/master/repositories/{*,**/*}.repository.{js,ts}"
+            ),
+            path.join(
+                __dirname,
+                "../database/team/repositories/{*,**/*}.repository.{js,ts}"
             ),
             path.join(__dirname, "../lib/**/*.service.{js,ts}"),
         ],
@@ -46,5 +51,5 @@ const configureAwilix = async (fastify: FastifyInstance) => {
 
 export default fp(configureAwilix, {
     name: FastifyPlugin.Awilix,
-    dependencies: [FastifyPlugin.Prisma, FastifyPlugin.Env],
+    dependencies: [FastifyPlugin.Prisma, FastifyPlugin.Env, FastifyPlugin.Jwt],
 });
