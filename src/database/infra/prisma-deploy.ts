@@ -1,5 +1,5 @@
-import { execSync } from "child_process";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { migrateTenantDatabase } from "./tenant.js";
 import { PrismaClient as MasterPrisma } from "@/database/master/generated/client.js";
 
 async function deployTenants() {
@@ -17,8 +17,6 @@ async function deployTenants() {
 
     await masterPrisma.$connect();
 
-    const DB_URL = MASTER_DATABASE_URL.replace(/\/[^/]*$/, "/");
-
     const teams = await masterPrisma.team.findMany({
         select: { id: true },
     });
@@ -26,10 +24,10 @@ async function deployTenants() {
     for (const team of teams) {
         console.log(`🚀 Deploying tenant DB: ${team.id}`);
 
-        execSync(
-            `TEAM_DATABASE_URL=${DB_URL}${team.id} prisma migrate deploy --schema src/database/prisma.config.team.ts`,
-            { stdio: "inherit" }
-        );
+        await migrateTenantDatabase(team.id);
+
+        console.log(`🚀 Deployed tenant DB: ${team.id}`);
+        console.log();
     }
 }
 
