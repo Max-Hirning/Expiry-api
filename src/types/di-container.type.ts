@@ -21,6 +21,7 @@ import { UserRepository } from "@/database/master/repositories/user/user.reposit
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.repository.js";
 import { DocumentRepository } from "@/database/team/repositories/document/docuement.repository.js";
+import { TeamStatRepository } from "@/database/master/repositories/team-stat/team-stat.repository.js";
 import { ActionLogRepository } from "@/database/team/repositories/action-log/action-log.repository.js";
 import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
 import { DocumentTagRepository } from "@/database/team/repositories/document-tag/document-tag.repository.js";
@@ -31,6 +32,8 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    teamStatRepository: TeamStatRepository;
     jwt: JWT;
     gcpService: GcpService;
 

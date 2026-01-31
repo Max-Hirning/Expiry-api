@@ -169,6 +169,23 @@ exports.Prisma.TeamScalarFieldEnum = {
     name: "name",
 };
 
+exports.Prisma.TeamStatScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    totalDocuments: "totalDocuments",
+    processingDocuments: "processingDocuments",
+    activeDocuments: "activeDocuments",
+    archivedDocuments: "archivedDocuments",
+    failedDocuments: "failedDocuments",
+    needsReviewDocuments: "needsReviewDocuments",
+    highRiskDocuments: "highRiskDocuments",
+    mediumRiskDocuments: "mediumRiskDocuments",
+    lowRiskDocuments: "lowRiskDocuments",
+    expiringSoonDocuments: "expiringSoonDocuments",
+    teamId: "teamId",
+};
+
 exports.Prisma.TeamMemberScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
@@ -249,6 +266,7 @@ exports.Prisma.ModelName = {
     Avatar: "Avatar",
     NotificationPreference: "NotificationPreference",
     Team: "Team",
+    TeamStat: "TeamStat",
     TeamMember: "TeamMember",
     Logo: "Logo",
     Notification: "Notification",

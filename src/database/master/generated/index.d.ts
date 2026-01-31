@@ -39,6 +39,11 @@ export type NotificationPreference =
  */
 export type Team = $Result.DefaultSelection<Prisma.$TeamPayload>;
 /**
+ * Model TeamStat
+ *
+ */
+export type TeamStat = $Result.DefaultSelection<Prisma.$TeamStatPayload>;
+/**
  * Model TeamMember
  *
  */
@@ -324,6 +329,16 @@ export class PrismaClient<
      * ```
      */
     get team(): Prisma.TeamDelegate<ExtArgs, ClientOptions>;
+
+    /**
+     * `prisma.teamStat`: Exposes CRUD operations for the **TeamStat** model.
+     * Example usage:
+     * ```ts
+     * // Fetch zero or more TeamStats
+     * const teamStats = await prisma.teamStat.findMany()
+     * ```
+     */
+    get teamStat(): Prisma.TeamStatDelegate<ExtArgs, ClientOptions>;
 
     /**
      * `prisma.teamMember`: Exposes CRUD operations for the **TeamMember** model.
@@ -814,6 +829,7 @@ export namespace Prisma {
         Avatar: "Avatar";
         NotificationPreference: "NotificationPreference";
         Team: "Team";
+        TeamStat: "TeamStat";
         TeamMember: "TeamMember";
         Logo: "Logo";
         Notification: "Notification";
@@ -846,6 +862,7 @@ export namespace Prisma {
                 | "avatar"
                 | "notificationPreference"
                 | "team"
+                | "teamStat"
                 | "teamMember"
                 | "logo"
                 | "notification";
@@ -1232,6 +1249,82 @@ export namespace Prisma {
                     };
                 };
             };
+            TeamStat: {
+                payload: Prisma.$TeamStatPayload<ExtArgs>;
+                fields: Prisma.TeamStatFieldRefs;
+                operations: {
+                    findUnique: {
+                        args: Prisma.TeamStatFindUniqueArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload> | null;
+                    };
+                    findUniqueOrThrow: {
+                        args: Prisma.TeamStatFindUniqueOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    findFirst: {
+                        args: Prisma.TeamStatFindFirstArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload> | null;
+                    };
+                    findFirstOrThrow: {
+                        args: Prisma.TeamStatFindFirstOrThrowArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    findMany: {
+                        args: Prisma.TeamStatFindManyArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>[];
+                    };
+                    create: {
+                        args: Prisma.TeamStatCreateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    createMany: {
+                        args: Prisma.TeamStatCreateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    createManyAndReturn: {
+                        args: Prisma.TeamStatCreateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>[];
+                    };
+                    delete: {
+                        args: Prisma.TeamStatDeleteArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    update: {
+                        args: Prisma.TeamStatUpdateArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    deleteMany: {
+                        args: Prisma.TeamStatDeleteManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateMany: {
+                        args: Prisma.TeamStatUpdateManyArgs<ExtArgs>;
+                        result: BatchPayload;
+                    };
+                    updateManyAndReturn: {
+                        args: Prisma.TeamStatUpdateManyAndReturnArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>[];
+                    };
+                    upsert: {
+                        args: Prisma.TeamStatUpsertArgs<ExtArgs>;
+                        result: $Utils.PayloadToResult<Prisma.$TeamStatPayload>;
+                    };
+                    aggregate: {
+                        args: Prisma.TeamStatAggregateArgs<ExtArgs>;
+                        result: $Utils.Optional<AggregateTeamStat>;
+                    };
+                    groupBy: {
+                        args: Prisma.TeamStatGroupByArgs<ExtArgs>;
+                        result: $Utils.Optional<TeamStatGroupByOutputType>[];
+                    };
+                    count: {
+                        args: Prisma.TeamStatCountArgs<ExtArgs>;
+                        result:
+                            | $Utils.Optional<TeamStatCountAggregateOutputType>
+                            | number;
+                    };
+                };
+            };
             TeamMember: {
                 payload: Prisma.$TeamMemberPayload<ExtArgs>;
                 fields: Prisma.TeamMemberFieldRefs;
@@ -1583,6 +1676,7 @@ export namespace Prisma {
         avatar?: AvatarOmit;
         notificationPreference?: NotificationPreferenceOmit;
         team?: TeamOmit;
+        teamStat?: TeamStatOmit;
         teamMember?: TeamMemberOmit;
         logo?: LogoOmit;
         notification?: NotificationOmit;
@@ -7664,6 +7758,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             name?: boolean;
             logo?: boolean | Team$logoArgs<ExtArgs>;
+            stats?: boolean | Team$statsArgs<ExtArgs>;
             notifications?: boolean | Team$notificationsArgs<ExtArgs>;
             teamMembers?: boolean | Team$teamMembersArgs<ExtArgs>;
             _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>;
@@ -7712,6 +7807,7 @@ export namespace Prisma {
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         logo?: boolean | Team$logoArgs<ExtArgs>;
+        stats?: boolean | Team$statsArgs<ExtArgs>;
         notifications?: boolean | Team$notificationsArgs<ExtArgs>;
         teamMembers?: boolean | Team$teamMembersArgs<ExtArgs>;
         _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>;
@@ -7729,6 +7825,7 @@ export namespace Prisma {
         name: "Team";
         objects: {
             logo: Prisma.$LogoPayload<ExtArgs> | null;
+            stats: Prisma.$TeamStatPayload<ExtArgs> | null;
             notifications: Prisma.$NotificationPayload<ExtArgs>[];
             teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[];
         };
@@ -8298,6 +8395,19 @@ export namespace Prisma {
             ExtArgs,
             GlobalOmitOptions
         >;
+        stats<T extends Team$statsArgs<ExtArgs> = {}>(
+            args?: Subset<T, Team$statsArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
         notifications<T extends Team$notificationsArgs<ExtArgs> = {}>(
             args?: Subset<T, Team$notificationsArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
@@ -8802,6 +8912,27 @@ export namespace Prisma {
     };
 
     /**
+     * Team.stats
+     */
+    export type Team$statsArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        where?: TeamStatWhereInput;
+    };
+
+    /**
      * Team.notifications
      */
     export type Team$notificationsArgs<
@@ -8875,6 +9006,1531 @@ export namespace Prisma {
          * Choose, which related nodes to fetch as well
          */
         include?: TeamInclude<ExtArgs> | null;
+    };
+
+    /**
+     * Model TeamStat
+     */
+
+    export type AggregateTeamStat = {
+        _count: TeamStatCountAggregateOutputType | null;
+        _avg: TeamStatAvgAggregateOutputType | null;
+        _sum: TeamStatSumAggregateOutputType | null;
+        _min: TeamStatMinAggregateOutputType | null;
+        _max: TeamStatMaxAggregateOutputType | null;
+    };
+
+    export type TeamStatAvgAggregateOutputType = {
+        totalDocuments: number | null;
+        processingDocuments: number | null;
+        activeDocuments: number | null;
+        archivedDocuments: number | null;
+        failedDocuments: number | null;
+        needsReviewDocuments: number | null;
+        highRiskDocuments: number | null;
+        mediumRiskDocuments: number | null;
+        lowRiskDocuments: number | null;
+        expiringSoonDocuments: number | null;
+    };
+
+    export type TeamStatSumAggregateOutputType = {
+        totalDocuments: number | null;
+        processingDocuments: number | null;
+        activeDocuments: number | null;
+        archivedDocuments: number | null;
+        failedDocuments: number | null;
+        needsReviewDocuments: number | null;
+        highRiskDocuments: number | null;
+        mediumRiskDocuments: number | null;
+        lowRiskDocuments: number | null;
+        expiringSoonDocuments: number | null;
+    };
+
+    export type TeamStatMinAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        totalDocuments: number | null;
+        processingDocuments: number | null;
+        activeDocuments: number | null;
+        archivedDocuments: number | null;
+        failedDocuments: number | null;
+        needsReviewDocuments: number | null;
+        highRiskDocuments: number | null;
+        mediumRiskDocuments: number | null;
+        lowRiskDocuments: number | null;
+        expiringSoonDocuments: number | null;
+        teamId: string | null;
+    };
+
+    export type TeamStatMaxAggregateOutputType = {
+        id: string | null;
+        createdAt: Date | null;
+        updatedAt: Date | null;
+        totalDocuments: number | null;
+        processingDocuments: number | null;
+        activeDocuments: number | null;
+        archivedDocuments: number | null;
+        failedDocuments: number | null;
+        needsReviewDocuments: number | null;
+        highRiskDocuments: number | null;
+        mediumRiskDocuments: number | null;
+        lowRiskDocuments: number | null;
+        expiringSoonDocuments: number | null;
+        teamId: string | null;
+    };
+
+    export type TeamStatCountAggregateOutputType = {
+        id: number;
+        createdAt: number;
+        updatedAt: number;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+        teamId: number;
+        _all: number;
+    };
+
+    export type TeamStatAvgAggregateInputType = {
+        totalDocuments?: true;
+        processingDocuments?: true;
+        activeDocuments?: true;
+        archivedDocuments?: true;
+        failedDocuments?: true;
+        needsReviewDocuments?: true;
+        highRiskDocuments?: true;
+        mediumRiskDocuments?: true;
+        lowRiskDocuments?: true;
+        expiringSoonDocuments?: true;
+    };
+
+    export type TeamStatSumAggregateInputType = {
+        totalDocuments?: true;
+        processingDocuments?: true;
+        activeDocuments?: true;
+        archivedDocuments?: true;
+        failedDocuments?: true;
+        needsReviewDocuments?: true;
+        highRiskDocuments?: true;
+        mediumRiskDocuments?: true;
+        lowRiskDocuments?: true;
+        expiringSoonDocuments?: true;
+    };
+
+    export type TeamStatMinAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        totalDocuments?: true;
+        processingDocuments?: true;
+        activeDocuments?: true;
+        archivedDocuments?: true;
+        failedDocuments?: true;
+        needsReviewDocuments?: true;
+        highRiskDocuments?: true;
+        mediumRiskDocuments?: true;
+        lowRiskDocuments?: true;
+        expiringSoonDocuments?: true;
+        teamId?: true;
+    };
+
+    export type TeamStatMaxAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        totalDocuments?: true;
+        processingDocuments?: true;
+        activeDocuments?: true;
+        archivedDocuments?: true;
+        failedDocuments?: true;
+        needsReviewDocuments?: true;
+        highRiskDocuments?: true;
+        mediumRiskDocuments?: true;
+        lowRiskDocuments?: true;
+        expiringSoonDocuments?: true;
+        teamId?: true;
+    };
+
+    export type TeamStatCountAggregateInputType = {
+        id?: true;
+        createdAt?: true;
+        updatedAt?: true;
+        totalDocuments?: true;
+        processingDocuments?: true;
+        activeDocuments?: true;
+        archivedDocuments?: true;
+        failedDocuments?: true;
+        needsReviewDocuments?: true;
+        highRiskDocuments?: true;
+        mediumRiskDocuments?: true;
+        lowRiskDocuments?: true;
+        expiringSoonDocuments?: true;
+        teamId?: true;
+        _all?: true;
+    };
+
+    export type TeamStatAggregateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which TeamStat to aggregate.
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of TeamStats to fetch.
+         */
+        orderBy?:
+            | TeamStatOrderByWithRelationInput
+            | TeamStatOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the start position
+         */
+        cursor?: TeamStatWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` TeamStats from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` TeamStats.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Count returned TeamStats
+         **/
+        _count?: true | TeamStatCountAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to average
+         **/
+        _avg?: TeamStatAvgAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to sum
+         **/
+        _sum?: TeamStatSumAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the minimum value
+         **/
+        _min?: TeamStatMinAggregateInputType;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+         *
+         * Select which fields to find the maximum value
+         **/
+        _max?: TeamStatMaxAggregateInputType;
+    };
+
+    export type GetTeamStatAggregateType<T extends TeamStatAggregateArgs> = {
+        [P in keyof T & keyof AggregateTeamStat]: P extends "_count" | "count"
+            ? T[P] extends true
+                ? number
+                : GetScalarType<T[P], AggregateTeamStat[P]>
+            : GetScalarType<T[P], AggregateTeamStat[P]>;
+    };
+
+    export type TeamStatGroupByArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: TeamStatWhereInput;
+        orderBy?:
+            | TeamStatOrderByWithAggregationInput
+            | TeamStatOrderByWithAggregationInput[];
+        by: TeamStatScalarFieldEnum[] | TeamStatScalarFieldEnum;
+        having?: TeamStatScalarWhereWithAggregatesInput;
+        take?: number;
+        skip?: number;
+        _count?: TeamStatCountAggregateInputType | true;
+        _avg?: TeamStatAvgAggregateInputType;
+        _sum?: TeamStatSumAggregateInputType;
+        _min?: TeamStatMinAggregateInputType;
+        _max?: TeamStatMaxAggregateInputType;
+    };
+
+    export type TeamStatGroupByOutputType = {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+        teamId: string;
+        _count: TeamStatCountAggregateOutputType | null;
+        _avg: TeamStatAvgAggregateOutputType | null;
+        _sum: TeamStatSumAggregateOutputType | null;
+        _min: TeamStatMinAggregateOutputType | null;
+        _max: TeamStatMaxAggregateOutputType | null;
+    };
+
+    type GetTeamStatGroupByPayload<T extends TeamStatGroupByArgs> =
+        Prisma.PrismaPromise<
+            Array<
+                PickEnumerable<TeamStatGroupByOutputType, T["by"]> & {
+                    [P in keyof T &
+                        keyof TeamStatGroupByOutputType]: P extends "_count"
+                        ? T[P] extends boolean
+                            ? number
+                            : GetScalarType<T[P], TeamStatGroupByOutputType[P]>
+                        : GetScalarType<T[P], TeamStatGroupByOutputType[P]>;
+                }
+            >
+        >;
+
+    export type TeamStatSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            totalDocuments?: boolean;
+            processingDocuments?: boolean;
+            activeDocuments?: boolean;
+            archivedDocuments?: boolean;
+            failedDocuments?: boolean;
+            needsReviewDocuments?: boolean;
+            highRiskDocuments?: boolean;
+            mediumRiskDocuments?: boolean;
+            lowRiskDocuments?: boolean;
+            expiringSoonDocuments?: boolean;
+            teamId?: boolean;
+            team?: boolean | TeamDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["teamStat"]
+    >;
+
+    export type TeamStatSelectCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            totalDocuments?: boolean;
+            processingDocuments?: boolean;
+            activeDocuments?: boolean;
+            archivedDocuments?: boolean;
+            failedDocuments?: boolean;
+            needsReviewDocuments?: boolean;
+            highRiskDocuments?: boolean;
+            mediumRiskDocuments?: boolean;
+            lowRiskDocuments?: boolean;
+            expiringSoonDocuments?: boolean;
+            teamId?: boolean;
+            team?: boolean | TeamDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["teamStat"]
+    >;
+
+    export type TeamStatSelectUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetSelect<
+        {
+            id?: boolean;
+            createdAt?: boolean;
+            updatedAt?: boolean;
+            totalDocuments?: boolean;
+            processingDocuments?: boolean;
+            activeDocuments?: boolean;
+            archivedDocuments?: boolean;
+            failedDocuments?: boolean;
+            needsReviewDocuments?: boolean;
+            highRiskDocuments?: boolean;
+            mediumRiskDocuments?: boolean;
+            lowRiskDocuments?: boolean;
+            expiringSoonDocuments?: boolean;
+            teamId?: boolean;
+            team?: boolean | TeamDefaultArgs<ExtArgs>;
+        },
+        ExtArgs["result"]["teamStat"]
+    >;
+
+    export type TeamStatSelectScalar = {
+        id?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        totalDocuments?: boolean;
+        processingDocuments?: boolean;
+        activeDocuments?: boolean;
+        archivedDocuments?: boolean;
+        failedDocuments?: boolean;
+        needsReviewDocuments?: boolean;
+        highRiskDocuments?: boolean;
+        mediumRiskDocuments?: boolean;
+        lowRiskDocuments?: boolean;
+        expiringSoonDocuments?: boolean;
+        teamId?: boolean;
+    };
+
+    export type TeamStatOmit<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = $Extensions.GetOmit<
+        | "id"
+        | "createdAt"
+        | "updatedAt"
+        | "totalDocuments"
+        | "processingDocuments"
+        | "activeDocuments"
+        | "archivedDocuments"
+        | "failedDocuments"
+        | "needsReviewDocuments"
+        | "highRiskDocuments"
+        | "mediumRiskDocuments"
+        | "lowRiskDocuments"
+        | "expiringSoonDocuments"
+        | "teamId",
+        ExtArgs["result"]["teamStat"]
+    >;
+    export type TeamStatInclude<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        team?: boolean | TeamDefaultArgs<ExtArgs>;
+    };
+    export type TeamStatIncludeCreateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        team?: boolean | TeamDefaultArgs<ExtArgs>;
+    };
+    export type TeamStatIncludeUpdateManyAndReturn<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        team?: boolean | TeamDefaultArgs<ExtArgs>;
+    };
+
+    export type $TeamStatPayload<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        name: "TeamStat";
+        objects: {
+            team: Prisma.$TeamPayload<ExtArgs>;
+        };
+        scalars: $Extensions.GetPayloadResult<
+            {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                totalDocuments: number;
+                /**
+                 * Documents by status
+                 */
+                processingDocuments: number;
+                activeDocuments: number;
+                archivedDocuments: number;
+                failedDocuments: number;
+                needsReviewDocuments: number;
+                /**
+                 * Risk-related metrics
+                 */
+                highRiskDocuments: number;
+                mediumRiskDocuments: number;
+                lowRiskDocuments: number;
+                /**
+                 * Documents expiring soon (e.g. next 7 days)
+                 */
+                expiringSoonDocuments: number;
+                teamId: string;
+            },
+            ExtArgs["result"]["teamStat"]
+        >;
+        composites: {};
+    };
+
+    type TeamStatGetPayload<
+        S extends boolean | null | undefined | TeamStatDefaultArgs,
+    > = $Result.GetResult<Prisma.$TeamStatPayload, S>;
+
+    type TeamStatCountArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = Omit<
+        TeamStatFindManyArgs,
+        "select" | "include" | "distinct" | "omit"
+    > & {
+        select?: TeamStatCountAggregateInputType | true;
+    };
+
+    export interface TeamStatDelegate<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > {
+        [K: symbol]: {
+            types: Prisma.TypeMap<ExtArgs>["model"]["TeamStat"];
+            meta: { name: "TeamStat" };
+        };
+        /**
+         * Find zero or one TeamStat that matches the filter.
+         * @param {TeamStatFindUniqueArgs} args - Arguments to find a TeamStat
+         * @example
+         * // Get one TeamStat
+         * const teamStat = await prisma.teamStat.findUnique({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUnique<T extends TeamStatFindUniqueArgs>(
+            args: SelectSubset<T, TeamStatFindUniqueArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findUnique",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find one TeamStat that matches the filter or throw an error with `error.code='P2025'`
+         * if no matches were found.
+         * @param {TeamStatFindUniqueOrThrowArgs} args - Arguments to find a TeamStat
+         * @example
+         * // Get one TeamStat
+         * const teamStat = await prisma.teamStat.findUniqueOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findUniqueOrThrow<T extends TeamStatFindUniqueOrThrowArgs>(
+            args: SelectSubset<T, TeamStatFindUniqueOrThrowArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first TeamStat that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatFindFirstArgs} args - Arguments to find a TeamStat
+         * @example
+         * // Get one TeamStat
+         * const teamStat = await prisma.teamStat.findFirst({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirst<T extends TeamStatFindFirstArgs>(
+            args?: SelectSubset<T, TeamStatFindFirstArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findFirst",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find the first TeamStat that matches the filter or
+         * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatFindFirstOrThrowArgs} args - Arguments to find a TeamStat
+         * @example
+         * // Get one TeamStat
+         * const teamStat = await prisma.teamStat.findFirstOrThrow({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         */
+        findFirstOrThrow<T extends TeamStatFindFirstOrThrowArgs>(
+            args?: SelectSubset<T, TeamStatFindFirstOrThrowArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findFirstOrThrow",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Find zero or more TeamStats that matches the filter.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatFindManyArgs} args - Arguments to filter and select certain fields only.
+         * @example
+         * // Get all TeamStats
+         * const teamStats = await prisma.teamStat.findMany()
+         *
+         * // Get first 10 TeamStats
+         * const teamStats = await prisma.teamStat.findMany({ take: 10 })
+         *
+         * // Only select the `id`
+         * const teamStatWithIdOnly = await prisma.teamStat.findMany({ select: { id: true } })
+         *
+         */
+        findMany<T extends TeamStatFindManyArgs>(
+            args?: SelectSubset<T, TeamStatFindManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "findMany",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create a TeamStat.
+         * @param {TeamStatCreateArgs} args - Arguments to create a TeamStat.
+         * @example
+         * // Create one TeamStat
+         * const TeamStat = await prisma.teamStat.create({
+         *   data: {
+         *     // ... data to create a TeamStat
+         *   }
+         * })
+         *
+         */
+        create<T extends TeamStatCreateArgs>(
+            args: SelectSubset<T, TeamStatCreateArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "create",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Create many TeamStats.
+         * @param {TeamStatCreateManyArgs} args - Arguments to create many TeamStats.
+         * @example
+         * // Create many TeamStats
+         * const teamStat = await prisma.teamStat.createMany({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         */
+        createMany<T extends TeamStatCreateManyArgs>(
+            args?: SelectSubset<T, TeamStatCreateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Create many TeamStats and returns the data saved in the database.
+         * @param {TeamStatCreateManyAndReturnArgs} args - Arguments to create many TeamStats.
+         * @example
+         * // Create many TeamStats
+         * const teamStat = await prisma.teamStat.createManyAndReturn({
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Create many TeamStats and only return the `id`
+         * const teamStatWithIdOnly = await prisma.teamStat.createManyAndReturn({
+         *   select: { id: true },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        createManyAndReturn<T extends TeamStatCreateManyAndReturnArgs>(
+            args?: SelectSubset<T, TeamStatCreateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "createManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Delete a TeamStat.
+         * @param {TeamStatDeleteArgs} args - Arguments to delete one TeamStat.
+         * @example
+         * // Delete one TeamStat
+         * const TeamStat = await prisma.teamStat.delete({
+         *   where: {
+         *     // ... filter to delete one TeamStat
+         *   }
+         * })
+         *
+         */
+        delete<T extends TeamStatDeleteArgs>(
+            args: SelectSubset<T, TeamStatDeleteArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "delete",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Update one TeamStat.
+         * @param {TeamStatUpdateArgs} args - Arguments to update one TeamStat.
+         * @example
+         * // Update one TeamStat
+         * const teamStat = await prisma.teamStat.update({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        update<T extends TeamStatUpdateArgs>(
+            args: SelectSubset<T, TeamStatUpdateArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "update",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Delete zero or more TeamStats.
+         * @param {TeamStatDeleteManyArgs} args - Arguments to filter TeamStats to delete.
+         * @example
+         * // Delete a few TeamStats
+         * const { count } = await prisma.teamStat.deleteMany({
+         *   where: {
+         *     // ... provide filter here
+         *   }
+         * })
+         *
+         */
+        deleteMany<T extends TeamStatDeleteManyArgs>(
+            args?: SelectSubset<T, TeamStatDeleteManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more TeamStats.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatUpdateManyArgs} args - Arguments to update one or more rows.
+         * @example
+         * // Update many TeamStats
+         * const teamStat = await prisma.teamStat.updateMany({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: {
+         *     // ... provide data here
+         *   }
+         * })
+         *
+         */
+        updateMany<T extends TeamStatUpdateManyArgs>(
+            args: SelectSubset<T, TeamStatUpdateManyArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<BatchPayload>;
+
+        /**
+         * Update zero or more TeamStats and returns the data updated in the database.
+         * @param {TeamStatUpdateManyAndReturnArgs} args - Arguments to update many TeamStats.
+         * @example
+         * // Update many TeamStats
+         * const teamStat = await prisma.teamStat.updateManyAndReturn({
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         *
+         * // Update zero or more TeamStats and only return the `id`
+         * const teamStatWithIdOnly = await prisma.teamStat.updateManyAndReturn({
+         *   select: { id: true },
+         *   where: {
+         *     // ... provide filter here
+         *   },
+         *   data: [
+         *     // ... provide data here
+         *   ]
+         * })
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         *
+         */
+        updateManyAndReturn<T extends TeamStatUpdateManyAndReturnArgs>(
+            args: SelectSubset<T, TeamStatUpdateManyAndReturnArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "updateManyAndReturn",
+                GlobalOmitOptions
+            >
+        >;
+
+        /**
+         * Create or update one TeamStat.
+         * @param {TeamStatUpsertArgs} args - Arguments to update or create a TeamStat.
+         * @example
+         * // Update or create a TeamStat
+         * const teamStat = await prisma.teamStat.upsert({
+         *   create: {
+         *     // ... data to create a TeamStat
+         *   },
+         *   update: {
+         *     // ... in case it already exists, update
+         *   },
+         *   where: {
+         *     // ... the filter for the TeamStat we want to update
+         *   }
+         * })
+         */
+        upsert<T extends TeamStatUpsertArgs>(
+            args: SelectSubset<T, TeamStatUpsertArgs<ExtArgs>>
+        ): Prisma__TeamStatClient<
+            $Result.GetResult<
+                Prisma.$TeamStatPayload<ExtArgs>,
+                T,
+                "upsert",
+                GlobalOmitOptions
+            >,
+            never,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+
+        /**
+         * Count the number of TeamStats.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatCountArgs} args - Arguments to filter TeamStats to count.
+         * @example
+         * // Count the number of TeamStats
+         * const count = await prisma.teamStat.count({
+         *   where: {
+         *     // ... the filter for the TeamStats we want to count
+         *   }
+         * })
+         **/
+        count<T extends TeamStatCountArgs>(
+            args?: Subset<T, TeamStatCountArgs>
+        ): Prisma.PrismaPromise<
+            T extends $Utils.Record<"select", any>
+                ? T["select"] extends true
+                    ? number
+                    : GetScalarType<
+                          T["select"],
+                          TeamStatCountAggregateOutputType
+                      >
+                : number
+        >;
+
+        /**
+         * Allows you to perform aggregations operations on a TeamStat.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+         * @example
+         * // Ordered by age ascending
+         * // Where email contains prisma.io
+         * // Limited to the 10 users
+         * const aggregations = await prisma.user.aggregate({
+         *   _avg: {
+         *     age: true,
+         *   },
+         *   where: {
+         *     email: {
+         *       contains: "prisma.io",
+         *     },
+         *   },
+         *   orderBy: {
+         *     age: "asc",
+         *   },
+         *   take: 10,
+         * })
+         **/
+        aggregate<T extends TeamStatAggregateArgs>(
+            args: Subset<T, TeamStatAggregateArgs>
+        ): Prisma.PrismaPromise<GetTeamStatAggregateType<T>>;
+
+        /**
+         * Group by TeamStat.
+         * Note, that providing `undefined` is treated as the value not being there.
+         * Read more here: https://pris.ly/d/null-undefined
+         * @param {TeamStatGroupByArgs} args - Group by arguments.
+         * @example
+         * // Group by city, order by createdAt, get count
+         * const result = await prisma.user.groupBy({
+         *   by: ['city', 'createdAt'],
+         *   orderBy: {
+         *     createdAt: true
+         *   },
+         *   _count: {
+         *     _all: true
+         *   },
+         * })
+         *
+         **/
+        groupBy<
+            T extends TeamStatGroupByArgs,
+            HasSelectOrTake extends Or<
+                Extends<"skip", Keys<T>>,
+                Extends<"take", Keys<T>>
+            >,
+            OrderByArg extends True extends HasSelectOrTake
+                ? { orderBy: TeamStatGroupByArgs["orderBy"] }
+                : { orderBy?: TeamStatGroupByArgs["orderBy"] },
+            OrderFields extends ExcludeUnderscoreKeys<
+                Keys<MaybeTupleToUnion<T["orderBy"]>>
+            >,
+            ByFields extends MaybeTupleToUnion<T["by"]>,
+            ByValid extends Has<ByFields, OrderFields>,
+            HavingFields extends GetHavingFields<T["having"]>,
+            HavingValid extends Has<ByFields, HavingFields>,
+            ByEmpty extends T["by"] extends never[] ? True : False,
+            InputErrors extends ByEmpty extends True
+                ? `Error: "by" must not be empty.`
+                : HavingValid extends False
+                  ? {
+                        [P in HavingFields]: P extends ByFields
+                            ? never
+                            : P extends string
+                              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+                              : [
+                                    Error,
+                                    "Field ",
+                                    P,
+                                    ` in "having" needs to be provided in "by"`,
+                                ];
+                    }[HavingFields]
+                  : "take" extends Keys<T>
+                    ? "orderBy" extends Keys<T>
+                        ? ByValid extends True
+                            ? {}
+                            : {
+                                  [P in OrderFields]: P extends ByFields
+                                      ? never
+                                      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                              }[OrderFields]
+                        : 'Error: If you provide "take", you also need to provide "orderBy"'
+                    : "skip" extends Keys<T>
+                      ? "orderBy" extends Keys<T>
+                          ? ByValid extends True
+                              ? {}
+                              : {
+                                    [P in OrderFields]: P extends ByFields
+                                        ? never
+                                        : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                                }[OrderFields]
+                          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+                      : ByValid extends True
+                        ? {}
+                        : {
+                              [P in OrderFields]: P extends ByFields
+                                  ? never
+                                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+                          }[OrderFields],
+        >(
+            args: SubsetIntersection<T, TeamStatGroupByArgs, OrderByArg> &
+                InputErrors
+        ): {} extends InputErrors
+            ? GetTeamStatGroupByPayload<T>
+            : Prisma.PrismaPromise<InputErrors>;
+        /**
+         * Fields of the TeamStat model
+         */
+        readonly fields: TeamStatFieldRefs;
+    }
+
+    /**
+     * The delegate class that acts as a "Promise-like" for TeamStat.
+     * Why is this prefixed with `Prisma__`?
+     * Because we want to prevent naming conflicts as mentioned in
+     * https://github.com/prisma/prisma-client-js/issues/707
+     */
+    export interface Prisma__TeamStatClient<
+        T,
+        Null = never,
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+        GlobalOmitOptions = {},
+    > extends Prisma.PrismaPromise<T> {
+        readonly [Symbol.toStringTag]: "PrismaPromise";
+        team<T extends TeamDefaultArgs<ExtArgs> = {}>(
+            args?: Subset<T, TeamDefaultArgs<ExtArgs>>
+        ): Prisma__TeamClient<
+            | $Result.GetResult<
+                  Prisma.$TeamPayload<ExtArgs>,
+                  T,
+                  "findUniqueOrThrow",
+                  GlobalOmitOptions
+              >
+            | Null,
+            Null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        /**
+         * Attaches callbacks for the resolution and/or rejection of the Promise.
+         * @param onfulfilled The callback to execute when the Promise is resolved.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of which ever callback is executed.
+         */
+        then<TResult1 = T, TResult2 = never>(
+            onfulfilled?:
+                | ((value: T) => TResult1 | PromiseLike<TResult1>)
+                | undefined
+                | null,
+            onrejected?:
+                | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<TResult1 | TResult2>;
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?:
+                | ((reason: any) => TResult | PromiseLike<TResult>)
+                | undefined
+                | null
+        ): $Utils.JsPromise<T | TResult>;
+        /**
+         * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+         * resolved value cannot be modified from the callback.
+         * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+         * @returns A Promise for the completion of the callback.
+         */
+        finally(
+            onfinally?: (() => void) | undefined | null
+        ): $Utils.JsPromise<T>;
+    }
+
+    /**
+     * Fields of the TeamStat model
+     */
+    interface TeamStatFieldRefs {
+        readonly id: FieldRef<"TeamStat", "String">;
+        readonly createdAt: FieldRef<"TeamStat", "DateTime">;
+        readonly updatedAt: FieldRef<"TeamStat", "DateTime">;
+        readonly totalDocuments: FieldRef<"TeamStat", "Int">;
+        readonly processingDocuments: FieldRef<"TeamStat", "Int">;
+        readonly activeDocuments: FieldRef<"TeamStat", "Int">;
+        readonly archivedDocuments: FieldRef<"TeamStat", "Int">;
+        readonly failedDocuments: FieldRef<"TeamStat", "Int">;
+        readonly needsReviewDocuments: FieldRef<"TeamStat", "Int">;
+        readonly highRiskDocuments: FieldRef<"TeamStat", "Int">;
+        readonly mediumRiskDocuments: FieldRef<"TeamStat", "Int">;
+        readonly lowRiskDocuments: FieldRef<"TeamStat", "Int">;
+        readonly expiringSoonDocuments: FieldRef<"TeamStat", "Int">;
+        readonly teamId: FieldRef<"TeamStat", "String">;
+    }
+
+    // Custom InputTypes
+    /**
+     * TeamStat findUnique
+     */
+    export type TeamStatFindUniqueArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter, which TeamStat to fetch.
+         */
+        where: TeamStatWhereUniqueInput;
+    };
+
+    /**
+     * TeamStat findUniqueOrThrow
+     */
+    export type TeamStatFindUniqueOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter, which TeamStat to fetch.
+         */
+        where: TeamStatWhereUniqueInput;
+    };
+
+    /**
+     * TeamStat findFirst
+     */
+    export type TeamStatFindFirstArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter, which TeamStat to fetch.
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of TeamStats to fetch.
+         */
+        orderBy?:
+            | TeamStatOrderByWithRelationInput
+            | TeamStatOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for TeamStats.
+         */
+        cursor?: TeamStatWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` TeamStats from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` TeamStats.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of TeamStats.
+         */
+        distinct?: TeamStatScalarFieldEnum | TeamStatScalarFieldEnum[];
+    };
+
+    /**
+     * TeamStat findFirstOrThrow
+     */
+    export type TeamStatFindFirstOrThrowArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter, which TeamStat to fetch.
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of TeamStats to fetch.
+         */
+        orderBy?:
+            | TeamStatOrderByWithRelationInput
+            | TeamStatOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for searching for TeamStats.
+         */
+        cursor?: TeamStatWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` TeamStats from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` TeamStats.
+         */
+        skip?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+         *
+         * Filter by unique combinations of TeamStats.
+         */
+        distinct?: TeamStatScalarFieldEnum | TeamStatScalarFieldEnum[];
+    };
+
+    /**
+     * TeamStat findMany
+     */
+    export type TeamStatFindManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter, which TeamStats to fetch.
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+         *
+         * Determine the order of TeamStats to fetch.
+         */
+        orderBy?:
+            | TeamStatOrderByWithRelationInput
+            | TeamStatOrderByWithRelationInput[];
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+         *
+         * Sets the position for listing TeamStats.
+         */
+        cursor?: TeamStatWhereUniqueInput;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Take `±n` TeamStats from the position of the cursor.
+         */
+        take?: number;
+        /**
+         * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+         *
+         * Skip the first `n` TeamStats.
+         */
+        skip?: number;
+        distinct?: TeamStatScalarFieldEnum | TeamStatScalarFieldEnum[];
+    };
+
+    /**
+     * TeamStat create
+     */
+    export type TeamStatCreateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * The data needed to create a TeamStat.
+         */
+        data: XOR<TeamStatCreateInput, TeamStatUncheckedCreateInput>;
+    };
+
+    /**
+     * TeamStat createMany
+     */
+    export type TeamStatCreateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to create many TeamStats.
+         */
+        data: TeamStatCreateManyInput | TeamStatCreateManyInput[];
+        skipDuplicates?: boolean;
+    };
+
+    /**
+     * TeamStat createManyAndReturn
+     */
+    export type TeamStatCreateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelectCreateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * The data used to create many TeamStats.
+         */
+        data: TeamStatCreateManyInput | TeamStatCreateManyInput[];
+        skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatIncludeCreateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * TeamStat update
+     */
+    export type TeamStatUpdateArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * The data needed to update a TeamStat.
+         */
+        data: XOR<TeamStatUpdateInput, TeamStatUncheckedUpdateInput>;
+        /**
+         * Choose, which TeamStat to update.
+         */
+        where: TeamStatWhereUniqueInput;
+    };
+
+    /**
+     * TeamStat updateMany
+     */
+    export type TeamStatUpdateManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * The data used to update TeamStats.
+         */
+        data: XOR<
+            TeamStatUpdateManyMutationInput,
+            TeamStatUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which TeamStats to update
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * Limit how many TeamStats to update.
+         */
+        limit?: number;
+    };
+
+    /**
+     * TeamStat updateManyAndReturn
+     */
+    export type TeamStatUpdateManyAndReturnArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelectUpdateManyAndReturn<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * The data used to update TeamStats.
+         */
+        data: XOR<
+            TeamStatUpdateManyMutationInput,
+            TeamStatUncheckedUpdateManyInput
+        >;
+        /**
+         * Filter which TeamStats to update
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * Limit how many TeamStats to update.
+         */
+        limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatIncludeUpdateManyAndReturn<ExtArgs> | null;
+    };
+
+    /**
+     * TeamStat upsert
+     */
+    export type TeamStatUpsertArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * The filter to search for the TeamStat to update in case it exists.
+         */
+        where: TeamStatWhereUniqueInput;
+        /**
+         * In case the TeamStat found by the `where` argument doesn't exist, create a new TeamStat with this data.
+         */
+        create: XOR<TeamStatCreateInput, TeamStatUncheckedCreateInput>;
+        /**
+         * In case the TeamStat was found with the provided `where` argument, update it with this data.
+         */
+        update: XOR<TeamStatUpdateInput, TeamStatUncheckedUpdateInput>;
+    };
+
+    /**
+     * TeamStat delete
+     */
+    export type TeamStatDeleteArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
+        /**
+         * Filter which TeamStat to delete.
+         */
+        where: TeamStatWhereUniqueInput;
+    };
+
+    /**
+     * TeamStat deleteMany
+     */
+    export type TeamStatDeleteManyArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Filter which TeamStats to delete
+         */
+        where?: TeamStatWhereInput;
+        /**
+         * Limit how many TeamStats to delete.
+         */
+        limit?: number;
+    };
+
+    /**
+     * TeamStat without action
+     */
+    export type TeamStatDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the TeamStat
+         */
+        select?: TeamStatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the TeamStat
+         */
+        omit?: TeamStatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamStatInclude<ExtArgs> | null;
     };
 
     /**
@@ -13179,6 +14835,26 @@ export namespace Prisma {
     export type TeamScalarFieldEnum =
         (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum];
 
+    export const TeamStatScalarFieldEnum: {
+        id: "id";
+        createdAt: "createdAt";
+        updatedAt: "updatedAt";
+        totalDocuments: "totalDocuments";
+        processingDocuments: "processingDocuments";
+        activeDocuments: "activeDocuments";
+        archivedDocuments: "archivedDocuments";
+        failedDocuments: "failedDocuments";
+        needsReviewDocuments: "needsReviewDocuments";
+        highRiskDocuments: "highRiskDocuments";
+        mediumRiskDocuments: "mediumRiskDocuments";
+        lowRiskDocuments: "lowRiskDocuments";
+        expiringSoonDocuments: "expiringSoonDocuments";
+        teamId: "teamId";
+    };
+
+    export type TeamStatScalarFieldEnum =
+        (typeof TeamStatScalarFieldEnum)[keyof typeof TeamStatScalarFieldEnum];
+
     export const TeamMemberScalarFieldEnum: {
         id: "id";
         createdAt: "createdAt";
@@ -13334,6 +15010,22 @@ export namespace Prisma {
     >;
 
     /**
+     * Reference to a field of type 'Int'
+     */
+    export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "Int"
+    >;
+
+    /**
+     * Reference to a field of type 'Int[]'
+     */
+    export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "Int[]"
+    >;
+
+    /**
      * Reference to a field of type 'TeamMemberRole'
      */
     export type EnumTeamMemberRoleFieldRefInput<$PrismaModel> =
@@ -13356,22 +15048,6 @@ export namespace Prisma {
      */
     export type ListEnumNotificationTypesFieldRefInput<$PrismaModel> =
         FieldRefInputType<$PrismaModel, "NotificationTypes[]">;
-
-    /**
-     * Reference to a field of type 'Int'
-     */
-    export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
-        $PrismaModel,
-        "Int"
-    >;
-
-    /**
-     * Reference to a field of type 'Int[]'
-     */
-    export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<
-        $PrismaModel,
-        "Int[]"
-    >;
 
     /**
      * Deep Input Types
@@ -13773,6 +15449,10 @@ export namespace Prisma {
         updatedAt?: DateTimeFilter<"Team"> | Date | string;
         name?: StringFilter<"Team"> | string;
         logo?: XOR<LogoNullableScalarRelationFilter, LogoWhereInput> | null;
+        stats?: XOR<
+            TeamStatNullableScalarRelationFilter,
+            TeamStatWhereInput
+        > | null;
         notifications?: NotificationListRelationFilter;
         teamMembers?: TeamMemberListRelationFilter;
     };
@@ -13783,6 +15463,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         name?: SortOrder;
         logo?: LogoOrderByWithRelationInput;
+        stats?: TeamStatOrderByWithRelationInput;
         notifications?: NotificationOrderByRelationAggregateInput;
         teamMembers?: TeamMemberOrderByRelationAggregateInput;
     };
@@ -13797,6 +15478,10 @@ export namespace Prisma {
             createdAt?: DateTimeFilter<"Team"> | Date | string;
             updatedAt?: DateTimeFilter<"Team"> | Date | string;
             logo?: XOR<LogoNullableScalarRelationFilter, LogoWhereInput> | null;
+            stats?: XOR<
+                TeamStatNullableScalarRelationFilter,
+                TeamStatWhereInput
+            > | null;
             notifications?: NotificationListRelationFilter;
             teamMembers?: TeamMemberListRelationFilter;
         },
@@ -13825,6 +15510,115 @@ export namespace Prisma {
         createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string;
         updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string;
         name?: StringWithAggregatesFilter<"Team"> | string;
+    };
+
+    export type TeamStatWhereInput = {
+        AND?: TeamStatWhereInput | TeamStatWhereInput[];
+        OR?: TeamStatWhereInput[];
+        NOT?: TeamStatWhereInput | TeamStatWhereInput[];
+        id?: StringFilter<"TeamStat"> | string;
+        createdAt?: DateTimeFilter<"TeamStat"> | Date | string;
+        updatedAt?: DateTimeFilter<"TeamStat"> | Date | string;
+        totalDocuments?: IntFilter<"TeamStat"> | number;
+        processingDocuments?: IntFilter<"TeamStat"> | number;
+        activeDocuments?: IntFilter<"TeamStat"> | number;
+        archivedDocuments?: IntFilter<"TeamStat"> | number;
+        failedDocuments?: IntFilter<"TeamStat"> | number;
+        needsReviewDocuments?: IntFilter<"TeamStat"> | number;
+        highRiskDocuments?: IntFilter<"TeamStat"> | number;
+        mediumRiskDocuments?: IntFilter<"TeamStat"> | number;
+        lowRiskDocuments?: IntFilter<"TeamStat"> | number;
+        expiringSoonDocuments?: IntFilter<"TeamStat"> | number;
+        teamId?: StringFilter<"TeamStat"> | string;
+        team?: XOR<TeamScalarRelationFilter, TeamWhereInput>;
+    };
+
+    export type TeamStatOrderByWithRelationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+        teamId?: SortOrder;
+        team?: TeamOrderByWithRelationInput;
+    };
+
+    export type TeamStatWhereUniqueInput = Prisma.AtLeast<
+        {
+            id?: string;
+            teamId?: string;
+            AND?: TeamStatWhereInput | TeamStatWhereInput[];
+            OR?: TeamStatWhereInput[];
+            NOT?: TeamStatWhereInput | TeamStatWhereInput[];
+            createdAt?: DateTimeFilter<"TeamStat"> | Date | string;
+            updatedAt?: DateTimeFilter<"TeamStat"> | Date | string;
+            totalDocuments?: IntFilter<"TeamStat"> | number;
+            processingDocuments?: IntFilter<"TeamStat"> | number;
+            activeDocuments?: IntFilter<"TeamStat"> | number;
+            archivedDocuments?: IntFilter<"TeamStat"> | number;
+            failedDocuments?: IntFilter<"TeamStat"> | number;
+            needsReviewDocuments?: IntFilter<"TeamStat"> | number;
+            highRiskDocuments?: IntFilter<"TeamStat"> | number;
+            mediumRiskDocuments?: IntFilter<"TeamStat"> | number;
+            lowRiskDocuments?: IntFilter<"TeamStat"> | number;
+            expiringSoonDocuments?: IntFilter<"TeamStat"> | number;
+            team?: XOR<TeamScalarRelationFilter, TeamWhereInput>;
+        },
+        "id" | "teamId"
+    >;
+
+    export type TeamStatOrderByWithAggregationInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+        teamId?: SortOrder;
+        _count?: TeamStatCountOrderByAggregateInput;
+        _avg?: TeamStatAvgOrderByAggregateInput;
+        _max?: TeamStatMaxOrderByAggregateInput;
+        _min?: TeamStatMinOrderByAggregateInput;
+        _sum?: TeamStatSumOrderByAggregateInput;
+    };
+
+    export type TeamStatScalarWhereWithAggregatesInput = {
+        AND?:
+            | TeamStatScalarWhereWithAggregatesInput
+            | TeamStatScalarWhereWithAggregatesInput[];
+        OR?: TeamStatScalarWhereWithAggregatesInput[];
+        NOT?:
+            | TeamStatScalarWhereWithAggregatesInput
+            | TeamStatScalarWhereWithAggregatesInput[];
+        id?: StringWithAggregatesFilter<"TeamStat"> | string;
+        createdAt?: DateTimeWithAggregatesFilter<"TeamStat"> | Date | string;
+        updatedAt?: DateTimeWithAggregatesFilter<"TeamStat"> | Date | string;
+        totalDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        processingDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        activeDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        archivedDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        failedDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        needsReviewDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        highRiskDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        mediumRiskDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        lowRiskDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        expiringSoonDocuments?: IntWithAggregatesFilter<"TeamStat"> | number;
+        teamId?: StringWithAggregatesFilter<"TeamStat"> | string;
     };
 
     export type TeamMemberWhereInput = {
@@ -14471,6 +16265,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
     };
@@ -14481,6 +16276,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
     };
@@ -14491,6 +16287,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
     };
@@ -14501,6 +16298,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
     };
@@ -14524,6 +16322,124 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type TeamStatCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+        team: TeamCreateNestedOneWithoutStatsInput;
+    };
+
+    export type TeamStatUncheckedCreateInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+        teamId: string;
+    };
+
+    export type TeamStatUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+        team?: TeamUpdateOneRequiredWithoutStatsNestedInput;
+    };
+
+    export type TeamStatUncheckedUpdateInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+        teamId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type TeamStatCreateManyInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+        teamId: string;
+    };
+
+    export type TeamStatUpdateManyMutationInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+    };
+
+    export type TeamStatUncheckedUpdateManyInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+        teamId?: StringFieldUpdateOperationsInput | string;
     };
 
     export type TeamMemberCreateInput = {
@@ -15152,6 +17068,11 @@ export namespace Prisma {
         isNot?: LogoWhereInput | null;
     };
 
+    export type TeamStatNullableScalarRelationFilter = {
+        is?: TeamStatWhereInput | null;
+        isNot?: TeamStatWhereInput | null;
+    };
+
     export type TeamCountOrderByAggregateInput = {
         id?: SortOrder;
         createdAt?: SortOrder;
@@ -15173,6 +17094,115 @@ export namespace Prisma {
         name?: SortOrder;
     };
 
+    export type IntFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel>;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntFilter<$PrismaModel> | number;
+    };
+
+    export type TeamScalarRelationFilter = {
+        is?: TeamWhereInput;
+        isNot?: TeamWhereInput;
+    };
+
+    export type TeamStatCountOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+        teamId?: SortOrder;
+    };
+
+    export type TeamStatAvgOrderByAggregateInput = {
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+    };
+
+    export type TeamStatMaxOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+        teamId?: SortOrder;
+    };
+
+    export type TeamStatMinOrderByAggregateInput = {
+        id?: SortOrder;
+        createdAt?: SortOrder;
+        updatedAt?: SortOrder;
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+        teamId?: SortOrder;
+    };
+
+    export type TeamStatSumOrderByAggregateInput = {
+        totalDocuments?: SortOrder;
+        processingDocuments?: SortOrder;
+        activeDocuments?: SortOrder;
+        archivedDocuments?: SortOrder;
+        failedDocuments?: SortOrder;
+        needsReviewDocuments?: SortOrder;
+        highRiskDocuments?: SortOrder;
+        mediumRiskDocuments?: SortOrder;
+        lowRiskDocuments?: SortOrder;
+        expiringSoonDocuments?: SortOrder;
+    };
+
+    export type IntWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel>;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntWithAggregatesFilter<$PrismaModel> | number;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _avg?: NestedFloatFilter<$PrismaModel>;
+        _sum?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedIntFilter<$PrismaModel>;
+        _max?: NestedIntFilter<$PrismaModel>;
+    };
+
     export type EnumTeamMemberRoleFilter<$PrismaModel = never> = {
         equals?:
             | $Enums.TeamMemberRole
@@ -15186,11 +17216,6 @@ export namespace Prisma {
         not?:
             | NestedEnumTeamMemberRoleFilter<$PrismaModel>
             | $Enums.TeamMemberRole;
-    };
-
-    export type TeamScalarRelationFilter = {
-        is?: TeamWhereInput;
-        isNot?: TeamWhereInput;
     };
 
     export type TeamMemberUserIdTeamIdCompoundUniqueInput = {
@@ -15920,6 +17945,15 @@ export namespace Prisma {
         connect?: LogoWhereUniqueInput;
     };
 
+    export type TeamStatCreateNestedOneWithoutTeamInput = {
+        create?: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+        connectOrCreate?: TeamStatCreateOrConnectWithoutTeamInput;
+        connect?: TeamStatWhereUniqueInput;
+    };
+
     export type NotificationCreateNestedManyWithoutTeamInput = {
         create?:
             | XOR<
@@ -15957,6 +17991,15 @@ export namespace Prisma {
         >;
         connectOrCreate?: LogoCreateOrConnectWithoutTeamInput;
         connect?: LogoWhereUniqueInput;
+    };
+
+    export type TeamStatUncheckedCreateNestedOneWithoutTeamInput = {
+        create?: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+        connectOrCreate?: TeamStatCreateOrConnectWithoutTeamInput;
+        connect?: TeamStatWhereUniqueInput;
     };
 
     export type NotificationUncheckedCreateNestedManyWithoutTeamInput = {
@@ -16005,6 +18048,25 @@ export namespace Prisma {
                 LogoUpdateWithoutTeamInput
             >,
             LogoUncheckedUpdateWithoutTeamInput
+        >;
+    };
+
+    export type TeamStatUpdateOneWithoutTeamNestedInput = {
+        create?: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+        connectOrCreate?: TeamStatCreateOrConnectWithoutTeamInput;
+        upsert?: TeamStatUpsertWithoutTeamInput;
+        disconnect?: TeamStatWhereInput | boolean;
+        delete?: TeamStatWhereInput | boolean;
+        connect?: TeamStatWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                TeamStatUpdateToOneWithWhereWithoutTeamInput,
+                TeamStatUpdateWithoutTeamInput
+            >,
+            TeamStatUncheckedUpdateWithoutTeamInput
         >;
     };
 
@@ -16087,6 +18149,25 @@ export namespace Prisma {
         >;
     };
 
+    export type TeamStatUncheckedUpdateOneWithoutTeamNestedInput = {
+        create?: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+        connectOrCreate?: TeamStatCreateOrConnectWithoutTeamInput;
+        upsert?: TeamStatUpsertWithoutTeamInput;
+        disconnect?: TeamStatWhereInput | boolean;
+        delete?: TeamStatWhereInput | boolean;
+        connect?: TeamStatWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                TeamStatUpdateToOneWithWhereWithoutTeamInput,
+                TeamStatUpdateWithoutTeamInput
+            >,
+            TeamStatUncheckedUpdateWithoutTeamInput
+        >;
+    };
+
     export type NotificationUncheckedUpdateManyWithoutTeamNestedInput = {
         create?:
             | XOR<
@@ -16145,6 +18226,40 @@ export namespace Prisma {
             | TeamMemberUpdateManyWithWhereWithoutTeamInput
             | TeamMemberUpdateManyWithWhereWithoutTeamInput[];
         deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[];
+    };
+
+    export type TeamCreateNestedOneWithoutStatsInput = {
+        create?: XOR<
+            TeamCreateWithoutStatsInput,
+            TeamUncheckedCreateWithoutStatsInput
+        >;
+        connectOrCreate?: TeamCreateOrConnectWithoutStatsInput;
+        connect?: TeamWhereUniqueInput;
+    };
+
+    export type IntFieldUpdateOperationsInput = {
+        set?: number;
+        increment?: number;
+        decrement?: number;
+        multiply?: number;
+        divide?: number;
+    };
+
+    export type TeamUpdateOneRequiredWithoutStatsNestedInput = {
+        create?: XOR<
+            TeamCreateWithoutStatsInput,
+            TeamUncheckedCreateWithoutStatsInput
+        >;
+        connectOrCreate?: TeamCreateOrConnectWithoutStatsInput;
+        upsert?: TeamUpsertWithoutStatsInput;
+        connect?: TeamWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                TeamUpdateToOneWithWhereWithoutStatsInput,
+                TeamUpdateWithoutStatsInput
+            >,
+            TeamUncheckedUpdateWithoutStatsInput
+        >;
     };
 
     export type UserCreateNestedOneWithoutTeamMembersInput = {
@@ -16461,6 +18576,22 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedBoolFilter<$PrismaModel>;
         _max?: NestedBoolFilter<$PrismaModel>;
+    };
+
+    export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel>;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel>;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntWithAggregatesFilter<$PrismaModel> | number;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _avg?: NestedFloatFilter<$PrismaModel>;
+        _sum?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedIntFilter<$PrismaModel>;
+        _max?: NestedIntFilter<$PrismaModel>;
     };
 
     export type NestedEnumTeamMemberRoleFilter<$PrismaModel = never> = {
@@ -17302,6 +19433,46 @@ export namespace Prisma {
         >;
     };
 
+    export type TeamStatCreateWithoutTeamInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+    };
+
+    export type TeamStatUncheckedCreateWithoutTeamInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        totalDocuments: number;
+        processingDocuments: number;
+        activeDocuments: number;
+        archivedDocuments: number;
+        failedDocuments: number;
+        needsReviewDocuments: number;
+        highRiskDocuments: number;
+        mediumRiskDocuments: number;
+        lowRiskDocuments: number;
+        expiringSoonDocuments: number;
+    };
+
+    export type TeamStatCreateOrConnectWithoutTeamInput = {
+        where: TeamStatWhereUniqueInput;
+        create: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+    };
+
     export type NotificationCreateWithoutTeamInput = {
         id?: string;
         createdAt?: Date | string;
@@ -17416,6 +19587,58 @@ export namespace Prisma {
         height?: FloatFieldUpdateOperationsInput | number;
     };
 
+    export type TeamStatUpsertWithoutTeamInput = {
+        update: XOR<
+            TeamStatUpdateWithoutTeamInput,
+            TeamStatUncheckedUpdateWithoutTeamInput
+        >;
+        create: XOR<
+            TeamStatCreateWithoutTeamInput,
+            TeamStatUncheckedCreateWithoutTeamInput
+        >;
+        where?: TeamStatWhereInput;
+    };
+
+    export type TeamStatUpdateToOneWithWhereWithoutTeamInput = {
+        where?: TeamStatWhereInput;
+        data: XOR<
+            TeamStatUpdateWithoutTeamInput,
+            TeamStatUncheckedUpdateWithoutTeamInput
+        >;
+    };
+
+    export type TeamStatUpdateWithoutTeamInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+    };
+
+    export type TeamStatUncheckedUpdateWithoutTeamInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        totalDocuments?: IntFieldUpdateOperationsInput | number;
+        processingDocuments?: IntFieldUpdateOperationsInput | number;
+        activeDocuments?: IntFieldUpdateOperationsInput | number;
+        archivedDocuments?: IntFieldUpdateOperationsInput | number;
+        failedDocuments?: IntFieldUpdateOperationsInput | number;
+        needsReviewDocuments?: IntFieldUpdateOperationsInput | number;
+        highRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        mediumRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        lowRiskDocuments?: IntFieldUpdateOperationsInput | number;
+        expiringSoonDocuments?: IntFieldUpdateOperationsInput | number;
+    };
+
     export type NotificationUpsertWithWhereUniqueWithoutTeamInput = {
         where: NotificationWhereUniqueInput;
         update: XOR<
@@ -17472,6 +19695,74 @@ export namespace Prisma {
         >;
     };
 
+    export type TeamCreateWithoutStatsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        logo?: LogoCreateNestedOneWithoutTeamInput;
+        notifications?: NotificationCreateNestedManyWithoutTeamInput;
+        teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+    };
+
+    export type TeamUncheckedCreateWithoutStatsInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
+        notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
+        teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+    };
+
+    export type TeamCreateOrConnectWithoutStatsInput = {
+        where: TeamWhereUniqueInput;
+        create: XOR<
+            TeamCreateWithoutStatsInput,
+            TeamUncheckedCreateWithoutStatsInput
+        >;
+    };
+
+    export type TeamUpsertWithoutStatsInput = {
+        update: XOR<
+            TeamUpdateWithoutStatsInput,
+            TeamUncheckedUpdateWithoutStatsInput
+        >;
+        create: XOR<
+            TeamCreateWithoutStatsInput,
+            TeamUncheckedCreateWithoutStatsInput
+        >;
+        where?: TeamWhereInput;
+    };
+
+    export type TeamUpdateToOneWithWhereWithoutStatsInput = {
+        where?: TeamWhereInput;
+        data: XOR<
+            TeamUpdateWithoutStatsInput,
+            TeamUncheckedUpdateWithoutStatsInput
+        >;
+    };
+
+    export type TeamUpdateWithoutStatsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        logo?: LogoUpdateOneWithoutTeamNestedInput;
+        notifications?: NotificationUpdateManyWithoutTeamNestedInput;
+        teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+    };
+
+    export type TeamUncheckedUpdateWithoutStatsInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
+        notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
+        teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
+    };
+
     export type UserCreateWithoutTeamMembersInput = {
         id?: string;
         createdAt?: Date | string;
@@ -17518,6 +19809,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
     };
 
@@ -17527,6 +19819,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
     };
 
@@ -17620,6 +19913,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
     };
 
@@ -17629,6 +19923,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
     };
 
@@ -17637,6 +19932,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
     };
@@ -17646,6 +19942,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
     };
@@ -17683,6 +19980,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
     };
@@ -17692,6 +19990,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
     };
@@ -17742,6 +20041,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatCreateNestedOneWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
     };
 
@@ -17751,6 +20051,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         name: string;
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
     };
 
@@ -17844,6 +20145,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
     };
 
@@ -17853,6 +20155,7 @@ export namespace Prisma {
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
     };
 

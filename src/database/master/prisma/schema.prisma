@@ -106,10 +106,39 @@ model Team {
   name String @unique
 
   logo          Logo?
+  stats         TeamStat?
   notifications Notification[]
   teamMembers   TeamMember[]
 
   @@map("teams")
+}
+
+model TeamStat {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  totalDocuments Int @map("total_documents")
+
+  /// Documents by status
+  processingDocuments  Int @map("processing_documents")
+  activeDocuments      Int @map("active_documents")
+  archivedDocuments    Int @map("archived_documents")
+  failedDocuments      Int @map("failed_documents")
+  needsReviewDocuments Int @map("needs_review_documents")
+
+  /// Risk-related metrics
+  highRiskDocuments   Int @map("high_risk_documents")
+  mediumRiskDocuments Int @map("medium_risk_documents")
+  lowRiskDocuments    Int @map("low_risk_documents")
+
+  /// Documents expiring soon (e.g. next 7 days)
+  expiringSoonDocuments Int @map("expiring_soon_documents")
+
+  teamId String @unique @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("team_stats")
 }
 
 enum TeamMemberRole {

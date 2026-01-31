@@ -3,13 +3,13 @@ import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { UserService } from "../user/user.service.js";
-import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
+import { BadRequestError, InternalServerError } from "@/lib/errors/errors.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
@@ -21,6 +21,10 @@ import {
     dropTenantDatabase,
     migrateTenantDatabase,
 } from "@/database/infra/tenant.js";
+import {
+    defaultTeamStatSelector,
+    TeamStatRepository,
+} from "@/database/master/repositories/team-stat/team-stat.repository.js";
 import {
     Logo,
     NotificationTypes,
@@ -72,9 +76,39 @@ export const createTeamService = (
     prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger,
     notificationRepository: NotificationRepository,
+    teamStatRepository: TeamStatRepository,
     userRepository: UserRepository,
     applicationService: ApplicationService
 ): TeamService => {
+    const getTeam = async (
+        teamId: string
+    ): Promise<FetchTeamResponse["data"]["team"]> => {
+        const [team, teamStat] = await Promise.all([
+            teamRepository.findUniqueOrFail({
+                where: {
+                    id: teamId,
+                },
+                select: defaultTeamSelector,
+            }),
+            teamStatRepository.findUniqueOrFail({
+                where: {
+                    teamId,
+                },
+            }),
+        ]);
+
+        if (!teamStat) {
+            throw new InternalServerError(
+                "Team doesn't have statistic, pls contact tech support"
+            );
+        }
+
+        return {
+            ...team,
+            stats: teamStat,
+        };
+    };
+
     const checkTeamMembersRoles = async (teamMembersIds: string[]) => {
         const futureTeamMembers = await userRepository.findMany({
             where: {
@@ -224,12 +258,7 @@ export const createTeamService = (
 
     return {
         getTeam: async ({ params }) => {
-            const team = await teamRepository.findUniqueOrFail({
-                where: {
-                    id: params.teamId,
-                },
-                select: defaultTeamSelector,
-            });
+            const team = await getTeam(params.teamId);
 
             return {
                 message: "Team fetched successfully.",
@@ -238,13 +267,9 @@ export const createTeamService = (
         },
 
         deleteTeam: async ({ params }) => {
-            await teamRepository.findFirstOrFail({
-                where: {
-                    id: params.teamId,
-                },
-            });
+            const team = await getTeam(params.teamId);
 
-            const team = await prisma.master.$transaction(async (tx) => {
+            await prisma.master.$transaction(async (tx) => {
                 const team = await tx.team.delete({
                     where: {
                         id: params.teamId,
@@ -262,8 +287,6 @@ export const createTeamService = (
                         teamName: team.name,
                     })),
                 });
-
-                return team;
             });
 
             try {
@@ -294,6 +317,9 @@ export const createTeamService = (
                     some: {
                         userId: initiator.id,
                     },
+                },
+                stats: {
+                    isNot: null,
                 },
                 ...(query.search && {
                     OR: [
@@ -349,7 +375,12 @@ export const createTeamService = (
                                 createdAt: PrismaMaster.SortOrder.desc,
                             }),
                     },
-                    select: defaultTeamSelector,
+                    select: {
+                        ...defaultTeamSelector,
+                        stats: {
+                            select: defaultTeamStatSelector,
+                        },
+                    },
                 }),
                 teamRepository.count({
                     where,
@@ -363,7 +394,13 @@ export const createTeamService = (
             return {
                 message: "Teams fetched successfully.",
                 data: {
-                    teams,
+                    teams: teams.filter(
+                        (
+                            team
+                        ): team is typeof team & {
+                            stats: NonNullable<typeof team.stats>;
+                        } => team.stats !== null
+                    ),
                     pagination: {
                         page: query.page,
                         perPage: query.perPage,
@@ -454,7 +491,7 @@ export const createTeamService = (
                         })
                 );
 
-                const team = await teamRepository.create({
+                const createdTeam = await teamRepository.create({
                     data: {
                         id: teamId,
                         name: body.name,
@@ -479,9 +516,25 @@ export const createTeamService = (
                                 },
                             },
                         }),
+                        stats: {
+                            create: {
+                                totalDocuments: 0,
+                                processingDocuments: 0,
+                                activeDocuments: 0,
+                                archivedDocuments: 0,
+                                failedDocuments: 0,
+                                needsReviewDocuments: 0,
+                                highRiskDocuments: 0,
+                                mediumRiskDocuments: 0,
+                                lowRiskDocuments: 0,
+                                expiringSoonDocuments: 0,
+                            },
+                        },
                     },
                     select: defaultTeamSelector,
                 });
+
+                const team = await getTeam(createdTeam.id);
 
                 if (body.teamMembers) {
                     await checkTeamMembersRoles(teamMembersIds);
@@ -597,7 +650,7 @@ export const createTeamService = (
                     });
             }
 
-            const team = await prisma.master.$transaction(async (tx) => {
+            await prisma.master.$transaction(async (tx) => {
                 const team = await tx.team.update({
                     where: {
                         id: params.teamId,
@@ -678,6 +731,8 @@ export const createTeamService = (
                     ],
                 })
             );
+
+            const team = await getTeam(params.teamId);
 
             return {
                 message: "Team updated successfully.",

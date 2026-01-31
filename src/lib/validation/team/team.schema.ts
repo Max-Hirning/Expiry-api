@@ -12,6 +12,22 @@ const defaultTeamSchema = z.object({
     updatedAt: z.date(),
     name: z.string(),
     logo: defaultLogoSchema.nullable(),
+    stats: z.object({
+        id: z.uuid(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+        totalDocuments: z.int(),
+        processingDocuments: z.int(),
+        activeDocuments: z.int(),
+        archivedDocuments: z.int(),
+        failedDocuments: z.int(),
+        needsReviewDocuments: z.int(),
+        highRiskDocuments: z.int(),
+        mediumRiskDocuments: z.int(),
+        lowRiskDocuments: z.int(),
+        expiringSoonDocuments: z.int(),
+        teamId: z.uuid(),
+    }),
 });
 
 const teamParamsSchema = z.object({
