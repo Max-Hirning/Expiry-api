@@ -1,7 +1,11 @@
 import { z } from "zod";
 import { Prisma } from "@/database/master/generated/edge.js";
 import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
-import { UserStatuses, UserRoles } from "@/database/master/generated/client.js";
+import {
+    UserStatuses,
+    UserRoles,
+    MfaTypes,
+} from "@/database/master/generated/client.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
@@ -15,6 +19,7 @@ const defaultUserSchema = z.object({
     fullName: z.string(),
     email: z.email(),
     phoneNumber: z.string(),
+    mfaType: z.enum(MfaTypes).nullable(),
     role: z.enum(UserRoles),
     status: z.enum(UserStatuses),
     avatar: defaultAvatarSchema.nullable(),
@@ -38,10 +43,16 @@ const updateUserBodySchema = defaultUserSchema
     .pick({
         fullName: true,
         email: true,
+        mfaType: true,
         phoneNumber: true,
-        notificationPreferences: true,
     })
     .extend({
+        notificationPreferences: defaultNotificationPreferenceSchema.pick({
+            teamNews: true,
+            documentNews: true,
+            inAppNotifications: true,
+            emailNotifications: true,
+        }),
         avatar: defaultAvatarSchema.pick({
             mimeType: true,
             width: true,

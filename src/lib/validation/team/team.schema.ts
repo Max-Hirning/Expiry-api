@@ -28,6 +28,13 @@ const defaultTeamSchema = z.object({
         expiringSoonDocuments: z.int(),
         teamId: z.uuid(),
     }),
+    currentMember: z.object({
+        id: z.uuid(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+        role: z.enum(TeamMemberRole),
+        userId: z.uuid(),
+    }),
 });
 
 const teamParamsSchema = z.object({

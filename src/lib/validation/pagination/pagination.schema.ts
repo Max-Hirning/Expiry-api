@@ -12,8 +12,8 @@ const paginationResponseSchema = z.object({
 type PaginationResponse = z.infer<typeof paginationResponseSchema>;
 
 const paginationQuerySchema = z.object({
-    page: z.int(),
-    perPage: z.int().max(25).default(10),
+    page: z.coerce.number().int(),
+    perPage: z.coerce.number().int().max(25).default(10),
 });
 
 type PaginationQueryInput = z.infer<typeof paginationQuerySchema>;

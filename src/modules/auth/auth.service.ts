@@ -8,10 +8,6 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
 import {
-    SignInBodyInput,
-    SignUpBodyInput,
-} from "@/lib/validation/auth/auth.schema.js";
-import {
     defaultUserSelector,
     UserRepository,
 } from "@/database/master/repositories/user/user.repository.js";
@@ -22,6 +18,11 @@ import {
     UserStatuses,
 } from "@/database/master/generated/index.js";
 import {
+    FetchSignUpResponse,
+    SignInBodyInput,
+    SignUpBodyInput,
+} from "@/lib/validation/auth/auth.schema.js";
+import {
     createTenantDatabase,
     dropTenantDatabase,
     migrateTenantDatabase,
@@ -29,7 +30,7 @@ import {
 
 export type AuthService = {
     signIn: (p: { body: SignInBodyInput }) => Promise<FetchUserResponse>;
-    signUp: (p: { body: SignUpBodyInput }) => Promise<FetchUserResponse>;
+    signUp: (p: { body: SignUpBodyInput }) => Promise<FetchSignUpResponse>;
 };
 
 export const createAuthService = (
@@ -155,6 +156,20 @@ export const createAuthService = (
                             data: {
                                 id: teamId,
                                 name: team.name,
+                                stats: {
+                                    create: {
+                                        totalDocuments: 0,
+                                        processingDocuments: 0,
+                                        activeDocuments: 0,
+                                        archivedDocuments: 0,
+                                        failedDocuments: 0,
+                                        needsReviewDocuments: 0,
+                                        highRiskDocuments: 0,
+                                        mediumRiskDocuments: 0,
+                                        lowRiskDocuments: 0,
+                                        expiringSoonDocuments: 0,
+                                    },
+                                },
                             },
                         });
 
@@ -234,7 +249,10 @@ export const createAuthService = (
 
                 return {
                     message: "User signed up successfully.",
-                    data: { user: userInfo },
+                    data: {
+                        user: userInfo,
+                        uploadUrl: avatarPayload?.uploadUrl || null,
+                    },
                 };
             } catch (error) {
                 try {

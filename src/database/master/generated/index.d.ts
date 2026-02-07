@@ -80,6 +80,12 @@ export namespace $Enums {
 
     export type UserStatuses = (typeof UserStatuses)[keyof typeof UserStatuses];
 
+    export const MfaTypes: {
+        CUSTOM: "CUSTOM";
+    };
+
+    export type MfaTypes = (typeof MfaTypes)[keyof typeof MfaTypes];
+
     export const TeamMemberRole: {
         ADMIN: "ADMIN";
         STAFF: "STAFF";
@@ -106,6 +112,10 @@ export const UserRoles: typeof $Enums.UserRoles;
 export type UserStatuses = $Enums.UserStatuses;
 
 export const UserStatuses: typeof $Enums.UserStatuses;
+
+export type MfaTypes = $Enums.MfaTypes;
+
+export const MfaTypes: typeof $Enums.MfaTypes;
 
 export type TeamMemberRole = $Enums.TeamMemberRole;
 
@@ -1874,6 +1884,7 @@ export namespace Prisma {
         fullName: string | null;
         email: string | null;
         phoneNumber: string | null;
+        mfaType: $Enums.MfaTypes | null;
         password: string | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
@@ -1886,6 +1897,7 @@ export namespace Prisma {
         fullName: string | null;
         email: string | null;
         phoneNumber: string | null;
+        mfaType: $Enums.MfaTypes | null;
         password: string | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
@@ -1898,6 +1910,7 @@ export namespace Prisma {
         fullName: number;
         email: number;
         phoneNumber: number;
+        mfaType: number;
         password: number;
         role: number;
         status: number;
@@ -1911,6 +1924,7 @@ export namespace Prisma {
         fullName?: true;
         email?: true;
         phoneNumber?: true;
+        mfaType?: true;
         password?: true;
         role?: true;
         status?: true;
@@ -1923,6 +1937,7 @@ export namespace Prisma {
         fullName?: true;
         email?: true;
         phoneNumber?: true;
+        mfaType?: true;
         password?: true;
         role?: true;
         status?: true;
@@ -1935,6 +1950,7 @@ export namespace Prisma {
         fullName?: true;
         email?: true;
         phoneNumber?: true;
+        mfaType?: true;
         password?: true;
         role?: true;
         status?: true;
@@ -2023,6 +2039,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -2055,6 +2072,7 @@ export namespace Prisma {
             fullName?: boolean;
             email?: boolean;
             phoneNumber?: boolean;
+            mfaType?: boolean;
             password?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2080,6 +2098,7 @@ export namespace Prisma {
             fullName?: boolean;
             email?: boolean;
             phoneNumber?: boolean;
+            mfaType?: boolean;
             password?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2097,6 +2116,7 @@ export namespace Prisma {
             fullName?: boolean;
             email?: boolean;
             phoneNumber?: boolean;
+            mfaType?: boolean;
             password?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2111,6 +2131,7 @@ export namespace Prisma {
         fullName?: boolean;
         email?: boolean;
         phoneNumber?: boolean;
+        mfaType?: boolean;
         password?: boolean;
         role?: boolean;
         status?: boolean;
@@ -2125,6 +2146,7 @@ export namespace Prisma {
         | "fullName"
         | "email"
         | "phoneNumber"
+        | "mfaType"
         | "password"
         | "role"
         | "status",
@@ -2168,6 +2190,7 @@ export namespace Prisma {
                 fullName: string;
                 email: string;
                 phoneNumber: string;
+                mfaType: $Enums.MfaTypes | null;
                 password: string;
                 role: $Enums.UserRoles;
                 status: $Enums.UserStatuses;
@@ -2829,6 +2852,7 @@ export namespace Prisma {
         readonly fullName: FieldRef<"User", "String">;
         readonly email: FieldRef<"User", "String">;
         readonly phoneNumber: FieldRef<"User", "String">;
+        readonly mfaType: FieldRef<"User", "MfaTypes">;
         readonly password: FieldRef<"User", "String">;
         readonly role: FieldRef<"User", "UserRoles">;
         readonly status: FieldRef<"User", "UserStatuses">;
@@ -14774,6 +14798,7 @@ export namespace Prisma {
         fullName: "fullName";
         email: "email";
         phoneNumber: "phoneNumber";
+        mfaType: "mfaType";
         password: "password";
         role: "role";
         status: "status";
@@ -14958,6 +14983,22 @@ export namespace Prisma {
     >;
 
     /**
+     * Reference to a field of type 'MfaTypes'
+     */
+    export type EnumMfaTypesFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "MfaTypes"
+    >;
+
+    /**
+     * Reference to a field of type 'MfaTypes[]'
+     */
+    export type ListEnumMfaTypesFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "MfaTypes[]"
+    >;
+
+    /**
      * Reference to a field of type 'UserRoles'
      */
     export type EnumUserRolesFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -15063,6 +15104,7 @@ export namespace Prisma {
         fullName?: StringFilter<"User"> | string;
         email?: StringFilter<"User"> | string;
         phoneNumber?: StringFilter<"User"> | string;
+        mfaType?: EnumMfaTypesNullableFilter<"User"> | $Enums.MfaTypes | null;
         password?: StringFilter<"User"> | string;
         role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
         status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
@@ -15089,6 +15131,7 @@ export namespace Prisma {
         fullName?: SortOrder;
         email?: SortOrder;
         phoneNumber?: SortOrder;
+        mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -15110,6 +15153,10 @@ export namespace Prisma {
             createdAt?: DateTimeFilter<"User"> | Date | string;
             updatedAt?: DateTimeFilter<"User"> | Date | string;
             fullName?: StringFilter<"User"> | string;
+            mfaType?:
+                | EnumMfaTypesNullableFilter<"User">
+                | $Enums.MfaTypes
+                | null;
             password?: StringFilter<"User"> | string;
             role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
             status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
@@ -15138,6 +15185,7 @@ export namespace Prisma {
         fullName?: SortOrder;
         email?: SortOrder;
         phoneNumber?: SortOrder;
+        mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -15160,6 +15208,10 @@ export namespace Prisma {
         fullName?: StringWithAggregatesFilter<"User"> | string;
         email?: StringWithAggregatesFilter<"User"> | string;
         phoneNumber?: StringWithAggregatesFilter<"User"> | string;
+        mfaType?:
+            | EnumMfaTypesNullableWithAggregatesFilter<"User">
+            | $Enums.MfaTypes
+            | null;
         password?: StringWithAggregatesFilter<"User"> | string;
         role?: EnumUserRolesWithAggregatesFilter<"User"> | $Enums.UserRoles;
         status?:
@@ -15919,6 +15971,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -15936,6 +15989,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -15953,6 +16007,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -15972,6 +16030,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -15991,6 +16053,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -16003,6 +16066,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -16017,6 +16084,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -16747,6 +16818,25 @@ export namespace Prisma {
         not?: NestedDateTimeFilter<$PrismaModel> | Date | string;
     };
 
+    export type EnumMfaTypesNullableFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.MfaTypes
+            | EnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumMfaTypesNullableFilter<$PrismaModel>
+            | $Enums.MfaTypes
+            | null;
+    };
+
     export type EnumUserRolesFilter<$PrismaModel = never> = {
         equals?: $Enums.UserRoles | EnumUserRolesFieldRefInput<$PrismaModel>;
         in?: $Enums.UserRoles[] | ListEnumUserRolesFieldRefInput<$PrismaModel>;
@@ -16796,6 +16886,11 @@ export namespace Prisma {
         isNot?: NotificationPreferenceWhereInput | null;
     };
 
+    export type SortOrderInput = {
+        sort: SortOrder;
+        nulls?: NullsOrder;
+    };
+
     export type TeamMemberOrderByRelationAggregateInput = {
         _count?: SortOrder;
     };
@@ -16811,6 +16906,7 @@ export namespace Prisma {
         fullName?: SortOrder;
         email?: SortOrder;
         phoneNumber?: SortOrder;
+        mfaType?: SortOrder;
         password?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -16823,6 +16919,7 @@ export namespace Prisma {
         fullName?: SortOrder;
         email?: SortOrder;
         phoneNumber?: SortOrder;
+        mfaType?: SortOrder;
         password?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -16835,6 +16932,7 @@ export namespace Prisma {
         fullName?: SortOrder;
         email?: SortOrder;
         phoneNumber?: SortOrder;
+        mfaType?: SortOrder;
         password?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -16871,6 +16969,29 @@ export namespace Prisma {
         _min?: NestedDateTimeFilter<$PrismaModel>;
         _max?: NestedDateTimeFilter<$PrismaModel>;
     };
+
+    export type EnumMfaTypesNullableWithAggregatesFilter<$PrismaModel = never> =
+        {
+            equals?:
+                | $Enums.MfaTypes
+                | EnumMfaTypesFieldRefInput<$PrismaModel>
+                | null;
+            in?:
+                | $Enums.MfaTypes[]
+                | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+                | null;
+            notIn?:
+                | $Enums.MfaTypes[]
+                | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+                | null;
+            not?:
+                | NestedEnumMfaTypesNullableWithAggregatesFilter<$PrismaModel>
+                | $Enums.MfaTypes
+                | null;
+            _count?: NestedIntNullableFilter<$PrismaModel>;
+            _min?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
+            _max?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
+        };
 
     export type EnumUserRolesWithAggregatesFilter<$PrismaModel = never> = {
         equals?: $Enums.UserRoles | EnumUserRolesFieldRefInput<$PrismaModel>;
@@ -17372,11 +17493,6 @@ export namespace Prisma {
         isNot?: TeamWhereInput | null;
     };
 
-    export type SortOrderInput = {
-        sort: SortOrder;
-        nulls?: NullsOrder;
-    };
-
     export type NotificationCountOrderByAggregateInput = {
         id?: SortOrder;
         createdAt?: SortOrder;
@@ -17600,6 +17716,10 @@ export namespace Prisma {
 
     export type DateTimeFieldUpdateOperationsInput = {
         set?: Date | string;
+    };
+
+    export type NullableEnumMfaTypesFieldUpdateOperationsInput = {
+        set?: $Enums.MfaTypes | null;
     };
 
     export type EnumUserRolesFieldUpdateOperationsInput = {
@@ -18435,6 +18555,25 @@ export namespace Prisma {
         not?: NestedDateTimeFilter<$PrismaModel> | Date | string;
     };
 
+    export type NestedEnumMfaTypesNullableFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.MfaTypes
+            | EnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumMfaTypesNullableFilter<$PrismaModel>
+            | $Enums.MfaTypes
+            | null;
+    };
+
     export type NestedEnumUserRolesFilter<$PrismaModel = never> = {
         equals?: $Enums.UserRoles | EnumUserRolesFieldRefInput<$PrismaModel>;
         in?: $Enums.UserRoles[] | ListEnumUserRolesFieldRefInput<$PrismaModel>;
@@ -18497,6 +18636,41 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedDateTimeFilter<$PrismaModel>;
         _max?: NestedDateTimeFilter<$PrismaModel>;
+    };
+
+    export type NestedEnumMfaTypesNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?:
+            | $Enums.MfaTypes
+            | EnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        in?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        notIn?:
+            | $Enums.MfaTypes[]
+            | ListEnumMfaTypesFieldRefInput<$PrismaModel>
+            | null;
+        not?:
+            | NestedEnumMfaTypesNullableWithAggregatesFilter<$PrismaModel>
+            | $Enums.MfaTypes
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
+        _max?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
+    };
+
+    export type NestedIntNullableFilter<$PrismaModel = never> = {
+        equals?: number | IntFieldRefInput<$PrismaModel> | null;
+        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+        lt?: number | IntFieldRefInput<$PrismaModel>;
+        lte?: number | IntFieldRefInput<$PrismaModel>;
+        gt?: number | IntFieldRefInput<$PrismaModel>;
+        gte?: number | IntFieldRefInput<$PrismaModel>;
+        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
     };
 
     export type NestedEnumUserRolesWithAggregatesFilter<$PrismaModel = never> =
@@ -18715,17 +18889,6 @@ export namespace Prisma {
         _count?: NestedIntNullableFilter<$PrismaModel>;
         _min?: NestedDateTimeNullableFilter<$PrismaModel>;
         _max?: NestedDateTimeNullableFilter<$PrismaModel>;
-    };
-
-    export type NestedIntNullableFilter<$PrismaModel = never> = {
-        equals?: number | IntFieldRefInput<$PrismaModel> | null;
-        in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
-        lt?: number | IntFieldRefInput<$PrismaModel>;
-        lte?: number | IntFieldRefInput<$PrismaModel>;
-        gt?: number | IntFieldRefInput<$PrismaModel>;
-        gte?: number | IntFieldRefInput<$PrismaModel>;
-        not?: NestedIntNullableFilter<$PrismaModel> | number | null;
     };
 
     export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> =
@@ -19118,6 +19281,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19134,6 +19298,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19178,6 +19343,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19196,6 +19365,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19214,6 +19387,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19230,6 +19404,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19274,6 +19449,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19292,6 +19471,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19310,6 +19493,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19326,6 +19510,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19370,6 +19555,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19388,6 +19577,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19770,6 +19963,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19786,6 +19980,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19858,6 +20053,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -19876,6 +20075,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -20002,6 +20205,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20018,6 +20222,7 @@ export namespace Prisma {
         fullName: string;
         email: string;
         phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
         password: string;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20090,6 +20295,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
@@ -20108,6 +20317,10 @@ export namespace Prisma {
         fullName?: StringFieldUpdateOperationsInput | string;
         email?: StringFieldUpdateOperationsInput | string;
         phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
         password?: StringFieldUpdateOperationsInput | string;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:

@@ -28,14 +28,19 @@ enum UserStatuses {
   INVITED
 }
 
+enum MfaTypes {
+  CUSTOM
+}
+
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   fullName    String       @map("full_name")
   email       String       @unique
   phoneNumber String       @unique @map("phone_number")
+  mfaType     MfaTypes?
   password    String
   role        UserRoles
   status      UserStatuses
@@ -50,7 +55,7 @@ model User {
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -64,7 +69,7 @@ model RefreshToken {
 }
 
 model Avatar {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -83,7 +88,7 @@ model Avatar {
 }
 
 model NotificationPreference {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
@@ -99,7 +104,7 @@ model NotificationPreference {
 }
 
 model Team {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -114,7 +119,7 @@ model Team {
 }
 
 model TeamStat {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -147,7 +152,7 @@ enum TeamMemberRole {
 }
 
 model TeamMember {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -164,7 +169,7 @@ model TeamMember {
 }
 
 model Logo {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -192,7 +197,7 @@ enum NotificationTypes {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 

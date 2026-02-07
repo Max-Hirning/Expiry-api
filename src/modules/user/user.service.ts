@@ -213,6 +213,7 @@ export const createService = (
                 data: {
                     fullName: body.fullName,
                     email: body.email,
+                    mfaType: body.mfaType,
                     phoneNumber: body.phoneNumber,
                     ...(body.avatar &&
                         avatarPayload && {

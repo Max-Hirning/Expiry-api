@@ -24,11 +24,8 @@ const configureJwt = async (fastify: FastifyInstance) => {
     });
 
     fastify.decorate("authorization", async (req: FastifyRequest) => {
-        const authHeader = req.headers.authorization;
-
-        const accessToken = authHeader?.startsWith("Bearer ")
-            ? authHeader.slice(7)
-            : authHeader;
+        const accessToken =
+            req.cookies.access_token || req.headers.authorization;
 
         const refreshToken =
             req.cookies.refresh_token ||

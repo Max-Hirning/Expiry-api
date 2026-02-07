@@ -13,7 +13,7 @@ declare module "@fastify/jwt" {
             refresh_token?: string;
         };
         user: Pick<User, "id" | "role" | "fullName"> & {
-            avatar: Avatar | null;
+            avatar: Omit<Avatar, "key" | "expiredAt" | "userId"> | null;
         };
         createNewTokens: boolean;
         updateToken: boolean;
@@ -43,7 +43,7 @@ declare module "fastify" {
             refresh_token?: string;
         };
         user: Pick<User, "id" | "role" | "fullName"> & {
-            avatar: Avatar | null;
+            avatar: Omit<Avatar, "key" | "expiredAt" | "userId"> | null;
         };
         createNewTokens: boolean;
         updateToken: boolean;

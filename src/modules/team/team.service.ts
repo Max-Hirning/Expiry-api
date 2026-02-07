@@ -9,8 +9,12 @@ import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
-import { BadRequestError, InternalServerError } from "@/lib/errors/errors.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
+import {
+    BadRequestError,
+    ForbiddenError,
+    InternalServerError,
+} from "@/lib/errors/errors.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultTeamSelector,
@@ -81,14 +85,22 @@ export const createTeamService = (
     applicationService: ApplicationService
 ): TeamService => {
     const getTeam = async (
-        teamId: string
+        teamId: string,
+        initiator: FastifyRequest["user"]
     ): Promise<FetchTeamResponse["data"]["team"]> => {
         const [team, teamStat] = await Promise.all([
             teamRepository.findUniqueOrFail({
                 where: {
                     id: teamId,
                 },
-                select: defaultTeamSelector,
+                select: {
+                    ...defaultTeamSelector,
+                    teamMembers: {
+                        where: {
+                            userId: initiator.id,
+                        },
+                    },
+                },
             }),
             teamStatRepository.findUniqueOrFail({
                 where: {
@@ -103,8 +115,13 @@ export const createTeamService = (
             );
         }
 
+        if (!team.teamMembers[0]) {
+            throw new ForbiddenError("You don't have access to this team");
+        }
+
         return {
             ...team,
+            currentMember: team.teamMembers[0],
             stats: teamStat,
         };
     };
@@ -257,8 +274,8 @@ export const createTeamService = (
     };
 
     return {
-        getTeam: async ({ params }) => {
-            const team = await getTeam(params.teamId);
+        getTeam: async ({ params, initiator }) => {
+            const team = await getTeam(params.teamId, initiator);
 
             return {
                 message: "Team fetched successfully.",
@@ -266,8 +283,8 @@ export const createTeamService = (
             };
         },
 
-        deleteTeam: async ({ params }) => {
-            const team = await getTeam(params.teamId);
+        deleteTeam: async ({ params, initiator }) => {
+            const team = await getTeam(params.teamId, initiator);
 
             await prisma.master.$transaction(async (tx) => {
                 const team = await tx.team.delete({
@@ -377,6 +394,11 @@ export const createTeamService = (
                     },
                     select: {
                         ...defaultTeamSelector,
+                        teamMembers: {
+                            where: {
+                                userId: initiator.id,
+                            },
+                        },
                         stats: {
                             select: defaultTeamStatSelector,
                         },
@@ -394,13 +416,21 @@ export const createTeamService = (
             return {
                 message: "Teams fetched successfully.",
                 data: {
-                    teams: teams.filter(
-                        (
-                            team
-                        ): team is typeof team & {
-                            stats: NonNullable<typeof team.stats>;
-                        } => team.stats !== null
-                    ),
+                    teams: teams
+                        .filter(
+                            (
+                                team
+                            ): team is typeof team & {
+                                stats: NonNullable<typeof team.stats>;
+                            } => team.stats !== null
+                        )
+                        .map((team) => ({
+                            ...team,
+                            stats: team.stats!,
+                            currentMember: team.teamMembers.find(
+                                (m) => m.userId === initiator.id
+                            )!,
+                        })),
                     pagination: {
                         page: query.page,
                         perPage: query.perPage,
@@ -534,7 +564,7 @@ export const createTeamService = (
                     select: defaultTeamSelector,
                 });
 
-                const team = await getTeam(createdTeam.id);
+                const team = await getTeam(createdTeam.id, initiator);
 
                 if (body.teamMembers) {
                     await checkTeamMembersRoles(teamMembersIds);
@@ -732,7 +762,7 @@ export const createTeamService = (
                 })
             );
 
-            const team = await getTeam(params.teamId);
+            const team = await getTeam(params.teamId, initiator);
 
             return {
                 message: "Team updated successfully.",

@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { AuthHandler } from "./auth.handler.js";
 import { fetchUserResponseSchema } from "@/lib/validation/user/user.schema.js";
 import {
+    fetchSignUpResponseSchema,
     signInBodySchema,
     signUpBodySchema,
 } from "@/lib/validation/auth/auth.schema.js";
@@ -33,7 +34,7 @@ export const createAuthRoutes = (
                 summary: "Sign up",
                 body: signUpBodySchema,
                 response: {
-                    201: fetchUserResponseSchema,
+                    201: fetchSignUpResponseSchema,
                 },
             },
         },

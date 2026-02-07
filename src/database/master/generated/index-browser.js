@@ -123,6 +123,7 @@ exports.Prisma.UserScalarFieldEnum = {
     fullName: "fullName",
     email: "email",
     phoneNumber: "phoneNumber",
+    mfaType: "mfaType",
     password: "password",
     role: "role",
     status: "status",
@@ -236,6 +237,10 @@ exports.Prisma.NullsOrder = {
     first: "first",
     last: "last",
 };
+exports.MfaTypes = exports.$Enums.MfaTypes = {
+    CUSTOM: "CUSTOM",
+};
+
 exports.UserRoles = exports.$Enums.UserRoles = {
     SUPER_ADMIN: "SUPER_ADMIN",
     SUB_ADMIN: "SUB_ADMIN",

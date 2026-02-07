@@ -35,6 +35,16 @@ const signUpBodySchema = z.object({
 
 type SignUpBodyInput = z.infer<typeof signUpBodySchema>;
 
-export { signUpBodySchema, signInBodySchema };
+const fetchSignUpResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        user: defaultUserSchema,
+        uploadUrl: z.url().nullable(),
+    }),
+});
 
-export type { SignUpBodyInput, SignInBodyInput };
+type FetchSignUpResponse = z.infer<typeof fetchSignUpResponseSchema>;
+
+export { signUpBodySchema, signInBodySchema, fetchSignUpResponseSchema };
+
+export type { SignUpBodyInput, SignInBodyInput, FetchSignUpResponse };

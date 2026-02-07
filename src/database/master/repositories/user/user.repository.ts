@@ -10,6 +10,7 @@ export const defaultUserSelector = {
     updatedAt: true,
     fullName: true,
     email: true,
+    mfaType: true,
     phoneNumber: true,
     password: true,
     role: true,
