@@ -123,23 +123,6 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
-                if (Actions.GET_USERS === action) {
-                    const { role } = req.user;
-
-                    if (
-                        (
-                            [
-                                UserRoles.SUB_ADMIN,
-                                UserRoles.SUPER_ADMIN,
-                            ] as UserRoles[]
-                        ).includes(role)
-                    ) {
-                        return;
-                    }
-
-                    throw new ForbiddenError("Forbidden");
-                }
-
                 if (action === Actions.INVITE_USER) {
                     const { role, id } = req.user;
 

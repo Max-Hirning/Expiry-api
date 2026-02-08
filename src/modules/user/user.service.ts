@@ -59,6 +59,7 @@ export type UserService = {
     }) => Promise<FetchUserResponse>;
     getUsers: (p: {
         query: FetchUsersQueryInput;
+        initiator: FastifyRequest["user"];
     }) => Promise<FetchUsersResponse>;
     inviteUser: (p: {
         body: InviteUserBodyInput;
@@ -563,7 +564,7 @@ export const createService = (
             };
         },
 
-        getUsers: async ({ query }) => {
+        getUsers: async ({ query, initiator }) => {
             const skip = (query.page - 1) * query.perPage;
 
             const where: Prisma.UserWhereInput = {
@@ -572,6 +573,9 @@ export const createService = (
                         in: query.statuses,
                     },
                 }),
+                id: {
+                    notIn: [...(query.omitUsersIds || []), initiator.id],
+                },
                 notificationPreferences: {
                     isNot: null,
                 },

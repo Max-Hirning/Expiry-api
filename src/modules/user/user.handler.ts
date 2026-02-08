@@ -170,10 +170,11 @@ export const createHandler = (
         },
 
         getUsers: async (request, reply) => {
-            const { query } = request;
+            const { query, user } = request;
 
             const data = await userService.getUsers({
                 query,
+                initiator: user,
             });
 
             return reply.send(data);

@@ -109,6 +109,10 @@ const fetchUsersQuerySchema = paginationQuerySchema
             z.enum(UserRoles).transform((val) => [val]),
             z.array(z.enum(UserRoles)),
         ]),
+        omitUsersIds: z.union([
+            z.uuid().transform((val) => [val]),
+            z.array(z.uuid()),
+        ]),
     })
     .partial()
     .required({
