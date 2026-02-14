@@ -15,4 +15,15 @@ export const createApplicationRoutes = (
         },
         applicationHandler.healthChecker
     );
+
+    fastify.post(
+        "/test-data",
+        {
+            schema: {
+                tags: ["application"],
+                summary: "Check application health status",
+            },
+        },
+        applicationHandler.setTestData
+    );
 };

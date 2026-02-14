@@ -573,6 +573,13 @@ export const createService = (
                         in: query.statuses,
                     },
                 }),
+                ...(query.teamId && {
+                    teamMembers: {
+                        some: {
+                            teamId: query.teamId,
+                        },
+                    },
+                }),
                 id: {
                     notIn: [...(query.omitUsersIds || []), initiator.id],
                 },

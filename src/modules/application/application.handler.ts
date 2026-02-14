@@ -7,6 +7,10 @@ export type ApplicationHandler = {
         request: FastifyRequest,
         reply: FastifyReply
     ) => Promise<void>;
+    setTestData: (
+        request: FastifyRequest,
+        reply: FastifyReply
+    ) => Promise<void>;
 };
 
 export const createApplicationHandler = (
@@ -15,6 +19,11 @@ export const createApplicationHandler = (
     return {
         healthChecker: async (_request, reply) => {
             const data = await applicationService.healthChecker();
+
+            return reply.send(data);
+        },
+        setTestData: async (_request, reply) => {
+            const data = await applicationService.setTestData();
 
             return reply.send(data);
         },

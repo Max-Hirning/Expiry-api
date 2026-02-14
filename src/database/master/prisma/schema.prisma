@@ -44,8 +44,8 @@ model User {
   password    String
   role        UserRoles
   status      UserStatuses
-  teamMembers TeamMember[]
 
+  teamMembers             TeamMember[]
   refreshToken            RefreshToken?
   avatar                  Avatar?
   notifications           Notification[]

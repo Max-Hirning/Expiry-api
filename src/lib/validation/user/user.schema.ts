@@ -113,6 +113,7 @@ const fetchUsersQuerySchema = paginationQuerySchema
             z.uuid().transform((val) => [val]),
             z.array(z.uuid()),
         ]),
+        teamId: z.uuid(),
     })
     .partial()
     .required({
