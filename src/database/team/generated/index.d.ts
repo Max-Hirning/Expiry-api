@@ -58,32 +58,32 @@ export namespace $Enums {
     export type DocumentStatuses =
         (typeof DocumentStatuses)[keyof typeof DocumentStatuses];
 
-    export const RiskLevel: {
+    export const RiskLevels: {
         LOW: "LOW";
         MEDIUM: "MEDIUM";
         HIGH: "HIGH";
     };
 
-    export type RiskLevel = (typeof RiskLevel)[keyof typeof RiskLevel];
+    export type RiskLevels = (typeof RiskLevels)[keyof typeof RiskLevels];
 
-    export const ExtractedFieldType: {
+    export const ExtractedFieldTypes: {
         EXPIRY_DATE: "EXPIRY_DATE";
         ISSUE_DATE: "ISSUE_DATE";
         COUNTERPARTY: "COUNTERPARTY";
         AMOUNT: "AMOUNT";
     };
 
-    export type ExtractedFieldType =
-        (typeof ExtractedFieldType)[keyof typeof ExtractedFieldType];
+    export type ExtractedFieldTypes =
+        (typeof ExtractedFieldTypes)[keyof typeof ExtractedFieldTypes];
 
-    export const ExtractedFieldSource: {
+    export const ExtractedFieldSources: {
         OCR: "OCR";
         REGEX: "REGEX";
         MANUAL: "MANUAL";
     };
 
-    export type ExtractedFieldSource =
-        (typeof ExtractedFieldSource)[keyof typeof ExtractedFieldSource];
+    export type ExtractedFieldSources =
+        (typeof ExtractedFieldSources)[keyof typeof ExtractedFieldSources];
 
     export const ActionLogTypes: {
         CREATE_TEAM: "CREATE_TEAM";
@@ -105,17 +105,17 @@ export type DocumentStatuses = $Enums.DocumentStatuses;
 
 export const DocumentStatuses: typeof $Enums.DocumentStatuses;
 
-export type RiskLevel = $Enums.RiskLevel;
+export type RiskLevels = $Enums.RiskLevels;
 
-export const RiskLevel: typeof $Enums.RiskLevel;
+export const RiskLevels: typeof $Enums.RiskLevels;
 
-export type ExtractedFieldType = $Enums.ExtractedFieldType;
+export type ExtractedFieldTypes = $Enums.ExtractedFieldTypes;
 
-export const ExtractedFieldType: typeof $Enums.ExtractedFieldType;
+export const ExtractedFieldTypes: typeof $Enums.ExtractedFieldTypes;
 
-export type ExtractedFieldSource = $Enums.ExtractedFieldSource;
+export type ExtractedFieldSources = $Enums.ExtractedFieldSources;
 
-export const ExtractedFieldSource: typeof $Enums.ExtractedFieldSource;
+export const ExtractedFieldSources: typeof $Enums.ExtractedFieldSources;
 
 export type ActionLogTypes = $Enums.ActionLogTypes;
 
@@ -1626,7 +1626,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses | null;
         name: string | null;
         expiresAt: Date | null;
-        riskLevel: $Enums.RiskLevel | null;
+        riskLevel: $Enums.RiskLevels | null;
     };
 
     export type DocumentMaxAggregateOutputType = {
@@ -1636,7 +1636,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses | null;
         name: string | null;
         expiresAt: Date | null;
-        riskLevel: $Enums.RiskLevel | null;
+        riskLevel: $Enums.RiskLevels | null;
     };
 
     export type DocumentCountAggregateOutputType = {
@@ -1765,7 +1765,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt: Date | null;
-        riskLevel: $Enums.RiskLevel | null;
+        riskLevel: $Enums.RiskLevels | null;
         _count: DocumentCountAggregateOutputType | null;
         _min: DocumentMinAggregateOutputType | null;
         _max: DocumentMaxAggregateOutputType | null;
@@ -1895,7 +1895,7 @@ export namespace Prisma {
                 status: $Enums.DocumentStatuses;
                 name: string;
                 expiresAt: Date | null;
-                riskLevel: $Enums.RiskLevel | null;
+                riskLevel: $Enums.RiskLevels | null;
             },
             ExtArgs["result"]["document"]
         >;
@@ -2543,7 +2543,7 @@ export namespace Prisma {
         readonly status: FieldRef<"Document", "DocumentStatuses">;
         readonly name: FieldRef<"Document", "String">;
         readonly expiresAt: FieldRef<"Document", "DateTime">;
-        readonly riskLevel: FieldRef<"Document", "RiskLevel">;
+        readonly riskLevel: FieldRef<"Document", "RiskLevels">;
     }
 
     // Custom InputTypes
@@ -7189,10 +7189,10 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
-        type: $Enums.ExtractedFieldType | null;
+        type: $Enums.ExtractedFieldTypes | null;
         value: string | null;
         confidence: number | null;
-        source: $Enums.ExtractedFieldSource | null;
+        source: $Enums.ExtractedFieldSources | null;
         documentId: string | null;
     };
 
@@ -7200,10 +7200,10 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
-        type: $Enums.ExtractedFieldType | null;
+        type: $Enums.ExtractedFieldTypes | null;
         value: string | null;
         confidence: number | null;
-        source: $Enums.ExtractedFieldSource | null;
+        source: $Enums.ExtractedFieldSources | null;
         documentId: string | null;
     };
 
@@ -7362,10 +7362,10 @@ export namespace Prisma {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
         documentId: string;
         _count: DocumentExtractedFieldCountAggregateOutputType | null;
         _avg: DocumentExtractedFieldAvgAggregateOutputType | null;
@@ -7498,10 +7498,10 @@ export namespace Prisma {
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
-                type: $Enums.ExtractedFieldType;
+                type: $Enums.ExtractedFieldTypes;
                 value: string;
                 confidence: number;
-                source: $Enums.ExtractedFieldSource;
+                source: $Enums.ExtractedFieldSources;
                 documentId: string;
             },
             ExtArgs["result"]["documentExtractedField"]
@@ -8147,12 +8147,15 @@ export namespace Prisma {
         readonly id: FieldRef<"DocumentExtractedField", "String">;
         readonly createdAt: FieldRef<"DocumentExtractedField", "DateTime">;
         readonly updatedAt: FieldRef<"DocumentExtractedField", "DateTime">;
-        readonly type: FieldRef<"DocumentExtractedField", "ExtractedFieldType">;
+        readonly type: FieldRef<
+            "DocumentExtractedField",
+            "ExtractedFieldTypes"
+        >;
         readonly value: FieldRef<"DocumentExtractedField", "String">;
         readonly confidence: FieldRef<"DocumentExtractedField", "Float">;
         readonly source: FieldRef<
             "DocumentExtractedField",
-            "ExtractedFieldSource"
+            "ExtractedFieldSources"
         >;
         readonly documentId: FieldRef<"DocumentExtractedField", "String">;
     }
@@ -10236,18 +10239,18 @@ export namespace Prisma {
         FieldRefInputType<$PrismaModel, "DocumentStatuses[]">;
 
     /**
-     * Reference to a field of type 'RiskLevel'
+     * Reference to a field of type 'RiskLevels'
      */
-    export type EnumRiskLevelFieldRefInput<$PrismaModel> = FieldRefInputType<
+    export type EnumRiskLevelsFieldRefInput<$PrismaModel> = FieldRefInputType<
         $PrismaModel,
-        "RiskLevel"
+        "RiskLevels"
     >;
 
     /**
-     * Reference to a field of type 'RiskLevel[]'
+     * Reference to a field of type 'RiskLevels[]'
      */
-    export type ListEnumRiskLevelFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "RiskLevel[]">;
+    export type ListEnumRiskLevelsFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "RiskLevels[]">;
 
     /**
      * Reference to a field of type 'Float'
@@ -10266,28 +10269,28 @@ export namespace Prisma {
     >;
 
     /**
-     * Reference to a field of type 'ExtractedFieldType'
+     * Reference to a field of type 'ExtractedFieldTypes'
      */
-    export type EnumExtractedFieldTypeFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "ExtractedFieldType">;
+    export type EnumExtractedFieldTypesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ExtractedFieldTypes">;
 
     /**
-     * Reference to a field of type 'ExtractedFieldType[]'
+     * Reference to a field of type 'ExtractedFieldTypes[]'
      */
-    export type ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "ExtractedFieldType[]">;
+    export type ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ExtractedFieldTypes[]">;
 
     /**
-     * Reference to a field of type 'ExtractedFieldSource'
+     * Reference to a field of type 'ExtractedFieldSources'
      */
-    export type EnumExtractedFieldSourceFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "ExtractedFieldSource">;
+    export type EnumExtractedFieldSourcesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ExtractedFieldSources">;
 
     /**
-     * Reference to a field of type 'ExtractedFieldSource[]'
+     * Reference to a field of type 'ExtractedFieldSources[]'
      */
-    export type ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel> =
-        FieldRefInputType<$PrismaModel, "ExtractedFieldSource[]">;
+    export type ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ExtractedFieldSources[]">;
 
     /**
      * Reference to a field of type 'ActionLogTypes'
@@ -10334,8 +10337,8 @@ export namespace Prisma {
         name?: StringFilter<"Document"> | string;
         expiresAt?: DateTimeNullableFilter<"Document"> | Date | string | null;
         riskLevel?:
-            | EnumRiskLevelNullableFilter<"Document">
-            | $Enums.RiskLevel
+            | EnumRiskLevelsNullableFilter<"Document">
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
         actionLogs?: ActionLogListRelationFilter;
@@ -10375,8 +10378,8 @@ export namespace Prisma {
                 | string
                 | null;
             riskLevel?:
-                | EnumRiskLevelNullableFilter<"Document">
-                | $Enums.RiskLevel
+                | EnumRiskLevelsNullableFilter<"Document">
+                | $Enums.RiskLevels
                 | null;
             documentExtractedFields?: DocumentExtractedFieldListRelationFilter;
             actionLogs?: ActionLogListRelationFilter;
@@ -10420,8 +10423,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | EnumRiskLevelNullableWithAggregatesFilter<"Document">
-            | $Enums.RiskLevel
+            | EnumRiskLevelsNullableWithAggregatesFilter<"Document">
+            | $Enums.RiskLevels
             | null;
     };
 
@@ -10653,13 +10656,13 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"DocumentExtractedField"> | Date | string;
         updatedAt?: DateTimeFilter<"DocumentExtractedField"> | Date | string;
         type?:
-            | EnumExtractedFieldTypeFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldTypes;
         value?: StringFilter<"DocumentExtractedField"> | string;
         confidence?: FloatFilter<"DocumentExtractedField"> | number;
         source?:
-            | EnumExtractedFieldSourceFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldSources;
         documentId?: StringFilter<"DocumentExtractedField"> | string;
         document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
     };
@@ -10695,13 +10698,13 @@ export namespace Prisma {
                 | Date
                 | string;
             type?:
-                | EnumExtractedFieldTypeFilter<"DocumentExtractedField">
-                | $Enums.ExtractedFieldType;
+                | EnumExtractedFieldTypesFilter<"DocumentExtractedField">
+                | $Enums.ExtractedFieldTypes;
             value?: StringFilter<"DocumentExtractedField"> | string;
             confidence?: FloatFilter<"DocumentExtractedField"> | number;
             source?:
-                | EnumExtractedFieldSourceFilter<"DocumentExtractedField">
-                | $Enums.ExtractedFieldSource;
+                | EnumExtractedFieldSourcesFilter<"DocumentExtractedField">
+                | $Enums.ExtractedFieldSources;
             documentId?: StringFilter<"DocumentExtractedField"> | string;
             document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
         },
@@ -10742,15 +10745,15 @@ export namespace Prisma {
             | Date
             | string;
         type?:
-            | EnumExtractedFieldTypeWithAggregatesFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesWithAggregatesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldTypes;
         value?: StringWithAggregatesFilter<"DocumentExtractedField"> | string;
         confidence?:
             | FloatWithAggregatesFilter<"DocumentExtractedField">
             | number;
         source?:
-            | EnumExtractedFieldSourceWithAggregatesFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesWithAggregatesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldSources;
         documentId?:
             | StringWithAggregatesFilter<"DocumentExtractedField">
             | string;
@@ -10888,7 +10891,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
@@ -10902,7 +10905,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
@@ -10923,8 +10926,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
@@ -10946,8 +10949,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
@@ -10962,7 +10965,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
     };
 
     export type DocumentUpdateManyMutationInput = {
@@ -10979,8 +10982,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
     };
 
@@ -10998,8 +11001,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
     };
 
@@ -11211,10 +11214,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
         document: DocumentCreateNestedOneWithoutDocumentExtractedFieldsInput;
     };
 
@@ -11222,10 +11225,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
         documentId: string;
     };
 
@@ -11234,13 +11237,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
         document?: DocumentUpdateOneRequiredWithoutDocumentExtractedFieldsNestedInput;
     };
 
@@ -11249,13 +11252,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
         documentId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -11263,10 +11266,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
         documentId: string;
     };
 
@@ -11275,13 +11278,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldUncheckedUpdateManyInput = {
@@ -11289,13 +11292,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
         documentId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -11491,22 +11494,22 @@ export namespace Prisma {
         not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
     };
 
-    export type EnumRiskLevelNullableFilter<$PrismaModel = never> = {
+    export type EnumRiskLevelsNullableFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.RiskLevel
-            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels
+            | EnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         in?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         notIn?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         not?:
-            | NestedEnumRiskLevelNullableFilter<$PrismaModel>
-            | $Enums.RiskLevel
+            | NestedEnumRiskLevelsNullableFilter<$PrismaModel>
+            | $Enums.RiskLevels
             | null;
     };
 
@@ -11658,28 +11661,28 @@ export namespace Prisma {
         _max?: NestedDateTimeNullableFilter<$PrismaModel>;
     };
 
-    export type EnumRiskLevelNullableWithAggregatesFilter<
+    export type EnumRiskLevelsNullableWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.RiskLevel
-            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels
+            | EnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         in?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         notIn?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         not?:
-            | NestedEnumRiskLevelNullableWithAggregatesFilter<$PrismaModel>
-            | $Enums.RiskLevel
+            | NestedEnumRiskLevelsNullableWithAggregatesFilter<$PrismaModel>
+            | $Enums.RiskLevels
             | null;
         _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
-        _max?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+        _min?: NestedEnumRiskLevelsNullableFilter<$PrismaModel>;
+        _max?: NestedEnumRiskLevelsNullableFilter<$PrismaModel>;
     };
 
     export type DocumentScalarRelationFilter = {
@@ -11848,34 +11851,34 @@ export namespace Prisma {
         _max?: NestedFloatNullableFilter<$PrismaModel>;
     };
 
-    export type EnumExtractedFieldTypeFilter<$PrismaModel = never> = {
+    export type EnumExtractedFieldTypesFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.ExtractedFieldType
-            | EnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes
+            | EnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldTypeFilter<$PrismaModel>
-            | $Enums.ExtractedFieldType;
+            | NestedEnumExtractedFieldTypesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldTypes;
     };
 
-    export type EnumExtractedFieldSourceFilter<$PrismaModel = never> = {
+    export type EnumExtractedFieldSourcesFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.ExtractedFieldSource
-            | EnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources
+            | EnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldSourceFilter<$PrismaModel>
-            | $Enums.ExtractedFieldSource;
+            | NestedEnumExtractedFieldSourcesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldCountOrderByAggregateInput = {
@@ -11919,44 +11922,44 @@ export namespace Prisma {
         confidence?: SortOrder;
     };
 
-    export type EnumExtractedFieldTypeWithAggregatesFilter<
+    export type EnumExtractedFieldTypesWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.ExtractedFieldType
-            | EnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes
+            | EnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldTypeWithAggregatesFilter<$PrismaModel>
-            | $Enums.ExtractedFieldType;
+            | NestedEnumExtractedFieldTypesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldTypes;
         _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumExtractedFieldTypeFilter<$PrismaModel>;
-        _max?: NestedEnumExtractedFieldTypeFilter<$PrismaModel>;
+        _min?: NestedEnumExtractedFieldTypesFilter<$PrismaModel>;
+        _max?: NestedEnumExtractedFieldTypesFilter<$PrismaModel>;
     };
 
-    export type EnumExtractedFieldSourceWithAggregatesFilter<
+    export type EnumExtractedFieldSourcesWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.ExtractedFieldSource
-            | EnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources
+            | EnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldSourceWithAggregatesFilter<$PrismaModel>
-            | $Enums.ExtractedFieldSource;
+            | NestedEnumExtractedFieldSourcesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldSources;
         _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
-        _max?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
+        _min?: NestedEnumExtractedFieldSourcesFilter<$PrismaModel>;
+        _max?: NestedEnumExtractedFieldSourcesFilter<$PrismaModel>;
     };
 
     export type EnumActionLogTypesFilter<$PrismaModel = never> = {
@@ -12219,8 +12222,8 @@ export namespace Prisma {
         set?: Date | string | null;
     };
 
-    export type NullableEnumRiskLevelFieldUpdateOperationsInput = {
-        set?: $Enums.RiskLevel | null;
+    export type NullableEnumRiskLevelsFieldUpdateOperationsInput = {
+        set?: $Enums.RiskLevels | null;
     };
 
     export type DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput = {
@@ -12673,12 +12676,12 @@ export namespace Prisma {
         connect?: DocumentWhereUniqueInput;
     };
 
-    export type EnumExtractedFieldTypeFieldUpdateOperationsInput = {
-        set?: $Enums.ExtractedFieldType;
+    export type EnumExtractedFieldTypesFieldUpdateOperationsInput = {
+        set?: $Enums.ExtractedFieldTypes;
     };
 
-    export type EnumExtractedFieldSourceFieldUpdateOperationsInput = {
-        set?: $Enums.ExtractedFieldSource;
+    export type EnumExtractedFieldSourcesFieldUpdateOperationsInput = {
+        set?: $Enums.ExtractedFieldSources;
     };
 
     export type DocumentUpdateOneRequiredWithoutDocumentExtractedFieldsNestedInput =
@@ -12790,22 +12793,22 @@ export namespace Prisma {
         not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
     };
 
-    export type NestedEnumRiskLevelNullableFilter<$PrismaModel = never> = {
+    export type NestedEnumRiskLevelsNullableFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.RiskLevel
-            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels
+            | EnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         in?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         notIn?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         not?:
-            | NestedEnumRiskLevelNullableFilter<$PrismaModel>
-            | $Enums.RiskLevel
+            | NestedEnumRiskLevelsNullableFilter<$PrismaModel>
+            | $Enums.RiskLevels
             | null;
     };
 
@@ -12906,28 +12909,28 @@ export namespace Prisma {
         not?: NestedIntNullableFilter<$PrismaModel> | number | null;
     };
 
-    export type NestedEnumRiskLevelNullableWithAggregatesFilter<
+    export type NestedEnumRiskLevelsNullableWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.RiskLevel
-            | EnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels
+            | EnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         in?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         notIn?:
-            | $Enums.RiskLevel[]
-            | ListEnumRiskLevelFieldRefInput<$PrismaModel>
+            | $Enums.RiskLevels[]
+            | ListEnumRiskLevelsFieldRefInput<$PrismaModel>
             | null;
         not?:
-            | NestedEnumRiskLevelNullableWithAggregatesFilter<$PrismaModel>
-            | $Enums.RiskLevel
+            | NestedEnumRiskLevelsNullableWithAggregatesFilter<$PrismaModel>
+            | $Enums.RiskLevels
             | null;
         _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
-        _max?: NestedEnumRiskLevelNullableFilter<$PrismaModel>;
+        _min?: NestedEnumRiskLevelsNullableFilter<$PrismaModel>;
+        _max?: NestedEnumRiskLevelsNullableFilter<$PrismaModel>;
     };
 
     export type NestedFloatFilter<$PrismaModel = never> = {
@@ -12988,74 +12991,74 @@ export namespace Prisma {
             _max?: NestedFloatNullableFilter<$PrismaModel>;
         };
 
-    export type NestedEnumExtractedFieldTypeFilter<$PrismaModel = never> = {
+    export type NestedEnumExtractedFieldTypesFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.ExtractedFieldType
-            | EnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes
+            | EnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldTypeFilter<$PrismaModel>
-            | $Enums.ExtractedFieldType;
+            | NestedEnumExtractedFieldTypesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldTypes;
     };
 
-    export type NestedEnumExtractedFieldSourceFilter<$PrismaModel = never> = {
+    export type NestedEnumExtractedFieldSourcesFilter<$PrismaModel = never> = {
         equals?:
-            | $Enums.ExtractedFieldSource
-            | EnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources
+            | EnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldSourceFilter<$PrismaModel>
-            | $Enums.ExtractedFieldSource;
+            | NestedEnumExtractedFieldSourcesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldSources;
     };
 
-    export type NestedEnumExtractedFieldTypeWithAggregatesFilter<
+    export type NestedEnumExtractedFieldTypesWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.ExtractedFieldType
-            | EnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes
+            | EnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldType[]
-            | ListEnumExtractedFieldTypeFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldTypes[]
+            | ListEnumExtractedFieldTypesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldTypeWithAggregatesFilter<$PrismaModel>
-            | $Enums.ExtractedFieldType;
+            | NestedEnumExtractedFieldTypesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldTypes;
         _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumExtractedFieldTypeFilter<$PrismaModel>;
-        _max?: NestedEnumExtractedFieldTypeFilter<$PrismaModel>;
+        _min?: NestedEnumExtractedFieldTypesFilter<$PrismaModel>;
+        _max?: NestedEnumExtractedFieldTypesFilter<$PrismaModel>;
     };
 
-    export type NestedEnumExtractedFieldSourceWithAggregatesFilter<
+    export type NestedEnumExtractedFieldSourcesWithAggregatesFilter<
         $PrismaModel = never,
     > = {
         equals?:
-            | $Enums.ExtractedFieldSource
-            | EnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources
+            | EnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         in?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         notIn?:
-            | $Enums.ExtractedFieldSource[]
-            | ListEnumExtractedFieldSourceFieldRefInput<$PrismaModel>;
+            | $Enums.ExtractedFieldSources[]
+            | ListEnumExtractedFieldSourcesFieldRefInput<$PrismaModel>;
         not?:
-            | NestedEnumExtractedFieldSourceWithAggregatesFilter<$PrismaModel>
-            | $Enums.ExtractedFieldSource;
+            | NestedEnumExtractedFieldSourcesWithAggregatesFilter<$PrismaModel>
+            | $Enums.ExtractedFieldSources;
         _count?: NestedIntFilter<$PrismaModel>;
-        _min?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
-        _max?: NestedEnumExtractedFieldSourceFilter<$PrismaModel>;
+        _min?: NestedEnumExtractedFieldSourcesFilter<$PrismaModel>;
+        _max?: NestedEnumExtractedFieldSourcesFilter<$PrismaModel>;
     };
 
     export type NestedEnumActionLogTypesFilter<$PrismaModel = never> = {
@@ -13132,20 +13135,20 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldUncheckedCreateWithoutDocumentInput = {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldCreateOrConnectWithoutDocumentInput = {
@@ -13317,13 +13320,13 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"DocumentExtractedField"> | Date | string;
         updatedAt?: DateTimeFilter<"DocumentExtractedField"> | Date | string;
         type?:
-            | EnumExtractedFieldTypeFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldTypes;
         value?: StringFilter<"DocumentExtractedField"> | string;
         confidence?: FloatFilter<"DocumentExtractedField"> | number;
         source?:
-            | EnumExtractedFieldSourceFilter<"DocumentExtractedField">
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFilter<"DocumentExtractedField">
+            | $Enums.ExtractedFieldSources;
         documentId?: StringFilter<"DocumentExtractedField"> | string;
     };
 
@@ -13464,7 +13467,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
@@ -13477,7 +13480,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
@@ -13547,8 +13550,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
@@ -13569,8 +13572,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
@@ -13673,7 +13676,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
@@ -13686,7 +13689,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
@@ -13734,8 +13737,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
@@ -13756,8 +13759,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
@@ -13771,7 +13774,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
@@ -13784,7 +13787,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
@@ -13833,8 +13836,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
@@ -13855,8 +13858,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
@@ -13870,7 +13873,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
@@ -13883,7 +13886,7 @@ export namespace Prisma {
         status: $Enums.DocumentStatuses;
         name: string;
         expiresAt?: Date | string | null;
-        riskLevel?: $Enums.RiskLevel | null;
+        riskLevel?: $Enums.RiskLevels | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
@@ -13931,8 +13934,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
@@ -13953,8 +13956,8 @@ export namespace Prisma {
             | string
             | null;
         riskLevel?:
-            | NullableEnumRiskLevelFieldUpdateOperationsInput
-            | $Enums.RiskLevel
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
             | null;
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
@@ -13965,10 +13968,10 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
-        type: $Enums.ExtractedFieldType;
+        type: $Enums.ExtractedFieldTypes;
         value: string;
         confidence: number;
-        source: $Enums.ExtractedFieldSource;
+        source: $Enums.ExtractedFieldSources;
     };
 
     export type ActionLogCreateManyDocumentInput = {
@@ -14010,13 +14013,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldUncheckedUpdateWithoutDocumentInput = {
@@ -14024,13 +14027,13 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         type?:
-            | EnumExtractedFieldTypeFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldType;
+            | EnumExtractedFieldTypesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldTypes;
         value?: StringFieldUpdateOperationsInput | string;
         confidence?: FloatFieldUpdateOperationsInput | number;
         source?:
-            | EnumExtractedFieldSourceFieldUpdateOperationsInput
-            | $Enums.ExtractedFieldSource;
+            | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+            | $Enums.ExtractedFieldSources;
     };
 
     export type DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentInput =
@@ -14039,13 +14042,13 @@ export namespace Prisma {
             createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             type?:
-                | EnumExtractedFieldTypeFieldUpdateOperationsInput
-                | $Enums.ExtractedFieldType;
+                | EnumExtractedFieldTypesFieldUpdateOperationsInput
+                | $Enums.ExtractedFieldTypes;
             value?: StringFieldUpdateOperationsInput | string;
             confidence?: FloatFieldUpdateOperationsInput | number;
             source?:
-                | EnumExtractedFieldSourceFieldUpdateOperationsInput
-                | $Enums.ExtractedFieldSource;
+                | EnumExtractedFieldSourcesFieldUpdateOperationsInput
+                | $Enums.ExtractedFieldSources;
         };
 
     export type ActionLogUpdateWithoutDocumentInput = {

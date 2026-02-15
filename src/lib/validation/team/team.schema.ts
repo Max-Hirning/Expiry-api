@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { defaultLogoSchema } from "../logo/logo.schema.js";
-import { Prisma, TeamMemberRole } from "@/database/master/generated/edge.js";
+import { Prisma, TeamMemberRoles } from "@/database/master/generated/edge.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
@@ -32,7 +32,7 @@ const defaultTeamSchema = z.object({
         id: z.uuid(),
         createdAt: z.date(),
         updatedAt: z.date(),
-        role: z.enum(TeamMemberRole),
+        role: z.enum(TeamMemberRoles),
         userId: z.uuid(),
     }),
 });
@@ -52,7 +52,7 @@ const createTeamBodySchema = defaultTeamSchema
             .array(
                 z.object({
                     userId: z.uuid(),
-                    role: z.enum(TeamMemberRole),
+                    role: z.enum(TeamMemberRoles),
                 })
             )
             .optional(),

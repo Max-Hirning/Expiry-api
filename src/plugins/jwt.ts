@@ -12,7 +12,7 @@ import {
     UserParamsInput,
 } from "@/lib/validation/user/user.schema.js";
 import {
-    TeamMemberRole,
+    TeamMemberRoles,
     User,
     UserRoles,
     UserStatuses,
@@ -137,7 +137,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                                     id: body.teamId,
                                     teamMembers: {
                                         some: {
-                                            role: TeamMemberRole.ADMIN,
+                                            role: TeamMemberRoles.ADMIN,
                                             userId: id,
                                         },
                                     },
@@ -255,7 +255,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                             teamMembers: {
                                 some: {
                                     userId: id,
-                                    role: TeamMemberRole.ADMIN,
+                                    role: TeamMemberRoles.ADMIN,
                                 },
                             },
                         },

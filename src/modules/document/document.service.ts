@@ -11,7 +11,7 @@ import { Prisma as PrismaMaster } from "@/database/master/generated/index.js";
 import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
     NotificationTypes,
-    TeamMemberRole,
+    TeamMemberRoles,
 } from "@/database/master/generated/index.js";
 import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
@@ -108,7 +108,7 @@ export const createDocumentService = (
         const teamMembers = await teamMemberRepository.findMany({
             where: {
                 teamId: params.teamId,
-                role: TeamMemberRole.ADMIN,
+                role: TeamMemberRoles.ADMIN,
                 userId: {
                     not: initiator.id,
                 },

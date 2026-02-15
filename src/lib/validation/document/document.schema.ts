@@ -3,7 +3,7 @@ import { Prisma } from "@/database/team/generated/edge.js";
 import { defaultFileSchema } from "../file/file.schema.js";
 import {
     DocumentStatuses,
-    RiskLevel,
+    RiskLevels,
 } from "@/database/team/generated/index.js";
 import {
     paginationQuerySchema,
@@ -18,7 +18,7 @@ const defaultDocumentSchema = z.object({
     status: z.enum(DocumentStatuses),
     name: z.string(),
     expiresAt: z.date().nullable(),
-    riskLevel: z.enum(RiskLevel).nullable(),
+    riskLevel: z.enum(RiskLevels).nullable(),
     documentExtractedFields: z.array(defaultDocumentExtractedFieldSchema),
     files: z.array(defaultFileSchema),
     tags: z.array(z.string()),
@@ -104,8 +104,8 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
         ]),
         expiresAtDateRange: z.union([z.coerce.date(), z.coerce.date()]),
         riskLevel: z.union([
-            z.enum(RiskLevel).transform((val) => [val]),
-            z.array(z.enum(RiskLevel)),
+            z.enum(RiskLevels).transform((val) => [val]),
+            z.array(z.enum(RiskLevels)),
         ]),
         sortOrder: z.enum(Prisma.SortOrder),
         sortField: z.enum(Prisma.DocumentScalarFieldEnum),

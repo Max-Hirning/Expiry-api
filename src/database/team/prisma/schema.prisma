@@ -31,7 +31,7 @@ enum DocumentStatuses {
   NEEDS_REVIEW
 }
 
-enum RiskLevel {
+enum RiskLevels {
   LOW
   MEDIUM
   HIGH
@@ -45,7 +45,7 @@ model Document {
   status    DocumentStatuses
   name      String           @unique
   expiresAt DateTime?        @map("expires_at")
-  riskLevel RiskLevel?       @map("risk_level")
+  riskLevel RiskLevels?      @map("risk_level")
 
   documentExtractedFields DocumentExtractedField[]
   actionLogs              ActionLog[]
@@ -100,14 +100,14 @@ model File {
   @@map("files")
 }
 
-enum ExtractedFieldType {
+enum ExtractedFieldTypes {
   EXPIRY_DATE
   ISSUE_DATE
   COUNTERPARTY
   AMOUNT
 }
 
-enum ExtractedFieldSource {
+enum ExtractedFieldSources {
   OCR
   REGEX
   MANUAL
@@ -118,11 +118,11 @@ model DocumentExtractedField {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  type       ExtractedFieldType
+  type       ExtractedFieldTypes
   value      String
   // TODO add in migration Confidence score in range [0.0 - 1.0]
   confidence Float
-  source     ExtractedFieldSource
+  source     ExtractedFieldSources
 
   documentId String   @map("document_id")
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)

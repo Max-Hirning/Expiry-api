@@ -203,20 +203,20 @@ exports.DocumentStatuses = exports.$Enums.DocumentStatuses = {
     NEEDS_REVIEW: "NEEDS_REVIEW",
 };
 
-exports.RiskLevel = exports.$Enums.RiskLevel = {
+exports.RiskLevels = exports.$Enums.RiskLevels = {
     LOW: "LOW",
     MEDIUM: "MEDIUM",
     HIGH: "HIGH",
 };
 
-exports.ExtractedFieldType = exports.$Enums.ExtractedFieldType = {
+exports.ExtractedFieldTypes = exports.$Enums.ExtractedFieldTypes = {
     EXPIRY_DATE: "EXPIRY_DATE",
     ISSUE_DATE: "ISSUE_DATE",
     COUNTERPARTY: "COUNTERPARTY",
     AMOUNT: "AMOUNT",
 };
 
-exports.ExtractedFieldSource = exports.$Enums.ExtractedFieldSource = {
+exports.ExtractedFieldSources = exports.$Enums.ExtractedFieldSources = {
     OCR: "OCR",
     REGEX: "REGEX",
     MANUAL: "MANUAL",

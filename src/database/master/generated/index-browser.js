@@ -253,7 +253,7 @@ exports.UserStatuses = exports.$Enums.UserStatuses = {
     INVITED: "INVITED",
 };
 
-exports.TeamMemberRole = exports.$Enums.TeamMemberRole = {
+exports.TeamMemberRoles = exports.$Enums.TeamMemberRoles = {
     ADMIN: "ADMIN",
     STAFF: "STAFF",
 };

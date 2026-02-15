@@ -24,7 +24,7 @@ import {
     Avatar,
     Prisma,
     Team,
-    TeamMemberRole,
+    TeamMemberRoles,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/edge.js";
@@ -352,7 +352,7 @@ export const createService = (
                         teamMembers: {
                             create: {
                                 teamId: body.teamId,
-                                role: TeamMemberRole.STAFF,
+                                role: TeamMemberRoles.STAFF,
                             },
                         },
                     }),

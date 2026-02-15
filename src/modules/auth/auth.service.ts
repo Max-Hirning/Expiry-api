@@ -13,7 +13,7 @@ import {
 } from "@/database/master/repositories/user/user.repository.js";
 import {
     Avatar,
-    TeamMemberRole,
+    TeamMemberRoles,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/index.js";
@@ -186,7 +186,7 @@ export const createAuthService = (
                                     password,
                                     teamMembers: {
                                         create: {
-                                            role: TeamMemberRole.ADMIN,
+                                            role: TeamMemberRoles.ADMIN,
                                             teamId: createdTeam.id,
                                         },
                                     },
@@ -206,7 +206,7 @@ export const createAuthService = (
                                 password,
                                 teamMembers: {
                                     create: {
-                                        role: TeamMemberRole.ADMIN,
+                                        role: TeamMemberRoles.ADMIN,
                                         teamId: createdTeam.id,
                                     },
                                 },

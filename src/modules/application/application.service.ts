@@ -14,7 +14,7 @@ import {
 } from "@/database/infra/tenant.js";
 import {
     Prisma as MasterPrisma,
-    TeamMemberRole,
+    TeamMemberRoles,
 } from "@/database/master/generated/index.js";
 import {
     documents,
@@ -333,7 +333,7 @@ export const createApplicationService = (
                     await withRepositories([client], async (client) =>
                         client.$transaction(async (tx) => {
                             const teamCreator = users.find(
-                                ({ role }) => role === TeamMemberRole.ADMIN
+                                ({ role }) => role === TeamMemberRoles.ADMIN
                             );
 
                             if (teamCreator) {
@@ -381,11 +381,11 @@ export const createApplicationService = (
                             }
 
                             const invitedUsers = users.filter(
-                                ({ role }) => role === TeamMemberRole.STAFF
+                                ({ role }) => role === TeamMemberRoles.STAFF
                             );
 
                             const invitersUsers = users.filter(
-                                ({ role }) => role === TeamMemberRole.ADMIN
+                                ({ role }) => role === TeamMemberRoles.ADMIN
                             );
 
                             for (const invitedUser of invitedUsers) {
