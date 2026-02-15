@@ -107,8 +107,14 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
             z.enum(RiskLevels).transform((val) => [val]),
             z.array(z.enum(RiskLevels)),
         ]),
-        sortOrder: z.enum(Prisma.SortOrder),
-        sortField: z.enum(Prisma.DocumentScalarFieldEnum),
+        sortOrder: z.enum(Prisma.SortOrder).default(Prisma.SortOrder.desc),
+        sortField: z
+            .enum(Prisma.DocumentScalarFieldEnum)
+            .default(Prisma.DocumentScalarFieldEnum.createdAt),
+        tagsIds: z.union([
+            z.uuid().transform((val) => [val]),
+            z.array(z.uuid()),
+        ]),
     })
     .partial()
     .required({

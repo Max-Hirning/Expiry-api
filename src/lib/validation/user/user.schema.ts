@@ -99,8 +99,10 @@ type UpdateUserResponse = z.infer<typeof updateUserResponseSchema>;
 const fetchUsersQuerySchema = paginationQuerySchema
     .extend({
         search: z.string(),
-        sortOrder: z.enum(Prisma.SortOrder),
-        sortField: z.enum(Prisma.UserScalarFieldEnum),
+        sortOrder: z.enum(Prisma.SortOrder).default(Prisma.SortOrder.desc),
+        sortField: z
+            .enum(Prisma.UserScalarFieldEnum)
+            .default(Prisma.UserScalarFieldEnum.createdAt),
         statuses: z.union([
             z.enum(UserStatuses).transform((val) => [val]),
             z.array(z.enum(UserStatuses)),

@@ -100,8 +100,10 @@ type FetchTeamResponse = z.infer<typeof fetchTeamResponseSchema>;
 const fetchTeamsQuerySchema = paginationQuerySchema
     .extend({
         search: z.string(),
-        sortOrder: z.enum(Prisma.SortOrder),
-        sortField: z.enum(Prisma.TeamScalarFieldEnum),
+        sortOrder: z.enum(Prisma.SortOrder).default(Prisma.SortOrder.desc),
+        sortField: z
+            .enum(Prisma.TeamScalarFieldEnum)
+            .default(Prisma.TeamScalarFieldEnum.createdAt),
     })
     .partial()
     .required({

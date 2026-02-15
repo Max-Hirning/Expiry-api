@@ -256,6 +256,15 @@ export const createDocumentService = (
                     },
                 ],
             }),
+            ...(query.tagsIds && {
+                documentTags: {
+                    some: {
+                        tagId: {
+                            in: query.tagsIds,
+                        },
+                    },
+                },
+            }),
             ...(query.statuses && {
                 status: {
                     in: query.statuses,

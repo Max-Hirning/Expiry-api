@@ -3,6 +3,8 @@ import { EnvConfig } from "./env.type.js";
 import { FastifyBaseLogger } from "fastify";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { PrismaClient } from "@prisma/client/extension";
+import { TagService } from "@/modules/tag/tag.service.js";
+import { TagHandler } from "@/modules/tag/tag.handler.js";
 import { TeamService } from "@/modules/team/team.service.js";
 import { TeamHandler } from "@/modules/team/team.handler.js";
 import { AuthService } from "@/modules/auth/auth.service.js";
@@ -32,6 +34,9 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    tagService: TagService;
+    tagHandler: TagHandler;
 
     teamStatRepository: TeamStatRepository;
     jwt: JWT;

@@ -60,7 +60,7 @@ export const createDocumentRoutes = (
             schema: {
                 tags: ["document"],
                 summary: "Fetch documents",
-                params: documentParamsSchema,
+                params: teamParamsSchema,
                 querystring: fetchDocumentsQuerySchema,
                 response: {
                     200: fetchDocumentsResponseSchema,
