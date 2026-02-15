@@ -5,15 +5,24 @@ import { EnvConfig } from "@/types/env.type.js";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { images, teams, users } from "./application.constants.js";
+import { withRepositories } from "@/lib/utils/repository.js";
 import { getRandomInt, splitRandomSum } from "./application.utils.js";
-import { Prisma as MasterPrisma } from "@/database/master/generated/index.js";
-import { PrismaClient as TeamPrisma } from "@/database/team/generated/index.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     createTenantDatabase,
     migrateTenantDatabase,
 } from "@/database/infra/tenant.js";
+import {
+    Prisma as MasterPrisma,
+    TeamMemberRole,
+} from "@/database/master/generated/index.js";
+import {
+    documents,
+    images,
+    tags,
+    teams,
+    users,
+} from "./application.constants.js";
 import {
     createTagRepository,
     TagRepository,
@@ -22,6 +31,11 @@ import {
     createDocumentRepository,
     DocumentRepository,
 } from "@/database/team/repositories/document/docuement.repository.js";
+import {
+    PrismaClient as TeamPrismaClient,
+    Prisma as TeamPrisma,
+    ActionLogTypes,
+} from "@/database/team/generated/index.js";
 import {
     ActionLogRepository,
     createActionLogRepository,
@@ -39,7 +53,7 @@ export type ApplicationService = {
         teamId: string
     ) => Promise<DocumentTagRepository>;
     initActionLogRepository: (teamId: string) => Promise<ActionLogRepository>;
-    initTeamTenantClient: (teamId: string) => Promise<TeamPrisma>;
+    initTeamTenantClient: (teamId: string) => Promise<TeamPrismaClient>;
     setTestData: () => Promise<string>;
 };
 
@@ -101,6 +115,72 @@ export const createApplicationService = (
         await tx.teamMember.createMany({
             data: teamMembersData,
         });
+    };
+
+    const initTeamTenantClient = async (teamId: string) => {
+        return prisma.team(
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+        );
+    };
+
+    const initActionLogRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createActionLogRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+        );
+
+        return repository;
+    };
+
+    const initDocumentRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createDocumentRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+        );
+
+        return repository;
+    };
+
+    const initTagRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createTagRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+        );
+
+        return repository;
+    };
+
+    const initDocumentTagRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createDocumentTagRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+        );
+
+        return repository;
     };
 
     return {
@@ -225,83 +305,199 @@ export const createApplicationService = (
             );
 
             for (const createdTeam of createdTeams) {
+                const users = await prisma.master.teamMember.findMany({
+                    where: {
+                        teamId: createdTeam.id,
+                    },
+                    select: {
+                        user: {
+                            select: {
+                                id: true,
+                                fullName: true,
+                                avatar: true,
+                            },
+                        },
+                        role: true,
+                    },
+                    orderBy: {
+                        role: "desc",
+                    },
+                });
+
                 try {
                     await createTenantDatabase(createdTeam.id);
                     await migrateTenantDatabase(createdTeam.id);
-                } catch (error) {
-                    await teamRepository.delete({
-                        where: {
-                            id: createdTeam.id,
-                        },
-                    });
 
+                    const client = await initTeamTenantClient(createdTeam.id);
+
+                    await withRepositories([client], async (client) =>
+                        client.$transaction(async (tx) => {
+                            const teamCreator = users.find(
+                                ({ role }) => role === TeamMemberRole.ADMIN
+                            );
+
+                            if (teamCreator) {
+                                await tx.actionLog.create({
+                                    data: {
+                                        type: ActionLogTypes.CREATE_TEAM,
+                                        actorId: teamCreator.user.id,
+                                        actorFullName:
+                                            teamCreator.user.fullName,
+                                        actorAvatarUrl:
+                                            teamCreator.user.avatar?.url,
+                                    },
+                                });
+                            }
+
+                            const createdTags =
+                                await tx.tag.createManyAndReturn({
+                                    data: tags,
+                                });
+
+                            const createdDocuments =
+                                await tx.document.createManyAndReturn({
+                                    data: documents,
+                                });
+
+                            for (const createdDocument of createdDocuments) {
+                                const documentCreator =
+                                    users[getRandomInt(0, users.length - 1)];
+
+                                if (documentCreator) {
+                                    await tx.actionLog.create({
+                                        data: {
+                                            type: ActionLogTypes.CREATE_DOCUMENT,
+                                            actorId: documentCreator.user.id,
+                                            actorFullName:
+                                                documentCreator.user.fullName,
+                                            actorAvatarUrl:
+                                                documentCreator.user.avatar
+                                                    ?.url,
+                                            documentName: createdDocument.name,
+                                            documentId: createdDocument.id,
+                                        },
+                                    });
+                                }
+                            }
+
+                            const invitedUsers = users.filter(
+                                ({ role }) => role === TeamMemberRole.STAFF
+                            );
+
+                            const invitersUsers = users.filter(
+                                ({ role }) => role === TeamMemberRole.ADMIN
+                            );
+
+                            for (const invitedUser of invitedUsers) {
+                                const invitersUser =
+                                    invitersUsers[
+                                        getRandomInt(
+                                            0,
+                                            invitersUsers.length - 1
+                                        )
+                                    ];
+
+                                if (invitersUser) {
+                                    await tx.actionLog.create({
+                                        data: {
+                                            type: ActionLogTypes.ADD_USER,
+                                            actorId: invitersUser.user.id,
+                                            actorFullName:
+                                                invitersUser.user.fullName,
+                                            actorAvatarUrl:
+                                                invitersUser.user.avatar?.url,
+                                            userId: invitedUser.user.id,
+                                            userFullName:
+                                                invitedUser.user.fullName,
+                                            userAvatarUrl:
+                                                invitedUser.user.avatar?.url,
+                                        },
+                                    });
+                                }
+                            }
+
+                            const documentTags: TeamPrisma.DocumentTagCreateManyInput[] =
+                                [];
+
+                            // First: ensure every tag is assigned at least once
+                            createdTags.forEach((tag, index) => {
+                                const docIndex =
+                                    (index % (createdDocuments.length - 1)) + 1;
+                                // +1 skips document[0]
+
+                                documentTags.push({
+                                    documentId: createdDocuments[docIndex].id,
+                                    tagId: tag.id,
+                                });
+                            });
+
+                            // Second: optionally add extra random relations
+                            for (
+                                let index = 1;
+                                index < createdDocuments.length;
+                                index++
+                            ) {
+                                createdTags.forEach((tag) => {
+                                    if (Math.random() > 0.7) {
+                                        documentTags.push({
+                                            documentId:
+                                                createdDocuments[index].id,
+                                            tagId: tag.id,
+                                        });
+                                    }
+                                });
+                            }
+
+                            await tx.documentTag.createMany({
+                                data: documentTags,
+                            });
+
+                            for (const ctreatedDocument of createdDocuments) {
+                                const filesLimit = getRandomInt(
+                                    1,
+                                    images.length
+                                );
+
+                                const data: TeamPrisma.FileCreateManyInput[] =
+                                    Array.from({ length: filesLimit }).map(
+                                        () => ({
+                                            key: randomUUID(),
+                                            fileSize: 1000,
+                                            mimeType: "image/jpeg",
+                                            url: images[
+                                                getRandomInt(
+                                                    0,
+                                                    images.length - 1
+                                                )
+                                            ],
+                                            urlExpiresAt: addYears(
+                                                new Date(),
+                                                100
+                                            ),
+                                            width: 600,
+                                            height: 600,
+                                            documentId: ctreatedDocument.id,
+                                        })
+                                    );
+
+                                await tx.file.createMany({
+                                    data,
+                                });
+                            }
+                        })
+                    );
+                } catch (error) {
                     log.error({ error }, "Failed o created tenant DB");
                 }
             }
 
             return "Test data was created";
         },
-        initTeamTenantClient: async (teamId: string) => {
-            return prisma.team(
-                config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
-            );
-        },
-        initActionLogRepository: async (teamId: string) => {
-            await teamRepository.findUniqueOrFail({
-                where: {
-                    id: teamId,
-                },
-            });
-
-            const repository = createActionLogRepository(
-                prisma,
-                config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
-            );
-
-            return repository;
-        },
-        initDocumentRepository: async (teamId: string) => {
-            await teamRepository.findUniqueOrFail({
-                where: {
-                    id: teamId,
-                },
-            });
-
-            const repository = createDocumentRepository(
-                prisma,
-                config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
-            );
-
-            return repository;
-        },
-        initTagRepository: async (teamId: string) => {
-            await teamRepository.findUniqueOrFail({
-                where: {
-                    id: teamId,
-                },
-            });
-
-            const repository = createTagRepository(
-                prisma,
-                config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
-            );
-
-            return repository;
-        },
-        initDocumentTagRepository: async (teamId: string) => {
-            await teamRepository.findUniqueOrFail({
-                where: {
-                    id: teamId,
-                },
-            });
-
-            const repository = createDocumentTagRepository(
-                prisma,
-                config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
-            );
-
-            return repository;
-        },
+        initTeamTenantClient,
+        initActionLogRepository,
+        initDocumentRepository,
+        initTagRepository,
+        initDocumentTagRepository,
     };
 };
 

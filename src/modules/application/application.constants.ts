@@ -1,6 +1,7 @@
 import { addDays } from "date-fns";
 import {
     DocumentStatuses,
+    RiskLevel,
     Prisma as TeamPrisma,
 } from "@/database/team/generated/index.js";
 import {
@@ -238,13 +239,33 @@ const tags: TeamPrisma.TagCreateInput[] = Array.from(
 
 const allStatuses = Object.values(DocumentStatuses);
 
+const allRiskLevels = Object.values(RiskLevel);
+
+const getRandomDocumentRiskLevel = (status: DocumentStatuses) => {
+    if (
+        status === DocumentStatuses.ACTIVE ||
+        status === DocumentStatuses.ARCHIVED ||
+        status === DocumentStatuses.NEEDS_REVIEW
+    ) {
+        return allRiskLevels[Math.floor(Math.random() * allRiskLevels.length)];
+    }
+
+    return null;
+};
+
 const documents: TeamPrisma.DocumentCreateInput[] = Array.from(
     { length: 10 },
-    (_, index) => ({
-        name: `Document #${index + 1}`,
-        status: allStatuses[Math.floor(Math.random() * allStatuses.length)],
-        expiresAt: addDays(new Date(), index + 1),
-    })
+    (_, index) => {
+        const status =
+            allStatuses[Math.floor(Math.random() * allStatuses.length)];
+
+        return {
+            name: `Document #${index + 1}`,
+            status,
+            expiresAt: addDays(new Date(), index + 1),
+            riskLevel: getRandomDocumentRiskLevel(status),
+        };
+    }
 );
 
 const images = [
