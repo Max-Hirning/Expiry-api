@@ -28,15 +28,10 @@ const configurePrisma = async (fastify: FastifyInstance) => {
     const masterPrisma = new MasterPrisma({ adapter });
     await masterPrisma.$connect();
 
-    const createTeamPrisma: TeamPrismaFactory = (schema) => {
-        const adapter = new PrismaPg(
-            {
-                connectionString: fastify.config.MASTER_DATABASE_URL,
-            },
-            {
-                schema,
-            }
-        );
+    const createTeamPrisma: TeamPrismaFactory = (dbUrl) => {
+        const adapter = new PrismaPg({
+            connectionString: dbUrl,
+        });
 
         const client = new TeamPrisma({ adapter });
         client.$connect();

@@ -1,4 +1,4 @@
-import { shuffle } from "lodash";
+import _ from "lodash";
 import { addYears } from "date-fns";
 import { randomUUID } from "crypto";
 import { EnvConfig } from "@/types/env.type.js";
@@ -68,7 +68,7 @@ export const createApplicationService = (
         users: { id: string }[],
         createdTeams: { id: string }[]
     ) => {
-        const shuffledUsers = shuffle(users);
+        const shuffledUsers = _.shuffle(users);
 
         const teamMembersData: {
             role: "ADMIN" | "STAFF";
@@ -119,7 +119,10 @@ export const createApplicationService = (
 
     const initTeamTenantClient = async (teamId: string) => {
         return prisma.team(
-            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
         );
     };
 
@@ -132,7 +135,10 @@ export const createApplicationService = (
 
         const repository = createActionLogRepository(
             prisma,
-            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
         );
 
         return repository;
@@ -147,7 +153,10 @@ export const createApplicationService = (
 
         const repository = createDocumentRepository(
             prisma,
-            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
         );
 
         return repository;
@@ -162,7 +171,10 @@ export const createApplicationService = (
 
         const repository = createTagRepository(
             prisma,
-            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
         );
 
         return repository;
@@ -177,7 +189,10 @@ export const createApplicationService = (
 
         const repository = createDocumentTagRepository(
             prisma,
-            config.MASTER_DATABASE_URL.replaceAll("/postgres", `/${teamId}`)
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
         );
 
         return repository;
