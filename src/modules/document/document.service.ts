@@ -234,26 +234,6 @@ export const createDocumentService = (
                             },
                         },
                     },
-                    {
-                        documentExtractedFields: {
-                            some: {
-                                value: {
-                                    mode: "insensitive",
-                                    contains: query.search,
-                                },
-                            },
-                        },
-                    },
-                    {
-                        documentExtractedFields: {
-                            some: {
-                                value: {
-                                    mode: "insensitive",
-                                    contains: query.search,
-                                },
-                            },
-                        },
-                    },
                 ],
             }),
             ...(query.tagsIds && {
@@ -268,6 +248,18 @@ export const createDocumentService = (
             ...(query.statuses && {
                 status: {
                     in: query.statuses,
+                },
+            }),
+            ...(query.riskLevels && {
+                riskLevel: {
+                    in: query.riskLevels,
+                },
+            }),
+            ...(query.expiresAtDateRange &&
+                query.expiresAtDateRange.length > 0 && {
+                expiresAt: {
+                    gte: query.expiresAtDateRange[0],
+                    lte: query.expiresAtDateRange[1],
                 },
             }),
         };

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
+import { fetchDocumentsQuerySchema } from "../document/document.schema.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
@@ -10,6 +11,7 @@ const defaultTagSchema = z.object({
     createdAt: z.date(),
     updatedAt: z.date(),
     tag: z.string(),
+    documents: z.int(),
 });
 
 const tagParamsSchema = z.object({
@@ -33,6 +35,11 @@ const fetchTagsQuerySchema = paginationQuerySchema
         search: z.string(),
         sortOrder: z.enum(Prisma.SortOrder).default(Prisma.SortOrder.desc),
         sortField: z.enum(Prisma.TagScalarFieldEnum, "documentsCounts"),
+        ...fetchDocumentsQuerySchema.pick({
+            statuses: true,
+            expiresAtDateRange: true,
+            riskLevels: true,
+        }).shape,
     })
     .partial()
     .required({

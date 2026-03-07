@@ -102,8 +102,8 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
             z.enum(DocumentStatuses).transform((val) => [val]),
             z.array(z.enum(DocumentStatuses)),
         ]),
-        expiresAtDateRange: z.union([z.coerce.date(), z.coerce.date()]),
-        riskLevel: z.union([
+        expiresAtDateRange: z.tuple([z.coerce.date(), z.coerce.date()]),
+        riskLevels: z.union([
             z.enum(RiskLevels).transform((val) => [val]),
             z.array(z.enum(RiskLevels)),
         ]),

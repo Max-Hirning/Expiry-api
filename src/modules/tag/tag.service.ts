@@ -37,18 +37,55 @@ export const createtagService = (
                 where: {
                     id: params.tagId,
                 },
+                select: {
+                    ...defaultTagSelector,
+                    _count: {
+                        select: {
+                            documentTags: true,
+                        },
+                    },
+                },
             })
         );
 
         return {
             message: "Tag fetched successfully.",
             data: {
-                tag,
+                tag: {
+                    ...tag,
+                    documents: tag._count.documentTags,
+                },
             },
         };
     },
     getTags: async ({ query, params }) => {
         const skip = (query.page - 1) * query.perPage;
+
+        const documentWhere: PrismaTeam.DocumentWhereInput = {
+            ...(query.statuses && {
+                status: {
+                    in: query.statuses,
+                },
+            }),
+            ...(query.riskLevels && {
+                riskLevel: {
+                    in: query.riskLevels,
+                },
+            }),
+            ...(query.expiresAtDateRange &&
+                query.expiresAtDateRange.length > 0 && {
+                expiresAt: {
+                    gte: query.expiresAtDateRange[0],
+                    lte: query.expiresAtDateRange[1],
+                },
+            }),
+            ...(query.search && {
+                name: {
+                    mode: "insensitive",
+                    contains: query.search,
+                },
+            }),
+        };
 
         const where: PrismaTeam.TagWhereInput = {
             ...(query.search && {
@@ -59,7 +96,26 @@ export const createtagService = (
                             contains: query.search,
                         },
                     },
+                    {
+                        documentTags: {
+                            some: {
+                                document: {
+                                    name: {
+                                        mode: "insensitive",
+                                        contains: query.search,
+                                    },
+                                },
+                            },
+                        },
+                    },
                 ],
+            }),
+            ...(Object.keys(documentWhere).length > 0 && {
+                documentTags: {
+                    some: {
+                        document: documentWhere,
+                    },
+                },
             }),
         };
 
@@ -84,7 +140,18 @@ export const createtagService = (
                                     createdAt: PrismaTeam.SortOrder.desc,
                                 }),
                         },
-                        select: defaultTagSelector,
+                        select: {
+                            ...defaultTagSelector,
+                            _count: {
+                                select: {
+                                    documentTags: {
+                                        where: {
+                                            document: documentWhere,
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     }),
                     tagRepo.count({
                         where,
@@ -99,7 +166,10 @@ export const createtagService = (
         return {
             message: "Tags fetched successfully.",
             data: {
-                tags,
+                tags: tags.map((tag) => ({
+                    ...tag,
+                    documents: tag._count.documentTags,
+                })),
                 pagination: {
                     page: query.page,
                     perPage: query.perPage,
