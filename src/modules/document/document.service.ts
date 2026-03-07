@@ -215,26 +215,10 @@ export const createDocumentService = (
 
         const where: PrismaTeam.DocumentWhereInput = {
             ...(query.search && {
-                OR: [
-                    {
-                        name: {
-                            mode: "insensitive",
-                            contains: query.search,
-                        },
-                    },
-                    {
-                        documentTags: {
-                            some: {
-                                tag: {
-                                    tag: {
-                                        mode: "insensitive",
-                                        contains: query.search,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                ],
+                name: {
+                    mode: "insensitive",
+                    contains: query.search,
+                },
             }),
             ...(query.tagsIds && {
                 documentTags: {
