@@ -278,6 +278,31 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
+                if (action === Actions.GET_ACTION_LOGS) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: TeamParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: {
+                                some: {
+                                    userId: id,
+                                },
+                            },
+                        },
+                    });
+
+                    if (team) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
                 if (
                     [
                         Actions.GET_DOCUMENT,

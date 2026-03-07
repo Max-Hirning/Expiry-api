@@ -1,6 +1,7 @@
 export enum Actions {
     GET_USERS,
     INVITE_USER,
+    GET_ACTION_LOGS,
     DELETE_INVITED_USER,
     DELETE_USER,
     UPDATE_USER,

@@ -22,7 +22,7 @@ export const createDocumentRoutes = (
             schema: {
                 tags: ["document"],
                 summary: "Fetch document",
-                params: teamParamsSchema,
+                params: documentParamsSchema,
                 response: {
                     200: fetchDocumentsResponseSchema,
                 },
@@ -41,7 +41,7 @@ export const createDocumentRoutes = (
             schema: {
                 tags: ["document"],
                 summary: "Delete document",
-                params: teamParamsSchema,
+                params: documentParamsSchema,
                 response: {
                     200: fetchDocumentsResponseSchema,
                 },

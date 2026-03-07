@@ -13,6 +13,8 @@ import { UserHandler } from "@/modules/user/user.handler.js";
 import { UserService } from "@/modules/user/user.service.js";
 import { DocumentService } from "@/modules/document/document.service.js";
 import { DocumentHandler } from "@/modules/document/document.handler.js";
+import { ActionLogService } from "@/modules/action-log/action-log.service.js";
+import { ActionLogHandler } from "@/modules/action-log/action-log.handler.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 import { ApplicationHandler } from "@/modules/application/application.handler.js";
 import { TagRepository } from "@/database/team/repositories/tag/tag.repository.js";
@@ -34,6 +36,9 @@ export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    actionLogService: ActionLogService;
+    actionLogHandler: ActionLogHandler;
 
     tagService: TagService;
     tagHandler: TagHandler;
