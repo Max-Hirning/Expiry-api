@@ -1,3 +1,4 @@
+import { Lifetime } from "awilix";
 import { addDays, addMinutes } from "date-fns";
 import { EnvConfig } from "@/types/env.type.js";
 import { Storage } from "@google-cloud/storage";
@@ -25,7 +26,15 @@ export type GcpService = {
 };
 
 export const createGcpService = (config: EnvConfig): GcpService => {
-    const storage = new Storage();
+    const isDev = config.NODE_ENV === "development";
+
+    const storage = isDev
+        ? new Storage({
+            apiEndpoint: "http://localhost:4443",
+            projectId: "local-project",
+        })
+        : new Storage();
+
     const BUCKET_NAME = config.GCP_BUCKET;
 
     const configureFileKey = (p: ConfigureFileKeyArg) => {
@@ -78,7 +87,7 @@ export const createGcpService = (config: EnvConfig): GcpService => {
             const [signedUrl] = await file.getSignedUrl({
                 version: "v4",
                 action: "write",
-                expires: addMinutes(new Date(), 15), // 15 mins
+                expires: addMinutes(new Date(), 5), // 5 mins
                 contentType: mimeType,
             });
 
@@ -120,4 +129,4 @@ export const createGcpService = (config: EnvConfig): GcpService => {
     };
 };
 
-addDIResolverName(createGcpService, "gcpService");
+addDIResolverName(createGcpService, "gcpService", Lifetime.SINGLETON);

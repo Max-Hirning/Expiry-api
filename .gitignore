@@ -5,3 +5,5 @@ dist
 tsconfig.tsbuildinfo
 .volumes
 dbml
+settings.local.json
+.mcp.json

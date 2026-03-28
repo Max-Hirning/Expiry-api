@@ -33,6 +33,18 @@ services:
         volumes:
             - ./src:/home/node/app/src
 
+    fake-gcs:
+        image: fsouza/fake-gcs-server:latest
+        container_name: app-fake-gcs
+        restart: no
+        ports:
+            - "4443:4443"
+        command: -scheme http -port 4443 -public-host localhost:4443
+        networks:
+            - primary
+        volumes:
+            - "./.volumes/fake-gcs:/data"
+
 networks:
     primary:
         driver: bridge

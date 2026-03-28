@@ -1,4 +1,4 @@
-import { RESOLVER } from "awilix";
+import { Lifetime, RESOLVER } from "awilix";
 import { Cradle } from "@/types/di-container.type.js";
 
 /**
@@ -17,11 +17,15 @@ import { Cradle } from "@/types/di-container.type.js";
  */
 export const addDIResolverName = <T extends object>(
     fn: T,
-    name: keyof Cradle
+    name: keyof Cradle,
+    lifetime?: (typeof Lifetime)[keyof typeof Lifetime]
 ): T => {
     return Object.assign(fn, {
         [RESOLVER]: {
             name: name,
+            ...(lifetime && {
+                lifetime,
+            }),
         },
     });
 };
