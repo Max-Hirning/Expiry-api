@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN "invited_at" TIMESTAMP(3) NOT NULL DEFAULT NOW() - (RANDOM() * INTERVAL '365 days'),
+ADD COLUMN "last_login_at" TIMESTAMP(3) NOT NULL DEFAULT NOW() - (RANDOM() * INTERVAL '30 days');
+

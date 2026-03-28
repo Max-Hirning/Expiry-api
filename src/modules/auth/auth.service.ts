@@ -65,6 +65,15 @@ export const createAuthService = (
                 throw new ConflictError("Password is invalid");
             }
 
+            await userRepository.update({
+                where: {
+                    id: userToSignIn.id,
+                },
+                data: {
+                    lastLoginAt: new Date(),
+                },
+            });
+
             const {
                 data: { user },
             } = await userService.getUser({

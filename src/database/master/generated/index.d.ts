@@ -1886,6 +1886,8 @@ export namespace Prisma {
         phoneNumber: string | null;
         mfaType: $Enums.MfaTypes | null;
         password: string | null;
+        lastLoginAt: Date | null;
+        invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
     };
@@ -1899,6 +1901,8 @@ export namespace Prisma {
         phoneNumber: string | null;
         mfaType: $Enums.MfaTypes | null;
         password: string | null;
+        lastLoginAt: Date | null;
+        invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
     };
@@ -1912,6 +1916,8 @@ export namespace Prisma {
         phoneNumber: number;
         mfaType: number;
         password: number;
+        lastLoginAt: number;
+        invitedAt: number;
         role: number;
         status: number;
         _all: number;
@@ -1926,6 +1932,8 @@ export namespace Prisma {
         phoneNumber?: true;
         mfaType?: true;
         password?: true;
+        lastLoginAt?: true;
+        invitedAt?: true;
         role?: true;
         status?: true;
     };
@@ -1939,6 +1947,8 @@ export namespace Prisma {
         phoneNumber?: true;
         mfaType?: true;
         password?: true;
+        lastLoginAt?: true;
+        invitedAt?: true;
         role?: true;
         status?: true;
     };
@@ -1952,6 +1962,8 @@ export namespace Prisma {
         phoneNumber?: true;
         mfaType?: true;
         password?: true;
+        lastLoginAt?: true;
+        invitedAt?: true;
         role?: true;
         status?: true;
         _all?: true;
@@ -2041,6 +2053,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt: Date | null;
+        invitedAt: Date | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         _count: UserCountAggregateOutputType | null;
@@ -2074,6 +2088,8 @@ export namespace Prisma {
             phoneNumber?: boolean;
             mfaType?: boolean;
             password?: boolean;
+            lastLoginAt?: boolean;
+            invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
             teamMembers?: boolean | User$teamMembersArgs<ExtArgs>;
@@ -2100,6 +2116,8 @@ export namespace Prisma {
             phoneNumber?: boolean;
             mfaType?: boolean;
             password?: boolean;
+            lastLoginAt?: boolean;
+            invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
         },
@@ -2118,6 +2136,8 @@ export namespace Prisma {
             phoneNumber?: boolean;
             mfaType?: boolean;
             password?: boolean;
+            lastLoginAt?: boolean;
+            invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
         },
@@ -2133,6 +2153,8 @@ export namespace Prisma {
         phoneNumber?: boolean;
         mfaType?: boolean;
         password?: boolean;
+        lastLoginAt?: boolean;
+        invitedAt?: boolean;
         role?: boolean;
         status?: boolean;
     };
@@ -2148,6 +2170,8 @@ export namespace Prisma {
         | "phoneNumber"
         | "mfaType"
         | "password"
+        | "lastLoginAt"
+        | "invitedAt"
         | "role"
         | "status",
         ExtArgs["result"]["user"]
@@ -2192,6 +2216,8 @@ export namespace Prisma {
                 phoneNumber: string;
                 mfaType: $Enums.MfaTypes | null;
                 password: string;
+                lastLoginAt: Date | null;
+                invitedAt: Date | null;
                 role: $Enums.UserRoles;
                 status: $Enums.UserStatuses;
             },
@@ -2854,6 +2880,8 @@ export namespace Prisma {
         readonly phoneNumber: FieldRef<"User", "String">;
         readonly mfaType: FieldRef<"User", "MfaTypes">;
         readonly password: FieldRef<"User", "String">;
+        readonly lastLoginAt: FieldRef<"User", "DateTime">;
+        readonly invitedAt: FieldRef<"User", "DateTime">;
         readonly role: FieldRef<"User", "UserRoles">;
         readonly status: FieldRef<"User", "UserStatuses">;
     }
@@ -14800,6 +14828,8 @@ export namespace Prisma {
         phoneNumber: "phoneNumber";
         mfaType: "mfaType";
         password: "password";
+        lastLoginAt: "lastLoginAt";
+        invitedAt: "invitedAt";
         role: "role";
         status: "status";
     };
@@ -15106,6 +15136,8 @@ export namespace Prisma {
         phoneNumber?: StringFilter<"User"> | string;
         mfaType?: EnumMfaTypesNullableFilter<"User"> | $Enums.MfaTypes | null;
         password?: StringFilter<"User"> | string;
+        lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+        invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
         role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
         status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
         teamMembers?: TeamMemberListRelationFilter;
@@ -15133,6 +15165,8 @@ export namespace Prisma {
         phoneNumber?: SortOrder;
         mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
+        lastLoginAt?: SortOrderInput | SortOrder;
+        invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
         teamMembers?: TeamMemberOrderByRelationAggregateInput;
@@ -15158,6 +15192,8 @@ export namespace Prisma {
                 | $Enums.MfaTypes
                 | null;
             password?: StringFilter<"User"> | string;
+            lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+            invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
             role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
             status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
             teamMembers?: TeamMemberListRelationFilter;
@@ -15187,6 +15223,8 @@ export namespace Prisma {
         phoneNumber?: SortOrder;
         mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
+        lastLoginAt?: SortOrderInput | SortOrder;
+        invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
         _count?: UserCountOrderByAggregateInput;
@@ -15213,6 +15251,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringWithAggregatesFilter<"User"> | string;
+        lastLoginAt?:
+            | DateTimeNullableWithAggregatesFilter<"User">
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | DateTimeNullableWithAggregatesFilter<"User">
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesWithAggregatesFilter<"User"> | $Enums.UserRoles;
         status?:
             | EnumUserStatusesWithAggregatesFilter<"User">
@@ -15973,6 +16021,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
@@ -15991,6 +16041,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
@@ -16012,6 +16064,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -16035,6 +16097,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -16055,6 +16127,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
     };
@@ -16071,6 +16145,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -16089,6 +16173,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -16837,6 +16931,21 @@ export namespace Prisma {
             | null;
     };
 
+    export type DateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
+    };
+
     export type EnumUserRolesFilter<$PrismaModel = never> = {
         equals?: $Enums.UserRoles | EnumUserRolesFieldRefInput<$PrismaModel>;
         in?: $Enums.UserRoles[] | ListEnumUserRolesFieldRefInput<$PrismaModel>;
@@ -16908,6 +17017,8 @@ export namespace Prisma {
         phoneNumber?: SortOrder;
         mfaType?: SortOrder;
         password?: SortOrder;
+        lastLoginAt?: SortOrder;
+        invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
     };
@@ -16921,6 +17032,8 @@ export namespace Prisma {
         phoneNumber?: SortOrder;
         mfaType?: SortOrder;
         password?: SortOrder;
+        lastLoginAt?: SortOrder;
+        invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
     };
@@ -16934,6 +17047,8 @@ export namespace Prisma {
         phoneNumber?: SortOrder;
         mfaType?: SortOrder;
         password?: SortOrder;
+        lastLoginAt?: SortOrder;
+        invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
     };
@@ -16992,6 +17107,28 @@ export namespace Prisma {
             _min?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
             _max?: NestedEnumMfaTypesNullableFilter<$PrismaModel>;
         };
+
+    export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
+    };
 
     export type EnumUserRolesWithAggregatesFilter<$PrismaModel = never> = {
         equals?: $Enums.UserRoles | EnumUserRolesFieldRefInput<$PrismaModel>;
@@ -17459,21 +17596,6 @@ export namespace Prisma {
             | $Enums.NotificationTypes;
     };
 
-    export type DateTimeNullableFilter<$PrismaModel = never> = {
-        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
-        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
-        notIn?:
-            | Date[]
-            | string[]
-            | ListDateTimeFieldRefInput<$PrismaModel>
-            | null;
-        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
-    };
-
     export type StringNullableFilter<$PrismaModel = never> = {
         equals?: string | StringFieldRefInput<$PrismaModel> | null;
         in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
@@ -17551,28 +17673,6 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumNotificationTypesFilter<$PrismaModel>;
         _max?: NestedEnumNotificationTypesFilter<$PrismaModel>;
-    };
-
-    export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
-        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
-        notIn?:
-            | Date[]
-            | string[]
-            | ListDateTimeFieldRefInput<$PrismaModel>
-            | null;
-        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
-            | Date
-            | string
-            | null;
-        _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
-        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
     };
 
     export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -17721,6 +17821,10 @@ export namespace Prisma {
 
     export type NullableEnumMfaTypesFieldUpdateOperationsInput = {
         set?: $Enums.MfaTypes | null;
+    };
+
+    export type NullableDateTimeFieldUpdateOperationsInput = {
+        set?: Date | string | null;
     };
 
     export type EnumUserRolesFieldUpdateOperationsInput = {
@@ -18487,10 +18591,6 @@ export namespace Prisma {
         set?: $Enums.NotificationTypes;
     };
 
-    export type NullableDateTimeFieldUpdateOperationsInput = {
-        set?: Date | string | null;
-    };
-
     export type NullableStringFieldUpdateOperationsInput = {
         set?: string | null;
     };
@@ -18573,6 +18673,21 @@ export namespace Prisma {
             | NestedEnumMfaTypesNullableFilter<$PrismaModel>
             | $Enums.MfaTypes
             | null;
+    };
+
+    export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
     };
 
     export type NestedEnumUserRolesFilter<$PrismaModel = never> = {
@@ -18672,6 +18787,30 @@ export namespace Prisma {
         gt?: number | IntFieldRefInput<$PrismaModel>;
         gte?: number | IntFieldRefInput<$PrismaModel>;
         not?: NestedIntNullableFilter<$PrismaModel> | number | null;
+    };
+
+    export type NestedDateTimeNullableWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
+        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
+        notIn?:
+            | Date[]
+            | string[]
+            | ListDateTimeFieldRefInput<$PrismaModel>
+            | null;
+        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
+            | Date
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
+        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
     };
 
     export type NestedEnumUserRolesWithAggregatesFilter<$PrismaModel = never> =
@@ -18819,21 +18958,6 @@ export namespace Prisma {
             | $Enums.NotificationTypes;
     };
 
-    export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
-        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
-        notIn?:
-            | Date[]
-            | string[]
-            | ListDateTimeFieldRefInput<$PrismaModel>
-            | null;
-        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
-    };
-
     export type NestedStringNullableFilter<$PrismaModel = never> = {
         equals?: string | StringFieldRefInput<$PrismaModel> | null;
         in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
@@ -18866,30 +18990,6 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumNotificationTypesFilter<$PrismaModel>;
         _max?: NestedEnumNotificationTypesFilter<$PrismaModel>;
-    };
-
-    export type NestedDateTimeNullableWithAggregatesFilter<
-        $PrismaModel = never,
-    > = {
-        equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null;
-        in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null;
-        notIn?:
-            | Date[]
-            | string[]
-            | ListDateTimeFieldRefInput<$PrismaModel>
-            | null;
-        lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedDateTimeNullableWithAggregatesFilter<$PrismaModel>
-            | Date
-            | string
-            | null;
-        _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedDateTimeNullableFilter<$PrismaModel>;
-        _max?: NestedDateTimeNullableFilter<$PrismaModel>;
     };
 
     export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> =
@@ -19284,6 +19384,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
@@ -19301,6 +19403,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
@@ -19349,6 +19453,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19371,6 +19485,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19390,6 +19514,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
@@ -19407,6 +19533,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
@@ -19455,6 +19583,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19477,6 +19615,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19496,6 +19644,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
@@ -19513,6 +19663,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
@@ -19561,6 +19713,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19583,6 +19745,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -19966,6 +20138,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
@@ -19983,6 +20157,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
@@ -20059,6 +20235,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -20081,6 +20267,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -20208,6 +20404,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
@@ -20225,6 +20423,8 @@ export namespace Prisma {
         phoneNumber: string;
         mfaType?: $Enums.MfaTypes | null;
         password: string;
+        lastLoginAt?: Date | string | null;
+        invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
@@ -20301,6 +20501,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
@@ -20323,6 +20533,16 @@ export namespace Prisma {
             | $Enums.MfaTypes
             | null;
         password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput

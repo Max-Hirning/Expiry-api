@@ -342,6 +342,7 @@ export const createService = (
 
             const invitedUser = await userRepository.create({
                 data: {
+                    invitedAt: new Date(),
                     role,
                     status: UserStatuses.INVITED,
                     fullName: body.fullName,
@@ -629,7 +630,18 @@ export const createService = (
                                 createdAt: Prisma.SortOrder.desc,
                             }),
                     },
-                    select: defaultUserSelector,
+                    select: {
+                        ...defaultUserSelector,
+                        teamMembers: {
+                            take: 1,
+                            where: {
+                                teamId: query.teamId,
+                            },
+                            select: {
+                                role: true,
+                            },
+                        },
+                    },
                 }),
                 userRepository.count({
                     where,
@@ -645,6 +657,7 @@ export const createService = (
                 data: {
                     users: users.map((user) => ({
                         ...user,
+                        position: user.teamMembers[0].role || null,
                         notificationPreferences: user.notificationPreferences!,
                     })),
                     pagination: {

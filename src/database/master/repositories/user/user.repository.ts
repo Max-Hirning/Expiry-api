@@ -8,6 +8,8 @@ export const defaultUserSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    lastLoginAt: true,
+    invitedAt: true,
     fullName: true,
     email: true,
     mfaType: true,

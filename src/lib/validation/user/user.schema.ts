@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Prisma } from "@/database/master/generated/edge.js";
 import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
+import { Prisma, TeamMemberRoles } from "@/database/master/generated/edge.js";
 import {
     UserStatuses,
     UserRoles,
@@ -18,6 +18,8 @@ const defaultUserSchema = z.object({
     updatedAt: z.date(),
     fullName: z.string(),
     email: z.email(),
+    lastLoginAt: z.date().nullable(),
+    invitedAt: z.date().nullable(),
     phoneNumber: z.string(),
     mfaType: z.enum(MfaTypes).nullable(),
     role: z.enum(UserRoles),
@@ -135,9 +137,13 @@ const fetchUsersResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         users: z.array(
-            defaultUserSchema.omit({
-                unReadNotifications: true,
-            })
+            defaultUserSchema
+                .omit({
+                    unReadNotifications: true,
+                })
+                .extend({
+                    position: z.enum(TeamMemberRoles).nullable(),
+                })
         ),
         pagination: paginationResponseSchema,
     }),
