@@ -16,19 +16,6 @@ export const createUserRoutes = (
     fastify: FastifyInstance,
     userHandler: UserHandler
 ) => {
-    fastify.patch(
-        "/heartbeat",
-        {
-            schema: {
-                tags: ["user"],
-                summary: "Update user presence",
-                response: { 204: {} },
-            },
-            preHandler: [fastify.authorization],
-        },
-        userHandler.heartbeat
-    );
-
     fastify.get(
         "/",
         {

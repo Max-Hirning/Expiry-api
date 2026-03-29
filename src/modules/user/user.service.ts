@@ -72,7 +72,6 @@ export type UserService = {
     }) => Promise<FetchUserResponse>;
     checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
     checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
-    heartbeat: (p: { userId: string }) => Promise<void>;
 };
 
 export const createService = (
@@ -164,12 +163,6 @@ export const createService = (
     return {
         checkIfUserExists,
         checkIfTeamExists,
-        heartbeat: async ({ userId }) => {
-            await userRepository.update({
-                where: { id: userId },
-                data: { lastSeenAt: new Date() },
-            });
-        },
         updateUser: async ({ params, body }) => {
             await userRepository.findFirstOrFail({
                 where: {
