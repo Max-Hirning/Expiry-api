@@ -1,14 +1,19 @@
 import { JWT } from "@fastify/jwt";
+import { addMinutes, isFuture } from "date-fns";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { invitedRoles, toggleStatuses } from "./user.constants.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
+import {
+    invitedRoles,
+    ONLINE_THRESHOLD_MINUTES,
+    toggleStatuses,
+} from "./user.constants.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultUserSelector,
@@ -67,6 +72,7 @@ export type UserService = {
     }) => Promise<FetchUserResponse>;
     checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
     checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
+    heartbeat: (p: { userId: string }) => Promise<void>;
 };
 
 export const createService = (
@@ -78,6 +84,14 @@ export const createService = (
     teamRepository: TeamRepository,
     applicationService: ApplicationService
 ): UserService => {
+    const isOnline = (lastSeenAt: Date | null): boolean => {
+        if (!lastSeenAt) {
+            return false;
+        }
+
+        return isFuture(addMinutes(lastSeenAt, ONLINE_THRESHOLD_MINUTES));
+    };
+
     const getUser = async (
         userId: string
     ): Promise<FetchUserResponse["data"]["user"]> => {
@@ -111,6 +125,7 @@ export const createService = (
             ...user,
             unReadNotifications,
             notificationPreferences,
+            isOnline: isOnline(user.lastSeenAt),
         };
     };
 
@@ -149,6 +164,12 @@ export const createService = (
     return {
         checkIfUserExists,
         checkIfTeamExists,
+        heartbeat: async ({ userId }) => {
+            await userRepository.update({
+                where: { id: userId },
+                data: { lastSeenAt: new Date() },
+            });
+        },
         updateUser: async ({ params, body }) => {
             await userRepository.findFirstOrFail({
                 where: {
@@ -659,6 +680,7 @@ export const createService = (
                         ...user,
                         position: user.teamMembers[0].role || null,
                         notificationPreferences: user.notificationPreferences!,
+                        isOnline: isOnline(user.lastSeenAt),
                     })),
                     pagination: {
                         page: query.page,

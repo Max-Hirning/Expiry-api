@@ -9,6 +9,7 @@ export const defaultUserSelector = {
     createdAt: true,
     updatedAt: true,
     lastLoginAt: true,
+    lastSeenAt: true,
     invitedAt: true,
     fullName: true,
     email: true,

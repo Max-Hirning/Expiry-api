@@ -1887,6 +1887,7 @@ export namespace Prisma {
         mfaType: $Enums.MfaTypes | null;
         password: string | null;
         lastLoginAt: Date | null;
+        lastSeenAt: Date | null;
         invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
@@ -1902,6 +1903,7 @@ export namespace Prisma {
         mfaType: $Enums.MfaTypes | null;
         password: string | null;
         lastLoginAt: Date | null;
+        lastSeenAt: Date | null;
         invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
@@ -1917,6 +1919,7 @@ export namespace Prisma {
         mfaType: number;
         password: number;
         lastLoginAt: number;
+        lastSeenAt: number;
         invitedAt: number;
         role: number;
         status: number;
@@ -1933,6 +1936,7 @@ export namespace Prisma {
         mfaType?: true;
         password?: true;
         lastLoginAt?: true;
+        lastSeenAt?: true;
         invitedAt?: true;
         role?: true;
         status?: true;
@@ -1948,6 +1952,7 @@ export namespace Prisma {
         mfaType?: true;
         password?: true;
         lastLoginAt?: true;
+        lastSeenAt?: true;
         invitedAt?: true;
         role?: true;
         status?: true;
@@ -1963,6 +1968,7 @@ export namespace Prisma {
         mfaType?: true;
         password?: true;
         lastLoginAt?: true;
+        lastSeenAt?: true;
         invitedAt?: true;
         role?: true;
         status?: true;
@@ -2054,6 +2060,7 @@ export namespace Prisma {
         mfaType: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt: Date | null;
+        lastSeenAt: Date | null;
         invitedAt: Date | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -2089,6 +2096,7 @@ export namespace Prisma {
             mfaType?: boolean;
             password?: boolean;
             lastLoginAt?: boolean;
+            lastSeenAt?: boolean;
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2117,6 +2125,7 @@ export namespace Prisma {
             mfaType?: boolean;
             password?: boolean;
             lastLoginAt?: boolean;
+            lastSeenAt?: boolean;
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2137,6 +2146,7 @@ export namespace Prisma {
             mfaType?: boolean;
             password?: boolean;
             lastLoginAt?: boolean;
+            lastSeenAt?: boolean;
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
@@ -2154,6 +2164,7 @@ export namespace Prisma {
         mfaType?: boolean;
         password?: boolean;
         lastLoginAt?: boolean;
+        lastSeenAt?: boolean;
         invitedAt?: boolean;
         role?: boolean;
         status?: boolean;
@@ -2171,6 +2182,7 @@ export namespace Prisma {
         | "mfaType"
         | "password"
         | "lastLoginAt"
+        | "lastSeenAt"
         | "invitedAt"
         | "role"
         | "status",
@@ -2217,6 +2229,7 @@ export namespace Prisma {
                 mfaType: $Enums.MfaTypes | null;
                 password: string;
                 lastLoginAt: Date | null;
+                lastSeenAt: Date | null;
                 invitedAt: Date | null;
                 role: $Enums.UserRoles;
                 status: $Enums.UserStatuses;
@@ -2881,6 +2894,7 @@ export namespace Prisma {
         readonly mfaType: FieldRef<"User", "MfaTypes">;
         readonly password: FieldRef<"User", "String">;
         readonly lastLoginAt: FieldRef<"User", "DateTime">;
+        readonly lastSeenAt: FieldRef<"User", "DateTime">;
         readonly invitedAt: FieldRef<"User", "DateTime">;
         readonly role: FieldRef<"User", "UserRoles">;
         readonly status: FieldRef<"User", "UserStatuses">;
@@ -14829,6 +14843,7 @@ export namespace Prisma {
         mfaType: "mfaType";
         password: "password";
         lastLoginAt: "lastLoginAt";
+        lastSeenAt: "lastSeenAt";
         invitedAt: "invitedAt";
         role: "role";
         status: "status";
@@ -15137,6 +15152,7 @@ export namespace Prisma {
         mfaType?: EnumMfaTypesNullableFilter<"User"> | $Enums.MfaTypes | null;
         password?: StringFilter<"User"> | string;
         lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+        lastSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null;
         invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
         role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
         status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
@@ -15166,6 +15182,7 @@ export namespace Prisma {
         mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
         lastLoginAt?: SortOrderInput | SortOrder;
+        lastSeenAt?: SortOrderInput | SortOrder;
         invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -15193,6 +15210,7 @@ export namespace Prisma {
                 | null;
             password?: StringFilter<"User"> | string;
             lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+            lastSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null;
             invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
             role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
             status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
@@ -15224,6 +15242,7 @@ export namespace Prisma {
         mfaType?: SortOrderInput | SortOrder;
         password?: SortOrder;
         lastLoginAt?: SortOrderInput | SortOrder;
+        lastSeenAt?: SortOrderInput | SortOrder;
         invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -15252,6 +15271,11 @@ export namespace Prisma {
             | null;
         password?: StringWithAggregatesFilter<"User"> | string;
         lastLoginAt?:
+            | DateTimeNullableWithAggregatesFilter<"User">
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | DateTimeNullableWithAggregatesFilter<"User">
             | Date
             | string
@@ -16022,6 +16046,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -16042,6 +16067,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -16065,6 +16091,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string
@@ -16102,6 +16133,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -16128,6 +16164,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -16146,6 +16183,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string
@@ -16174,6 +16216,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string
@@ -17018,6 +17065,7 @@ export namespace Prisma {
         mfaType?: SortOrder;
         password?: SortOrder;
         lastLoginAt?: SortOrder;
+        lastSeenAt?: SortOrder;
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -17033,6 +17081,7 @@ export namespace Prisma {
         mfaType?: SortOrder;
         password?: SortOrder;
         lastLoginAt?: SortOrder;
+        lastSeenAt?: SortOrder;
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -17048,6 +17097,7 @@ export namespace Prisma {
         mfaType?: SortOrder;
         password?: SortOrder;
         lastLoginAt?: SortOrder;
+        lastSeenAt?: SortOrder;
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
@@ -19385,6 +19435,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19404,6 +19455,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19458,6 +19510,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -19490,6 +19547,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -19515,6 +19577,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19534,6 +19597,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19588,6 +19652,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -19620,6 +19689,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -19645,6 +19719,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19664,6 +19739,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -19718,6 +19794,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -19746,6 +19827,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string
@@ -20139,6 +20225,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20158,6 +20245,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20240,6 +20328,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -20268,6 +20361,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string
@@ -20405,6 +20503,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20424,6 +20523,7 @@ export namespace Prisma {
         mfaType?: $Enums.MfaTypes | null;
         password: string;
         lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
@@ -20506,6 +20606,11 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
         invitedAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
@@ -20534,6 +20639,11 @@ export namespace Prisma {
             | null;
         password?: StringFieldUpdateOperationsInput | string;
         lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
             | NullableDateTimeFieldUpdateOperationsInput
             | Date
             | string

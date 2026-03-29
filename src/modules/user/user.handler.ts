@@ -13,6 +13,7 @@ import {
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserHandler = {
+    heartbeat: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     updateUser: (
         request: FastifyRequest<{
             Params: UserParamsInput;
@@ -84,6 +85,12 @@ export const createHandler = (
     jwt: JWT
 ): UserHandler => {
     return {
+        heartbeat: async (request, reply) => {
+            await userService.heartbeat({ userId: request.user.id });
+
+            return reply.status(204).send();
+        },
+
         updateUser: async (request, reply) => {
             const { params, body } = request;
 

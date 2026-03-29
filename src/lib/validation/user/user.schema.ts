@@ -19,6 +19,7 @@ const defaultUserSchema = z.object({
     fullName: z.string(),
     email: z.email(),
     lastLoginAt: z.date().nullable(),
+    lastSeenAt: z.date().nullable(),
     invitedAt: z.date().nullable(),
     phoneNumber: z.string(),
     mfaType: z.enum(MfaTypes).nullable(),
@@ -27,6 +28,7 @@ const defaultUserSchema = z.object({
     avatar: defaultAvatarSchema.nullable(),
     notificationPreferences: defaultNotificationPreferenceSchema,
     unReadNotifications: z.int(),
+    isOnline: z.boolean(),
 });
 
 const inviteUserBodySchema = defaultUserSchema

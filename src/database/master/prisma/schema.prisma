@@ -43,6 +43,7 @@ model User {
   mfaType     MfaTypes?
   password    String
   lastLoginAt DateTime?    @map("last_login_at")
+  lastSeenAt  DateTime?    @map("last_seen_at")
   invitedAt   DateTime?    @map("invited_at")
   role        UserRoles
   status      UserStatuses

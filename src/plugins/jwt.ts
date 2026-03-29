@@ -1,10 +1,12 @@
 import fp from "fastify-plugin";
 import fastifyJWT from "@fastify/jwt";
+import { addMinutes, isPast } from "date-fns";
 import { Actions } from "@/modules/auth/auth.types.js";
 import { FastifyPlugin } from "@/lib/fastify/fastify.constant.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { ForbiddenError, UnauthorizedError } from "@/lib/errors/errors.js";
+import { LAST_SEEN_DEBOUNCE_MINUTES } from "@/modules/user/user.constants.js";
 import { DocumentParamsInput } from "@/lib/validation/document/document.schema.js";
 import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
@@ -84,6 +86,24 @@ const configureJwt = async (fastify: FastifyInstance) => {
         req.createNewTokens = false;
         req.updateToken = false;
         req.resetTokens = false;
+
+        try {
+            const isStale =
+                !user.lastSeenAt ||
+                isPast(addMinutes(user.lastSeenAt, LAST_SEEN_DEBOUNCE_MINUTES));
+
+            if (isStale) {
+                await fastify.prisma.master.user.update({
+                    where: { id: user.id },
+                    data: { lastSeenAt: new Date() },
+                });
+            }
+        } catch {
+            req.createNewTokens = false;
+            req.updateToken = false;
+            req.resetTokens = true;
+            throw new UnauthorizedError("Unauthorized");
+        }
     });
 
     fastify.decorate(
