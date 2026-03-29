@@ -14,6 +14,7 @@ const defaultActionLogSchema = z.object({
     documentId: z.uuid().nullable(),
     actorId: z.uuid(),
     actorFullName: z.string(),
+    actorAvatarUrl: z.url().nullable(),
     userId: z.uuid().nullable(),
     userFullName: z.string().nullable(),
     userAvatarUrl: z.url().nullable(),

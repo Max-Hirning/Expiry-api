@@ -2,13 +2,14 @@ import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
 import { defaultFileSchema } from "../file/file.schema.js";
 import {
-    DocumentStatuses,
-    RiskLevels,
-} from "@/database/team/generated/index.js";
-import {
     paginationQuerySchema,
     paginationResponseSchema,
 } from "../pagination/pagination.schema.js";
+import {
+    ActionLogTypes,
+    DocumentStatuses,
+    RiskLevels,
+} from "@/database/team/generated/index.js";
 import { defaultDocumentExtractedFieldSchema } from "../document-extracted-field/document-extracted-field.schema.js";
 
 const defaultDocumentSchema = z.object({
@@ -115,6 +116,10 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
             z.uuid().transform((val) => [val]),
             z.array(z.uuid()),
         ]),
+        authorsIds: z.union([
+            z.uuid().transform((val) => [val]),
+            z.array(z.uuid()),
+        ]),
     })
     .partial()
     .required({
@@ -128,11 +133,18 @@ const fetchDocumentsResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         documents: z.array(
-            defaultDocumentSchema.omit({
-                documentExtractedFields: true,
-                files: true,
-                tags: true,
-            })
+            defaultDocumentSchema
+                .omit({
+                    documentExtractedFields: true,
+                    files: true,
+                    tags: true,
+                })
+                .extend({
+                    actions: z.record(
+                        z.uuid(),
+                        z.array(z.enum(ActionLogTypes))
+                    ),
+                })
         ),
         pagination: paginationResponseSchema,
     }),

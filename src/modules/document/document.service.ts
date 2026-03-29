@@ -220,6 +220,21 @@ export const createDocumentService = (
                     contains: query.search,
                 },
             }),
+            ...(query.authorsIds && {
+                actionLogs: {
+                    some: {
+                        type: {
+                            in: [
+                                ActionLogTypes.CREATE_DOCUMENT,
+                                ActionLogTypes.UPDATE_DOCUMENT,
+                            ],
+                        },
+                        actorId: {
+                            in: query.authorsIds,
+                        },
+                    },
+                },
+            }),
             ...(query.tagsIds && {
                 documentTags: {
                     some: {
@@ -268,7 +283,24 @@ export const createDocumentService = (
                                     createdAt: PrismaTeam.SortOrder.desc,
                                 }),
                         },
-                        select: defaultDocumentSelector,
+                        select: {
+                            ...defaultDocumentSelector,
+                            actionLogs: {
+                                where: {
+                                    type: {
+                                        in: [
+                                            ActionLogTypes.CREATE_DOCUMENT,
+                                            ActionLogTypes.UPDATE_DOCUMENT,
+                                        ],
+                                    },
+                                    ...(query.authorsIds && {
+                                        actorId: {
+                                            in: query.authorsIds,
+                                        },
+                                    }),
+                                },
+                            },
+                        },
                     }),
                     documentRepo.count({
                         where,
@@ -283,7 +315,16 @@ export const createDocumentService = (
         return {
             message: "Documents fetched successfully.",
             data: {
-                documents,
+                documents: documents.map((document) => ({
+                    ...document,
+                    actions: document.actionLogs.reduce<
+                        Record<string, ActionLogTypes[]>
+                    >((acc, { actorId, type }) => {
+                        (acc[actorId] ??= []).push(type);
+
+                        return acc;
+                    }, {}),
+                })),
                 pagination: {
                     page: query.page,
                     perPage: query.perPage,
