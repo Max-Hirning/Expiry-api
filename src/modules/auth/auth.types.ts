@@ -20,4 +20,5 @@ export enum Actions {
     CREATE_DOCUMENT,
     GET_TAG,
     GET_TAGS,
+    UPDATE_TEAM_MEMBER_ROLE,
 }

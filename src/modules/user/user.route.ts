@@ -10,6 +10,9 @@ import {
     updateUserBodySchema,
     updateUserPasswordBodySchema,
     userParamsSchema,
+    updateTeamMemberRolesParamsSchema,
+    updateTeamMemberRolesBodySchema,
+    updateTeamMemberRolesResponseSchema,
 } from "@/lib/validation/user/user.schema.js";
 
 export const createUserRoutes = (
@@ -164,6 +167,26 @@ export const createUserRoutes = (
             },
         },
         userHandler.getInvitedUser
+    );
+
+    fastify.put(
+        "/:userId/teams/:teamId/role",
+        {
+            schema: {
+                tags: ["user"],
+                summary: "Update team member role",
+                params: updateTeamMemberRolesParamsSchema,
+                body: updateTeamMemberRolesBodySchema,
+                response: {
+                    200: updateTeamMemberRolesResponseSchema,
+                },
+            },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_TEAM_MEMBER_ROLE),
+            ],
+        },
+        userHandler.updateTeamMemberRoles
     );
 
     fastify.get(

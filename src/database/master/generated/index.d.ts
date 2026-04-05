@@ -87,6 +87,7 @@ export namespace $Enums {
     export type MfaTypes = (typeof MfaTypes)[keyof typeof MfaTypes];
 
     export const TeamMemberRoles: {
+        OWNER: "OWNER";
         ADMIN: "ADMIN";
         STAFF: "STAFF";
     };

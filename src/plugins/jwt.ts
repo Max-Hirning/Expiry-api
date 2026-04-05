@@ -10,15 +10,16 @@ import { LAST_SEEN_DEBOUNCE_MINUTES } from "@/modules/user/user.constants.js";
 import { DocumentParamsInput } from "@/lib/validation/document/document.schema.js";
 import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
-    InviteUserBodyInput,
-    UserParamsInput,
-} from "@/lib/validation/user/user.schema.js";
-import {
     TeamMemberRoles,
     User,
     UserRoles,
     UserStatuses,
 } from "@/database/master/generated/index.js";
+import {
+    InviteUserBodyInput,
+    UpdateTeamMemberRolesParamsInput,
+    UserParamsInput,
+} from "@/lib/validation/user/user.schema.js";
 
 const configureJwt = async (fastify: FastifyInstance) => {
     fastify.register(fastifyJWT, {
@@ -311,6 +312,32 @@ const configureJwt = async (fastify: FastifyInstance) => {
                             teamMembers: {
                                 some: {
                                     userId: id,
+                                },
+                            },
+                        },
+                    });
+
+                    if (team) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
+                if (action === Actions.UPDATE_TEAM_MEMBER_ROLE) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: UpdateTeamMemberRolesParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: {
+                                some: {
+                                    userId: id,
+                                    role: TeamMemberRoles.OWNER,
                                 },
                             },
                         },

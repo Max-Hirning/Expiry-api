@@ -10,6 +10,8 @@ import {
     UpdateUserBodyInput,
     UpdateUserPasswordBodyInput,
     UserParamsInput,
+    UpdateTeamMemberRolesParamsInput,
+    UpdateTeamMemberRolesBodyInput,
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserHandler = {
@@ -74,6 +76,14 @@ export type UserHandler = {
     inviteUser: (
         request: FastifyRequest<{
             Body: InviteUserBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+
+    updateTeamMemberRoles: (
+        request: FastifyRequest<{
+            Params: UpdateTeamMemberRolesParamsInput;
+            Body: UpdateTeamMemberRolesBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
@@ -189,6 +199,17 @@ export const createHandler = (
             });
 
             return reply.status(201).send(data);
+        },
+
+        updateTeamMemberRoles: async (request, reply) => {
+            const { params, body } = request;
+
+            const data = await userService.updateTeamMemberRoles({
+                params,
+                body,
+            });
+
+            return reply.send(data);
         },
     };
 };
