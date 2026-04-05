@@ -1,5 +1,9 @@
 {
     "extends": "./tsconfig.json",
-    "exclude": ["test/**/*"]
+    "exclude": [
+        "test/**/*",
+        "src/database/master/generated/**/*",
+        "src/database/team/generated/**/*"
+    ]
 }
 

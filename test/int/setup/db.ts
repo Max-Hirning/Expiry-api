@@ -25,11 +25,13 @@ const generateDatabaseURL = (schema: string) => {
 const runMigrationFiles = async (client: Client, schema: string) => {
     try {
         await client.query(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
+        await client.query(`SET search_path TO "${schema}"`);
 
         const migrationsDir = path.join(
             process.cwd(),
             "src",
             "database",
+            "master",
             "prisma",
             "migrations"
         );
@@ -56,10 +58,31 @@ const runMigrationFiles = async (client: Client, schema: string) => {
 
             const migrationSQL = await fs.readFile(migrationFilePath, "utf-8");
 
-            await client.query(migrationSQL);
+            try {
+                await client.query(migrationSQL);
+            } catch (queryError: unknown) {
+                // Handle extension already exists errors (from parallel test execution)
+                if (
+                    queryError instanceof Error &&
+                    queryError.message.includes(
+                        "duplicate key value violates unique constraint"
+                    )
+                ) {
+                    console.warn(
+                        `Migration conflict (expected in parallel tests): ${queryError.message}`
+                    );
+                } else {
+                    throw queryError;
+                }
+            }
         }
     } catch (error) {
         console.error("Migration process failed:", error);
+
+        if (error instanceof Error) {
+            throw error;
+        }
+
         throw new Error("Migration failed");
     }
 };
