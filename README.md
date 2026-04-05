@@ -2,333 +2,505 @@
  <img width="524" src="https://github.com/user-attachments/assets/d460817f-058a-4d3f-b75c-b897c954ecdc" />
 </div>
 
-# [Lumitech](https://lumitech.co/) Node.js Fastify Template 
-Welcome to the Lumitech Node.js Fastify Template. This template provides a well-organized starting point for building back-end applications in Node.js, featuring Swagger-based API documentation, ready-to-use Docker configuration, and Awilix for dependency injection. With well-defined architectural patterns, it helps ensure the code remains maintainable, scalable, and testable, especially as the application grows.
+# Expiry — Document Lifecycle Management API
 
-### About Lumitech
-[Lumitech](https://lumitech.co/) is a custom software development company providing professional services worldwide. We partner with technology businesses globally helping them to build successful engineering teams and create innovative software products. We’re a global team of software engineers, AI and ML specialists, product managers, and technology experts who have achieved a 600% growth rate since 2022. When a rocket launches toward the moon, it doesn’t stop halfway. Neither do we.
+A robust, multi-tenant document management system built with **Node.js**, **Fastify**, **TypeScript**, and **PostgreSQL**. Expiry helps teams track, manage, and extract information from documents with expiration dates—perfect for contracts, certificates, licenses, and compliance documents.
 
-## 🛠️ Technology Stack:
-- [TypeScript](https://www.typescriptlang.org/) - programming language;
-- [Node.js](https://nodejs.org/en) - JavaScript runtime;
-- [Fastify](https://fastify.dev/docs/latest/Guides/Getting-Started/) - HTTP framework;
-- [Zod](https://zod.dev) - validation;
-- [Swagger](https://swagger.io/) - API documentation;
-- [Awilix](https://github.com/jeffijoe/awilix) - Dependency Injection container;
-- [PostgreSQL](https://www.postgresql.org/) - relational database;
-- [Prisma](https://www.prisma.io/docs/getting-started) - database ORM;
-- [Vitest](https://vitest.dev/) - testing framework.
+## 📖 About Expiry
+
+**Expiry** is a document-centric platform that:
+- Automates document lifecycle management across teams
+- Extracts critical data (expiry dates, counterparty info, amounts) via OCR and regex
+- Classifies documents by risk level (LOW, MEDIUM, HIGH)
+- Provides full audit trails for compliance
+- Scales with multi-tenant architecture (one PostgreSQL database per team)
+- Offers team collaboration with role-based access control
+
+---
+
+## 🛠️ Technology Stack
+
+### Core Framework
+- **[Node.js](https://nodejs.org/)** — JavaScript runtime
+- **[TypeScript](https://www.typescriptlang.org/)** — Type-safe language
+- **[Fastify](https://fastify.dev/)** — Fast, low-overhead HTTP framework
+
+### Database & ORM
+- **[PostgreSQL](https://www.postgresql.org/)** — Relational database (master + multi-tenant)
+- **[Prisma](https://www.prisma.io/)** — Type-safe database ORM
+- **[PgBoss](https://github.com/timgit/pg-boss)** — Job queue (optional)
+
+### API & Validation
+- **[Zod](https://zod.dev)** — Schema validation and type inference
+- **[Swagger/OpenAPI](https://swagger.io/)** — Auto-generated API documentation
+- **[@fastify/jwt](https://github.com/fastify/fastify-jwt)** — JWT authentication
+
+### Infrastructure & DI
+- **[Awilix](https://github.com/jeffijoe/awilix)** — Lightweight dependency injection container
+- **[Google Cloud Storage (GCS)](https://cloud.google.com/storage)** — File uploads and storage
+- **[Docker & Docker Compose](https://www.docker.com/)** — Containerized development environment
+
+### Testing & Quality
+- **[Vitest](https://vitest.dev/)** — Unit & integration testing
+- **[ESLint](https://eslint.org/)** — Code linting
+- **[Commitlint](https://commitlint.js.org/)** — Commit message validation
+
+---
 
 ## 📌 Getting Started
 
-### 🚀 Project Launch
-1. `npm install` - install the dependencies locally;
-2. Create a `.env` file from `.env.example`;
-3. Launch Docker Compose with the `docker compose up` command.
+### Prerequisites
+- **Node.js** v18+ (LTS recommended)
+- **Docker** & **Docker Compose** (for local development database)
+- **npm** v9+
 
-### ⚙️ Running Prisma Migrations
-Since both the Node.js server and PostgreSQL database run inside Docker containers, the database connection uses the [docker compose network](https://docs.docker.com/compose/networking/).
-Inside the Node.js container, use `postgresdb` as the database host.
+### 🚀 Quick Start
 
-To run migrations from a host machine:
-1. Launch docker containers - `docker compose up`;
-2. Update the `.env` file, changing `MASTER_DATABASE_URL` host from `postgresdb` to `localhost`;
-3. Run `npm run prisma:migrate:create` - create SQL migration file;
-4. Name the new migration and verify the SQL code generated;
-5. Run `npm run prisma:migrate:apply` - apply the migration to the database;
-6. Revert the `MASTER_DATABASE_URL` in `.env`  back to `postgresdb` so that the Node.js container can connect to the database after a rebuild.
+#### 1. Install Dependencies
+```bash
+npm install
+```
 
-### 🧪 Running Tests
-The template uses a Vitest testing framework for test coverage.
+#### 2. Set Up Environment Variables
+Copy the example environment file and update with your values:
+```bash
+cp .env.example .env
+```
 
-#### Unit Tests
-1. `npm run test:unit` - run all unit tests with detailed output in the terminal;
-2. `npm run test:unit:ui` - launch the interactive UI test runner.
+Edit `.env` and configure:
+- `MASTER_DATABASE_URL` — PostgreSQL connection string
+- `JWT_SECRET` — JWT signing secret
+- `GCP_PROJECT_ID`, `GCP_BUCKET_NAME` — Google Cloud Storage credentials
+- Other optional services (email, third-party APIs)
 
-#### Integration Tests
-To run integration tests:
-1. `docker compose -f docker-compose.test.yml up` - run test container;
-2. `npm run test:int` - launch integration tests.
+#### 3. Launch Docker Compose
+Start PostgreSQL and other services:
+```bash
+docker compose up
+```
 
-## ⚙ Key Features
+The PostgreSQL database will be available at `localhost:5432`.
 
-### 🧩 Dependency Injection
+#### 4. Run Database Migrations
+```bash
+npm run prisma:migrate:apply
+```
 
-This template utilizes **Awilix** for Dependency Injection (DI), which helps in managing application dependencies efficiently.
+#### 5. Start Development Server
+```bash
+npm run dev
+```
 
-#### Why Use Dependency Injection?
-- **Encapsulation & Maintainability**: Keeps the code modular and easier to maintain.
-- **Testability**: Improves unit testing by allowing easy mocking of dependencies.
-- **Cleaner Architecture**: Enhances readability and organization.
-- **Implemented Patterns**: Uses Dependency Inversion, Inversion of Control, and Singleton.
+The API will be available at `http://localhost:3000`.  
+Swagger UI: `http://localhost:3000/api/docs`
 
-#### How Awilix is Used
+---
 
-Awilix is configured as a Fastify plugin, allowing services, handlers, repositories and custom dependencies to be injected dynamically. It enables clean and organized code by managing dependencies automatically. The DI container is registered in `src/plugins/awilix.ts`.
+## 📚 Common Commands
 
-#### DI Usage Example:
+### Development
+```bash
+# Start dev server with hot reload
+npm run dev
 
-Define an email service abstraction layer in the lib directory.
+# Start production build
+npm start
 
-`src/lib/emails/index.ts`
+# Build for production
+npm run build
+```
+
+### Database Management
+```bash
+# Create a new migration
+npm run prisma:migrate:create
+
+# Apply migrations to database
+npm run prisma:migrate:apply
+
+# Reset database (careful!)
+npm run prisma:reset
+
+# Open Prisma Studio (GUI for database)
+npm run prisma:studio
+
+# Generate ER diagram
+npm run prisma:diagram
+```
+
+### Code Quality
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues automatically
+npm run lint:fix
+
+# Type check (TypeScript)
+npm run typescript
+
+# Lint + TypeScript checks (always run before committing)
+npm run lint:fix && npm run typescript
+```
+
+### Testing
+```bash
+# Run unit tests
+npm run test:unit
+
+# Run unit tests in watch mode
+npm run test:unit:watch
+
+# Run unit tests with UI
+npm run test:unit:ui
+
+# Run integration tests (requires docker-compose.test.yml)
+docker compose -f docker-compose.test.yml up
+npm run test:int
+
+# Run all tests
+npm run test
+```
+
+### Code Generation
+```bash
+# Generate a new feature module
+npm run generate:module moduleName
+
+# Generate a new repository
+npm run generate:repository entityName
+```
+
+---
+
+## 🗂️ Project Structure
+
+### Quick Overview
+```
+src/
+├── database/               # Database layer
+│   ├── master/            # Master DB (users, teams, notifications)
+│   ├── team/              # Tenant DB schema (documents, tags, logs)
+│   └── infra/             # Tenant provisioning & migrations
+├── lib/                   # Shared libraries & utilities
+│   ├── awilix/            # DI container setup
+│   ├── errors/            # Error factories
+│   ├── gcp/               # Google Cloud Storage
+│   ├── validation/        # Zod schemas (by module)
+│   └── utils/             # Helper utilities
+├── modules/               # Feature modules
+│   ├── auth/              # Login & registration
+│   ├── user/              # User management
+│   ├── team/              # Team CRUD & provisioning
+│   ├── document/          # Document CRUD & uploads
+│   ├── tag/               # Tag queries
+│   ├── action-log/        # Audit trails
+│   ├── notification/      # In-app notifications
+│   └── application/       # Infrastructure utilities
+├── plugins/               # Fastify plugins
+├── types/                 # TypeScript types
+└── index.ts              # Server entry point
+```
+
+For detailed structure, see [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md).
+
+---
+
+## 🏗️ Architecture
+
+### Multi-Tenant Database Pattern
+
+Expiry uses a **hybrid multi-tenant architecture**:
+
+- **Master Database** — Shared across all teams
+  - Users (authentication, profiles, roles)
+  - Teams (metadata, memberships, statistics)
+  - Notifications (in-app alerts)
+  
+- **Tenant Databases** — One per team
+  - Documents (with status, risk level, expiry dates)
+  - Files (uploaded to GCS, URLs in DB)
+  - Tags (flexible tagging system)
+  - ActionLogs (audit trail of all changes)
+
+This design ensures **data isolation**, **compliance**, and **scalability**.
+
+### Layered Architecture
+
+```
+Routes (Zod validation) 
+  ↓
+Handlers (HTTP layer)
+  ↓
+Services (Business logic)
+  ↓
+Repositories (Data access)
+  ↓
+Database (Prisma)
+```
+
+### Dependency Injection
+
+All dependencies are managed by **Awilix**. Services and handlers are registered in the DI container via factory functions, enabling easy testing and dependency management.
+
+Example:
 ```typescript
-export type EmailService = {
-    sendEmail: (emailRecipient: string, p: EmailOptions) => Promise<void>;
-};
-
-export const createEmailService = (
-    config: EnvConfig,
+export const createDocumentService = (
+    applicationService: ApplicationService,
+    gcpService: GcpService,
     log: FastifyBaseLogger
-): EmailService => {
-    const emailProvider = new EmailProvider({ secretKey: config.secretKey });
-
-    return {
-        sendEmail: async (emailRecipient, email) => {
-            ...
-            await emailProvider.sendEmail(emailRecipient, email);
-            ...
-        },
-    };
-};
-```
-Register the email service in the DI container.
-
-`src/plugins/awilix.ts`
-```typescript
-// Register dependencies from plugins and libraries
-fastify.di.register({
-    log: asValue(fastify.log),
-    config: asValue(fastify.config),
-    emailService: asFunction(createEmailService),
-});
-```
-Use the email service by specifying its name in the function parameters.
-
-`src/modules/user/user.service.ts`
-```typescript
-export type UserService = {
-    sendWelcomeEmail: (
-        userId:string,
-    ) => Promise<UserEventsResponseBody>;
-};
-
-export const createUserService = (
-    emailService: EmailService,
-): UserService => ({
-    sendWelcomeEmail: async (userId) => {
-        ...
-        await emailService.sendEmail(email, {...});
-        ...
-    },
+): DocumentService => ({
+    // implementation
 });
 
-addDIResolverName(createService, "userService"); // Define a unique DI container name for automatic loading.
+addDIResolverName(createDocumentService, "documentService");
 ```
 
-### 🐳 Docker
-This template provides a `Dockerfile` for building a production-ready Node.js image and a `docker-compose.yml` file for local development. By default, Docker Compose starts two services:
+---
 
-1. **Node.js** – Runs the application inside a container using the provided Dockerfile.
-2. **PostgreSQL** – Spins up a PostgreSQL database.
+## 🔐 Authentication & Authorization
 
-Is is possible can add more services (for example, Redis) by including them in `docker-compose.yml` and configuring their networking and environment variables. 
-This setup allows to quickly bootstrap a fully containerized development environment without installing any dependencies locally other than Docker itself.
+### JWT Flow
+1. **Sign In** (`POST /api/auth/sign-in`) — Returns authenticated user + JWT
+2. **Authorization** — JWT required in `Authorization: Bearer <token>` header
+3. **Team Context** — Requests are scoped to the authenticated user's teams
 
-### 📖 REST API Documentation
-
-This template includes **Swagger** for automatic API documentation generation, making it easy to document REST API endpoints.
-
-#### Automatic Generation
-
-- **Swagger Integration**: The Fastify Swagger plugin automatically generates API documentation from route schemas.
-- **Route Description**: It is possible to categorize endpoints by tags and describe them in the route schema.
-- **Authorization**: Secure the documentation with a password.
-
-Example route with Swagger options:
+### Access Control
+Routes declare required actions:
 ```typescript
-fastify.post(
-    "/sign-up",
-    {
-        schema: {
-            tags: ["auth"], // Categorizes the route under the specified tags.
-            summary: "Create a new user account".
-            description: "Create a new user within the system",
-            body: signUpBodySchema,
-            response: {
-                200: signUpResponseSchema,
-            },
-        },
-    },
-    authHandler.signUp
-);
-```
-
-### ⚙️ Repository Generation
-The template provides an automatic repository generator based on the Prisma Schema data model.
-It includes a set of commonly used CRUD operations for any entity.
-
-The generator is located in `src/database/repositories/generate.repository.ts`.
-
-```typescript
-const userRepository = generateRepository(prismaClient, "User");
-
-const user = await userRepository.create({
-    data: {},
-    select: {},
-});
-
-// Methods available: create, update, delete, etc.
-await userRepository.delete({
-    where: {},
+fastify.post("/", {
+    preHandler: [
+        fastify.authorization,                    // Require JWT
+        fastify.checkAccess(Actions.CREATE_DOCUMENT),  // Require permission
+    ],
+    // ...
 });
 ```
 
-### ⚙️ ER Diagram Generation
-This project automatically generates an **Entity Relationship (ER) diagram** based on your **Prisma schema**.
+---
 
-The generator is located in `src/database/prisma/schema.prisma`.
+## 📝 Swagger API Documentation
 
-```typescript
-generator dbml {
-  provider            = "prisma-dbml-generator"
-  output              = "../dbml"
-  outputName          = "schema.dbml"
-  projectName         = "Project Name"
-  projectDatabaseType = "PostgreSQL"
-  projectNote         = "ER Diagram"
-}
+API documentation is auto-generated from Zod schemas and available at:
+```
+http://localhost:3000/api/docs
 ```
 
-To generate ER diagram run command: `npm run prisma:diagram`
+All endpoints are categorized by module (auth, user, team, document, etc.) with request/response examples.
 
-After that you'll find `src/database/dbml/schema.dbml`.
+---
 
-To visualize your ER diagram:
-1. Open [dbdiagram.io](https://dbdiagram.io/)
-2. Paste the contents of schema.dbml into the editor
-3. The diagram will be rendered automatically
+## 🐳 Docker Setup
 
-### 📜 Commits Format
+### Local Development
+```bash
+docker compose up
+```
 
-We use Commitlint to ensure that commit messages adhere to the conventional commit format. This standardizes the commit history and simplifies changelog generation.
+Starts:
+- **Node.js container** (API server)
+- **PostgreSQL container** (database)
 
-The basic format is:
-```sh
+### Running from Host Machine
+
+If you want to run the Node.js server locally but PostgreSQL in Docker:
+
+1. Update `MASTER_DATABASE_URL` in `.env`:
+   ```
+   postgres://user:password@localhost:5432/expiry
+   ```
+
+2. Run Docker Compose:
+   ```bash
+   docker compose up -d postgresdb
+   ```
+
+3. Run dev server locally:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 🧪 Testing
+
+### Unit Tests
+Test individual services and utilities:
+```bash
+npm run test:unit
+npm run test:unit:watch  # Watch mode
+npm run test:unit:ui     # Interactive UI
+```
+
+### Integration Tests
+Test modules with real database:
+```bash
+docker compose -f docker-compose.test.yml up
+npm run test:int
+```
+
+Tests use a separate test database and are cleaned up after each run.
+
+---
+
+## ⚙️ Database Migrations
+
+### From Host Machine (when PostgreSQL is in Docker)
+
+1. **Create a migration:**
+   ```bash
+   npm run prisma:migrate:create
+   ```
+
+2. **Update `.env`** for host access:
+   ```
+   MASTER_DATABASE_URL=postgres://user:password@localhost:5432/expiry
+   ```
+
+3. **Name the migration** and verify the generated SQL
+
+4. **Apply migration:**
+   ```bash
+   npm run prisma:migrate:apply
+   ```
+
+5. **Revert `.env`** back for Docker:
+   ```
+   MASTER_DATABASE_URL=postgres://user:password@postgresdb:5432/expiry
+   ```
+
+### From Docker Container
+
+Migrations run automatically when the container starts via `npm run dev`.
+
+---
+
+## 📊 ER Diagrams
+
+Generate Entity-Relationship diagrams from Prisma schema:
+
+```bash
+npm run prisma:diagram
+```
+
+This creates `src/database/master/dbml/schema.dbml` and `src/database/team/dbml/schema.dbml`.
+
+Visualize at [dbdiagram.io](https://dbdiagram.io/) by pasting the `.dbml` file contents.
+
+---
+
+## 📜 Commit Guidelines
+
+This project uses **Commitlint** to enforce conventional commit messages.
+
+Format:
+```
 type(scope?): subject
 ```
 
 Examples:
-- `chore: update dependencies`
-- `fix(message): correct API response error`
-- `feat(auth): add JWT authentication`
-
-A more detailed description you can see in [Conventional Commits documentation](https://www.conventionalcommits.org/en/v1.0.0/#examples).
-
-## 📁 Project Structure
-The project is organized into several parts to promote a modular design and separation of concerns:
-
-#### `src/database`:  
-This directory manages everything related to data persistence and interaction with the database.  
-- The `prisma` subfolder houses the Prisma schema (`schema.prisma`) and migration files that define the application's data model to the database.  
-- The `repositories` subfolder contains repository modules for each entity. These repositories provide a unified API for CRUD operations (e.g., in `generate.repository.ts`) and custom logic for data access (e.g., `message.repository.ts` for the Message model).
-
-#### `src/modules`:  
-This directory contains feature-based modules which encapsulate business logic along with the HTTP layer.  
-Each module includes:  
-- **Routes**: Define endpoint paths and attach them to the appropriate handlers (e.g., `message.route.ts` for message-related endpoints).  
-- **Handlers**: Manage request processing and response formatting by invoking corresponding services (e.g., `message.handler.ts`).  
-- **Services**: Implement business logic, coordinate with repositories, and use the necessary third-party libraries from `src/lib` (e.g., `message.service.ts`).
-
-#### `src/plugins`:  
-The directory is dedicated to Fastify plugins which extend the server capabilities. Each file registers a plugin that adds functionality to the Fastify instance.  
-Plugins included:  
-- **Environment Configuration** (`env.ts`): Loads and validates environment variables.  
-- **Database Management** (`prisma.ts`): Sets up a `PrismaClient` and manages database connection.  
-- **Authentication** (`jwt.ts`): Configures JSON Web Token handling for security.  
-- **API Documentation** (`swagger.ts` and `zod.ts`): Integrates Swagger for API documentation and Zod for schema validation.  
-- **Dependency Injection** (`awilix.ts`): Registers and manages service dependencies using Awilix.  
-- **Error Handling** (`error.ts`): Provides a centralized mechanism for managing application errors.
-
-#### `src/lib`:  
-  This directory serves as an abstraction layer for third-party services and integrations. It is designed to encapsulate interactions with external services such as BullMQ for job processing, Stripe for payment processing, email sending services, file storage providers (e.g. AWS S3, GCP Cloud Storage), and more.  
-  These abstraction layers are registered in the Awilix container and imported by services as needed. Additionally, this folder includes validation schemas using Zod for different modules, as well as utility functions and helpers that support the overall application infrastructure.
-
-#### `src/types`:  
-  Global TypeScript types and declarations used across the project.
-
-#### `test`:
-This directory contains all test files organized to mirror the structure of the source code.
-- The `unit` subdirectory contains unit tests that verify the functionality of individual components in isolation.
-  - Tests for library components are in the `lib` subdirectory, ensuring third-party integrations work as expected.
-  - Tests for application modules are in the `modules` subdirectory, organized by feature to test services.
-- The `int` subdirectory contains integration tests that verify the behavior of multiple components working together within a runtime environment (e.g., service logic interacting with the database or external APIs).
-  - Tests are organized by module to mirror the application structure.
-  - The `setup` folder provides shared utilities like database migrations initialization and teardown logic.
-- Each test file follows the naming convention of `[component-name].test.ts` to clearly identify what's being tested.
-
-#### Project Tree:
 ```
-.
-├── commitlint.config.js
-├── docker-compose.yml
-├── Dockerfile
-├── eslint.config.mjs
-├── nodemon.json
-├── package.json
-├── package-lock.json
-├── README.md
-├── src
-│   ├── database
-│   │   ├── prisma
-│   │   │   ├── migrations
-│   │   │   │   └── ...
-│   │   │   ├── prisma.type.ts
-│   │   │   └── schema.prisma
-│   │   └── repositories
-│   │       ├── generate.repository.ts
-│   │       └── ...
-│   ├── lib
-│   │   ├── ...
-│   │   └── validation
-│   │       └── feature
-│   │           ├── index.ts
-│   │           └── feature.schema.ts
-│   ├── modules
-│   │   ├── application.ts
-│   │   └── feature
-│   │       ├── index.ts
-│   │       ├── feature.handler.ts
-│   │       ├── feature.route.ts
-│   │       └── feature.service.ts
-│   ├── plugins
-│   │   ├── awilix.ts
-│   │   ├── cors.ts
-│   │   ├── env.ts
-│   │   ├── error.ts
-│   │   ├── jwt.ts
-│   │   ├── prisma.ts
-│   │   ├── swagger.ts
-│   │   └── zod.ts
-│   ├── types
-│   │   ├── env.type.ts
-│   │   └── index.d.ts
-│   ├── index.ts
-│   └── server.ts
-├── test
-│   ├── int
-│   │   ├── modules
-│   │   │   └── ...
-│   │   └── setup
-│   └── unit
-│       ├── lib
-│       │   └── ...
-│       └── modules
-│           └── feature
-│               ├── feature-service.test.ts
-│               └── ...
-└── tsconfig.json
+feat(document): add bulk document upload
+fix(auth): resolve JWT expiration bug
+chore: update dependencies
+docs(readme): add setup instructions
+test(user): add user service tests
 ```
 
-## ✨ Inspired by
-- [Fastify example](https://github.com/delvedor/fastify-example) - a brief example of core Fastify features;
-- [Guide to plugins](https://fastify.dev/docs/latest/Guides/Plugins-Guide/) - encapsulation and decorators in Fastify.
+See [Conventional Commits](https://www.conventionalcommits.org/) for details.
+
+---
+
+## 🔑 Key Features
+
+### 📄 Document Management
+- Create, update, delete documents
+- Upload files to Google Cloud Storage
+- Extract data (expiry dates, issue dates, counterparty, amounts)
+- Set risk levels and statuses
+- Flexible tagging system
+
+### 👥 Team Collaboration
+- Invite users to teams
+- Role-based access control (ADMIN, STAFF, USER)
+- Automatic tenant database provisioning per team
+- Member management (add/remove)
+
+### 🔍 Search & Filter
+- Full-text document search
+- Filter by status, risk level, expiry date range
+- Filter by tags, authors
+- Sortable columns
+
+### 📋 Audit Logging
+- Complete action trail per team
+- Who did what and when
+- Document history tracking
+- Read-only audit logs
+
+### 🔔 Notifications
+- In-app notifications for invites, deletions
+- Bulk mark as read/unread
+- User notification preferences
+
+---
+
+## 🚨 Troubleshooting
+
+### "Team not found" Error
+- Ensure the team exists before accessing team-scoped endpoints
+- Verify user is a member of the team
+
+### Database Connection Failed
+- Check `MASTER_DATABASE_URL` in `.env`
+- Ensure PostgreSQL container is running: `docker compose ps`
+- Verify database name is `expiry` or as configured
+
+### Migrations Won't Apply
+- Ensure PostgreSQL is running
+- Check database credentials in `.env`
+- Use `docker compose up` if running containers
+
+### GCS Upload Failures
+- Verify GCP credentials are set in `.env`
+- Check bucket permissions
+- Ensure bucket name matches `GCP_BUCKET_NAME`
+
+### Port Already in Use
+- Change `PORT` in `.env` (default: 3000)
+- Or kill the existing process: `lsof -i :3000`
+
+---
+
+## 📖 Documentation
+
+- **[PROJECT_CONTEXT.md](PROJECT_CONTEXT.md)** — Complete project guide
+- **[CONTEXT_INDEX.md](CONTEXT_INDEX.md)** — Quick reference index
+- **[CLAUDE.md](CLAUDE.md)** — Project instructions for Claude Code
+- **Module Docs** — Each module has `CLAUDE.md` with detailed API behavior
+
+---
+
+## 📞 Support & Contributing
+
+For questions or issues:
+1. Check documentation in `PROJECT_CONTEXT.md` or module `CLAUDE.md` files
+2. Review recent commits for patterns
+3. Check test files for usage examples
+
+When contributing:
+- Run `npm run lint:fix && npm run typescript` before committing
+- Follow conventional commit format
+- Write tests for new features
+- Update module documentation
+
+---
+
+## 📄 License
+
+This project is built on the Lumitech Node.js Fastify Template with significant customizations for multi-tenant document management.
+
+---
+
+**Last Updated**: 2026-04-04  
+**Environment**: Node.js v18+, PostgreSQL 14+, Docker
