@@ -26,9 +26,10 @@ export type GcpService = {
 };
 
 export const createGcpService = (config: EnvConfig): GcpService => {
-    const isDev = config.NODE_ENV === "development";
+    const isLocalEnv =
+        config.NODE_ENV === "development" || config.NODE_ENV === "test";
 
-    const storage = isDev
+    const storage = isLocalEnv
         ? new Storage({
             apiEndpoint: "http://localhost:4443",
             projectId: "local-project",
