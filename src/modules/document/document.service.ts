@@ -483,7 +483,6 @@ export const createDocumentService = (
                 });
 
                 await chatService.createChat({
-                    teamId: params.teamId,
                     chatName: document.name,
                     documentId: document.id,
                     members: [
