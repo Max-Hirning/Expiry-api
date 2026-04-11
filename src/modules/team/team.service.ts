@@ -2,12 +2,10 @@ import { randomUUID } from "crypto";
 import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
-import { UserService } from "../user/user.service.js";
 import { ChatService } from "../chat/chat.service.js";
+import { UserService } from "../user/user.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { ActionLogTypes } from "@/database/team/generated/index.js";
-import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
@@ -21,6 +19,11 @@ import {
     defaultTeamSelector,
     TeamRepository,
 } from "@/database/master/repositories/team/team.repository.js";
+import {
+    ActionLogTypes,
+    ChatMemberStatus,
+    Prisma as PrismaTeam,
+} from "@/database/team/generated/index.js";
 import {
     createTenantDatabase,
     dropTenantDatabase,
@@ -571,38 +574,20 @@ export const createTeamService = (
                     );
                 }
 
-                const chatMembers = [
-                    {
-                        userId: initiator.id,
-                        userFullName: initiator.fullName,
-                        userAvatarUrl: initiator.avatar?.url,
-                    },
-                ];
-
-                if (futureTeamMembersRecords.teamMembers.length > 0) {
-                    const memberUsers = await userRepository.findMany({
-                        where: {
-                            id: {
-                                in: futureTeamMembersRecords.teamMembers.map(
-                                    ({ userId }) => userId
-                                ),
+                const memberUsers = await userRepository.findMany({
+                    where: {
+                        teamMembers: {
+                            some: {
+                                teamId,
                             },
                         },
-                        select: {
-                            id: true,
-                            fullName: true,
-                            avatar: true,
-                        },
-                    });
-
-                    chatMembers.push(
-                        ...memberUsers.map((user) => ({
-                            userId: user.id,
-                            userFullName: user.fullName,
-                            userAvatarUrl: user.avatar?.url,
-                        }))
-                    );
-                }
+                    },
+                    select: {
+                        id: true,
+                        fullName: true,
+                        avatar: true,
+                    },
+                });
 
                 const client =
                     await applicationService.initTeamTenantClient(teamId);
@@ -614,7 +599,11 @@ export const createTeamService = (
 
                     await chatService.createChat({
                         chatName: body.name,
-                        members: chatMembers,
+                        members: memberUsers.map((user) => ({
+                            userId: user.id,
+                            userFullName: user.fullName,
+                            userAvatarUrl: user.avatar?.url,
+                        })),
                         tx,
                     });
                 });
@@ -839,13 +828,14 @@ export const createTeamService = (
                     const allChats = await tx.chat.findMany();
 
                     for (const chat of allChats) {
-                        await chatService.createChatMember({
+                        await chatService.upsertChatMember({
                             teamId: params.teamId,
                             chatId: chat.id,
                             members: newMemberUsers.map((user) => ({
                                 userId: user.id,
                                 userFullName: user.fullName,
                                 userAvatarUrl: user.avatar?.url,
+                                status: ChatMemberStatus.ACTIVE,
                             })),
                             tx,
                         });

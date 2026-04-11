@@ -19,6 +19,7 @@ import { NotificationRepository } from "@/database/master/repositories/notificat
 import {
     ActionLogTypes,
     DocumentStatuses,
+    ChatMemberStatus,
     Prisma as PrismaTeam,
 } from "@/database/team/generated/index.js";
 import {
@@ -415,6 +416,25 @@ export const createDocumentService = (
             })
         );
 
+        const teamMembers = await teamMemberRepository.findMany({
+            where: {
+                teamId: params.teamId,
+            },
+            select: {
+                user: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        avatar: {
+                            select: {
+                                url: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
         const { document, createdFilesIds } = await withRepositories(
             [client],
             async (client) =>
@@ -502,6 +522,18 @@ export const createDocumentService = (
                             },
                         ],
                         tx,
+                    });
+
+                    await chatService.upsertChatMember({
+                        teamId: params.teamId,
+                        chatId: chat.id,
+                        tx,
+                        members: teamMembers.map((teamMember) => ({
+                            userId: teamMember.user.id,
+                            userFullName: teamMember.user.fullName,
+                            userAvatarUrl: teamMember.user.avatar?.url,
+                            status: ChatMemberStatus.ACTIVE,
+                        })),
                     });
 
                     const chatMember = await tx.chatMember.findFirst({
@@ -719,7 +751,7 @@ export const createDocumentService = (
                         });
 
                         if (chat) {
-                            await chatService.createChatMember({
+                            await chatService.upsertChatMember({
                                 teamId: params.teamId,
                                 chatId: chat.id,
                                 members: [
@@ -727,6 +759,7 @@ export const createDocumentService = (
                                         userId: initiator.id,
                                         userFullName: initiator.fullName,
                                         userAvatarUrl: initiator.avatar?.url,
+                                        status: ChatMemberStatus.ACTIVE,
                                     },
                                 ],
                                 tx,

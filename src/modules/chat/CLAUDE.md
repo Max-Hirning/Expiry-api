@@ -21,7 +21,7 @@ Internal methods used by other modules (e.g., document module creates chats):
   - Creates a chat record and adds members in transaction
   - Used internally to set up document chats
 
-- **`createChatMember()`** — Add members to an existing chat
+- **`upsertChatMember()`** — Add members to an existing chat
   - Adds or updates existing members in transaction
   - Updates member status, name, avatar on conflict
 

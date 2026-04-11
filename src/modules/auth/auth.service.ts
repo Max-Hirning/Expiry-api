@@ -3,10 +3,13 @@ import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { UserService } from "../user/user.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { ChatService } from "../chat/chat.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import { withRepositories } from "@/lib/utils/repository.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
+import { ApplicationService } from "../application/application.service.js";
 import {
     defaultUserSelector,
     UserRepository,
@@ -37,6 +40,8 @@ export const createAuthService = (
     userRepository: UserRepository,
     userService: UserService,
     gcpService: GcpService,
+    chatService: ChatService,
+    applicationService: ApplicationService,
     log: FastifyBaseLogger,
     prisma: FastifyInstance["prisma"]
 ): AuthService => {
@@ -257,6 +262,23 @@ export const createAuthService = (
                     params: {
                         userId: createdUser.id,
                     },
+                });
+
+                const client =
+                    await applicationService.initTeamTenantClient(teamId);
+
+                await withRepositories([client], async (tx) => {
+                    await chatService.createChat({
+                        chatName: team.name,
+                        members: [
+                            {
+                                userId: userInfo.id,
+                                userFullName: userInfo.fullName,
+                                userAvatarUrl: userInfo.avatar?.url,
+                            },
+                        ],
+                        tx,
+                    });
                 });
 
                 return {

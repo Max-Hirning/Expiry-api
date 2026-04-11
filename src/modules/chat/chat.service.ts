@@ -41,13 +41,14 @@ export type ChatService = {
         }[];
         tx: Prisma.TransactionClient;
     }) => Promise<Chat>;
-    createChatMember: (p: {
+    upsertChatMember: (p: {
         teamId: string;
         chatId: string;
         members: {
             userId: string;
             userFullName: string;
             userAvatarUrl?: string;
+            status: ChatMemberStatus;
         }[];
         tx: Prisma.TransactionClient;
     }) => Promise<void>;
@@ -168,7 +169,7 @@ export const createChatService = (
             return chat;
         },
 
-        createChatMember: async ({ chatId, members, tx }) => {
+        upsertChatMember: async ({ chatId, members, tx }) => {
             if (members.length === 0) {
                 return;
             }
@@ -178,12 +179,12 @@ export const createChatService = (
         VALUES ${Prisma.join(
         members.map(
             (m) =>
-                Prisma.sql`(gen_random_uuid(), now(), now(), ${ChatMemberStatus.ACTIVE}, ${m.userId}, ${m.userFullName}, ${m.userAvatarUrl || null}, ${chatId})`
+                Prisma.sql`(gen_random_uuid(), now(), now(), ${m.status}, ${m.userId}, ${m.userFullName}, ${m.userAvatarUrl || null}, ${chatId})`
         )
     )}
         ON CONFLICT (chat_id, user_id) DO UPDATE SET
             updated_at = now(),
-            status = ${ChatMemberStatus.ACTIVE},
+            status = EXCLUDED.status,
             user_full_name = EXCLUDED.user_full_name,
             user_avatar_url = EXCLUDED.user_avatar_url
         `;
