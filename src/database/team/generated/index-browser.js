@@ -209,6 +209,14 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
     chatId: "chatId",
 };
 
+exports.Prisma.ChatMessageReadStatusScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    chatMessageId: "chatMessageId",
+    readById: "readById",
+};
+
 exports.Prisma.SortOrder = {
     asc: "asc",
     desc: "desc",
@@ -277,6 +285,7 @@ exports.Prisma.ModelName = {
     Chat: "Chat",
     ChatMember: "ChatMember",
     ChatMessage: "ChatMessage",
+    ChatMessageReadStatus: "ChatMessageReadStatus",
 };
 
 /**

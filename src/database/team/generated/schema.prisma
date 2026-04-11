@@ -38,7 +38,7 @@ enum RiskLevels {
 }
 
 model Document {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -56,21 +56,21 @@ model Document {
 }
 
 model DocumentTag {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  documentId String   @map("document_id")
+  documentId String   @map("document_id") @db.Uuid
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
-  tagId String @map("tag_id")
+  tagId String @map("tag_id") @db.Uuid
   tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@map("document_tags")
 }
 
 model Tag {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -82,7 +82,7 @@ model Tag {
 }
 
 model File {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -94,7 +94,7 @@ model File {
   width        Float?
   height       Float?
 
-  documentId String   @map("document_id")
+  documentId String   @map("document_id") @db.Uuid
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@map("files")
@@ -114,7 +114,7 @@ enum ExtractedFieldSources {
 }
 
 model DocumentExtractedField {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -124,7 +124,7 @@ model DocumentExtractedField {
   confidence Float
   source     ExtractedFieldSources
 
-  documentId String   @map("document_id")
+  documentId String   @map("document_id") @db.Uuid
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@map("document_extracted_fields")
@@ -145,21 +145,21 @@ enum ActionLogTypes {
 }
 
 model ActionLog {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   type ActionLogTypes
 
   documentName String?
-  documentId   String?   @map("document_id")
+  documentId   String?   @map("document_id") @db.Uuid
   document     Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
-  actorId        String  @map("actor_id")
+  actorId        String  @map("actor_id") @db.Uuid
   actorFullName  String  @map("actor_full_name")
   actorAvatarUrl String? @map("actor_avatar_url")
 
-  userId        String? @map("user_id")
+  userId        String? @map("user_id") @db.Uuid
   userFullName  String? @map("user_full_name")
   userAvatarUrl String? @map("user_avatar_url")
 
@@ -168,7 +168,7 @@ model ActionLog {
 }
 
 model Chat {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -186,41 +186,58 @@ enum ChatMemberStatus {
 }
 
 model ChatMember {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   status ChatMemberStatus
 
-  userId        String  @map("user_id")
+  userId        String  @map("user_id") @db.Uuid
   userFullName  String  @map("user_full_name")
   userAvatarUrl String? @map("user_avatar_url")
 
-  chatId String @map("chat_id")
+  chatId String @map("chat_id") @db.Uuid
   chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-  messages ChatMessage[]
+  messages                ChatMessage[]
+  chatMessageReadStatuses ChatMessageReadStatus[]
 
+  @@unique([chatId, userId])
   @@map("chat_members")
 }
 
 model ChatMessage {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   message String
 
-  parentMessageId String      @map("parent_message_id")
+  parentMessageId String      @map("parent_message_id") @db.Uuid
   parentMessage   ChatMessage @relation("ThreadRelation", fields: [parentMessageId], references: [id], onDelete: Restrict)
 
-  authorId String     @map("author_id")
+  authorId String     @map("author_id") @db.Uuid
   author   ChatMember @relation(fields: [authorId], references: [id], onDelete: Restrict)
 
-  chatId String @map("chat_id")
+  chatId String @map("chat_id") @db.Uuid
   chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-  childMessages ChatMessage[] @relation("ThreadRelation")
+  childMessages           ChatMessage[]           @relation("ThreadRelation")
+  chatMessageReadStatuses ChatMessageReadStatus[]
 
   @@map("chat_messages")
+}
+
+model ChatMessageReadStatus {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  chatMessageId String      @map("chat_message_id") @db.Uuid
+  chatMessage   ChatMessage @relation(fields: [chatMessageId], references: [id], onDelete: Cascade)
+
+  readById String     @map("read_by_id") @db.Uuid
+  readBy   ChatMember @relation(fields: [readById], references: [id], onDelete: Cascade)
+
+  @@map("Chat_message_read_statuses")
 }
