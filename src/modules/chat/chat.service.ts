@@ -3,8 +3,12 @@ import { EDIT_WINDOW_MS } from "./chat.constants.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
-import { ChatMemberStatus, Prisma } from "@/database/team/generated/index.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
+import {
+    Chat,
+    ChatMemberStatus,
+    Prisma,
+} from "@/database/team/generated/index.js";
 import { defaultChatMemberSelector } from "@/database/team/repositories/chat-member/chat-member.repository.js";
 import { defaultChatMessageSelector } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import {
@@ -36,7 +40,7 @@ export type ChatService = {
             userAvatarUrl?: string;
         }[];
         tx: Prisma.TransactionClient;
-    }) => Promise<void>;
+    }) => Promise<Chat>;
     createChatMember: (p: {
         teamId: string;
         chatId: string;
@@ -155,6 +159,8 @@ export const createChatService = (
                 ),
                 skipDuplicates: true,
             });
+
+            return chat;
         },
 
         createChatMember: async ({ chatId, members, tx }) => {

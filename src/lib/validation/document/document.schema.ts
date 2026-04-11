@@ -62,6 +62,18 @@ const updateDocumentBodySchema = createDocumentBodySchema
     })
     .extend({
         tagsToDelete: z.array(z.string()),
+        files: z.array(
+            z
+                .object({
+                    mimeType: z.string(),
+                    fileSize: z.number(),
+                    width: z.number(),
+                    height: z.number(),
+                })
+                .extend({
+                    id: z.uuid(),
+                })
+        ),
     })
     .partial();
 
@@ -71,7 +83,12 @@ const createDocumentResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         document: defaultDocumentSchema,
-        uploadUrl: z.url().nullable(),
+        filesToUpload: z.array(
+            z.object({
+                id: z.uuid(),
+                url: z.url(),
+            })
+        ),
     }),
 });
 
