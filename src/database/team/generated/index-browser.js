@@ -192,6 +192,7 @@ exports.Prisma.ChatMemberScalarFieldEnum = {
     id: "id",
     createdAt: "createdAt",
     updatedAt: "updatedAt",
+    status: "status",
     userId: "userId",
     userFullName: "userFullName",
     userAvatarUrl: "userAvatarUrl",
@@ -259,6 +260,11 @@ exports.ActionLogTypes = exports.$Enums.ActionLogTypes = {
     CREATE_DOCUMENT: "CREATE_DOCUMENT",
     UPDATE_DOCUMENT: "UPDATE_DOCUMENT",
     DELETE_DOCUMENT: "DELETE_DOCUMENT",
+};
+
+exports.ChatMemberStatus = exports.$Enums.ChatMemberStatus = {
+    ACTIVE: "ACTIVE",
+    DELETED: "DELETED",
 };
 
 exports.Prisma.ModelName = {

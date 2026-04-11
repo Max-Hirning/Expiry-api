@@ -11,6 +11,7 @@ export const defaultChatMemberSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    status: true,
     userId: true,
     userFullName: true,
     userAvatarUrl: true,

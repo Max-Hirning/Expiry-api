@@ -114,6 +114,14 @@ export namespace $Enums {
 
     export type ActionLogTypes =
         (typeof ActionLogTypes)[keyof typeof ActionLogTypes];
+
+    export const ChatMemberStatus: {
+        ACTIVE: "ACTIVE";
+        DELETED: "DELETED";
+    };
+
+    export type ChatMemberStatus =
+        (typeof ChatMemberStatus)[keyof typeof ChatMemberStatus];
 }
 
 export type DocumentStatuses = $Enums.DocumentStatuses;
@@ -135,6 +143,10 @@ export const ExtractedFieldSources: typeof $Enums.ExtractedFieldSources;
 export type ActionLogTypes = $Enums.ActionLogTypes;
 
 export const ActionLogTypes: typeof $Enums.ActionLogTypes;
+
+export type ChatMemberStatus = $Enums.ChatMemberStatus;
+
+export const ChatMemberStatus: typeof $Enums.ChatMemberStatus;
 
 /**
  * ##  Prisma Client ʲˢ
@@ -11827,6 +11839,7 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
+        status: $Enums.ChatMemberStatus | null;
         userId: string | null;
         userFullName: string | null;
         userAvatarUrl: string | null;
@@ -11837,6 +11850,7 @@ export namespace Prisma {
         id: string | null;
         createdAt: Date | null;
         updatedAt: Date | null;
+        status: $Enums.ChatMemberStatus | null;
         userId: string | null;
         userFullName: string | null;
         userAvatarUrl: string | null;
@@ -11847,6 +11861,7 @@ export namespace Prisma {
         id: number;
         createdAt: number;
         updatedAt: number;
+        status: number;
         userId: number;
         userFullName: number;
         userAvatarUrl: number;
@@ -11858,6 +11873,7 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
+        status?: true;
         userId?: true;
         userFullName?: true;
         userAvatarUrl?: true;
@@ -11868,6 +11884,7 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
+        status?: true;
         userId?: true;
         userFullName?: true;
         userAvatarUrl?: true;
@@ -11878,6 +11895,7 @@ export namespace Prisma {
         id?: true;
         createdAt?: true;
         updatedAt?: true;
+        status?: true;
         userId?: true;
         userFullName?: true;
         userAvatarUrl?: true;
@@ -11969,6 +11987,7 @@ export namespace Prisma {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl: string | null;
@@ -12002,6 +12021,7 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
+            status?: boolean;
             userId?: boolean;
             userFullName?: boolean;
             userAvatarUrl?: boolean;
@@ -12020,6 +12040,7 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
+            status?: boolean;
             userId?: boolean;
             userFullName?: boolean;
             userAvatarUrl?: boolean;
@@ -12036,6 +12057,7 @@ export namespace Prisma {
             id?: boolean;
             createdAt?: boolean;
             updatedAt?: boolean;
+            status?: boolean;
             userId?: boolean;
             userFullName?: boolean;
             userAvatarUrl?: boolean;
@@ -12049,6 +12071,7 @@ export namespace Prisma {
         id?: boolean;
         createdAt?: boolean;
         updatedAt?: boolean;
+        status?: boolean;
         userId?: boolean;
         userFullName?: boolean;
         userAvatarUrl?: boolean;
@@ -12061,6 +12084,7 @@ export namespace Prisma {
         | "id"
         | "createdAt"
         | "updatedAt"
+        | "status"
         | "userId"
         | "userFullName"
         | "userAvatarUrl"
@@ -12098,6 +12122,7 @@ export namespace Prisma {
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
+                status: $Enums.ChatMemberStatus;
                 userId: string;
                 userFullName: string;
                 userAvatarUrl: string | null;
@@ -12725,6 +12750,7 @@ export namespace Prisma {
         readonly id: FieldRef<"ChatMember", "String">;
         readonly createdAt: FieldRef<"ChatMember", "DateTime">;
         readonly updatedAt: FieldRef<"ChatMember", "DateTime">;
+        readonly status: FieldRef<"ChatMember", "ChatMemberStatus">;
         readonly userId: FieldRef<"ChatMember", "String">;
         readonly userFullName: FieldRef<"ChatMember", "String">;
         readonly userAvatarUrl: FieldRef<"ChatMember", "String">;
@@ -14763,6 +14789,7 @@ export namespace Prisma {
         id: "id";
         createdAt: "createdAt";
         updatedAt: "updatedAt";
+        status: "status";
         userId: "userId";
         userFullName: "userFullName";
         userAvatarUrl: "userAvatarUrl";
@@ -14919,6 +14946,18 @@ export namespace Prisma {
      */
     export type ListEnumActionLogTypesFieldRefInput<$PrismaModel> =
         FieldRefInputType<$PrismaModel, "ActionLogTypes[]">;
+
+    /**
+     * Reference to a field of type 'ChatMemberStatus'
+     */
+    export type EnumChatMemberStatusFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ChatMemberStatus">;
+
+    /**
+     * Reference to a field of type 'ChatMemberStatus[]'
+     */
+    export type ListEnumChatMemberStatusFieldRefInput<$PrismaModel> =
+        FieldRefInputType<$PrismaModel, "ChatMemberStatus[]">;
 
     /**
      * Reference to a field of type 'Int'
@@ -15567,6 +15606,9 @@ export namespace Prisma {
         id?: StringFilter<"ChatMember"> | string;
         createdAt?: DateTimeFilter<"ChatMember"> | Date | string;
         updatedAt?: DateTimeFilter<"ChatMember"> | Date | string;
+        status?:
+            | EnumChatMemberStatusFilter<"ChatMember">
+            | $Enums.ChatMemberStatus;
         userId?: StringFilter<"ChatMember"> | string;
         userFullName?: StringFilter<"ChatMember"> | string;
         userAvatarUrl?: StringNullableFilter<"ChatMember"> | string | null;
@@ -15579,6 +15621,7 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
+        status?: SortOrder;
         userId?: SortOrder;
         userFullName?: SortOrder;
         userAvatarUrl?: SortOrderInput | SortOrder;
@@ -15595,6 +15638,9 @@ export namespace Prisma {
             NOT?: ChatMemberWhereInput | ChatMemberWhereInput[];
             createdAt?: DateTimeFilter<"ChatMember"> | Date | string;
             updatedAt?: DateTimeFilter<"ChatMember"> | Date | string;
+            status?:
+                | EnumChatMemberStatusFilter<"ChatMember">
+                | $Enums.ChatMemberStatus;
             userId?: StringFilter<"ChatMember"> | string;
             userFullName?: StringFilter<"ChatMember"> | string;
             userAvatarUrl?: StringNullableFilter<"ChatMember"> | string | null;
@@ -15609,6 +15655,7 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
+        status?: SortOrder;
         userId?: SortOrder;
         userFullName?: SortOrder;
         userAvatarUrl?: SortOrderInput | SortOrder;
@@ -15629,6 +15676,9 @@ export namespace Prisma {
         id?: StringWithAggregatesFilter<"ChatMember"> | string;
         createdAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string;
         updatedAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string;
+        status?:
+            | EnumChatMemberStatusWithAggregatesFilter<"ChatMember">
+            | $Enums.ChatMemberStatus;
         userId?: StringWithAggregatesFilter<"ChatMember"> | string;
         userFullName?: StringWithAggregatesFilter<"ChatMember"> | string;
         userAvatarUrl?:
@@ -16340,6 +16390,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -16351,6 +16402,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -16362,6 +16414,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -16376,6 +16431,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -16390,6 +16448,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -16400,6 +16459,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -16412,6 +16474,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -17176,6 +17241,21 @@ export namespace Prisma {
         name?: SortOrder;
     };
 
+    export type EnumChatMemberStatusFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.ChatMemberStatus
+            | EnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumChatMemberStatusFilter<$PrismaModel>
+            | $Enums.ChatMemberStatus;
+    };
+
     export type ChatScalarRelationFilter = {
         is?: ChatWhereInput;
         isNot?: ChatWhereInput;
@@ -17185,6 +17265,7 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
+        status?: SortOrder;
         userId?: SortOrder;
         userFullName?: SortOrder;
         userAvatarUrl?: SortOrder;
@@ -17195,6 +17276,7 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
+        status?: SortOrder;
         userId?: SortOrder;
         userFullName?: SortOrder;
         userAvatarUrl?: SortOrder;
@@ -17205,11 +17287,31 @@ export namespace Prisma {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
+        status?: SortOrder;
         userId?: SortOrder;
         userFullName?: SortOrder;
         userAvatarUrl?: SortOrder;
         chatId?: SortOrder;
     };
+
+    export type EnumChatMemberStatusWithAggregatesFilter<$PrismaModel = never> =
+        {
+            equals?:
+                | $Enums.ChatMemberStatus
+                | EnumChatMemberStatusFieldRefInput<$PrismaModel>;
+            in?:
+                | $Enums.ChatMemberStatus[]
+                | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+            notIn?:
+                | $Enums.ChatMemberStatus[]
+                | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+            not?:
+                | NestedEnumChatMemberStatusWithAggregatesFilter<$PrismaModel>
+                | $Enums.ChatMemberStatus;
+            _count?: NestedIntFilter<$PrismaModel>;
+            _min?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
+            _max?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
+        };
 
     export type ChatMessageScalarRelationFilter = {
         is?: ChatMessageWhereInput;
@@ -18127,6 +18229,10 @@ export namespace Prisma {
         connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
     };
 
+    export type EnumChatMemberStatusFieldUpdateOperationsInput = {
+        set?: $Enums.ChatMemberStatus;
+    };
+
     export type ChatUpdateOneRequiredWithoutMembersNestedInput = {
         create?: XOR<
             ChatCreateWithoutMembersInput,
@@ -18780,6 +18886,41 @@ export namespace Prisma {
             _min?: NestedStringNullableFilter<$PrismaModel>;
             _max?: NestedStringNullableFilter<$PrismaModel>;
         };
+
+    export type NestedEnumChatMemberStatusFilter<$PrismaModel = never> = {
+        equals?:
+            | $Enums.ChatMemberStatus
+            | EnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumChatMemberStatusFilter<$PrismaModel>
+            | $Enums.ChatMemberStatus;
+    };
+
+    export type NestedEnumChatMemberStatusWithAggregatesFilter<
+        $PrismaModel = never,
+    > = {
+        equals?:
+            | $Enums.ChatMemberStatus
+            | EnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        in?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        notIn?:
+            | $Enums.ChatMemberStatus[]
+            | ListEnumChatMemberStatusFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedEnumChatMemberStatusWithAggregatesFilter<$PrismaModel>
+            | $Enums.ChatMemberStatus;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
+        _max?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
+    };
 
     export type DocumentExtractedFieldCreateWithoutDocumentInput = {
         id?: string;
@@ -19651,6 +19792,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -19661,6 +19803,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -19756,6 +19899,9 @@ export namespace Prisma {
         id?: StringFilter<"ChatMember"> | string;
         createdAt?: DateTimeFilter<"ChatMember"> | Date | string;
         updatedAt?: DateTimeFilter<"ChatMember"> | Date | string;
+        status?:
+            | EnumChatMemberStatusFilter<"ChatMember">
+            | $Enums.ChatMemberStatus;
         userId?: StringFilter<"ChatMember"> | string;
         userFullName?: StringFilter<"ChatMember"> | string;
         userAvatarUrl?: StringNullableFilter<"ChatMember"> | string | null;
@@ -19917,6 +20063,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -19927,6 +20074,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -20064,6 +20212,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -20077,6 +20228,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -20404,6 +20558,7 @@ export namespace Prisma {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
+        status: $Enums.ChatMemberStatus;
         userId: string;
         userFullName: string;
         userAvatarUrl?: string | null;
@@ -20442,6 +20597,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -20455,6 +20613,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
@@ -20468,6 +20629,9 @@ export namespace Prisma {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumChatMemberStatusFieldUpdateOperationsInput
+            | $Enums.ChatMemberStatus;
         userId?: StringFieldUpdateOperationsInput | string;
         userFullName?: StringFieldUpdateOperationsInput | string;
         userAvatarUrl?:
