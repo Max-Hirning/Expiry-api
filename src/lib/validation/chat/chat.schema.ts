@@ -68,3 +68,5 @@ export type GetChatsCursorQueryInput = z.infer<
     typeof getChatsCursorQuerySchema
 >;
 export type CreateChatBodyInput = z.infer<typeof createChatBodySchema>;
+export type FetchChatsResponse = z.infer<typeof fetchChatsResponseSchema>;
+export type FetchChatResponse = z.infer<typeof fetchChatResponseSchema>;

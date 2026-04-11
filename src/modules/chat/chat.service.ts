@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { FastifyRequest } from "fastify";
 import { EDIT_WINDOW_MS } from "./chat.constants.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
@@ -11,8 +10,8 @@ import { defaultChatMessageSelector } from "@/database/team/repositories/chat-me
 import {
     ChatParamsInput,
     GetChatsCursorQueryInput,
-    fetchChatsResponseSchema,
-    fetchChatResponseSchema,
+    FetchChatsResponse,
+    FetchChatResponse,
 } from "@/lib/validation/chat/chat.schema.js";
 import {
     ChatMessageParamsInput,
@@ -20,11 +19,11 @@ import {
     EditMessageBodyInput,
     FetchMessagesQueryInput,
     MarkMessagesReadBodyInput,
-    sendMessageResponseSchema,
-    editMessageResponseSchema,
-    deleteMessageResponseSchema,
-    markReadResponseSchema,
-    fetchMessagesResponseSchema,
+    FetchMessagesResponse,
+    SendMessageResponse,
+    EditMessageResponse,
+    DeleteMessageResponse,
+    MarkReadResponse,
 } from "@/lib/validation/chat-message/chat-message.schema.js";
 
 export type ChatService = {
@@ -52,36 +51,36 @@ export type ChatService = {
         params: ChatParamsInput;
         query: GetChatsCursorQueryInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof fetchChatsResponseSchema>>;
+    }) => Promise<FetchChatsResponse>;
     getChat: (p: {
         params: ChatParamsInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof fetchChatResponseSchema>>;
+    }) => Promise<FetchChatResponse>;
     getMessages: (p: {
         params: ChatParamsInput;
         query: FetchMessagesQueryInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof fetchMessagesResponseSchema>>;
+    }) => Promise<FetchMessagesResponse>;
     sendMessage: (p: {
         params: ChatParamsInput;
         body: SendMessageBodyInput;
         initiator: FastifyRequest["user"];
         tx?: Prisma.TransactionClient;
-    }) => Promise<z.infer<typeof sendMessageResponseSchema>>;
+    }) => Promise<SendMessageResponse>;
     editMessage: (p: {
         params: ChatMessageParamsInput;
         body: EditMessageBodyInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof editMessageResponseSchema>>;
+    }) => Promise<EditMessageResponse>;
     deleteMessage: (p: {
         params: ChatMessageParamsInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof deleteMessageResponseSchema>>;
+    }) => Promise<DeleteMessageResponse>;
     markMessagesRead: (p: {
         params: ChatParamsInput;
         body: MarkMessagesReadBodyInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<z.infer<typeof markReadResponseSchema>>;
+    }) => Promise<MarkReadResponse>;
 };
 
 export const createChatService = (
@@ -105,9 +104,7 @@ export const createChatService = (
         body: SendMessageBodyInput;
         initiator: FastifyRequest["user"];
         tx: Prisma.TransactionClient;
-    }): Promise<
-        z.infer<typeof sendMessageResponseSchema>["data"]["chatMessage"]
-    > => {
+    }): Promise<SendMessageResponse["data"]["chatMessage"]> => {
         const member = await tx.chatMember.findFirst({
             where: {
                 chatId: params.chatId,

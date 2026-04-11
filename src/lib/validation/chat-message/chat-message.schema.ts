@@ -96,3 +96,8 @@ export type FetchMessagesQueryInput = z.infer<typeof fetchMessagesQuerySchema>;
 export type MarkMessagesReadBodyInput = z.infer<
     typeof markMessagesReadBodySchema
 >;
+export type FetchMessagesResponse = z.infer<typeof fetchMessagesResponseSchema>;
+export type SendMessageResponse = z.infer<typeof sendMessageResponseSchema>;
+export type EditMessageResponse = z.infer<typeof editMessageResponseSchema>;
+export type DeleteMessageResponse = z.infer<typeof deleteMessageResponseSchema>;
+export type MarkReadResponse = z.infer<typeof markReadResponseSchema>;
