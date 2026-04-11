@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { ChatService } from "../chat/chat.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
@@ -61,6 +62,7 @@ export type DocumentService = {
 
 export const createDocumentService = (
     applicationService: ApplicationService,
+    chatService: ChatService,
     gcpService: GcpService,
     notificationRepository: NotificationRepository,
     teamMemberRepository: TeamMemberRepository,
@@ -478,6 +480,20 @@ export const createDocumentService = (
                         documentName: document.name,
                         documentId: document.id,
                     },
+                });
+
+                await chatService.createChat({
+                    teamId: params.teamId,
+                    chatName: document.name,
+                    documentId: document.id,
+                    members: [
+                        {
+                            userId: initiator.id,
+                            userFullName: initiator.fullName,
+                            userAvatarUrl: initiator.avatar?.url,
+                        },
+                    ],
+                    tx,
                 });
 
                 return document;

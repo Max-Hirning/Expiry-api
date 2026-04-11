@@ -2,8 +2,8 @@ import { z } from "zod";
 import { FastifyRequest } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { ChatMemberStatus } from "@/database/team/generated/index.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
+import { ChatMemberStatus, Prisma } from "@/database/team/generated/index.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 import { defaultChatMemberSelector } from "@/database/team/repositories/chat-member/chat-member.repository.js";
 import { defaultChatMessageSelector } from "@/database/team/repositories/chat-message/chat-message.repository.js";
@@ -35,6 +35,26 @@ const assertWithinEditWindow = (updatedAt: Date) => {
 };
 
 export type ChatService = {
+    createChat: (p: {
+        teamId: string;
+        chatName: string;
+        documentId?: string;
+        members: {
+            userId: string;
+            userFullName: string;
+            userAvatarUrl?: string;
+        }[];
+        tx?: Prisma.TransactionClient;
+    }) => Promise<void>;
+    createChatMember: (p: {
+        teamId: string;
+        chatId: string;
+        members: {
+            userId: string;
+            userFullName: string;
+            userAvatarUrl?: string;
+        }[];
+    }) => Promise<void>;
     getChats: (p: {
         params: ChatParamsInput;
         query: GetChatsCursorQueryInput;
@@ -73,6 +93,78 @@ export type ChatService = {
 export const createChatService = (
     applicationService: ApplicationService
 ): ChatService => ({
+    createChat: async ({ teamId, chatName, documentId, members, tx }) => {
+        if (tx) {
+            const chat = await tx.chat.create({
+                data: {
+                    name: chatName,
+                    ...(documentId && { documentId }),
+                },
+            });
+
+            await tx.chatMember.createMany({
+                data: members.map(
+                    ({ userFullName, userId, userAvatarUrl }) => ({
+                        userId,
+                        userFullName,
+                        userAvatarUrl,
+                        chatId: chat.id,
+                        status: ChatMemberStatus.ACTIVE,
+                    })
+                ),
+                skipDuplicates: true,
+            });
+        } else {
+            const client =
+                await applicationService.initTeamTenantClient(teamId);
+
+            await withRepositories([client], async (tx) => {
+                const chat = await tx.chat.create({
+                    data: {
+                        name: chatName,
+                        ...(documentId && { documentId }),
+                    },
+                });
+
+                await tx.chatMember.createMany({
+                    data: members.map(
+                        ({ userFullName, userId, userAvatarUrl }) => ({
+                            userId,
+                            userFullName,
+                            userAvatarUrl,
+                            chatId: chat.id,
+                            status: ChatMemberStatus.ACTIVE,
+                        })
+                    ),
+                    skipDuplicates: true,
+                });
+            });
+        }
+    },
+
+    createChatMember: async ({ teamId, chatId, members }) => {
+        const client = await applicationService.initTeamTenantClient(teamId);
+
+        if (members.length === 0) {
+            return;
+        }
+
+        await client.$executeRaw`
+        INSERT INTO chat_members (id, created_at, updated_at, status, user_id, user_full_name, user_avatar_url, chat_id)
+        VALUES ${Prisma.join(
+        members.map(
+            (m) =>
+                Prisma.sql`(gen_random_uuid(), now(), now(), ${ChatMemberStatus.ACTIVE}, ${m.userId}, ${m.userFullName}, ${m.userAvatarUrl || null}, ${chatId})`
+        )
+    )}
+        ON CONFLICT (chat_id, user_id) DO UPDATE SET
+            updated_at = now(),
+            status = ${ChatMemberStatus.ACTIVE},
+            user_full_name = EXCLUDED.user_full_name,
+            user_avatar_url = EXCLUDED.user_avatar_url
+        `;
+    },
+
     getChats: async ({ params, query, initiator }) => {
         const chatRepository = await applicationService.initChatRepository(
             params.teamId
