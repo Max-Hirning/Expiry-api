@@ -1899,6 +1899,7 @@ export namespace Prisma {
         actionLogs: number;
         files: number;
         documentTags: number;
+        chatMessages: number;
     };
 
     export type DocumentCountOutputTypeSelect<
@@ -1910,6 +1911,7 @@ export namespace Prisma {
         actionLogs?: boolean | DocumentCountOutputTypeCountActionLogsArgs;
         files?: boolean | DocumentCountOutputTypeCountFilesArgs;
         documentTags?: boolean | DocumentCountOutputTypeCountDocumentTagsArgs;
+        chatMessages?: boolean | DocumentCountOutputTypeCountChatMessagesArgs;
     };
 
     // Custom InputTypes
@@ -1962,6 +1964,15 @@ export namespace Prisma {
     };
 
     /**
+     * DocumentCountOutputType without action
+     */
+    export type DocumentCountOutputTypeCountChatMessagesArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: ChatMessageWhereInput;
+    };
+
+    /**
      * Count Type TagCountOutputType
      */
 
@@ -1995,6 +2006,42 @@ export namespace Prisma {
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         where?: DocumentTagWhereInput;
+    };
+
+    /**
+     * Count Type FileCountOutputType
+     */
+
+    export type FileCountOutputType = {
+        chatMessages: number;
+    };
+
+    export type FileCountOutputTypeSelect<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        chatMessages?: boolean | FileCountOutputTypeCountChatMessagesArgs;
+    };
+
+    // Custom InputTypes
+    /**
+     * FileCountOutputType without action
+     */
+    export type FileCountOutputTypeDefaultArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the FileCountOutputType
+         */
+        select?: FileCountOutputTypeSelect<ExtArgs> | null;
+    };
+
+    /**
+     * FileCountOutputType without action
+     */
+    export type FileCountOutputTypeCountChatMessagesArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: ChatMessageWhereInput;
     };
 
     /**
@@ -2341,6 +2388,8 @@ export namespace Prisma {
             actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
             files?: boolean | Document$filesArgs<ExtArgs>;
             documentTags?: boolean | Document$documentTagsArgs<ExtArgs>;
+            chat?: boolean | Document$chatArgs<ExtArgs>;
+            chatMessages?: boolean | Document$chatMessagesArgs<ExtArgs>;
             _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
         },
         ExtArgs["result"]["document"]
@@ -2407,6 +2456,8 @@ export namespace Prisma {
         actionLogs?: boolean | Document$actionLogsArgs<ExtArgs>;
         files?: boolean | Document$filesArgs<ExtArgs>;
         documentTags?: boolean | Document$documentTagsArgs<ExtArgs>;
+        chat?: boolean | Document$chatArgs<ExtArgs>;
+        chatMessages?: boolean | Document$chatMessagesArgs<ExtArgs>;
         _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type DocumentIncludeCreateManyAndReturn<
@@ -2425,6 +2476,8 @@ export namespace Prisma {
             actionLogs: Prisma.$ActionLogPayload<ExtArgs>[];
             files: Prisma.$FilePayload<ExtArgs>[];
             documentTags: Prisma.$DocumentTagPayload<ExtArgs>[];
+            chat: Prisma.$ChatPayload<ExtArgs> | null;
+            chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[];
         };
         scalars: $Extensions.GetPayloadResult<
             {
@@ -3034,6 +3087,30 @@ export namespace Prisma {
               >
             | Null
         >;
+        chat<T extends Document$chatArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$chatArgs<ExtArgs>>
+        ): Prisma__ChatClient<
+            $Result.GetResult<
+                Prisma.$ChatPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        chatMessages<T extends Document$chatMessagesArgs<ExtArgs> = {}>(
+            args?: Subset<T, Document$chatMessagesArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$ChatMessagePayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
         /**
          * Attaches callbacks for the resolution and/or rejection of the Promise.
          * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3619,6 +3696,55 @@ export namespace Prisma {
         take?: number;
         skip?: number;
         distinct?: DocumentTagScalarFieldEnum | DocumentTagScalarFieldEnum[];
+    };
+
+    /**
+     * Document.chat
+     */
+    export type Document$chatArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Chat
+         */
+        select?: ChatSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Chat
+         */
+        omit?: ChatOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatInclude<ExtArgs> | null;
+        where?: ChatWhereInput;
+    };
+
+    /**
+     * Document.chatMessages
+     */
+    export type Document$chatMessagesArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ChatMessage
+         */
+        select?: ChatMessageSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ChatMessage
+         */
+        omit?: ChatMessageOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatMessageInclude<ExtArgs> | null;
+        where?: ChatMessageWhereInput;
+        orderBy?:
+            | ChatMessageOrderByWithRelationInput
+            | ChatMessageOrderByWithRelationInput[];
+        cursor?: ChatMessageWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[];
     };
 
     /**
@@ -6538,6 +6664,8 @@ export namespace Prisma {
             height?: boolean;
             documentId?: boolean;
             document?: boolean | DocumentDefaultArgs<ExtArgs>;
+            chatMessages?: boolean | File$chatMessagesArgs<ExtArgs>;
+            _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>;
         },
         ExtArgs["result"]["file"]
     >;
@@ -6616,6 +6744,8 @@ export namespace Prisma {
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         document?: boolean | DocumentDefaultArgs<ExtArgs>;
+        chatMessages?: boolean | File$chatMessagesArgs<ExtArgs>;
+        _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type FileIncludeCreateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
@@ -6634,6 +6764,7 @@ export namespace Prisma {
         name: "File";
         objects: {
             document: Prisma.$DocumentPayload<ExtArgs>;
+            chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[];
         };
         scalars: $Extensions.GetPayloadResult<
             {
@@ -7209,6 +7340,17 @@ export namespace Prisma {
             ExtArgs,
             GlobalOmitOptions
         >;
+        chatMessages<T extends File$chatMessagesArgs<ExtArgs> = {}>(
+            args?: Subset<T, File$chatMessagesArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$ChatMessagePayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
         /**
          * Attaches callbacks for the resolution and/or rejection of the Promise.
          * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7682,6 +7824,34 @@ export namespace Prisma {
          * Limit how many Files to delete.
          */
         limit?: number;
+    };
+
+    /**
+     * File.chatMessages
+     */
+    export type File$chatMessagesArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ChatMessage
+         */
+        select?: ChatMessageSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ChatMessage
+         */
+        omit?: ChatMessageOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatMessageInclude<ExtArgs> | null;
+        where?: ChatMessageWhereInput;
+        orderBy?:
+            | ChatMessageOrderByWithRelationInput
+            | ChatMessageOrderByWithRelationInput[];
+        cursor?: ChatMessageWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: ChatMessageScalarFieldEnum | ChatMessageScalarFieldEnum[];
     };
 
     /**
@@ -10626,6 +10796,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         name: string | null;
+        documentId: string | null;
     };
 
     export type ChatMaxAggregateOutputType = {
@@ -10633,6 +10804,7 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         name: string | null;
+        documentId: string | null;
     };
 
     export type ChatCountAggregateOutputType = {
@@ -10640,6 +10812,7 @@ export namespace Prisma {
         createdAt: number;
         updatedAt: number;
         name: number;
+        documentId: number;
         _all: number;
     };
 
@@ -10648,6 +10821,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         name?: true;
+        documentId?: true;
     };
 
     export type ChatMaxAggregateInputType = {
@@ -10655,6 +10829,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         name?: true;
+        documentId?: true;
     };
 
     export type ChatCountAggregateInputType = {
@@ -10662,6 +10837,7 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         name?: true;
+        documentId?: true;
         _all?: true;
     };
 
@@ -10745,6 +10921,7 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        documentId: string | null;
         _count: ChatCountAggregateOutputType | null;
         _min: ChatMinAggregateOutputType | null;
         _max: ChatMaxAggregateOutputType | null;
@@ -10772,6 +10949,8 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             name?: boolean;
+            documentId?: boolean;
+            document?: boolean | Chat$documentArgs<ExtArgs>;
             messages?: boolean | Chat$messagesArgs<ExtArgs>;
             members?: boolean | Chat$membersArgs<ExtArgs>;
             _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>;
@@ -10787,6 +10966,8 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             name?: boolean;
+            documentId?: boolean;
+            document?: boolean | Chat$documentArgs<ExtArgs>;
         },
         ExtArgs["result"]["chat"]
     >;
@@ -10799,6 +10980,8 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             name?: boolean;
+            documentId?: boolean;
+            document?: boolean | Chat$documentArgs<ExtArgs>;
         },
         ExtArgs["result"]["chat"]
     >;
@@ -10808,33 +10991,40 @@ export namespace Prisma {
         createdAt?: boolean;
         updatedAt?: boolean;
         name?: boolean;
+        documentId?: boolean;
     };
 
     export type ChatOmit<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = $Extensions.GetOmit<
-        "id" | "createdAt" | "updatedAt" | "name",
+        "id" | "createdAt" | "updatedAt" | "name" | "documentId",
         ExtArgs["result"]["chat"]
     >;
     export type ChatInclude<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
+        document?: boolean | Chat$documentArgs<ExtArgs>;
         messages?: boolean | Chat$messagesArgs<ExtArgs>;
         members?: boolean | Chat$membersArgs<ExtArgs>;
         _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type ChatIncludeCreateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {};
+    > = {
+        document?: boolean | Chat$documentArgs<ExtArgs>;
+    };
     export type ChatIncludeUpdateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {};
+    > = {
+        document?: boolean | Chat$documentArgs<ExtArgs>;
+    };
 
     export type $ChatPayload<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         name: "Chat";
         objects: {
+            document: Prisma.$DocumentPayload<ExtArgs> | null;
             messages: Prisma.$ChatMessagePayload<ExtArgs>[];
             members: Prisma.$ChatMemberPayload<ExtArgs>[];
         };
@@ -10844,6 +11034,7 @@ export namespace Prisma {
                 createdAt: Date;
                 updatedAt: Date;
                 name: string;
+                documentId: string | null;
             },
             ExtArgs["result"]["chat"]
         >;
@@ -11391,6 +11582,19 @@ export namespace Prisma {
         GlobalOmitOptions = {},
     > extends Prisma.PrismaPromise<T> {
         readonly [Symbol.toStringTag]: "PrismaPromise";
+        document<T extends Chat$documentArgs<ExtArgs> = {}>(
+            args?: Subset<T, Chat$documentArgs<ExtArgs>>
+        ): Prisma__DocumentClient<
+            $Result.GetResult<
+                Prisma.$DocumentPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
         messages<T extends Chat$messagesArgs<ExtArgs> = {}>(
             args?: Subset<T, Chat$messagesArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
@@ -11459,6 +11663,7 @@ export namespace Prisma {
         readonly createdAt: FieldRef<"Chat", "DateTime">;
         readonly updatedAt: FieldRef<"Chat", "DateTime">;
         readonly name: FieldRef<"Chat", "String">;
+        readonly documentId: FieldRef<"Chat", "String">;
     }
 
     // Custom InputTypes
@@ -11723,6 +11928,10 @@ export namespace Prisma {
          */
         data: ChatCreateManyInput | ChatCreateManyInput[];
         skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatIncludeCreateManyAndReturn<ExtArgs> | null;
     };
 
     /**
@@ -11799,6 +12008,10 @@ export namespace Prisma {
          * Limit how many Chats to update.
          */
         limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatIncludeUpdateManyAndReturn<ExtArgs> | null;
     };
 
     /**
@@ -11871,6 +12084,27 @@ export namespace Prisma {
          * Limit how many Chats to delete.
          */
         limit?: number;
+    };
+
+    /**
+     * Chat.document
+     */
+    export type Chat$documentArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Document
+         */
+        select?: DocumentSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Document
+         */
+        omit?: DocumentOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentInclude<ExtArgs> | null;
+        where?: DocumentWhereInput;
     };
 
     /**
@@ -13426,9 +13660,12 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         message: string | null;
+        autoGenerated: boolean | null;
         parentMessageId: string | null;
         authorId: string | null;
         chatId: string | null;
+        documentId: string | null;
+        documentVersionId: string | null;
     };
 
     export type ChatMessageMaxAggregateOutputType = {
@@ -13436,9 +13673,12 @@ export namespace Prisma {
         createdAt: Date | null;
         updatedAt: Date | null;
         message: string | null;
+        autoGenerated: boolean | null;
         parentMessageId: string | null;
         authorId: string | null;
         chatId: string | null;
+        documentId: string | null;
+        documentVersionId: string | null;
     };
 
     export type ChatMessageCountAggregateOutputType = {
@@ -13446,9 +13686,12 @@ export namespace Prisma {
         createdAt: number;
         updatedAt: number;
         message: number;
+        autoGenerated: number;
         parentMessageId: number;
         authorId: number;
         chatId: number;
+        documentId: number;
+        documentVersionId: number;
         _all: number;
     };
 
@@ -13457,9 +13700,12 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         message?: true;
+        autoGenerated?: true;
         parentMessageId?: true;
         authorId?: true;
         chatId?: true;
+        documentId?: true;
+        documentVersionId?: true;
     };
 
     export type ChatMessageMaxAggregateInputType = {
@@ -13467,9 +13713,12 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         message?: true;
+        autoGenerated?: true;
         parentMessageId?: true;
         authorId?: true;
         chatId?: true;
+        documentId?: true;
+        documentVersionId?: true;
     };
 
     export type ChatMessageCountAggregateInputType = {
@@ -13477,9 +13726,12 @@ export namespace Prisma {
         createdAt?: true;
         updatedAt?: true;
         message?: true;
+        autoGenerated?: true;
         parentMessageId?: true;
         authorId?: true;
         chatId?: true;
+        documentId?: true;
+        documentVersionId?: true;
         _all?: true;
     };
 
@@ -13569,9 +13821,12 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         message: string;
+        autoGenerated: boolean;
         parentMessageId: string | null;
         authorId: string;
         chatId: string;
+        documentId: string | null;
+        documentVersionId: string | null;
         _count: ChatMessageCountAggregateOutputType | null;
         _min: ChatMessageMinAggregateOutputType | null;
         _max: ChatMessageMaxAggregateOutputType | null;
@@ -13602,12 +13857,19 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             message?: boolean;
+            autoGenerated?: boolean;
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
+            documentId?: boolean;
+            documentVersionId?: boolean;
             parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
+            document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+            documentVersion?:
+                | boolean
+                | ChatMessage$documentVersionArgs<ExtArgs>;
             childMessages?: boolean | ChatMessage$childMessagesArgs<ExtArgs>;
             chatMessageReadStatuses?:
                 | boolean
@@ -13625,12 +13887,19 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             message?: boolean;
+            autoGenerated?: boolean;
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
+            documentId?: boolean;
+            documentVersionId?: boolean;
             parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
+            document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+            documentVersion?:
+                | boolean
+                | ChatMessage$documentVersionArgs<ExtArgs>;
         },
         ExtArgs["result"]["chatMessage"]
     >;
@@ -13643,12 +13912,19 @@ export namespace Prisma {
             createdAt?: boolean;
             updatedAt?: boolean;
             message?: boolean;
+            autoGenerated?: boolean;
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
+            documentId?: boolean;
+            documentVersionId?: boolean;
             parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
+            document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+            documentVersion?:
+                | boolean
+                | ChatMessage$documentVersionArgs<ExtArgs>;
         },
         ExtArgs["result"]["chatMessage"]
     >;
@@ -13658,9 +13934,12 @@ export namespace Prisma {
         createdAt?: boolean;
         updatedAt?: boolean;
         message?: boolean;
+        autoGenerated?: boolean;
         parentMessageId?: boolean;
         authorId?: boolean;
         chatId?: boolean;
+        documentId?: boolean;
+        documentVersionId?: boolean;
     };
 
     export type ChatMessageOmit<
@@ -13670,9 +13949,12 @@ export namespace Prisma {
         | "createdAt"
         | "updatedAt"
         | "message"
+        | "autoGenerated"
         | "parentMessageId"
         | "authorId"
-        | "chatId",
+        | "chatId"
+        | "documentId"
+        | "documentVersionId",
         ExtArgs["result"]["chatMessage"]
     >;
     export type ChatMessageInclude<
@@ -13681,6 +13963,8 @@ export namespace Prisma {
         parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
+        document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+        documentVersion?: boolean | ChatMessage$documentVersionArgs<ExtArgs>;
         childMessages?: boolean | ChatMessage$childMessagesArgs<ExtArgs>;
         chatMessageReadStatuses?:
             | boolean
@@ -13693,6 +13977,8 @@ export namespace Prisma {
         parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
+        document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+        documentVersion?: boolean | ChatMessage$documentVersionArgs<ExtArgs>;
     };
     export type ChatMessageIncludeUpdateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
@@ -13700,6 +13986,8 @@ export namespace Prisma {
         parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
+        document?: boolean | ChatMessage$documentArgs<ExtArgs>;
+        documentVersion?: boolean | ChatMessage$documentVersionArgs<ExtArgs>;
     };
 
     export type $ChatMessagePayload<
@@ -13710,6 +13998,8 @@ export namespace Prisma {
             parentMessage: Prisma.$ChatMessagePayload<ExtArgs> | null;
             author: Prisma.$ChatMemberPayload<ExtArgs>;
             chat: Prisma.$ChatPayload<ExtArgs>;
+            document: Prisma.$DocumentPayload<ExtArgs> | null;
+            documentVersion: Prisma.$FilePayload<ExtArgs> | null;
             childMessages: Prisma.$ChatMessagePayload<ExtArgs>[];
             chatMessageReadStatuses: Prisma.$ChatMessageReadStatusPayload<ExtArgs>[];
         };
@@ -13719,9 +14009,12 @@ export namespace Prisma {
                 createdAt: Date;
                 updatedAt: Date;
                 message: string;
+                autoGenerated: boolean;
                 parentMessageId: string | null;
                 authorId: string;
                 chatId: string;
+                documentId: string | null;
+                documentVersionId: string | null;
             },
             ExtArgs["result"]["chatMessage"]
         >;
@@ -14316,6 +14609,34 @@ export namespace Prisma {
             ExtArgs,
             GlobalOmitOptions
         >;
+        document<T extends ChatMessage$documentArgs<ExtArgs> = {}>(
+            args?: Subset<T, ChatMessage$documentArgs<ExtArgs>>
+        ): Prisma__DocumentClient<
+            $Result.GetResult<
+                Prisma.$DocumentPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
+        documentVersion<
+            T extends ChatMessage$documentVersionArgs<ExtArgs> = {},
+        >(
+            args?: Subset<T, ChatMessage$documentVersionArgs<ExtArgs>>
+        ): Prisma__FileClient<
+            $Result.GetResult<
+                Prisma.$FilePayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
         childMessages<T extends ChatMessage$childMessagesArgs<ExtArgs> = {}>(
             args?: Subset<T, ChatMessage$childMessagesArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
@@ -14386,9 +14707,12 @@ export namespace Prisma {
         readonly createdAt: FieldRef<"ChatMessage", "DateTime">;
         readonly updatedAt: FieldRef<"ChatMessage", "DateTime">;
         readonly message: FieldRef<"ChatMessage", "String">;
+        readonly autoGenerated: FieldRef<"ChatMessage", "Boolean">;
         readonly parentMessageId: FieldRef<"ChatMessage", "String">;
         readonly authorId: FieldRef<"ChatMessage", "String">;
         readonly chatId: FieldRef<"ChatMessage", "String">;
+        readonly documentId: FieldRef<"ChatMessage", "String">;
+        readonly documentVersionId: FieldRef<"ChatMessage", "String">;
     }
 
     // Custom InputTypes
@@ -14842,6 +15166,48 @@ export namespace Prisma {
          */
         include?: ChatMessageInclude<ExtArgs> | null;
         where?: ChatMessageWhereInput;
+    };
+
+    /**
+     * ChatMessage.document
+     */
+    export type ChatMessage$documentArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Document
+         */
+        select?: DocumentSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Document
+         */
+        omit?: DocumentOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: DocumentInclude<ExtArgs> | null;
+        where?: DocumentWhereInput;
+    };
+
+    /**
+     * ChatMessage.documentVersion
+     */
+    export type ChatMessage$documentVersionArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the File
+         */
+        select?: FileSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the File
+         */
+        omit?: FileOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: FileInclude<ExtArgs> | null;
+        where?: FileWhereInput;
     };
 
     /**
@@ -16416,6 +16782,7 @@ export namespace Prisma {
         createdAt: "createdAt";
         updatedAt: "updatedAt";
         name: "name";
+        documentId: "documentId";
     };
 
     export type ChatScalarFieldEnum =
@@ -16440,9 +16807,12 @@ export namespace Prisma {
         createdAt: "createdAt";
         updatedAt: "updatedAt";
         message: "message";
+        autoGenerated: "autoGenerated";
         parentMessageId: "parentMessageId";
         authorId: "authorId";
         chatId: "chatId";
+        documentId: "documentId";
+        documentVersionId: "documentVersionId";
     };
 
     export type ChatMessageScalarFieldEnum =
@@ -16607,6 +16977,14 @@ export namespace Prisma {
         FieldRefInputType<$PrismaModel, "ChatMemberStatus[]">;
 
     /**
+     * Reference to a field of type 'Boolean'
+     */
+    export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<
+        $PrismaModel,
+        "Boolean"
+    >;
+
+    /**
      * Reference to a field of type 'Int'
      */
     export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -16646,6 +17024,8 @@ export namespace Prisma {
         actionLogs?: ActionLogListRelationFilter;
         files?: FileListRelationFilter;
         documentTags?: DocumentTagListRelationFilter;
+        chat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null;
+        chatMessages?: ChatMessageListRelationFilter;
     };
 
     export type DocumentOrderByWithRelationInput = {
@@ -16660,6 +17040,8 @@ export namespace Prisma {
         actionLogs?: ActionLogOrderByRelationAggregateInput;
         files?: FileOrderByRelationAggregateInput;
         documentTags?: DocumentTagOrderByRelationAggregateInput;
+        chat?: ChatOrderByWithRelationInput;
+        chatMessages?: ChatMessageOrderByRelationAggregateInput;
     };
 
     export type DocumentWhereUniqueInput = Prisma.AtLeast<
@@ -16687,6 +17069,8 @@ export namespace Prisma {
             actionLogs?: ActionLogListRelationFilter;
             files?: FileListRelationFilter;
             documentTags?: DocumentTagListRelationFilter;
+            chat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null;
+            chatMessages?: ChatMessageListRelationFilter;
         },
         "id" | "name"
     >;
@@ -16868,6 +17252,7 @@ export namespace Prisma {
         height?: FloatNullableFilter<"File"> | number | null;
         documentId?: UuidFilter<"File"> | string;
         document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+        chatMessages?: ChatMessageListRelationFilter;
     };
 
     export type FileOrderByWithRelationInput = {
@@ -16883,6 +17268,7 @@ export namespace Prisma {
         height?: SortOrderInput | SortOrder;
         documentId?: SortOrder;
         document?: DocumentOrderByWithRelationInput;
+        chatMessages?: ChatMessageOrderByRelationAggregateInput;
     };
 
     export type FileWhereUniqueInput = Prisma.AtLeast<
@@ -16902,6 +17288,7 @@ export namespace Prisma {
             height?: FloatNullableFilter<"File"> | number | null;
             documentId?: UuidFilter<"File"> | string;
             document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
+            chatMessages?: ChatMessageListRelationFilter;
         },
         "id" | "key"
     >;
@@ -17191,6 +17578,11 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"Chat"> | Date | string;
         updatedAt?: DateTimeFilter<"Chat"> | Date | string;
         name?: StringFilter<"Chat"> | string;
+        documentId?: UuidNullableFilter<"Chat"> | string | null;
+        document?: XOR<
+            DocumentNullableScalarRelationFilter,
+            DocumentWhereInput
+        > | null;
         messages?: ChatMessageListRelationFilter;
         members?: ChatMemberListRelationFilter;
     };
@@ -17200,6 +17592,8 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         name?: SortOrder;
+        documentId?: SortOrderInput | SortOrder;
+        document?: DocumentOrderByWithRelationInput;
         messages?: ChatMessageOrderByRelationAggregateInput;
         members?: ChatMemberOrderByRelationAggregateInput;
     };
@@ -17208,15 +17602,20 @@ export namespace Prisma {
         {
             id?: string;
             name?: string;
+            documentId?: string;
             AND?: ChatWhereInput | ChatWhereInput[];
             OR?: ChatWhereInput[];
             NOT?: ChatWhereInput | ChatWhereInput[];
             createdAt?: DateTimeFilter<"Chat"> | Date | string;
             updatedAt?: DateTimeFilter<"Chat"> | Date | string;
+            document?: XOR<
+                DocumentNullableScalarRelationFilter,
+                DocumentWhereInput
+            > | null;
             messages?: ChatMessageListRelationFilter;
             members?: ChatMemberListRelationFilter;
         },
-        "id" | "name"
+        "id" | "name" | "documentId"
     >;
 
     export type ChatOrderByWithAggregationInput = {
@@ -17224,6 +17623,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         name?: SortOrder;
+        documentId?: SortOrderInput | SortOrder;
         _count?: ChatCountOrderByAggregateInput;
         _max?: ChatMaxOrderByAggregateInput;
         _min?: ChatMinOrderByAggregateInput;
@@ -17241,6 +17641,7 @@ export namespace Prisma {
         createdAt?: DateTimeWithAggregatesFilter<"Chat"> | Date | string;
         updatedAt?: DateTimeWithAggregatesFilter<"Chat"> | Date | string;
         name?: StringWithAggregatesFilter<"Chat"> | string;
+        documentId?: UuidNullableWithAggregatesFilter<"Chat"> | string | null;
     };
 
     export type ChatMemberWhereInput = {
@@ -17344,15 +17745,26 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         message?: StringFilter<"ChatMessage"> | string;
+        autoGenerated?: BoolFilter<"ChatMessage"> | boolean;
         parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
         authorId?: UuidFilter<"ChatMessage"> | string;
         chatId?: UuidFilter<"ChatMessage"> | string;
+        documentId?: UuidNullableFilter<"ChatMessage"> | string | null;
+        documentVersionId?: UuidNullableFilter<"ChatMessage"> | string | null;
         parentMessage?: XOR<
             ChatMessageNullableScalarRelationFilter,
             ChatMessageWhereInput
         > | null;
         author?: XOR<ChatMemberScalarRelationFilter, ChatMemberWhereInput>;
         chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>;
+        document?: XOR<
+            DocumentNullableScalarRelationFilter,
+            DocumentWhereInput
+        > | null;
+        documentVersion?: XOR<
+            FileNullableScalarRelationFilter,
+            FileWhereInput
+        > | null;
         childMessages?: ChatMessageListRelationFilter;
         chatMessageReadStatuses?: ChatMessageReadStatusListRelationFilter;
     };
@@ -17362,12 +17774,17 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
+        autoGenerated?: SortOrder;
         parentMessageId?: SortOrderInput | SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+        documentId?: SortOrderInput | SortOrder;
+        documentVersionId?: SortOrderInput | SortOrder;
         parentMessage?: ChatMessageOrderByWithRelationInput;
         author?: ChatMemberOrderByWithRelationInput;
         chat?: ChatOrderByWithRelationInput;
+        document?: DocumentOrderByWithRelationInput;
+        documentVersion?: FileOrderByWithRelationInput;
         childMessages?: ChatMessageOrderByRelationAggregateInput;
         chatMessageReadStatuses?: ChatMessageReadStatusOrderByRelationAggregateInput;
     };
@@ -17375,12 +17792,15 @@ export namespace Prisma {
     export type ChatMessageWhereUniqueInput = Prisma.AtLeast<
         {
             id?: string;
+            documentId?: string;
+            documentVersionId?: string;
             AND?: ChatMessageWhereInput | ChatMessageWhereInput[];
             OR?: ChatMessageWhereInput[];
             NOT?: ChatMessageWhereInput | ChatMessageWhereInput[];
             createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
             updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
             message?: StringFilter<"ChatMessage"> | string;
+            autoGenerated?: BoolFilter<"ChatMessage"> | boolean;
             parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
             authorId?: UuidFilter<"ChatMessage"> | string;
             chatId?: UuidFilter<"ChatMessage"> | string;
@@ -17390,10 +17810,18 @@ export namespace Prisma {
             > | null;
             author?: XOR<ChatMemberScalarRelationFilter, ChatMemberWhereInput>;
             chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>;
+            document?: XOR<
+                DocumentNullableScalarRelationFilter,
+                DocumentWhereInput
+            > | null;
+            documentVersion?: XOR<
+                FileNullableScalarRelationFilter,
+                FileWhereInput
+            > | null;
             childMessages?: ChatMessageListRelationFilter;
             chatMessageReadStatuses?: ChatMessageReadStatusListRelationFilter;
         },
-        "id"
+        "id" | "documentId" | "documentVersionId"
     >;
 
     export type ChatMessageOrderByWithAggregationInput = {
@@ -17401,9 +17829,12 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
+        autoGenerated?: SortOrder;
         parentMessageId?: SortOrderInput | SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+        documentId?: SortOrderInput | SortOrder;
+        documentVersionId?: SortOrderInput | SortOrder;
         _count?: ChatMessageCountOrderByAggregateInput;
         _max?: ChatMessageMaxOrderByAggregateInput;
         _min?: ChatMessageMinOrderByAggregateInput;
@@ -17421,12 +17852,21 @@ export namespace Prisma {
         createdAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string;
         updatedAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string;
         message?: StringWithAggregatesFilter<"ChatMessage"> | string;
+        autoGenerated?: BoolWithAggregatesFilter<"ChatMessage"> | boolean;
         parentMessageId?:
             | UuidNullableWithAggregatesFilter<"ChatMessage">
             | string
             | null;
         authorId?: UuidWithAggregatesFilter<"ChatMessage"> | string;
         chatId?: UuidWithAggregatesFilter<"ChatMessage"> | string;
+        documentId?:
+            | UuidNullableWithAggregatesFilter<"ChatMessage">
+            | string
+            | null;
+        documentVersionId?:
+            | UuidNullableWithAggregatesFilter<"ChatMessage">
+            | string
+            | null;
     };
 
     export type ChatMessageReadStatusWhereInput = {
@@ -17529,6 +17969,8 @@ export namespace Prisma {
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateInput = {
@@ -17543,6 +17985,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUpdateInput = {
@@ -17566,6 +18010,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateInput = {
@@ -17589,6 +18035,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateManyInput = {
@@ -17758,6 +18206,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         document: DocumentCreateNestedOneWithoutFilesInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentVersionInput;
     };
 
     export type FileUncheckedCreateInput = {
@@ -17772,6 +18221,7 @@ export namespace Prisma {
         width?: number | null;
         height?: number | null;
         documentId: string;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentVersionInput;
     };
 
     export type FileUpdateInput = {
@@ -17786,6 +18236,7 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         document?: DocumentUpdateOneRequiredWithoutFilesNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentVersionNestedInput;
     };
 
     export type FileUncheckedUpdateInput = {
@@ -17800,6 +18251,7 @@ export namespace Prisma {
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
         documentId?: StringFieldUpdateOperationsInput | string;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentVersionNestedInput;
     };
 
     export type FileCreateManyInput = {
@@ -18076,6 +18528,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        document?: DocumentCreateNestedOneWithoutChatInput;
         messages?: ChatMessageCreateNestedManyWithoutChatInput;
         members?: ChatMemberCreateNestedManyWithoutChatInput;
     };
@@ -18085,6 +18538,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        documentId?: string | null;
         messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput;
         members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput;
     };
@@ -18094,6 +18548,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        document?: DocumentUpdateOneWithoutChatNestedInput;
         messages?: ChatMessageUpdateManyWithoutChatNestedInput;
         members?: ChatMemberUpdateManyWithoutChatNestedInput;
     };
@@ -18103,6 +18558,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
         messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput;
         members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput;
     };
@@ -18112,6 +18568,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        documentId?: string | null;
     };
 
     export type ChatUpdateManyMutationInput = {
@@ -18126,6 +18583,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
     };
 
     export type ChatMemberCreateInput = {
@@ -18237,9 +18695,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
     };
@@ -18249,9 +18710,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         authorId: string;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
     };
@@ -18261,9 +18725,12 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
     };
@@ -18273,12 +18740,18 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
     };
@@ -18288,9 +18761,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         authorId: string;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
     };
 
     export type ChatMessageUpdateManyMutationInput = {
@@ -18298,6 +18774,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
     };
 
     export type ChatMessageUncheckedUpdateManyInput = {
@@ -18305,12 +18782,18 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type ChatMessageReadStatusCreateInput = {
@@ -18478,6 +18961,17 @@ export namespace Prisma {
         none?: DocumentTagWhereInput;
     };
 
+    export type ChatNullableScalarRelationFilter = {
+        is?: ChatWhereInput | null;
+        isNot?: ChatWhereInput | null;
+    };
+
+    export type ChatMessageListRelationFilter = {
+        every?: ChatMessageWhereInput;
+        some?: ChatMessageWhereInput;
+        none?: ChatMessageWhereInput;
+    };
+
     export type SortOrderInput = {
         sort: SortOrder;
         nulls?: NullsOrder;
@@ -18496,6 +18990,10 @@ export namespace Prisma {
     };
 
     export type DocumentTagOrderByRelationAggregateInput = {
+        _count?: SortOrder;
+    };
+
+    export type ChatMessageOrderByRelationAggregateInput = {
         _count?: SortOrder;
     };
 
@@ -19067,20 +19565,10 @@ export namespace Prisma {
         _max?: NestedStringNullableFilter<$PrismaModel>;
     };
 
-    export type ChatMessageListRelationFilter = {
-        every?: ChatMessageWhereInput;
-        some?: ChatMessageWhereInput;
-        none?: ChatMessageWhereInput;
-    };
-
     export type ChatMemberListRelationFilter = {
         every?: ChatMemberWhereInput;
         some?: ChatMemberWhereInput;
         none?: ChatMemberWhereInput;
-    };
-
-    export type ChatMessageOrderByRelationAggregateInput = {
-        _count?: SortOrder;
     };
 
     export type ChatMemberOrderByRelationAggregateInput = {
@@ -19092,6 +19580,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         name?: SortOrder;
+        documentId?: SortOrder;
     };
 
     export type ChatMaxOrderByAggregateInput = {
@@ -19099,6 +19588,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         name?: SortOrder;
+        documentId?: SortOrder;
     };
 
     export type ChatMinOrderByAggregateInput = {
@@ -19106,6 +19596,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         name?: SortOrder;
+        documentId?: SortOrder;
     };
 
     export type EnumChatMemberStatusFilter<$PrismaModel = never> = {
@@ -19195,6 +19686,11 @@ export namespace Prisma {
             _max?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
         };
 
+    export type BoolFilter<$PrismaModel = never> = {
+        equals?: boolean | BooleanFieldRefInput<$PrismaModel>;
+        not?: NestedBoolFilter<$PrismaModel> | boolean;
+    };
+
     export type ChatMessageNullableScalarRelationFilter = {
         is?: ChatMessageWhereInput | null;
         isNot?: ChatMessageWhereInput | null;
@@ -19205,14 +19701,22 @@ export namespace Prisma {
         isNot?: ChatMemberWhereInput;
     };
 
+    export type FileNullableScalarRelationFilter = {
+        is?: FileWhereInput | null;
+        isNot?: FileWhereInput | null;
+    };
+
     export type ChatMessageCountOrderByAggregateInput = {
         id?: SortOrder;
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
+        autoGenerated?: SortOrder;
         parentMessageId?: SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+        documentId?: SortOrder;
+        documentVersionId?: SortOrder;
     };
 
     export type ChatMessageMaxOrderByAggregateInput = {
@@ -19220,9 +19724,12 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
+        autoGenerated?: SortOrder;
         parentMessageId?: SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+        documentId?: SortOrder;
+        documentVersionId?: SortOrder;
     };
 
     export type ChatMessageMinOrderByAggregateInput = {
@@ -19230,9 +19737,20 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
+        autoGenerated?: SortOrder;
         parentMessageId?: SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+        documentId?: SortOrder;
+        documentVersionId?: SortOrder;
+    };
+
+    export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: boolean | BooleanFieldRefInput<$PrismaModel>;
+        not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedBoolFilter<$PrismaModel>;
+        _max?: NestedBoolFilter<$PrismaModel>;
     };
 
     export type ChatMessageScalarRelationFilter = {
@@ -19332,6 +19850,30 @@ export namespace Prisma {
         connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
     };
 
+    export type ChatCreateNestedOneWithoutDocumentInput = {
+        create?: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+        connectOrCreate?: ChatCreateOrConnectWithoutDocumentInput;
+        connect?: ChatWhereUniqueInput;
+    };
+
+    export type ChatMessageCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentInput,
+                  ChatMessageUncheckedCreateWithoutDocumentInput
+              >
+            | ChatMessageCreateWithoutDocumentInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentInput
+            | ChatMessageCreateOrConnectWithoutDocumentInput[];
+        createMany?: ChatMessageCreateManyDocumentInputEnvelope;
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+    };
+
     export type DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput =
         {
             create?:
@@ -19393,6 +19935,30 @@ export namespace Prisma {
             | DocumentTagCreateOrConnectWithoutDocumentInput[];
         createMany?: DocumentTagCreateManyDocumentInputEnvelope;
         connect?: DocumentTagWhereUniqueInput | DocumentTagWhereUniqueInput[];
+    };
+
+    export type ChatUncheckedCreateNestedOneWithoutDocumentInput = {
+        create?: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+        connectOrCreate?: ChatCreateOrConnectWithoutDocumentInput;
+        connect?: ChatWhereUniqueInput;
+    };
+
+    export type ChatMessageUncheckedCreateNestedManyWithoutDocumentInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentInput,
+                  ChatMessageUncheckedCreateWithoutDocumentInput
+              >
+            | ChatMessageCreateWithoutDocumentInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentInput
+            | ChatMessageCreateOrConnectWithoutDocumentInput[];
+        createMany?: ChatMessageCreateManyDocumentInputEnvelope;
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
     };
 
     export type StringFieldUpdateOperationsInput = {
@@ -19541,6 +20107,57 @@ export namespace Prisma {
             | DocumentTagScalarWhereInput[];
     };
 
+    export type ChatUpdateOneWithoutDocumentNestedInput = {
+        create?: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+        connectOrCreate?: ChatCreateOrConnectWithoutDocumentInput;
+        upsert?: ChatUpsertWithoutDocumentInput;
+        disconnect?: ChatWhereInput | boolean;
+        delete?: ChatWhereInput | boolean;
+        connect?: ChatWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                ChatUpdateToOneWithWhereWithoutDocumentInput,
+                ChatUpdateWithoutDocumentInput
+            >,
+            ChatUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentInput,
+                  ChatMessageUncheckedCreateWithoutDocumentInput
+              >
+            | ChatMessageCreateWithoutDocumentInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentInput
+            | ChatMessageCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentInput
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: ChatMessageCreateManyDocumentInputEnvelope;
+        set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        disconnect?:
+            | ChatMessageWhereUniqueInput
+            | ChatMessageWhereUniqueInput[];
+        delete?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        update?:
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentInput
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | ChatMessageUpdateManyWithWhereWithoutDocumentInput
+            | ChatMessageUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?:
+            | ChatMessageScalarWhereInput
+            | ChatMessageScalarWhereInput[];
+    };
+
     export type DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput =
         {
             create?:
@@ -19666,6 +20283,57 @@ export namespace Prisma {
         deleteMany?:
             | DocumentTagScalarWhereInput
             | DocumentTagScalarWhereInput[];
+    };
+
+    export type ChatUncheckedUpdateOneWithoutDocumentNestedInput = {
+        create?: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+        connectOrCreate?: ChatCreateOrConnectWithoutDocumentInput;
+        upsert?: ChatUpsertWithoutDocumentInput;
+        disconnect?: ChatWhereInput | boolean;
+        delete?: ChatWhereInput | boolean;
+        connect?: ChatWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                ChatUpdateToOneWithWhereWithoutDocumentInput,
+                ChatUpdateWithoutDocumentInput
+            >,
+            ChatUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentInput,
+                  ChatMessageUncheckedCreateWithoutDocumentInput
+              >
+            | ChatMessageCreateWithoutDocumentInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentInput
+            | ChatMessageCreateOrConnectWithoutDocumentInput[];
+        upsert?:
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentInput
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentInput[];
+        createMany?: ChatMessageCreateManyDocumentInputEnvelope;
+        set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        disconnect?:
+            | ChatMessageWhereUniqueInput
+            | ChatMessageWhereUniqueInput[];
+        delete?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        update?:
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentInput
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentInput[];
+        updateMany?:
+            | ChatMessageUpdateManyWithWhereWithoutDocumentInput
+            | ChatMessageUpdateManyWithWhereWithoutDocumentInput[];
+        deleteMany?:
+            | ChatMessageScalarWhereInput
+            | ChatMessageScalarWhereInput[];
     };
 
     export type DocumentCreateNestedOneWithoutDocumentTagsInput = {
@@ -19823,6 +20491,39 @@ export namespace Prisma {
         connect?: DocumentWhereUniqueInput;
     };
 
+    export type ChatMessageCreateNestedManyWithoutDocumentVersionInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentVersionInput,
+                  ChatMessageUncheckedCreateWithoutDocumentVersionInput
+              >
+            | ChatMessageCreateWithoutDocumentVersionInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentVersionInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentVersionInput
+            | ChatMessageCreateOrConnectWithoutDocumentVersionInput[];
+        createMany?: ChatMessageCreateManyDocumentVersionInputEnvelope;
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+    };
+
+    export type ChatMessageUncheckedCreateNestedManyWithoutDocumentVersionInput =
+        {
+            create?:
+                | XOR<
+                      ChatMessageCreateWithoutDocumentVersionInput,
+                      ChatMessageUncheckedCreateWithoutDocumentVersionInput
+                  >
+                | ChatMessageCreateWithoutDocumentVersionInput[]
+                | ChatMessageUncheckedCreateWithoutDocumentVersionInput[];
+            connectOrCreate?:
+                | ChatMessageCreateOrConnectWithoutDocumentVersionInput
+                | ChatMessageCreateOrConnectWithoutDocumentVersionInput[];
+            createMany?: ChatMessageCreateManyDocumentVersionInputEnvelope;
+            connect?:
+                | ChatMessageWhereUniqueInput
+                | ChatMessageWhereUniqueInput[];
+        };
+
     export type FloatFieldUpdateOperationsInput = {
         set?: number;
         increment?: number;
@@ -19855,6 +20556,75 @@ export namespace Prisma {
             DocumentUncheckedUpdateWithoutFilesInput
         >;
     };
+
+    export type ChatMessageUpdateManyWithoutDocumentVersionNestedInput = {
+        create?:
+            | XOR<
+                  ChatMessageCreateWithoutDocumentVersionInput,
+                  ChatMessageUncheckedCreateWithoutDocumentVersionInput
+              >
+            | ChatMessageCreateWithoutDocumentVersionInput[]
+            | ChatMessageUncheckedCreateWithoutDocumentVersionInput[];
+        connectOrCreate?:
+            | ChatMessageCreateOrConnectWithoutDocumentVersionInput
+            | ChatMessageCreateOrConnectWithoutDocumentVersionInput[];
+        upsert?:
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentVersionInput
+            | ChatMessageUpsertWithWhereUniqueWithoutDocumentVersionInput[];
+        createMany?: ChatMessageCreateManyDocumentVersionInputEnvelope;
+        set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        disconnect?:
+            | ChatMessageWhereUniqueInput
+            | ChatMessageWhereUniqueInput[];
+        delete?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+        update?:
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentVersionInput
+            | ChatMessageUpdateWithWhereUniqueWithoutDocumentVersionInput[];
+        updateMany?:
+            | ChatMessageUpdateManyWithWhereWithoutDocumentVersionInput
+            | ChatMessageUpdateManyWithWhereWithoutDocumentVersionInput[];
+        deleteMany?:
+            | ChatMessageScalarWhereInput
+            | ChatMessageScalarWhereInput[];
+    };
+
+    export type ChatMessageUncheckedUpdateManyWithoutDocumentVersionNestedInput =
+        {
+            create?:
+                | XOR<
+                      ChatMessageCreateWithoutDocumentVersionInput,
+                      ChatMessageUncheckedCreateWithoutDocumentVersionInput
+                  >
+                | ChatMessageCreateWithoutDocumentVersionInput[]
+                | ChatMessageUncheckedCreateWithoutDocumentVersionInput[];
+            connectOrCreate?:
+                | ChatMessageCreateOrConnectWithoutDocumentVersionInput
+                | ChatMessageCreateOrConnectWithoutDocumentVersionInput[];
+            upsert?:
+                | ChatMessageUpsertWithWhereUniqueWithoutDocumentVersionInput
+                | ChatMessageUpsertWithWhereUniqueWithoutDocumentVersionInput[];
+            createMany?: ChatMessageCreateManyDocumentVersionInputEnvelope;
+            set?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[];
+            disconnect?:
+                | ChatMessageWhereUniqueInput
+                | ChatMessageWhereUniqueInput[];
+            delete?:
+                | ChatMessageWhereUniqueInput
+                | ChatMessageWhereUniqueInput[];
+            connect?:
+                | ChatMessageWhereUniqueInput
+                | ChatMessageWhereUniqueInput[];
+            update?:
+                | ChatMessageUpdateWithWhereUniqueWithoutDocumentVersionInput
+                | ChatMessageUpdateWithWhereUniqueWithoutDocumentVersionInput[];
+            updateMany?:
+                | ChatMessageUpdateManyWithWhereWithoutDocumentVersionInput
+                | ChatMessageUpdateManyWithWhereWithoutDocumentVersionInput[];
+            deleteMany?:
+                | ChatMessageScalarWhereInput
+                | ChatMessageScalarWhereInput[];
+        };
 
     export type DocumentCreateNestedOneWithoutDocumentExtractedFieldsInput = {
         create?: XOR<
@@ -19927,6 +20697,15 @@ export namespace Prisma {
         >;
     };
 
+    export type DocumentCreateNestedOneWithoutChatInput = {
+        create?: XOR<
+            DocumentCreateWithoutChatInput,
+            DocumentUncheckedCreateWithoutChatInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutChatInput;
+        connect?: DocumentWhereUniqueInput;
+    };
+
     export type ChatMessageCreateNestedManyWithoutChatInput = {
         create?:
             | XOR<
@@ -19985,6 +20764,25 @@ export namespace Prisma {
             | ChatMemberCreateOrConnectWithoutChatInput[];
         createMany?: ChatMemberCreateManyChatInputEnvelope;
         connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[];
+    };
+
+    export type DocumentUpdateOneWithoutChatNestedInput = {
+        create?: XOR<
+            DocumentCreateWithoutChatInput,
+            DocumentUncheckedCreateWithoutChatInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutChatInput;
+        upsert?: DocumentUpsertWithoutChatInput;
+        disconnect?: DocumentWhereInput | boolean;
+        delete?: DocumentWhereInput | boolean;
+        connect?: DocumentWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                DocumentUpdateToOneWithWhereWithoutChatInput,
+                DocumentUpdateWithoutChatInput
+            >,
+            DocumentUncheckedUpdateWithoutChatInput
+        >;
     };
 
     export type ChatMessageUpdateManyWithoutChatNestedInput = {
@@ -20370,6 +21168,24 @@ export namespace Prisma {
         connect?: ChatWhereUniqueInput;
     };
 
+    export type DocumentCreateNestedOneWithoutChatMessagesInput = {
+        create?: XOR<
+            DocumentCreateWithoutChatMessagesInput,
+            DocumentUncheckedCreateWithoutChatMessagesInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutChatMessagesInput;
+        connect?: DocumentWhereUniqueInput;
+    };
+
+    export type FileCreateNestedOneWithoutChatMessagesInput = {
+        create?: XOR<
+            FileCreateWithoutChatMessagesInput,
+            FileUncheckedCreateWithoutChatMessagesInput
+        >;
+        connectOrCreate?: FileCreateOrConnectWithoutChatMessagesInput;
+        connect?: FileWhereUniqueInput;
+    };
+
     export type ChatMessageCreateNestedManyWithoutParentMessageInput = {
         create?:
             | XOR<
@@ -20438,6 +21254,10 @@ export namespace Prisma {
                 | ChatMessageReadStatusWhereUniqueInput[];
         };
 
+    export type BoolFieldUpdateOperationsInput = {
+        set?: boolean;
+    };
+
     export type ChatMessageUpdateOneWithoutChildMessagesNestedInput = {
         create?: XOR<
             ChatMessageCreateWithoutChildMessagesInput,
@@ -20488,6 +21308,44 @@ export namespace Prisma {
                 ChatUpdateWithoutMessagesInput
             >,
             ChatUncheckedUpdateWithoutMessagesInput
+        >;
+    };
+
+    export type DocumentUpdateOneWithoutChatMessagesNestedInput = {
+        create?: XOR<
+            DocumentCreateWithoutChatMessagesInput,
+            DocumentUncheckedCreateWithoutChatMessagesInput
+        >;
+        connectOrCreate?: DocumentCreateOrConnectWithoutChatMessagesInput;
+        upsert?: DocumentUpsertWithoutChatMessagesInput;
+        disconnect?: DocumentWhereInput | boolean;
+        delete?: DocumentWhereInput | boolean;
+        connect?: DocumentWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                DocumentUpdateToOneWithWhereWithoutChatMessagesInput,
+                DocumentUpdateWithoutChatMessagesInput
+            >,
+            DocumentUncheckedUpdateWithoutChatMessagesInput
+        >;
+    };
+
+    export type FileUpdateOneWithoutChatMessagesNestedInput = {
+        create?: XOR<
+            FileCreateWithoutChatMessagesInput,
+            FileUncheckedCreateWithoutChatMessagesInput
+        >;
+        connectOrCreate?: FileCreateOrConnectWithoutChatMessagesInput;
+        upsert?: FileUpsertWithoutChatMessagesInput;
+        disconnect?: FileWhereInput | boolean;
+        delete?: FileWhereInput | boolean;
+        connect?: FileWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                FileUpdateToOneWithWhereWithoutChatMessagesInput,
+                FileUpdateWithoutChatMessagesInput
+            >,
+            FileUncheckedUpdateWithoutChatMessagesInput
         >;
     };
 
@@ -21173,6 +22031,19 @@ export namespace Prisma {
         _max?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
     };
 
+    export type NestedBoolFilter<$PrismaModel = never> = {
+        equals?: boolean | BooleanFieldRefInput<$PrismaModel>;
+        not?: NestedBoolFilter<$PrismaModel> | boolean;
+    };
+
+    export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: boolean | BooleanFieldRefInput<$PrismaModel>;
+        not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean;
+        _count?: NestedIntFilter<$PrismaModel>;
+        _min?: NestedBoolFilter<$PrismaModel>;
+        _max?: NestedBoolFilter<$PrismaModel>;
+    };
+
     export type DocumentExtractedFieldCreateWithoutDocumentInput = {
         id?: string;
         createdAt?: Date | string;
@@ -21262,6 +22133,7 @@ export namespace Prisma {
         urlExpiresAt: Date | string;
         width?: number | null;
         height?: number | null;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentVersionInput;
     };
 
     export type FileUncheckedCreateWithoutDocumentInput = {
@@ -21275,6 +22147,7 @@ export namespace Prisma {
         urlExpiresAt: Date | string;
         width?: number | null;
         height?: number | null;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentVersionInput;
     };
 
     export type FileCreateOrConnectWithoutDocumentInput = {
@@ -21316,6 +22189,75 @@ export namespace Prisma {
         data:
             | DocumentTagCreateManyDocumentInput
             | DocumentTagCreateManyDocumentInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type ChatCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        messages?: ChatMessageCreateNestedManyWithoutChatInput;
+        members?: ChatMemberCreateNestedManyWithoutChatInput;
+    };
+
+    export type ChatUncheckedCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput;
+        members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput;
+    };
+
+    export type ChatCreateOrConnectWithoutDocumentInput = {
+        where: ChatWhereUniqueInput;
+        create: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        author: ChatMemberCreateNestedOneWithoutMessagesInput;
+        chat: ChatCreateNestedOneWithoutMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
+        childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
+    };
+
+    export type ChatMessageUncheckedCreateWithoutDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessageId?: string | null;
+        authorId: string;
+        chatId: string;
+        documentVersionId?: string | null;
+        childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
+    };
+
+    export type ChatMessageCreateOrConnectWithoutDocumentInput = {
+        where: ChatMessageWhereUniqueInput;
+        create: XOR<
+            ChatMessageCreateWithoutDocumentInput,
+            ChatMessageUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageCreateManyDocumentInputEnvelope = {
+        data:
+            | ChatMessageCreateManyDocumentInput
+            | ChatMessageCreateManyDocumentInput[];
         skipDuplicates?: boolean;
     };
 
@@ -21502,6 +22444,88 @@ export namespace Prisma {
         tagId?: UuidFilter<"DocumentTag"> | string;
     };
 
+    export type ChatUpsertWithoutDocumentInput = {
+        update: XOR<
+            ChatUpdateWithoutDocumentInput,
+            ChatUncheckedUpdateWithoutDocumentInput
+        >;
+        create: XOR<
+            ChatCreateWithoutDocumentInput,
+            ChatUncheckedCreateWithoutDocumentInput
+        >;
+        where?: ChatWhereInput;
+    };
+
+    export type ChatUpdateToOneWithWhereWithoutDocumentInput = {
+        where?: ChatWhereInput;
+        data: XOR<
+            ChatUpdateWithoutDocumentInput,
+            ChatUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        messages?: ChatMessageUpdateManyWithoutChatNestedInput;
+        members?: ChatMemberUpdateManyWithoutChatNestedInput;
+    };
+
+    export type ChatUncheckedUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput;
+        members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput;
+    };
+
+    export type ChatMessageUpsertWithWhereUniqueWithoutDocumentInput = {
+        where: ChatMessageWhereUniqueInput;
+        update: XOR<
+            ChatMessageUpdateWithoutDocumentInput,
+            ChatMessageUncheckedUpdateWithoutDocumentInput
+        >;
+        create: XOR<
+            ChatMessageCreateWithoutDocumentInput,
+            ChatMessageUncheckedCreateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageUpdateWithWhereUniqueWithoutDocumentInput = {
+        where: ChatMessageWhereUniqueInput;
+        data: XOR<
+            ChatMessageUpdateWithoutDocumentInput,
+            ChatMessageUncheckedUpdateWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageUpdateManyWithWhereWithoutDocumentInput = {
+        where: ChatMessageScalarWhereInput;
+        data: XOR<
+            ChatMessageUpdateManyMutationInput,
+            ChatMessageUncheckedUpdateManyWithoutDocumentInput
+        >;
+    };
+
+    export type ChatMessageScalarWhereInput = {
+        AND?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[];
+        OR?: ChatMessageScalarWhereInput[];
+        NOT?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[];
+        id?: UuidFilter<"ChatMessage"> | string;
+        createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
+        updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
+        message?: StringFilter<"ChatMessage"> | string;
+        autoGenerated?: BoolFilter<"ChatMessage"> | boolean;
+        parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
+        authorId?: UuidFilter<"ChatMessage"> | string;
+        chatId?: UuidFilter<"ChatMessage"> | string;
+        documentId?: UuidNullableFilter<"ChatMessage"> | string | null;
+        documentVersionId?: UuidNullableFilter<"ChatMessage"> | string | null;
+    };
+
     export type DocumentCreateWithoutDocumentTagsInput = {
         id?: string;
         createdAt?: Date | string;
@@ -21513,6 +22537,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutDocumentTagsInput = {
@@ -21526,6 +22552,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutDocumentTagsInput = {
@@ -21598,6 +22626,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutDocumentTagsInput = {
@@ -21620,6 +22650,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type TagUpsertWithoutDocumentTagsInput = {
@@ -21722,6 +22754,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutFilesInput = {
@@ -21735,6 +22769,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutFilesInput = {
@@ -21743,6 +22779,49 @@ export namespace Prisma {
             DocumentCreateWithoutFilesInput,
             DocumentUncheckedCreateWithoutFilesInput
         >;
+    };
+
+    export type ChatMessageCreateWithoutDocumentVersionInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        author: ChatMemberCreateNestedOneWithoutMessagesInput;
+        chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
+    };
+
+    export type ChatMessageUncheckedCreateWithoutDocumentVersionInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessageId?: string | null;
+        authorId: string;
+        chatId: string;
+        documentId?: string | null;
+        childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
+    };
+
+    export type ChatMessageCreateOrConnectWithoutDocumentVersionInput = {
+        where: ChatMessageWhereUniqueInput;
+        create: XOR<
+            ChatMessageCreateWithoutDocumentVersionInput,
+            ChatMessageUncheckedCreateWithoutDocumentVersionInput
+        >;
+    };
+
+    export type ChatMessageCreateManyDocumentVersionInputEnvelope = {
+        data:
+            | ChatMessageCreateManyDocumentVersionInput
+            | ChatMessageCreateManyDocumentVersionInput[];
+        skipDuplicates?: boolean;
     };
 
     export type DocumentUpsertWithoutFilesInput = {
@@ -21785,6 +22864,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutFilesInput = {
@@ -21807,6 +22888,36 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type ChatMessageUpsertWithWhereUniqueWithoutDocumentVersionInput = {
+        where: ChatMessageWhereUniqueInput;
+        update: XOR<
+            ChatMessageUpdateWithoutDocumentVersionInput,
+            ChatMessageUncheckedUpdateWithoutDocumentVersionInput
+        >;
+        create: XOR<
+            ChatMessageCreateWithoutDocumentVersionInput,
+            ChatMessageUncheckedCreateWithoutDocumentVersionInput
+        >;
+    };
+
+    export type ChatMessageUpdateWithWhereUniqueWithoutDocumentVersionInput = {
+        where: ChatMessageWhereUniqueInput;
+        data: XOR<
+            ChatMessageUpdateWithoutDocumentVersionInput,
+            ChatMessageUncheckedUpdateWithoutDocumentVersionInput
+        >;
+    };
+
+    export type ChatMessageUpdateManyWithWhereWithoutDocumentVersionInput = {
+        where: ChatMessageScalarWhereInput;
+        data: XOR<
+            ChatMessageUpdateManyMutationInput,
+            ChatMessageUncheckedUpdateManyWithoutDocumentVersionInput
+        >;
     };
 
     export type DocumentCreateWithoutDocumentExtractedFieldsInput = {
@@ -21820,6 +22931,8 @@ export namespace Prisma {
         actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutDocumentExtractedFieldsInput = {
@@ -21833,6 +22946,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutDocumentExtractedFieldsInput = {
@@ -21884,6 +22999,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutDocumentExtractedFieldsInput = {
@@ -21906,6 +23023,8 @@ export namespace Prisma {
         actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentCreateWithoutActionLogsInput = {
@@ -21919,6 +23038,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
         files?: FileCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentUncheckedCreateWithoutActionLogsInput = {
@@ -21932,6 +23053,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
         files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
         documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
     };
 
     export type DocumentCreateOrConnectWithoutActionLogsInput = {
@@ -21982,6 +23105,8 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
         files?: FileUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
     };
 
     export type DocumentUncheckedUpdateWithoutActionLogsInput = {
@@ -22004,6 +23129,46 @@ export namespace Prisma {
         documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
         files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
         documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentCreateWithoutChatInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevels | null;
+        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chatMessages?: ChatMessageCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentUncheckedCreateWithoutChatInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevels | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutDocumentInput;
+    };
+
+    export type DocumentCreateOrConnectWithoutChatInput = {
+        where: DocumentWhereUniqueInput;
+        create: XOR<
+            DocumentCreateWithoutChatInput,
+            DocumentUncheckedCreateWithoutChatInput
+        >;
     };
 
     export type ChatMessageCreateWithoutChatInput = {
@@ -22011,8 +23176,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
     };
@@ -22022,8 +23190,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         authorId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
     };
@@ -22078,6 +23249,74 @@ export namespace Prisma {
         skipDuplicates?: boolean;
     };
 
+    export type DocumentUpsertWithoutChatInput = {
+        update: XOR<
+            DocumentUpdateWithoutChatInput,
+            DocumentUncheckedUpdateWithoutChatInput
+        >;
+        create: XOR<
+            DocumentCreateWithoutChatInput,
+            DocumentUncheckedCreateWithoutChatInput
+        >;
+        where?: DocumentWhereInput;
+    };
+
+    export type DocumentUpdateToOneWithWhereWithoutChatInput = {
+        where?: DocumentWhereInput;
+        data: XOR<
+            DocumentUpdateWithoutChatInput,
+            DocumentUncheckedUpdateWithoutChatInput
+        >;
+    };
+
+    export type DocumentUpdateWithoutChatInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentNestedInput;
+    };
+
+    export type DocumentUncheckedUpdateWithoutChatInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentNestedInput;
+    };
+
     export type ChatMessageUpsertWithWhereUniqueWithoutChatInput = {
         where: ChatMessageWhereUniqueInput;
         update: XOR<
@@ -22104,19 +23343,6 @@ export namespace Prisma {
             ChatMessageUpdateManyMutationInput,
             ChatMessageUncheckedUpdateManyWithoutChatInput
         >;
-    };
-
-    export type ChatMessageScalarWhereInput = {
-        AND?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[];
-        OR?: ChatMessageScalarWhereInput[];
-        NOT?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[];
-        id?: UuidFilter<"ChatMessage"> | string;
-        createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
-        updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
-        message?: StringFilter<"ChatMessage"> | string;
-        parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
-        authorId?: UuidFilter<"ChatMessage"> | string;
-        chatId?: UuidFilter<"ChatMessage"> | string;
     };
 
     export type ChatMemberUpsertWithWhereUniqueWithoutChatInput = {
@@ -22168,6 +23394,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        document?: DocumentCreateNestedOneWithoutChatInput;
         messages?: ChatMessageCreateNestedManyWithoutChatInput;
     };
 
@@ -22176,6 +23403,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        documentId?: string | null;
         messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput;
     };
 
@@ -22192,8 +23420,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
     };
@@ -22203,8 +23434,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
     };
@@ -22278,6 +23512,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        document?: DocumentUpdateOneWithoutChatNestedInput;
         messages?: ChatMessageUpdateManyWithoutChatNestedInput;
     };
 
@@ -22286,6 +23521,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
         messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput;
     };
 
@@ -22365,9 +23601,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
     };
 
@@ -22376,9 +23615,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         authorId: string;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
     };
 
@@ -22427,6 +23669,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        document?: DocumentCreateNestedOneWithoutChatInput;
         members?: ChatMemberCreateNestedManyWithoutChatInput;
     };
 
@@ -22435,6 +23678,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         name: string;
+        documentId?: string | null;
         members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput;
     };
 
@@ -22446,13 +23690,90 @@ export namespace Prisma {
         >;
     };
 
+    export type DocumentCreateWithoutChatMessagesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevels | null;
+        documentExtractedFields?: DocumentExtractedFieldCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogCreateNestedManyWithoutDocumentInput;
+        files?: FileCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagCreateNestedManyWithoutDocumentInput;
+        chat?: ChatCreateNestedOneWithoutDocumentInput;
+    };
+
+    export type DocumentUncheckedCreateWithoutChatMessagesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        status: $Enums.DocumentStatuses;
+        name: string;
+        expiresAt?: Date | string | null;
+        riskLevel?: $Enums.RiskLevels | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedCreateNestedManyWithoutDocumentInput;
+        actionLogs?: ActionLogUncheckedCreateNestedManyWithoutDocumentInput;
+        files?: FileUncheckedCreateNestedManyWithoutDocumentInput;
+        documentTags?: DocumentTagUncheckedCreateNestedManyWithoutDocumentInput;
+        chat?: ChatUncheckedCreateNestedOneWithoutDocumentInput;
+    };
+
+    export type DocumentCreateOrConnectWithoutChatMessagesInput = {
+        where: DocumentWhereUniqueInput;
+        create: XOR<
+            DocumentCreateWithoutChatMessagesInput,
+            DocumentUncheckedCreateWithoutChatMessagesInput
+        >;
+    };
+
+    export type FileCreateWithoutChatMessagesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        document: DocumentCreateNestedOneWithoutFilesInput;
+    };
+
+    export type FileUncheckedCreateWithoutChatMessagesInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        key: string;
+        fileSize: number;
+        mimeType: string;
+        url: string;
+        urlExpiresAt: Date | string;
+        width?: number | null;
+        height?: number | null;
+        documentId: string;
+    };
+
+    export type FileCreateOrConnectWithoutChatMessagesInput = {
+        where: FileWhereUniqueInput;
+        create: XOR<
+            FileCreateWithoutChatMessagesInput,
+            FileUncheckedCreateWithoutChatMessagesInput
+        >;
+    };
+
     export type ChatMessageCreateWithoutParentMessageInput = {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
     };
@@ -22462,8 +23783,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         authorId: string;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
     };
@@ -22537,9 +23861,12 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
     };
 
@@ -22548,12 +23875,18 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
     };
 
@@ -22636,6 +23969,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        document?: DocumentUpdateOneWithoutChatNestedInput;
         members?: ChatMemberUpdateManyWithoutChatNestedInput;
     };
 
@@ -22644,7 +23978,124 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         name?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
         members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput;
+    };
+
+    export type DocumentUpsertWithoutChatMessagesInput = {
+        update: XOR<
+            DocumentUpdateWithoutChatMessagesInput,
+            DocumentUncheckedUpdateWithoutChatMessagesInput
+        >;
+        create: XOR<
+            DocumentCreateWithoutChatMessagesInput,
+            DocumentUncheckedCreateWithoutChatMessagesInput
+        >;
+        where?: DocumentWhereInput;
+    };
+
+    export type DocumentUpdateToOneWithWhereWithoutChatMessagesInput = {
+        where?: DocumentWhereInput;
+        data: XOR<
+            DocumentUpdateWithoutChatMessagesInput,
+            DocumentUncheckedUpdateWithoutChatMessagesInput
+        >;
+    };
+
+    export type DocumentUpdateWithoutChatMessagesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUpdateManyWithoutDocumentNestedInput;
+        files?: FileUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUpdateOneWithoutDocumentNestedInput;
+    };
+
+    export type DocumentUncheckedUpdateWithoutChatMessagesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        status?:
+            | EnumDocumentStatusesFieldUpdateOperationsInput
+            | $Enums.DocumentStatuses;
+        name?: StringFieldUpdateOperationsInput | string;
+        expiresAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        riskLevel?:
+            | NullableEnumRiskLevelsFieldUpdateOperationsInput
+            | $Enums.RiskLevels
+            | null;
+        documentExtractedFields?: DocumentExtractedFieldUncheckedUpdateManyWithoutDocumentNestedInput;
+        actionLogs?: ActionLogUncheckedUpdateManyWithoutDocumentNestedInput;
+        files?: FileUncheckedUpdateManyWithoutDocumentNestedInput;
+        documentTags?: DocumentTagUncheckedUpdateManyWithoutDocumentNestedInput;
+        chat?: ChatUncheckedUpdateOneWithoutDocumentNestedInput;
+    };
+
+    export type FileUpsertWithoutChatMessagesInput = {
+        update: XOR<
+            FileUpdateWithoutChatMessagesInput,
+            FileUncheckedUpdateWithoutChatMessagesInput
+        >;
+        create: XOR<
+            FileCreateWithoutChatMessagesInput,
+            FileUncheckedCreateWithoutChatMessagesInput
+        >;
+        where?: FileWhereInput;
+    };
+
+    export type FileUpdateToOneWithWhereWithoutChatMessagesInput = {
+        where?: FileWhereInput;
+        data: XOR<
+            FileUpdateWithoutChatMessagesInput,
+            FileUncheckedUpdateWithoutChatMessagesInput
+        >;
+    };
+
+    export type FileUpdateWithoutChatMessagesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        document?: DocumentUpdateOneRequiredWithoutFilesNestedInput;
+    };
+
+    export type FileUncheckedUpdateWithoutChatMessagesInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        key?: StringFieldUpdateOperationsInput | string;
+        fileSize?: FloatFieldUpdateOperationsInput | number;
+        mimeType?: StringFieldUpdateOperationsInput | string;
+        url?: StringFieldUpdateOperationsInput | string;
+        urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        width?: NullableFloatFieldUpdateOperationsInput | number | null;
+        height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        documentId?: StringFieldUpdateOperationsInput | string;
     };
 
     export type ChatMessageUpsertWithWhereUniqueWithoutParentMessageInput = {
@@ -22711,9 +24162,12 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
+        document?: DocumentCreateNestedOneWithoutChatMessagesInput;
+        documentVersion?: FileCreateNestedOneWithoutChatMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
     };
 
@@ -22723,9 +24177,12 @@ export namespace Prisma {
             createdAt?: Date | string;
             updatedAt?: Date | string;
             message: string;
+            autoGenerated: boolean;
             parentMessageId?: string | null;
             authorId: string;
             chatId: string;
+            documentId?: string | null;
+            documentVersionId?: string | null;
             childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         };
 
@@ -22796,9 +24253,12 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
     };
 
@@ -22808,12 +24268,21 @@ export namespace Prisma {
             createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             message?: StringFieldUpdateOperationsInput | string;
+            autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
             parentMessageId?:
                 | NullableStringFieldUpdateOperationsInput
                 | string
                 | null;
             authorId?: StringFieldUpdateOperationsInput | string;
             chatId?: StringFieldUpdateOperationsInput | string;
+            documentId?:
+                | NullableStringFieldUpdateOperationsInput
+                | string
+                | null;
+            documentVersionId?:
+                | NullableStringFieldUpdateOperationsInput
+                | string
+                | null;
             childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         };
 
@@ -22914,6 +24383,18 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         tagId: string;
+    };
+
+    export type ChatMessageCreateManyDocumentInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessageId?: string | null;
+        authorId: string;
+        chatId: string;
+        documentVersionId?: string | null;
     };
 
     export type DocumentExtractedFieldUpdateWithoutDocumentInput = {
@@ -23036,6 +24517,7 @@ export namespace Prisma {
         urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        chatMessages?: ChatMessageUpdateManyWithoutDocumentVersionNestedInput;
     };
 
     export type FileUncheckedUpdateWithoutDocumentInput = {
@@ -23049,6 +24531,7 @@ export namespace Prisma {
         urlExpiresAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         width?: NullableFloatFieldUpdateOperationsInput | number | null;
         height?: NullableFloatFieldUpdateOperationsInput | number | null;
+        chatMessages?: ChatMessageUncheckedUpdateManyWithoutDocumentVersionNestedInput;
     };
 
     export type FileUncheckedUpdateManyWithoutDocumentInput = {
@@ -23085,6 +24568,58 @@ export namespace Prisma {
         tagId?: StringFieldUpdateOperationsInput | string;
     };
 
+    export type ChatMessageUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
+        author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
+        chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
+        childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
+    };
+
+    export type ChatMessageUncheckedUpdateWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        authorId?: StringFieldUpdateOperationsInput | string;
+        chatId?: StringFieldUpdateOperationsInput | string;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
+    };
+
+    export type ChatMessageUncheckedUpdateManyWithoutDocumentInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        authorId?: StringFieldUpdateOperationsInput | string;
+        chatId?: StringFieldUpdateOperationsInput | string;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+    };
+
     export type DocumentTagCreateManyTagInput = {
         id?: string;
         createdAt?: Date | string;
@@ -23113,13 +24648,74 @@ export namespace Prisma {
         documentId?: StringFieldUpdateOperationsInput | string;
     };
 
+    export type ChatMessageCreateManyDocumentVersionInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        message: string;
+        autoGenerated: boolean;
+        parentMessageId?: string | null;
+        authorId: string;
+        chatId: string;
+        documentId?: string | null;
+    };
+
+    export type ChatMessageUpdateWithoutDocumentVersionInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
+        author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
+        chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
+    };
+
+    export type ChatMessageUncheckedUpdateWithoutDocumentVersionInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        authorId?: StringFieldUpdateOperationsInput | string;
+        chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
+        chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
+    };
+
+    export type ChatMessageUncheckedUpdateManyWithoutDocumentVersionInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
+        authorId?: StringFieldUpdateOperationsInput | string;
+        chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+    };
+
     export type ChatMessageCreateManyChatInput = {
         id?: string;
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         authorId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
     };
 
     export type ChatMemberCreateManyChatInput = {
@@ -23137,8 +24733,11 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23148,11 +24747,17 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         authorId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23162,11 +24767,17 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         authorId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type ChatMemberUpdateWithoutChatInput = {
@@ -23223,8 +24834,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         parentMessageId?: string | null;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
     };
 
     export type ChatMessageReadStatusCreateManyReadByInput = {
@@ -23239,8 +24853,11 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23250,11 +24867,17 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23264,11 +24887,17 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         parentMessageId?:
             | NullableStringFieldUpdateOperationsInput
             | string
             | null;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type ChatMessageReadStatusUpdateWithoutReadByInput = {
@@ -23297,8 +24926,11 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
+        autoGenerated: boolean;
         authorId: string;
         chatId: string;
+        documentId?: string | null;
+        documentVersionId?: string | null;
     };
 
     export type ChatMessageReadStatusCreateManyChatMessageInput = {
@@ -23313,8 +24945,11 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
+        document?: DocumentUpdateOneWithoutChatMessagesNestedInput;
+        documentVersion?: FileUpdateOneWithoutChatMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23324,8 +24959,14 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
     };
@@ -23335,8 +24976,14 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
+        autoGenerated?: BoolFieldUpdateOperationsInput | boolean;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
+        documentId?: NullableStringFieldUpdateOperationsInput | string | null;
+        documentVersionId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type ChatMessageReadStatusUpdateWithoutChatMessageInput = {
