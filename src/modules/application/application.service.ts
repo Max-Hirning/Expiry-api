@@ -71,7 +71,7 @@ export const createApplicationService = (
         const shuffledUsers = _.shuffle(users);
 
         const teamMembersData: {
-            role: "ADMIN" | "STAFF";
+            role: "OWNER" | "ADMIN" | "STAFF";
             userId: string;
             teamId: string;
         }[] = [];
@@ -80,6 +80,7 @@ export const createApplicationService = (
 
         for (const team of createdTeams) {
             let adminCount = 0;
+            let hasOwner = false;
 
             const membersPerTeam = Math.floor(
                 users.length / createdTeams.length
@@ -93,11 +94,20 @@ export const createApplicationService = (
                 const user = shuffledUsers[userIndex];
                 userIndex++;
 
-                const role: "ADMIN" | "STAFF" =
-                    adminCount < 2 && Math.random() < 0.5 ? "ADMIN" : "STAFF";
+                let role: TeamMemberRoles;
 
-                if (role === "ADMIN") {
-                    adminCount++;
+                if (!hasOwner && index === 0) {
+                    role = TeamMemberRoles.OWNER;
+                    hasOwner = true;
+                } else {
+                    role =
+                        adminCount < 2 && Math.random() < 0.5
+                            ? TeamMemberRoles.ADMIN
+                            : TeamMemberRoles.STAFF;
+
+                    if (role === TeamMemberRoles.ADMIN) {
+                        adminCount++;
+                    }
                 }
 
                 teamMembersData.push({

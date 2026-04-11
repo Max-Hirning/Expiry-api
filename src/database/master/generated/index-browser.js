@@ -257,6 +257,7 @@ exports.UserStatuses = exports.$Enums.UserStatuses = {
 };
 
 exports.TeamMemberRoles = exports.$Enums.TeamMemberRoles = {
+    OWNER: "OWNER",
     ADMIN: "ADMIN",
     STAFF: "STAFF",
 };

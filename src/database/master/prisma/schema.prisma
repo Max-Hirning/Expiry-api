@@ -150,6 +150,7 @@ model TeamStat {
 }
 
 enum TeamMemberRoles {
+  OWNER
   ADMIN
   STAFF
 }

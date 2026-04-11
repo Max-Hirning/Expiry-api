@@ -84,7 +84,9 @@ type UserParamsInput = z.infer<typeof userParamsSchema>;
 const fetchUserResponseSchema = z.object({
     message: z.string(),
     data: z.object({
-        user: defaultUserSchema,
+        user: defaultUserSchema.extend({
+            teamMembers: z.record(z.uuid(), z.enum(TeamMemberRoles)),
+        }),
     }),
 });
 
@@ -153,6 +155,35 @@ const fetchUsersResponseSchema = z.object({
 
 type FetchUsersResponse = z.infer<typeof fetchUsersResponseSchema>;
 
+const updateTeamMemberRolesParamsSchema = z.object({
+    teamId: z.uuid(),
+    userId: z.uuid(),
+});
+
+type UpdateTeamMemberRolesParamsInput = z.infer<
+    typeof updateTeamMemberRolesParamsSchema
+>;
+
+const updateTeamMemberRolesBodySchema = z.object({
+    role: z.enum(TeamMemberRoles),
+});
+
+type UpdateTeamMemberRolesBodyInput = z.infer<
+    typeof updateTeamMemberRolesBodySchema
+>;
+
+const updateTeamMemberRolesResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        id: z.uuid(),
+        role: z.enum(TeamMemberRoles),
+    }),
+});
+
+type UpdateTeamMemberRolesResponse = z.infer<
+    typeof updateTeamMemberRolesResponseSchema
+>;
+
 export {
     fetchUserResponseSchema,
     fetchUsersResponseSchema,
@@ -164,6 +195,9 @@ export {
     updateUserPasswordBodySchema,
     updateUserBodySchema,
     fetchUsersQuerySchema,
+    updateTeamMemberRolesParamsSchema,
+    updateTeamMemberRolesBodySchema,
+    updateTeamMemberRolesResponseSchema,
 };
 
 export type {
@@ -176,4 +210,7 @@ export type {
     UpdateUserBodyInput,
     UserParamsInput,
     FetchUsersQueryInput,
+    UpdateTeamMemberRolesParamsInput,
+    UpdateTeamMemberRolesBodyInput,
+    UpdateTeamMemberRolesResponse,
 };

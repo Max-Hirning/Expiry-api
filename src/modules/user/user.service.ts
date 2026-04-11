@@ -14,6 +14,7 @@ import {
     ONLINE_THRESHOLD_MINUTES,
     toggleStatuses,
 } from "./user.constants.js";
+import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     defaultUserSelector,
@@ -42,6 +43,9 @@ import {
     UpdateUserPasswordBodyInput,
     UpdateUserResponse,
     UserParamsInput,
+    UpdateTeamMemberRolesParamsInput,
+    UpdateTeamMemberRolesBodyInput,
+    UpdateTeamMemberRolesResponse,
 } from "@/lib/validation/user/user.schema.js";
 
 export type UserService = {
@@ -70,6 +74,10 @@ export type UserService = {
         body: InviteUserBodyInput;
         initiator: FastifyRequest["user"];
     }) => Promise<FetchUserResponse>;
+    updateTeamMemberRoles: (p: {
+        params: UpdateTeamMemberRolesParamsInput;
+        body: UpdateTeamMemberRolesBodyInput;
+    }) => Promise<UpdateTeamMemberRolesResponse>;
     checkIfUserExists: (p: Prisma.UserFindFirstArgs) => Promise<boolean>;
     checkIfTeamExists: (p: Prisma.TeamFindFirstArgs) => Promise<boolean>;
 };
@@ -81,7 +89,8 @@ export const createService = (
     log: FastifyBaseLogger,
     gcpService: GcpService,
     teamRepository: TeamRepository,
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    teamMemberRepository: TeamMemberRepository
 ): UserService => {
     const isOnline = (lastSeenAt: Date | null): boolean => {
         if (!lastSeenAt) {
@@ -102,7 +111,15 @@ export const createService = (
                         isNot: null,
                     },
                 },
-                select: defaultUserSelector,
+                select: {
+                    ...defaultUserSelector,
+                    teamMembers: {
+                        select: {
+                            teamId: true,
+                            role: true,
+                        },
+                    },
+                },
             }),
             notificationRepository.count({
                 where: {
@@ -125,6 +142,13 @@ export const createService = (
             unReadNotifications,
             notificationPreferences,
             isOnline: isOnline(user.lastSeenAt),
+            teamMembers: user.teamMembers.reduce<
+                Record<string, TeamMemberRoles>
+            >((res, temMember) => {
+                res[temMember.teamId] = temMember.role;
+
+                return res;
+            }, {}),
         };
     };
 
@@ -683,6 +707,52 @@ export const createService = (
                         totalPages,
                         total,
                     },
+                },
+            };
+        },
+
+        updateTeamMemberRoles: async ({ params, body }) => {
+            if (body.role === TeamMemberRoles.OWNER) {
+                throw new BadRequestError(
+                    "Cannot assign owner role through this endpoint"
+                );
+            }
+
+            const targetMembership = await teamMemberRepository.findFirst({
+                where: {
+                    userId: params.userId,
+                    teamId: params.teamId,
+                },
+            });
+
+            if (!targetMembership) {
+                throw new BadRequestError("User is not a member of this team");
+            }
+
+            if (targetMembership.role === TeamMemberRoles.OWNER) {
+                throw new ForbiddenError(
+                    "Cannot change or delete the owner role"
+                );
+            }
+
+            const updatedMembership = await teamMemberRepository.update({
+                where: {
+                    id: targetMembership.id,
+                },
+                data: {
+                    role: body.role,
+                },
+                select: {
+                    id: true,
+                    role: true,
+                },
+            });
+
+            return {
+                message: "Team member role updated successfully.",
+                data: {
+                    id: updatedMembership.id,
+                    role: updatedMembership.role,
                 },
             };
         },
