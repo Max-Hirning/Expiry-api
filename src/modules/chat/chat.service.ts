@@ -219,11 +219,10 @@ export const createChatService = (
                         },
                     },
                     orderBy: { createdAt: "desc" },
-                    ...(query.cursor && {
-                        cursor: { id: query.cursor },
-                        skip: 1,
-                    }),
-                    take: query.limit + 1,
+                    ...(query.cursor
+                        ? { cursor: { id: query.cursor }, skip: 1 }
+                        : {}),
+                    take: query.limit,
                     select: {
                         ...defaultChatSelector,
                         _count: {
@@ -268,14 +267,14 @@ export const createChatService = (
                 });
 
                 const hasMore = rows.length > query.limit;
-                const data = hasMore ? rows.slice(0, query.limit) : rows;
 
-                const nextCursor = hasMore
-                    ? (data[data.length - 1]?.id ?? null)
-                    : null;
+                const nextCursor =
+                    rows.length === query.limit
+                        ? rows[rows.length - 1].id
+                        : null;
 
                 return {
-                    chats: data.map((chat) => ({
+                    chats: rows.map((chat) => ({
                         ...chat,
                         lastMessage: chat.messages[0] || null,
                         unreadCount: chat._count.messages,
