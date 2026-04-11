@@ -218,7 +218,7 @@ export const createChatService = (
                             },
                         },
                     },
-                    orderBy: { createdAt: "desc" },
+                    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
                     ...(query.cursor
                         ? { cursor: { id: query.cursor }, skip: 1 }
                         : {}),
@@ -266,8 +266,6 @@ export const createChatService = (
                     },
                 });
 
-                const hasMore = rows.length > query.limit;
-
                 const nextCursor =
                     rows.length === query.limit
                         ? rows[rows.length - 1].id
@@ -281,7 +279,6 @@ export const createChatService = (
                         activeMemberCount: chat._count.members,
                     })),
                     nextCursor,
-                    hasMore,
                 };
             });
 
@@ -291,7 +288,6 @@ export const createChatService = (
                     chats: result.chats,
                     pagination: {
                         nextCursor: result.nextCursor,
-                        hasMore: result.hasMore,
                     },
                 },
             };
@@ -357,18 +353,16 @@ export const createChatService = (
                             cursor: { id: query.cursor },
                             skip: 1,
                         }),
-                        take: query.limit + 1,
+                        take: query.limit,
                         select: defaultChatMessageSelector,
                     });
 
-                    const hasMore = rows.length > query.limit;
-                    const data = hasMore ? rows.slice(0, query.limit) : rows;
+                    const nextCursor =
+                        rows.length === query.limit
+                            ? rows[rows.length - 1].id
+                            : null;
 
-                    const nextCursor = hasMore
-                        ? (data[data.length - 1]?.id ?? null)
-                        : null;
-
-                    return { messages: data, nextCursor, hasMore };
+                    return { messages: rows, nextCursor };
                 }
             );
 
@@ -378,7 +372,6 @@ export const createChatService = (
                     messages: messages.messages,
                     pagination: {
                         nextCursor: messages.nextCursor,
-                        hasMore: messages.hasMore,
                     },
                 },
             };

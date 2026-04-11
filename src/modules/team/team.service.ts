@@ -332,8 +332,6 @@ export const createTeamService = (
         },
 
         getTeams: async ({ query, initiator }) => {
-            const skip = (query.page - 1) * query.perPage;
-
             const where: PrismaMaster.TeamWhereInput = {
                 teamMembers: {
                     some: {
@@ -383,12 +381,10 @@ export const createTeamService = (
                 }),
             };
 
-            const [teams, total] = await Promise.all([
-                teamRepository.findMany({
-                    skip,
-                    where,
-                    take: query.perPage,
-                    orderBy: {
+            const teams = await teamRepository.findMany({
+                where,
+                orderBy: [
+                    {
                         ...(query.sortField && query.sortOrder
                             ? {
                                 [query.sortField]: query.sortOrder,
@@ -397,26 +393,30 @@ export const createTeamService = (
                                 createdAt: PrismaMaster.SortOrder.desc,
                             }),
                     },
-                    select: {
-                        ...defaultTeamSelector,
-                        teamMembers: {
-                            where: {
-                                userId: initiator.id,
-                            },
-                        },
-                        stats: {
-                            select: defaultTeamStatSelector,
+                    { id: "desc" },
+                ],
+                ...(query.cursor && {
+                    cursor: { id: query.cursor },
+                    skip: 1,
+                }),
+                take: query.limit,
+                select: {
+                    ...defaultTeamSelector,
+                    teamMembers: {
+                        where: {
+                            userId: initiator.id,
                         },
                     },
-                }),
-                teamRepository.count({
-                    where,
-                }),
-            ]);
+                    stats: {
+                        select: defaultTeamStatSelector,
+                    },
+                },
+            });
 
-            const totalPages = Math.ceil(total / query.perPage);
-            const prevPage = query.page > 1 ? query.page - 1 : null;
-            const nextPage = query.page < totalPages ? query.page + 1 : null;
+            const nextCursor =
+                teams.length === query.limit
+                    ? teams[teams.length - 1].id
+                    : null;
 
             return {
                 message: "Teams fetched successfully.",
@@ -437,12 +437,7 @@ export const createTeamService = (
                             )!,
                         })),
                     pagination: {
-                        page: query.page,
-                        perPage: query.perPage,
-                        prevPage,
-                        nextPage,
-                        totalPages,
-                        total,
+                        nextCursor,
                     },
                 },
             };

@@ -125,8 +125,7 @@ const fetchUsersQuerySchema = paginationQuerySchema
     })
     .partial()
     .required({
-        page: true,
-        perPage: true,
+        limit: true,
     });
 
 type FetchUsersQueryInput = z.infer<typeof fetchUsersQuerySchema>;

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ChatMemberStatus } from "@/database/team/generated/index.js";
+import { paginationResponseSchema } from "../pagination/pagination.schema.js";
 
 const defaultChatSchema = z.object({
     id: z.uuid(),
@@ -54,10 +55,7 @@ const fetchChatsResponseSchema = z.object({
                 activeMemberCount: z.number().int().nonnegative(),
             })
         ),
-        pagination: z.object({
-            nextCursor: z.uuid().nullable(),
-            hasMore: z.boolean(),
-        }),
+        pagination: paginationResponseSchema,
     }),
 });
 

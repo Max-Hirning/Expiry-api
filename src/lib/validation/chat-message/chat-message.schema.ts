@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { chatParamsSchema } from "../chat/chat.schema.js";
+import { paginationResponseSchema } from "../pagination/pagination.schema.js";
 
 const defaultChatMessageSchema = z.object({
     id: z.uuid(),
@@ -38,10 +39,7 @@ const fetchMessagesResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         messages: z.array(defaultChatMessageSchema),
-        pagination: z.object({
-            nextCursor: z.uuid().nullable(),
-            hasMore: z.boolean(),
-        }),
+        pagination: paginationResponseSchema,
     }),
 });
 

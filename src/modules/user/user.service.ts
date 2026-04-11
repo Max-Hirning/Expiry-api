@@ -604,8 +604,6 @@ export const createService = (
         },
 
         getUsers: async ({ query, initiator }) => {
-            const skip = (query.page - 1) * query.perPage;
-
             const where: Prisma.UserWhereInput = {
                 ...(query.statuses && {
                     status: {
@@ -654,12 +652,10 @@ export const createService = (
                 }),
             };
 
-            const [users, total] = await Promise.all([
-                userRepository.findMany({
-                    skip,
-                    where,
-                    take: query.perPage,
-                    orderBy: {
+            const users = await userRepository.findMany({
+                where,
+                orderBy: [
+                    {
                         ...(query.sortField && query.sortOrder
                             ? {
                                 [query.sortField]: query.sortOrder,
@@ -668,27 +664,31 @@ export const createService = (
                                 createdAt: Prisma.SortOrder.desc,
                             }),
                     },
-                    select: {
-                        ...defaultUserSelector,
-                        teamMembers: {
-                            take: 1,
-                            where: {
-                                teamId: query.teamId,
-                            },
-                            select: {
-                                role: true,
-                            },
+                    { id: "desc" },
+                ],
+                ...(query.cursor && {
+                    cursor: { id: query.cursor },
+                    skip: 1,
+                }),
+                take: query.limit,
+                select: {
+                    ...defaultUserSelector,
+                    teamMembers: {
+                        take: 1,
+                        where: {
+                            teamId: query.teamId,
+                        },
+                        select: {
+                            role: true,
                         },
                     },
-                }),
-                userRepository.count({
-                    where,
-                }),
-            ]);
+                },
+            });
 
-            const totalPages = Math.ceil(total / query.perPage);
-            const prevPage = query.page > 1 ? query.page - 1 : null;
-            const nextPage = query.page < totalPages ? query.page + 1 : null;
+            const nextCursor =
+                users.length === query.limit
+                    ? users[users.length - 1].id
+                    : null;
 
             return {
                 message: "Users fetched successfully.",
@@ -700,12 +700,7 @@ export const createService = (
                         isOnline: isOnline(user.lastSeenAt),
                     })),
                     pagination: {
-                        page: query.page,
-                        perPage: query.perPage,
-                        prevPage,
-                        nextPage,
-                        totalPages,
-                        total,
+                        nextCursor,
                     },
                 },
             };

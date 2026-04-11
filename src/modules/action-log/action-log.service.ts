@@ -21,8 +21,6 @@ export const createActionLogService = (
     applicationService: ApplicationService
 ): ActionLogService => ({
     getActionLogs: async ({ query, params }) => {
-        const skip = (query.page - 1) * query.perPage;
-
         const where: PrismaTeam.ActionLogWhereInput = {
             ...(query.actorIds && {
                 actorId: {
@@ -39,39 +37,33 @@ export const createActionLogService = (
         const actionLogRepository =
             await applicationService.initActionLogRepository(params.teamId);
 
-        const [actionLogs, total] = await withRepositories(
+        const actionLogs = await withRepositories(
             [actionLogRepository],
             (actionLogRepo) =>
-                Promise.all([
-                    actionLogRepo.findMany({
-                        skip,
-                        where,
-                        take: query.perPage,
-                        orderBy: {
-                            createdAt: PrismaTeam.SortOrder.desc,
-                        },
+                actionLogRepo.findMany({
+                    where,
+                    orderBy: {
+                        createdAt: PrismaTeam.SortOrder.desc,
+                    },
+                    ...(query.cursor && {
+                        cursor: { id: query.cursor },
+                        skip: 1,
                     }),
-                    actionLogRepo.count({
-                        where,
-                    }),
-                ])
+                    take: query.limit,
+                })
         );
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+        const nextCursor =
+            actionLogs.length === query.limit
+                ? actionLogs[actionLogs.length - 1].id
+                : null;
 
         return {
             message: "Action logs fetched successfully.",
             data: {
                 actionLogs,
                 pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
+                    nextCursor,
                 },
             },
         };

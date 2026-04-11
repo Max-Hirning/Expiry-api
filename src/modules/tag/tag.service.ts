@@ -59,8 +59,6 @@ export const createtagService = (
         };
     },
     getTags: async ({ query, params }) => {
-        const skip = (query.page - 1) * query.perPage;
-
         const documentWhere: PrismaTeam.DocumentWhereInput = {
             ...(query.statuses && {
                 status: {
@@ -123,45 +121,43 @@ export const createtagService = (
             params.teamId
         );
 
-        const [tags, total] = await withRepositories(
-            [tagRepository],
-            (tagRepo) =>
-                Promise.all([
-                    tagRepo.findMany({
-                        skip,
-                        where,
-                        take: query.perPage,
-                        orderBy: {
-                            ...(query.sortField && query.sortOrder
-                                ? {
-                                    [query.sortField]: query.sortOrder,
-                                }
-                                : {
-                                    createdAt: PrismaTeam.SortOrder.desc,
-                                }),
-                        },
+        const tags = await withRepositories([tagRepository], (tagRepo) =>
+            tagRepo.findMany({
+                where,
+                orderBy: [
+                    {
+                        ...(query.sortField && query.sortOrder
+                            ? {
+                                [query.sortField]: query.sortOrder,
+                            }
+                            : {
+                                createdAt: PrismaTeam.SortOrder.desc,
+                            }),
+                    },
+                    { id: PrismaTeam.SortOrder.desc },
+                ],
+                ...(query.cursor && {
+                    cursor: { id: query.cursor },
+                    skip: 1,
+                }),
+                take: query.limit,
+                select: {
+                    ...defaultTagSelector,
+                    _count: {
                         select: {
-                            ...defaultTagSelector,
-                            _count: {
-                                select: {
-                                    documentTags: {
-                                        where: {
-                                            document: documentWhere,
-                                        },
-                                    },
+                            documentTags: {
+                                where: {
+                                    document: documentWhere,
                                 },
                             },
                         },
-                    }),
-                    tagRepo.count({
-                        where,
-                    }),
-                ])
+                    },
+                },
+            })
         );
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+        const nextCursor =
+            tags.length === query.limit ? tags[tags.length - 1].id : null;
 
         return {
             message: "Tags fetched successfully.",
@@ -171,12 +167,7 @@ export const createtagService = (
                     documents: tag._count.documentTags,
                 })),
                 pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
+                    nextCursor,
                 },
             },
         };

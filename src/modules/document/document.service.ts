@@ -216,8 +216,6 @@ export const createDocumentService = (
     },
 
     getDocuments: async ({ query, params }) => {
-        const skip = (query.page - 1) * query.perPage;
-
         const where: PrismaTeam.DocumentWhereInput = {
             ...(query.search && {
                 name: {
@@ -271,51 +269,50 @@ export const createDocumentService = (
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const [documents, total] = await withRepositories(
+        const documents = await withRepositories(
             [documentRepository],
             (documentRepo) =>
-                Promise.all([
-                    documentRepo.findMany({
-                        skip,
-                        where,
-                        take: query.perPage,
-                        orderBy: {
-                            ...(query.sortField && query.sortOrder
-                                ? {
-                                    [query.sortField]: query.sortOrder,
-                                }
-                                : {
-                                    createdAt: PrismaTeam.SortOrder.desc,
-                                }),
-                        },
-                        select: {
-                            ...defaultDocumentSelector,
-                            actionLogs: {
-                                where: {
-                                    type: {
-                                        in: [
-                                            ActionLogTypes.CREATE_DOCUMENT,
-                                            ActionLogTypes.UPDATE_DOCUMENT,
-                                        ],
-                                    },
-                                    ...(query.authorsIds && {
-                                        actorId: {
-                                            in: query.authorsIds,
-                                        },
-                                    }),
+                documentRepo.findMany({
+                    where,
+                    orderBy: {
+                        ...(query.sortField && query.sortOrder
+                            ? {
+                                [query.sortField]: query.sortOrder,
+                            }
+                            : {
+                                createdAt: PrismaTeam.SortOrder.desc,
+                            }),
+                    },
+                    ...(query.cursor && {
+                        cursor: { id: query.cursor },
+                        skip: 1,
+                    }),
+                    take: query.limit,
+                    select: {
+                        ...defaultDocumentSelector,
+                        actionLogs: {
+                            where: {
+                                type: {
+                                    in: [
+                                        ActionLogTypes.CREATE_DOCUMENT,
+                                        ActionLogTypes.UPDATE_DOCUMENT,
+                                    ],
                                 },
+                                ...(query.authorsIds && {
+                                    actorId: {
+                                        in: query.authorsIds,
+                                    },
+                                }),
                             },
                         },
-                    }),
-                    documentRepo.count({
-                        where,
-                    }),
-                ])
+                    },
+                })
         );
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+        const nextCursor =
+            documents.length === query.limit
+                ? documents[documents.length - 1].id
+                : null;
 
         return {
             message: "Documents fetched successfully.",
@@ -331,12 +328,7 @@ export const createDocumentService = (
                     }, {}),
                 })),
                 pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
+                    nextCursor,
                 },
             },
         };
