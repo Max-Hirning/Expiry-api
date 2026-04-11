@@ -701,6 +701,12 @@ export const createTeamService = (
                 notifications: [],
             };
 
+            let newMemberUsers: Array<{
+                id: string;
+                fullName: string;
+                avatar: { url: string } | null;
+            }> = [];
+
             if (body.teamMembers) {
                 await checkTeamMembersRoles(teamMembersIds);
 
@@ -708,6 +714,21 @@ export const createTeamService = (
                     teamMembers: body.teamMembers || [],
                     team: teamToUpdate,
                     initiator,
+                });
+
+                newMemberUsers = await userRepository.findMany({
+                    where: {
+                        id: {
+                            in: futureTeamMembersRecords.teamMembers.map(
+                                ({ userId }) => userId
+                            ),
+                        },
+                    },
+                    select: {
+                        id: true,
+                        fullName: true,
+                        avatar: true,
+                    },
                 });
             }
 
@@ -811,6 +832,33 @@ export const createTeamService = (
                         data: {
                             name: body.name,
                         },
+                    });
+                }
+
+                if (newMemberUsers.length > 0) {
+                    const allChats = await tx.chat.findMany();
+
+                    for (const chat of allChats) {
+                        await chatService.createChatMember({
+                            teamId: params.teamId,
+                            chatId: chat.id,
+                            members: newMemberUsers.map((user) => ({
+                                userId: user.id,
+                                userFullName: user.fullName,
+                                userAvatarUrl: user.avatar?.url,
+                            })),
+                            tx,
+                        });
+                    }
+                }
+
+                if (
+                    body.teamMembersUsersToDeleteIds &&
+                    body.teamMembersUsersToDeleteIds.length > 0
+                ) {
+                    await chatService.deleteChatMember({
+                        memberIds: body.teamMembersUsersToDeleteIds,
+                        tx,
                     });
                 }
             });

@@ -51,6 +51,11 @@ export type ChatService = {
         }[];
         tx: Prisma.TransactionClient;
     }) => Promise<void>;
+    deleteChatMember: (p: {
+        chatIds?: string[];
+        memberIds: string[];
+        tx: Prisma.TransactionClient;
+    }) => Promise<void>;
     getChats: (p: {
         params: ChatParamsInput;
         query: GetChatsCursorQueryInput;
@@ -182,6 +187,18 @@ export const createChatService = (
             user_full_name = EXCLUDED.user_full_name,
             user_avatar_url = EXCLUDED.user_avatar_url
         `;
+        },
+
+        deleteChatMember: async ({ chatIds, memberIds, tx }) => {
+            if (memberIds.length === 0) {
+                return;
+            }
+
+            await tx.$executeRaw`
+                UPDATE chat_members
+                SET status = 'DELETED', updated_at = now()
+                WHERE user_id = ANY(${memberIds}::uuid[]) ${chatIds && chatIds.length > 0 ? `AND chat_id = ANY(${chatIds}::uuid[])` : ""}
+            `;
         },
 
         getChats: async ({ params, query, initiator }) => {
