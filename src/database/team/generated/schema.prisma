@@ -239,5 +239,6 @@ model ChatMessageReadStatus {
   readById String     @map("read_by_id") @db.Uuid
   readBy   ChatMember @relation(fields: [readById], references: [id], onDelete: Cascade)
 
+  @@unique([chatMessageId, readById])
   @@map("Chat_message_read_statuses")
 }

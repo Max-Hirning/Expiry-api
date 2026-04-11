@@ -17439,6 +17439,7 @@ export namespace Prisma {
     export type ChatMessageReadStatusWhereUniqueInput = Prisma.AtLeast<
         {
             id?: string;
+            chatMessageId_readById?: ChatMessageReadStatusChatMessageIdReadByIdCompoundUniqueInput;
             AND?:
                 | ChatMessageReadStatusWhereInput
                 | ChatMessageReadStatusWhereInput[];
@@ -17456,7 +17457,7 @@ export namespace Prisma {
             >;
             readBy?: XOR<ChatMemberScalarRelationFilter, ChatMemberWhereInput>;
         },
-        "id"
+        "id" | "chatMessageId_readById"
     >;
 
     export type ChatMessageReadStatusOrderByWithAggregationInput = {
@@ -19204,6 +19205,12 @@ export namespace Prisma {
         authorId?: SortOrder;
         chatId?: SortOrder;
     };
+
+    export type ChatMessageReadStatusChatMessageIdReadByIdCompoundUniqueInput =
+        {
+            chatMessageId: string;
+            readById: string;
+        };
 
     export type ChatMessageReadStatusCountOrderByAggregateInput = {
         id?: SortOrder;
