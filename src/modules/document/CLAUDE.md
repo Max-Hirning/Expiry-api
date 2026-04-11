@@ -21,5 +21,10 @@ CRUD for documents stored in the **team tenant DB**. Handles file uploads to GCS
 
 **Action logs + notifications**: Written inside the same tenant DB transaction on create/update/delete. Notifications sent to all team admins (except initiator) on delete.
 
+**Chat creation on document create**: When a document is created, a chat with the same name is automatically created in the tenant DB. The document creator is added as the initial chat member. This enables team collaboration on documents.
+
 ## Dependencies
-`applicationService` · `gcpService` · `notificationRepository` · `teamMemberRepository` · `log`
+`applicationService` · `chatService` · `gcpService` · `notificationRepository` · `teamMemberRepository` · `log`
+
+### Cross-module interactions
+- **chatService**: Called on document create to set up associated chat for collaboration

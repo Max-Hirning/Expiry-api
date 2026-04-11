@@ -21,6 +21,10 @@ Methods provided:
 - `initTagRepository(teamId)`
 - `initDocumentTagRepository(teamId)`
 - `initActionLogRepository(teamId)`
+- `initChatRepository(teamId)`
+- `initChatMemberRepository(teamId)`
+- `initChatMessageRepository(teamId)`
+- `initChatMessageReadStatusRepository(teamId)`
 - `initTeamTenantClient(teamId)` — returns the full `PrismaClient` for raw transactions
 
 ## Dependencies
