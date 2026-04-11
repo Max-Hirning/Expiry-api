@@ -15,7 +15,7 @@ Full CRUD for teams. Creating/deleting a team provisions/drops the team's **tena
 
 **getTeam (internal helper)**: Fetches team + teamStat together and injects `currentMember` (the requesting user's membership record). Used by both the public `getTeam` and as a return value after create/update.
 
-**createTeam**: Provisions tenant DB via `createTenantDatabase` + `migrateTenantDatabase` before the master DB transaction. After the team record is created in the master DB, a general chat is automatically created in the tenant DB using `chatService.createChat()` with the team creator as the initial member. On any error, drops the tenant DB and deletes the GCS logo. Note: `migrateTenantDatabase` receives the URL with the teamId replaced, not the teamId itself.
+**createTeam**: Provisions tenant DB via `createTenantDatabase` + `migrateTenantDatabase` before the master DB transaction. After the team record is created in the master DB, a general chat is automatically created in the tenant DB using `chatService.createChat()` with the team creator and all invited team members as initial members. On any error, drops the tenant DB and deletes the GCS logo. Note: `migrateTenantDatabase` receives the URL with the teamId replaced, not the teamId itself.
 
 **updateTeam**: Member add/remove happen in the same master DB transaction. Action logs written to tenant DB after the master transaction completes. Members are validated — only `UserRoles.USER` accounts can join teams.
 

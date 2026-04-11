@@ -503,6 +503,10 @@ export const createTeamService = (
                     };
                 }
 
+                if (body.teamMembers) {
+                    await checkTeamMembersRoles(teamMembersIds);
+                }
+
                 await createTenantDatabase(teamId);
 
                 await migrateTenantDatabase(
@@ -511,27 +515,6 @@ export const createTeamService = (
                         `/${teamId}`
                     )
                 );
-
-                const client =
-                    await applicationService.initTeamTenantClient(teamId);
-
-                await withRepositories([client], async (tx) => {
-                    await tx.actionLog.createMany({
-                        data: futureTeamMembersRecords.actionLogsData,
-                    });
-
-                    await chatService.createChat({
-                        chatName: body.name,
-                        members: [
-                            {
-                                userId: initiator.id,
-                                userFullName: initiator.fullName,
-                                userAvatarUrl: initiator.avatar?.url,
-                            },
-                        ],
-                        tx,
-                    });
-                });
 
                 const createdTeam = await teamRepository.create({
                     data: {
@@ -579,8 +562,6 @@ export const createTeamService = (
                 const team = await getTeam(createdTeam.id, initiator);
 
                 if (body.teamMembers) {
-                    await checkTeamMembersRoles(teamMembersIds);
-
                     futureTeamMembersRecords = await configureFutureTeamMembers(
                         {
                             teamMembers: body.teamMembers || [],
@@ -589,6 +570,54 @@ export const createTeamService = (
                         }
                     );
                 }
+
+                const chatMembers = [
+                    {
+                        userId: initiator.id,
+                        userFullName: initiator.fullName,
+                        userAvatarUrl: initiator.avatar?.url,
+                    },
+                ];
+
+                if (futureTeamMembersRecords.teamMembers.length > 0) {
+                    const memberUsers = await userRepository.findMany({
+                        where: {
+                            id: {
+                                in: futureTeamMembersRecords.teamMembers.map(
+                                    ({ userId }) => userId
+                                ),
+                            },
+                        },
+                        select: {
+                            id: true,
+                            fullName: true,
+                            avatar: true,
+                        },
+                    });
+
+                    chatMembers.push(
+                        ...memberUsers.map((user) => ({
+                            userId: user.id,
+                            userFullName: user.fullName,
+                            userAvatarUrl: user.avatar?.url,
+                        }))
+                    );
+                }
+
+                const client =
+                    await applicationService.initTeamTenantClient(teamId);
+
+                await withRepositories([client], async (tx) => {
+                    await tx.actionLog.createMany({
+                        data: futureTeamMembersRecords.actionLogsData,
+                    });
+
+                    await chatService.createChat({
+                        chatName: body.name,
+                        members: chatMembers,
+                        tx,
+                    });
+                });
 
                 await notificationRepository.createMany({
                     data: futureTeamMembersRecords.notifications,
