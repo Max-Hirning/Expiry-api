@@ -181,6 +181,42 @@ exports.Prisma.ActionLogScalarFieldEnum = {
     userAvatarUrl: "userAvatarUrl",
 };
 
+exports.Prisma.ChatScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    name: "name",
+};
+
+exports.Prisma.ChatMemberScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    status: "status",
+    userId: "userId",
+    userFullName: "userFullName",
+    userAvatarUrl: "userAvatarUrl",
+    chatId: "chatId",
+};
+
+exports.Prisma.ChatMessageScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    message: "message",
+    parentMessageId: "parentMessageId",
+    authorId: "authorId",
+    chatId: "chatId",
+};
+
+exports.Prisma.ChatMessageReadStatusScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    chatMessageId: "chatMessageId",
+    readById: "readById",
+};
+
 exports.Prisma.SortOrder = {
     asc: "asc",
     desc: "desc",
@@ -234,6 +270,11 @@ exports.ActionLogTypes = exports.$Enums.ActionLogTypes = {
     DELETE_DOCUMENT: "DELETE_DOCUMENT",
 };
 
+exports.ChatMemberStatus = exports.$Enums.ChatMemberStatus = {
+    ACTIVE: "ACTIVE",
+    DELETED: "DELETED",
+};
+
 exports.Prisma.ModelName = {
     Document: "Document",
     DocumentTag: "DocumentTag",
@@ -241,6 +282,10 @@ exports.Prisma.ModelName = {
     File: "File",
     DocumentExtractedField: "DocumentExtractedField",
     ActionLog: "ActionLog",
+    Chat: "Chat",
+    ChatMember: "ChatMember",
+    ChatMessage: "ChatMessage",
+    ChatMessageReadStatus: "ChatMessageReadStatus",
 };
 
 /**

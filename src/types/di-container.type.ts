@@ -20,6 +20,7 @@ import { ApplicationHandler } from "@/modules/application/application.handler.js
 import { TagRepository } from "@/database/team/repositories/tag/tag.repository.js";
 import { NotificationService } from "@/modules/notification/notification.service.js";
 import { NotificationHandler } from "@/modules/notification/notification.handler.js";
+import { ChatRepository } from "@/database/team/repositories/chat/chat.repository.js";
 import { FileRepository } from "@/database/team/repositories/file/file.repository.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
@@ -27,15 +28,26 @@ import { AvatarRepository } from "@/database/master/repositories/avatar/avatar.r
 import { DocumentRepository } from "@/database/team/repositories/document/docuement.repository.js";
 import { TeamStatRepository } from "@/database/master/repositories/team-stat/team-stat.repository.js";
 import { ActionLogRepository } from "@/database/team/repositories/action-log/action-log.repository.js";
+import { ChatMemberRepository } from "@/database/team/repositories/chat-member/chat-member.repository.js";
 import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
+import { ChatMessageRepository } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import { DocumentTagRepository } from "@/database/team/repositories/document-tag/document-tag.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import { ChatMessageReadStatusRepository } from "@/database/team/repositories/chat-message-read-status/chat-message-read-status.repository.js";
 import { DocumentExtractedFieldRepository } from "@/database/team/repositories/document-extracted-field/document-extracted-field.repository.js";
 
 export type Cradle = {
     log: FastifyBaseLogger;
     prisma: PrismaClient;
     config: EnvConfig;
+
+    chatMessageReadStatusRepository: ChatMessageReadStatusRepository;
+
+    chatMessageRepository: ChatMessageRepository;
+
+    chatMemberRepository: ChatMemberRepository;
+
+    chatRepository: ChatRepository;
 
     actionLogService: ActionLogService;
     actionLogHandler: ActionLogHandler;

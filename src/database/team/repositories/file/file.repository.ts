@@ -4,7 +4,7 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { Prisma } from "@/database/team/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
 
-export const defaultFileTagSelector = {
+export const defaultFileSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
