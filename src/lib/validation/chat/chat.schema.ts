@@ -19,6 +19,17 @@ const defaultChatMemberSchema = z.object({
     chatId: z.uuid(),
 });
 
+const lastChatMessageSchema = z.object({
+    id: z.uuid(),
+    message: z.string(),
+    createdAt: z.date(),
+    author: z.object({
+        id: z.uuid(),
+        userFullName: z.string(),
+        userAvatarUrl: z.string().nullable(),
+    }),
+});
+
 const chatParamsSchema = z.object({
     teamId: z.uuid(),
     chatId: z.uuid(),
@@ -36,7 +47,13 @@ const createChatBodySchema = z.object({
 const fetchChatsResponseSchema = z.object({
     message: z.string(),
     data: z.object({
-        chats: z.array(defaultChatSchema),
+        chats: z.array(
+            defaultChatSchema.extend({
+                lastMessage: lastChatMessageSchema.nullable(),
+                unreadCount: z.number().int().nonnegative(),
+                activeMemberCount: z.number().int().nonnegative(),
+            })
+        ),
         pagination: z.object({
             nextCursor: z.uuid().nullable(),
             hasMore: z.boolean(),
@@ -61,6 +78,7 @@ export {
     fetchChatResponseSchema,
     defaultChatSchema,
     defaultChatMemberSchema,
+    lastChatMessageSchema,
 };
 
 export type ChatParamsInput = z.infer<typeof chatParamsSchema>;
@@ -70,3 +88,4 @@ export type GetChatsCursorQueryInput = z.infer<
 export type CreateChatBodyInput = z.infer<typeof createChatBodySchema>;
 export type FetchChatsResponse = z.infer<typeof fetchChatsResponseSchema>;
 export type FetchChatResponse = z.infer<typeof fetchChatResponseSchema>;
+export type LastChatMessage = z.infer<typeof lastChatMessageSchema>;

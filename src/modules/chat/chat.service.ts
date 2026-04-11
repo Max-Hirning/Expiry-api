@@ -4,6 +4,7 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
+import { defaultChatSelector } from "@/database/team/repositories/chat/chat.repository.js";
 import {
     Chat,
     ChatMemberStatus,
@@ -203,48 +204,95 @@ export const createChatService = (
         },
 
         getChats: async ({ params, query, initiator }) => {
-            const chatRepository = await applicationService.initChatRepository(
+            const client = await applicationService.initTeamTenantClient(
                 params.teamId
             );
 
-            const chats = await withRepositories(
-                [chatRepository],
-                async (repo) => {
-                    const rows = await repo.findMany({
-                        where: {
-                            members: {
-                                some: {
-                                    userId: initiator.id,
-                                    status: ChatMemberStatus.ACTIVE,
+            const result = await withRepositories([client], async (tx) => {
+                const rows = await tx.chat.findMany({
+                    where: {
+                        members: {
+                            some: {
+                                userId: initiator.id,
+                                status: ChatMemberStatus.ACTIVE,
+                            },
+                        },
+                    },
+                    orderBy: { createdAt: "desc" },
+                    ...(query.cursor && {
+                        cursor: { id: query.cursor },
+                        skip: 1,
+                    }),
+                    take: query.limit + 1,
+                    select: {
+                        ...defaultChatSelector,
+                        _count: {
+                            select: {
+                                messages: {
+                                    where: {
+                                        NOT: {
+                                            chatMessageReadStatuses: {
+                                                some: {
+                                                    readBy: {
+                                                        userId: initiator.id,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                                members: {
+                                    where: {
+                                        status: ChatMemberStatus.ACTIVE,
+                                    },
                                 },
                             },
                         },
-                        orderBy: { createdAt: "desc" },
-                        ...(query.cursor && {
-                            cursor: { id: query.cursor },
-                            skip: 1,
-                        }),
-                        take: query.limit + 1,
-                    });
+                        messages: {
+                            orderBy: { createdAt: "desc" },
+                            take: 1,
+                            select: {
+                                id: true,
+                                message: true,
+                                createdAt: true,
+                                author: {
+                                    select: {
+                                        id: true,
+                                        userFullName: true,
+                                        userAvatarUrl: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
 
-                    const hasMore = rows.length > query.limit;
-                    const data = hasMore ? rows.slice(0, query.limit) : rows;
+                const hasMore = rows.length > query.limit;
+                const data = hasMore ? rows.slice(0, query.limit) : rows;
 
-                    const nextCursor = hasMore
-                        ? (data[data.length - 1]?.id ?? null)
-                        : null;
+                const nextCursor = hasMore
+                    ? (data[data.length - 1]?.id ?? null)
+                    : null;
 
-                    return { chats: data, nextCursor, hasMore };
-                }
-            );
+                return {
+                    chats: data.map((chat) => ({
+                        ...chat,
+                        lastMessage: chat.messages[0] || null,
+                        unreadCount: chat._count.messages,
+                        activeMemberCount: chat._count.members,
+                    })),
+                    nextCursor,
+                    hasMore,
+                };
+            });
 
             return {
                 message: "Chats retrieved successfully",
                 data: {
-                    chats: chats.chats,
+                    chats: result.chats,
                     pagination: {
-                        nextCursor: chats.nextCursor,
-                        hasMore: chats.hasMore,
+                        nextCursor: result.nextCursor,
+                        hasMore: result.hasMore,
                     },
                 },
             };
