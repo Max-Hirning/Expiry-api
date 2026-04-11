@@ -181,6 +181,33 @@ exports.Prisma.ActionLogScalarFieldEnum = {
     userAvatarUrl: "userAvatarUrl",
 };
 
+exports.Prisma.ChatScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    name: "name",
+};
+
+exports.Prisma.ChatMemberScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    userId: "userId",
+    userFullName: "userFullName",
+    userAvatarUrl: "userAvatarUrl",
+    chatId: "chatId",
+};
+
+exports.Prisma.ChatMessageScalarFieldEnum = {
+    id: "id",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    message: "message",
+    parentMessageId: "parentMessageId",
+    authorId: "authorId",
+    chatId: "chatId",
+};
+
 exports.Prisma.SortOrder = {
     asc: "asc",
     desc: "desc",
@@ -241,6 +268,9 @@ exports.Prisma.ModelName = {
     File: "File",
     DocumentExtractedField: "DocumentExtractedField",
     ActionLog: "ActionLog",
+    Chat: "Chat",
+    ChatMember: "ChatMember",
+    ChatMessage: "ChatMessage",
 };
 
 /**
