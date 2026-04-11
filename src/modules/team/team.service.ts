@@ -3,6 +3,7 @@ import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { UserService } from "../user/user.service.js";
+import { ChatService } from "../chat/chat.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
@@ -82,7 +83,8 @@ export const createTeamService = (
     notificationRepository: NotificationRepository,
     teamStatRepository: TeamStatRepository,
     userRepository: UserRepository,
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    chatService: ChatService
 ): TeamService => {
     const getTeam = async (
         teamId: string,
@@ -510,16 +512,26 @@ export const createTeamService = (
                     )
                 );
 
-                const activityLogRepository =
-                    await applicationService.initActionLogRepository(teamId);
+                const client =
+                    await applicationService.initTeamTenantClient(teamId);
 
-                await withRepositories(
-                    [activityLogRepository],
-                    (activityLogRepo) =>
-                        activityLogRepo.createMany({
-                            data: futureTeamMembersRecords.actionLogsData,
-                        })
-                );
+                await withRepositories([client], async (tx) => {
+                    await tx.actionLog.createMany({
+                        data: futureTeamMembersRecords.actionLogsData,
+                    });
+
+                    await chatService.createChat({
+                        chatName: body.name,
+                        members: [
+                            {
+                                userId: initiator.id,
+                                userFullName: initiator.fullName,
+                                userAvatarUrl: initiator.avatar?.url,
+                            },
+                        ],
+                        tx,
+                    });
+                });
 
                 const createdTeam = await teamRepository.create({
                     data: {
@@ -744,11 +756,12 @@ export const createTeamService = (
                 return team;
             });
 
-            const activityLogRepository =
-                await applicationService.initActionLogRepository(params.teamId);
+            const client = await applicationService.initTeamTenantClient(
+                params.teamId
+            );
 
-            await withRepositories([activityLogRepository], (activityLogRepo) =>
-                activityLogRepo.createMany({
+            await withRepositories([client], async (tx) => {
+                await tx.actionLog.createMany({
                     data: [
                         ...futureTeamMembersRecords.actionLogsData,
                         ...futureTeamMembersToDisconnectRecords.actionLogsData,
@@ -759,8 +772,19 @@ export const createTeamService = (
                             actorAvatarUrl: initiator.avatar?.url,
                         },
                     ],
-                })
-            );
+                });
+
+                if (body.name) {
+                    await tx.chat.updateMany({
+                        where: {
+                            name: teamToUpdate.name,
+                        },
+                        data: {
+                            name: body.name,
+                        },
+                    });
+                }
+            });
 
             const team = await getTeam(params.teamId, initiator);
 
