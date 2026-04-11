@@ -7,4 +7,5 @@ export enum FastifyPlugin {
     Jwt = "jwt",
     Awilix = "awilix",
     TokenCookies = "token-cookies",
+    SocketIO = "socket-io",
 }

@@ -3,6 +3,7 @@ import { EnvConfig } from "./env.type.js";
 import { FastifyBaseLogger } from "fastify";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { PrismaClient } from "@prisma/client/extension";
+import type { Server as SocketIOServer } from "socket.io";
 import { TagService } from "@/modules/tag/tag.service.js";
 import { TagHandler } from "@/modules/tag/tag.handler.js";
 import { TeamService } from "@/modules/team/team.service.js";
@@ -11,8 +12,11 @@ import { AuthService } from "@/modules/auth/auth.service.js";
 import { AuthHandler } from "@/modules/auth/auth.handler.js";
 import { UserHandler } from "@/modules/user/user.handler.js";
 import { UserService } from "@/modules/user/user.service.js";
+import { ChatService } from "@/modules/chat/chat.service.js";
+import { ChatHandler } from "@/modules/chat/chat.handler.js";
 import { DocumentService } from "@/modules/document/document.service.js";
 import { DocumentHandler } from "@/modules/document/document.handler.js";
+import { ChatSocketHandler } from "@/modules/chat/chat.socket-handler.js";
 import { ActionLogService } from "@/modules/action-log/action-log.service.js";
 import { ActionLogHandler } from "@/modules/action-log/action-log.handler.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
@@ -41,6 +45,8 @@ export type Cradle = {
     prisma: PrismaClient;
     config: EnvConfig;
 
+    io: SocketIOServer;
+
     chatMessageReadStatusRepository: ChatMessageReadStatusRepository;
 
     chatMessageRepository: ChatMessageRepository;
@@ -48,6 +54,10 @@ export type Cradle = {
     chatMemberRepository: ChatMemberRepository;
 
     chatRepository: ChatRepository;
+
+    chatService: ChatService;
+    chatHandler: ChatHandler;
+    chatSocketHandler: ChatSocketHandler;
 
     actionLogService: ActionLogService;
     actionLogHandler: ActionLogHandler;

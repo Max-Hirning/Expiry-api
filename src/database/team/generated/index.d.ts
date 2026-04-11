@@ -13569,7 +13569,7 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         message: string;
-        parentMessageId: string;
+        parentMessageId: string | null;
         authorId: string;
         chatId: string;
         _count: ChatMessageCountAggregateOutputType | null;
@@ -13605,7 +13605,7 @@ export namespace Prisma {
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
-            parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+            parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
             childMessages?: boolean | ChatMessage$childMessagesArgs<ExtArgs>;
@@ -13628,7 +13628,7 @@ export namespace Prisma {
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
-            parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+            parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
         },
@@ -13646,7 +13646,7 @@ export namespace Prisma {
             parentMessageId?: boolean;
             authorId?: boolean;
             chatId?: boolean;
-            parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+            parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
             author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
             chat?: boolean | ChatDefaultArgs<ExtArgs>;
         },
@@ -13678,7 +13678,7 @@ export namespace Prisma {
     export type ChatMessageInclude<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
-        parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+        parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
         childMessages?: boolean | ChatMessage$childMessagesArgs<ExtArgs>;
@@ -13690,14 +13690,14 @@ export namespace Prisma {
     export type ChatMessageIncludeCreateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
-        parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+        parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
     };
     export type ChatMessageIncludeUpdateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
-        parentMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>;
+        parentMessage?: boolean | ChatMessage$parentMessageArgs<ExtArgs>;
         author?: boolean | ChatMemberDefaultArgs<ExtArgs>;
         chat?: boolean | ChatDefaultArgs<ExtArgs>;
     };
@@ -13707,7 +13707,7 @@ export namespace Prisma {
     > = {
         name: "ChatMessage";
         objects: {
-            parentMessage: Prisma.$ChatMessagePayload<ExtArgs>;
+            parentMessage: Prisma.$ChatMessagePayload<ExtArgs> | null;
             author: Prisma.$ChatMemberPayload<ExtArgs>;
             chat: Prisma.$ChatPayload<ExtArgs>;
             childMessages: Prisma.$ChatMessagePayload<ExtArgs>[];
@@ -13719,7 +13719,7 @@ export namespace Prisma {
                 createdAt: Date;
                 updatedAt: Date;
                 message: string;
-                parentMessageId: string;
+                parentMessageId: string | null;
                 authorId: string;
                 chatId: string;
             },
@@ -14275,17 +14275,16 @@ export namespace Prisma {
         GlobalOmitOptions = {},
     > extends Prisma.PrismaPromise<T> {
         readonly [Symbol.toStringTag]: "PrismaPromise";
-        parentMessage<T extends ChatMessageDefaultArgs<ExtArgs> = {}>(
-            args?: Subset<T, ChatMessageDefaultArgs<ExtArgs>>
+        parentMessage<T extends ChatMessage$parentMessageArgs<ExtArgs> = {}>(
+            args?: Subset<T, ChatMessage$parentMessageArgs<ExtArgs>>
         ): Prisma__ChatMessageClient<
-            | $Result.GetResult<
-                  Prisma.$ChatMessagePayload<ExtArgs>,
-                  T,
-                  "findUniqueOrThrow",
-                  GlobalOmitOptions
-              >
-            | Null,
-            Null,
+            $Result.GetResult<
+                Prisma.$ChatMessagePayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
             ExtArgs,
             GlobalOmitOptions
         >;
@@ -14822,6 +14821,27 @@ export namespace Prisma {
          * Limit how many ChatMessages to delete.
          */
         limit?: number;
+    };
+
+    /**
+     * ChatMessage.parentMessage
+     */
+    export type ChatMessage$parentMessageArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the ChatMessage
+         */
+        select?: ChatMessageSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the ChatMessage
+         */
+        omit?: ChatMessageOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: ChatMessageInclude<ExtArgs> | null;
+        where?: ChatMessageWhereInput;
     };
 
     /**
@@ -17324,13 +17344,13 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         message?: StringFilter<"ChatMessage"> | string;
-        parentMessageId?: UuidFilter<"ChatMessage"> | string;
+        parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
         authorId?: UuidFilter<"ChatMessage"> | string;
         chatId?: UuidFilter<"ChatMessage"> | string;
         parentMessage?: XOR<
-            ChatMessageScalarRelationFilter,
+            ChatMessageNullableScalarRelationFilter,
             ChatMessageWhereInput
-        >;
+        > | null;
         author?: XOR<ChatMemberScalarRelationFilter, ChatMemberWhereInput>;
         chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>;
         childMessages?: ChatMessageListRelationFilter;
@@ -17342,7 +17362,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
-        parentMessageId?: SortOrder;
+        parentMessageId?: SortOrderInput | SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
         parentMessage?: ChatMessageOrderByWithRelationInput;
@@ -17361,13 +17381,13 @@ export namespace Prisma {
             createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
             updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
             message?: StringFilter<"ChatMessage"> | string;
-            parentMessageId?: UuidFilter<"ChatMessage"> | string;
+            parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
             authorId?: UuidFilter<"ChatMessage"> | string;
             chatId?: UuidFilter<"ChatMessage"> | string;
             parentMessage?: XOR<
-                ChatMessageScalarRelationFilter,
+                ChatMessageNullableScalarRelationFilter,
                 ChatMessageWhereInput
-            >;
+            > | null;
             author?: XOR<ChatMemberScalarRelationFilter, ChatMemberWhereInput>;
             chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>;
             childMessages?: ChatMessageListRelationFilter;
@@ -17381,7 +17401,7 @@ export namespace Prisma {
         createdAt?: SortOrder;
         updatedAt?: SortOrder;
         message?: SortOrder;
-        parentMessageId?: SortOrder;
+        parentMessageId?: SortOrderInput | SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
         _count?: ChatMessageCountOrderByAggregateInput;
@@ -17401,7 +17421,10 @@ export namespace Prisma {
         createdAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string;
         updatedAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string;
         message?: StringWithAggregatesFilter<"ChatMessage"> | string;
-        parentMessageId?: UuidWithAggregatesFilter<"ChatMessage"> | string;
+        parentMessageId?:
+            | UuidNullableWithAggregatesFilter<"ChatMessage">
+            | string
+            | null;
         authorId?: UuidWithAggregatesFilter<"ChatMessage"> | string;
         chatId?: UuidWithAggregatesFilter<"ChatMessage"> | string;
     };
@@ -18214,7 +18237,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessage: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
@@ -18226,7 +18249,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         authorId: string;
         chatId: string;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
@@ -18238,7 +18261,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessage?: ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
@@ -18250,7 +18273,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
@@ -18262,7 +18288,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         authorId: string;
         chatId: string;
     };
@@ -18279,7 +18305,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
     };
@@ -19166,9 +19195,9 @@ export namespace Prisma {
             _max?: NestedEnumChatMemberStatusFilter<$PrismaModel>;
         };
 
-    export type ChatMessageScalarRelationFilter = {
-        is?: ChatMessageWhereInput;
-        isNot?: ChatMessageWhereInput;
+    export type ChatMessageNullableScalarRelationFilter = {
+        is?: ChatMessageWhereInput | null;
+        isNot?: ChatMessageWhereInput | null;
     };
 
     export type ChatMemberScalarRelationFilter = {
@@ -19204,6 +19233,11 @@ export namespace Prisma {
         parentMessageId?: SortOrder;
         authorId?: SortOrder;
         chatId?: SortOrder;
+    };
+
+    export type ChatMessageScalarRelationFilter = {
+        is?: ChatMessageWhereInput;
+        isNot?: ChatMessageWhereInput;
     };
 
     export type ChatMessageReadStatusChatMessageIdReadByIdCompoundUniqueInput =
@@ -20404,13 +20438,15 @@ export namespace Prisma {
                 | ChatMessageReadStatusWhereUniqueInput[];
         };
 
-    export type ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput = {
+    export type ChatMessageUpdateOneWithoutChildMessagesNestedInput = {
         create?: XOR<
             ChatMessageCreateWithoutChildMessagesInput,
             ChatMessageUncheckedCreateWithoutChildMessagesInput
         >;
         connectOrCreate?: ChatMessageCreateOrConnectWithoutChildMessagesInput;
         upsert?: ChatMessageUpsertWithoutChildMessagesInput;
+        disconnect?: ChatMessageWhereInput | boolean;
+        delete?: ChatMessageWhereInput | boolean;
         connect?: ChatMessageWhereUniqueInput;
         update?: XOR<
             XOR<
@@ -21975,7 +22011,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessage: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
@@ -21986,7 +22022,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         authorId: string;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
@@ -22078,7 +22114,7 @@ export namespace Prisma {
         createdAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string;
         message?: StringFilter<"ChatMessage"> | string;
-        parentMessageId?: UuidFilter<"ChatMessage"> | string;
+        parentMessageId?: UuidNullableFilter<"ChatMessage"> | string | null;
         authorId?: UuidFilter<"ChatMessage"> | string;
         chatId?: UuidFilter<"ChatMessage"> | string;
     };
@@ -22156,7 +22192,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessage: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
@@ -22167,7 +22203,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         chatId: string;
         childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
@@ -22329,7 +22365,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessage: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
         chatMessageReadStatuses?: ChatMessageReadStatusCreateNestedManyWithoutChatMessageInput;
@@ -22340,7 +22376,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         authorId: string;
         chatId: string;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedCreateNestedManyWithoutChatMessageInput;
@@ -22501,7 +22537,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessage?: ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
@@ -22512,7 +22548,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         chatId?: StringFieldUpdateOperationsInput | string;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
@@ -22672,7 +22711,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessage: ChatMessageCreateNestedOneWithoutChildMessagesInput;
+        parentMessage?: ChatMessageCreateNestedOneWithoutChildMessagesInput;
         author: ChatMemberCreateNestedOneWithoutMessagesInput;
         chat: ChatCreateNestedOneWithoutMessagesInput;
         childMessages?: ChatMessageCreateNestedManyWithoutParentMessageInput;
@@ -22684,7 +22723,7 @@ export namespace Prisma {
             createdAt?: Date | string;
             updatedAt?: Date | string;
             message: string;
-            parentMessageId: string;
+            parentMessageId?: string | null;
             authorId: string;
             chatId: string;
             childMessages?: ChatMessageUncheckedCreateNestedManyWithoutParentMessageInput;
@@ -22757,7 +22796,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessage?: ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
@@ -22769,7 +22808,10 @@ export namespace Prisma {
             createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
             message?: StringFieldUpdateOperationsInput | string;
-            parentMessageId?: StringFieldUpdateOperationsInput | string;
+            parentMessageId?:
+                | NullableStringFieldUpdateOperationsInput
+                | string
+                | null;
             authorId?: StringFieldUpdateOperationsInput | string;
             chatId?: StringFieldUpdateOperationsInput | string;
             childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
@@ -23076,7 +23118,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         authorId: string;
     };
 
@@ -23095,7 +23137,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessage?: ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         author?: ChatMemberUpdateOneRequiredWithoutMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
@@ -23106,7 +23148,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         authorId?: StringFieldUpdateOperationsInput | string;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
@@ -23117,7 +23162,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         authorId?: StringFieldUpdateOperationsInput | string;
     };
 
@@ -23175,7 +23223,7 @@ export namespace Prisma {
         createdAt?: Date | string;
         updatedAt?: Date | string;
         message: string;
-        parentMessageId: string;
+        parentMessageId?: string | null;
         chatId: string;
     };
 
@@ -23191,7 +23239,7 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessage?: ChatMessageUpdateOneRequiredWithoutChildMessagesNestedInput;
+        parentMessage?: ChatMessageUpdateOneWithoutChildMessagesNestedInput;
         chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput;
         childMessages?: ChatMessageUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUpdateManyWithoutChatMessageNestedInput;
@@ -23202,7 +23250,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         chatId?: StringFieldUpdateOperationsInput | string;
         childMessages?: ChatMessageUncheckedUpdateManyWithoutParentMessageNestedInput;
         chatMessageReadStatuses?: ChatMessageReadStatusUncheckedUpdateManyWithoutChatMessageNestedInput;
@@ -23213,7 +23264,10 @@ export namespace Prisma {
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
         message?: StringFieldUpdateOperationsInput | string;
-        parentMessageId?: StringFieldUpdateOperationsInput | string;
+        parentMessageId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         chatId?: StringFieldUpdateOperationsInput | string;
     };
 

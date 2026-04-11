@@ -28,6 +28,10 @@ import {
     TagRepository,
 } from "@/database/team/repositories/tag/tag.repository.js";
 import {
+    createChatRepository,
+    ChatRepository,
+} from "@/database/team/repositories/chat/chat.repository.js";
+import {
     createDocumentRepository,
     DocumentRepository,
 } from "@/database/team/repositories/document/docuement.repository.js";
@@ -41,9 +45,21 @@ import {
     createActionLogRepository,
 } from "@/database/team/repositories/action-log/action-log.repository.js";
 import {
+    createChatMemberRepository,
+    ChatMemberRepository,
+} from "@/database/team/repositories/chat-member/chat-member.repository.js";
+import {
     createDocumentTagRepository,
     DocumentTagRepository,
 } from "@/database/team/repositories/document-tag/document-tag.repository.js";
+import {
+    createChatMessageRepository,
+    ChatMessageRepository,
+} from "@/database/team/repositories/chat-message/chat-message.repository.js";
+import {
+    createChatMessageReadStatusRepository,
+    ChatMessageReadStatusRepository,
+} from "@/database/team/repositories/chat-message-read-status/chat-message-read-status.repository.js";
 
 export type ApplicationService = {
     healthChecker: () => Promise<string>;
@@ -53,6 +69,14 @@ export type ApplicationService = {
         teamId: string
     ) => Promise<DocumentTagRepository>;
     initActionLogRepository: (teamId: string) => Promise<ActionLogRepository>;
+    initChatRepository: (teamId: string) => Promise<ChatRepository>;
+    initChatMemberRepository: (teamId: string) => Promise<ChatMemberRepository>;
+    initChatMessageRepository: (
+        teamId: string
+    ) => Promise<ChatMessageRepository>;
+    initChatMessageReadStatusRepository: (
+        teamId: string
+    ) => Promise<ChatMessageReadStatusRepository>;
     initTeamTenantClient: (teamId: string) => Promise<TeamPrismaClient>;
     setTestData: () => Promise<string>;
 };
@@ -198,6 +222,78 @@ export const createApplicationService = (
         });
 
         const repository = createDocumentTagRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMemberRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMemberRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMessageRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMessageRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMessageReadStatusRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMessageReadStatusRepository(
             prisma,
             config.MASTER_DATABASE_URL.replaceAll(
                 "5432/expiry",
@@ -523,6 +619,10 @@ export const createApplicationService = (
         initDocumentRepository,
         initTagRepository,
         initDocumentTagRepository,
+        initChatRepository,
+        initChatMemberRepository,
+        initChatMessageRepository,
+        initChatMessageReadStatusRepository,
     };
 };
 

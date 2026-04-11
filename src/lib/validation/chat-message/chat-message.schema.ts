@@ -1,0 +1,98 @@
+import { z } from "zod";
+import { chatParamsSchema } from "../chat/chat.schema.js";
+
+const defaultChatMessageSchema = z.object({
+    id: z.uuid(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    message: z.string(),
+    parentMessageId: z.uuid().nullable(),
+    authorId: z.uuid(),
+    chatId: z.uuid(),
+});
+
+const chatMessageParamsSchema = chatParamsSchema.extend({
+    messageId: z.string().uuid(),
+});
+
+const sendMessageBodySchema = z.object({
+    message: z.string().min(1).max(4000),
+    parentMessageId: z.string().uuid().optional(),
+});
+
+const editMessageBodySchema = z.object({
+    message: z.string().min(1).max(4000),
+});
+
+const fetchMessagesQuerySchema = z.object({
+    cursor: z.string().uuid().optional(),
+    limit: z.coerce.number().int().min(1).max(50).default(20),
+    parentMessageId: z.uuid().optional(),
+});
+
+const markMessagesReadBodySchema = z.object({
+    messageIds: z.array(z.uuid()).min(1),
+});
+
+const fetchMessagesResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        messages: z.array(defaultChatMessageSchema),
+        pagination: z.object({
+            nextCursor: z.uuid().nullable(),
+            hasMore: z.boolean(),
+        }),
+    }),
+});
+
+const sendMessageResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        chatMessage: defaultChatMessageSchema,
+    }),
+});
+
+const editMessageResponseSchema = sendMessageResponseSchema;
+
+const deleteMessageResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        chatMessage: defaultChatMessageSchema,
+    }),
+});
+
+const markReadResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        readStatuses: z.array(
+            z.object({
+                id: z.uuid(),
+                chatMessageId: z.uuid(),
+                readById: z.uuid(),
+                createdAt: z.date(),
+            })
+        ),
+    }),
+});
+
+export {
+    chatMessageParamsSchema,
+    sendMessageBodySchema,
+    editMessageBodySchema,
+    fetchMessagesQuerySchema,
+    markMessagesReadBodySchema,
+    fetchMessagesResponseSchema,
+    sendMessageResponseSchema,
+    editMessageResponseSchema,
+    deleteMessageResponseSchema,
+    markReadResponseSchema,
+    defaultChatMessageSchema,
+};
+
+export type ChatMessageParamsInput = z.infer<typeof chatMessageParamsSchema>;
+export type SendMessageBodyInput = z.infer<typeof sendMessageBodySchema>;
+export type EditMessageBodyInput = z.infer<typeof editMessageBodySchema>;
+export type FetchMessagesQueryInput = z.infer<typeof fetchMessagesQuerySchema>;
+export type MarkMessagesReadBodyInput = z.infer<
+    typeof markMessagesReadBodySchema
+>;

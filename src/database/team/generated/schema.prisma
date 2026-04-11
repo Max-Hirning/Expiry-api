@@ -213,8 +213,8 @@ model ChatMessage {
 
   message String
 
-  parentMessageId String      @map("parent_message_id") @db.Uuid
-  parentMessage   ChatMessage @relation("ThreadRelation", fields: [parentMessageId], references: [id], onDelete: Restrict)
+  parentMessageId String?      @map("parent_message_id") @db.Uuid
+  parentMessage   ChatMessage? @relation("ThreadRelation", fields: [parentMessageId], references: [id], onDelete: Restrict)
 
   authorId String     @map("author_id") @db.Uuid
   author   ChatMember @relation(fields: [authorId], references: [id], onDelete: Restrict)
