@@ -2,6 +2,10 @@ import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
 import { defaultFileSchema } from "../file/file.schema.js";
 import {
+    defaultChatSchema,
+    lastChatMessageSchema,
+} from "../chat/chat.schema.js";
+import {
     paginationQuerySchema,
     paginationResponseSchema,
 } from "../pagination/pagination.schema.js";
@@ -11,6 +15,12 @@ import {
     RiskLevels,
 } from "@/database/team/generated/index.js";
 import { defaultDocumentExtractedFieldSchema } from "../document-extracted-field/document-extracted-field.schema.js";
+
+const documentChatSchema = defaultChatSchema.extend({
+    lastMessage: lastChatMessageSchema.nullable(),
+    unreadCount: z.number().int().nonnegative(),
+    activeMemberCount: z.number().int().nonnegative(),
+});
 
 const defaultDocumentSchema = z.object({
     id: z.uuid(),
@@ -107,7 +117,7 @@ const fetchDocumentResponseSchema = z.object({
             ),
             files: z.array(defaultFileSchema),
             tags: z.array(z.string()),
-            unreadMessagesCount: z.number().int().nonnegative(),
+            chat: documentChatSchema.nullable(),
         }),
     }),
 });
@@ -161,7 +171,7 @@ const fetchDocumentsResponseSchema = z.object({
                         z.uuid(),
                         z.array(z.enum(ActionLogTypes))
                     ),
-                    unreadMessagesCount: z.number().int().nonnegative(),
+                    chat: documentChatSchema.nullable(),
                 })
         ),
         pagination: paginationResponseSchema,
@@ -179,6 +189,7 @@ export {
     createDocumentResponseSchema,
     updateDocumentResponseSchema,
     defaultDocumentSchema,
+    documentChatSchema,
     fetchDocumentsQuerySchema,
 };
 

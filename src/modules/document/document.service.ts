@@ -93,6 +93,10 @@ export const createDocumentService = (
                         },
                         chat: {
                             select: {
+                                id: true,
+                                createdAt: true,
+                                updatedAt: true,
+                                name: true,
                                 _count: {
                                     select: {
                                         messages: {
@@ -108,6 +112,27 @@ export const createDocumentService = (
                                                 },
                                             },
                                         },
+                                        members: {
+                                            where: {
+                                                status: ChatMemberStatus.ACTIVE,
+                                            },
+                                        },
+                                    },
+                                },
+                                messages: {
+                                    orderBy: { createdAt: "desc" as const },
+                                    take: 1,
+                                    select: {
+                                        id: true,
+                                        message: true,
+                                        createdAt: true,
+                                        author: {
+                                            select: {
+                                                id: true,
+                                                userFullName: true,
+                                                userAvatarUrl: true,
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -117,7 +142,18 @@ export const createDocumentService = (
         );
 
         const tags = doc.documentTags.flatMap(({ tag }) => tag.tag);
-        const unreadMessagesCount = doc.chat?._count.messages ?? 0;
+
+        const chat = doc.chat
+            ? {
+                id: doc.chat.id,
+                createdAt: doc.chat.createdAt,
+                updatedAt: doc.chat.updatedAt,
+                name: doc.chat.name,
+                lastMessage: doc.chat.messages[0] || null,
+                unreadCount: doc.chat._count.messages,
+                activeMemberCount: doc.chat._count.members,
+            }
+            : null;
 
         return {
             message: "Document fetched successfully.",
@@ -133,7 +169,7 @@ export const createDocumentService = (
                     documentExtractedFields: doc.documentExtractedFields,
                     files: doc.files,
                     tags,
-                    unreadMessagesCount,
+                    chat,
                 },
             },
         } satisfies FetchDocumentResponse;
@@ -190,6 +226,52 @@ export const createDocumentService = (
                                 tag: true,
                             },
                         },
+                        chat: {
+                            select: {
+                                id: true,
+                                createdAt: true,
+                                updatedAt: true,
+                                name: true,
+                                _count: {
+                                    select: {
+                                        messages: {
+                                            where: {
+                                                NOT: {
+                                                    chatMessageReadStatuses: {
+                                                        some: {
+                                                            readBy: {
+                                                                userId: initiator.id,
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        members: {
+                                            where: {
+                                                status: ChatMemberStatus.ACTIVE,
+                                            },
+                                        },
+                                    },
+                                },
+                                messages: {
+                                    orderBy: { createdAt: "desc" as const },
+                                    take: 1,
+                                    select: {
+                                        id: true,
+                                        message: true,
+                                        createdAt: true,
+                                        author: {
+                                            select: {
+                                                id: true,
+                                                userFullName: true,
+                                                userAvatarUrl: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                 });
 
@@ -238,7 +320,18 @@ export const createDocumentService = (
         }
 
         const tags = document.documentTags.flatMap(({ tag }) => tag.tag);
-        const unreadMessagesCount = 0;
+
+        const chat = document.chat
+            ? {
+                id: document.chat.id,
+                createdAt: document.chat.createdAt,
+                updatedAt: document.chat.updatedAt,
+                name: document.chat.name,
+                lastMessage: document.chat.messages[0] || null,
+                unreadCount: document.chat._count.messages,
+                activeMemberCount: document.chat._count.members,
+            }
+            : null;
 
         return {
             message: "Document deleted successfully.",
@@ -254,7 +347,7 @@ export const createDocumentService = (
                     documentExtractedFields: document.documentExtractedFields,
                     files: document.files,
                     tags,
-                    unreadMessagesCount,
+                    chat,
                 },
             },
         } satisfies FetchDocumentResponse;
@@ -352,6 +445,10 @@ export const createDocumentService = (
                         },
                         chat: {
                             select: {
+                                id: true,
+                                createdAt: true,
+                                updatedAt: true,
+                                name: true,
                                 _count: {
                                     select: {
                                         messages: {
@@ -365,6 +462,27 @@ export const createDocumentService = (
                                                         },
                                                     },
                                                 },
+                                            },
+                                        },
+                                        members: {
+                                            where: {
+                                                status: ChatMemberStatus.ACTIVE,
+                                            },
+                                        },
+                                    },
+                                },
+                                messages: {
+                                    orderBy: { createdAt: "desc" as const },
+                                    take: 1,
+                                    select: {
+                                        id: true,
+                                        message: true,
+                                        createdAt: true,
+                                        author: {
+                                            select: {
+                                                id: true,
+                                                userFullName: true,
+                                                userAvatarUrl: true,
                                             },
                                         },
                                     },
@@ -392,6 +510,18 @@ export const createDocumentService = (
                         return acc;
                     }, {});
 
+                    const chat = doc.chat
+                        ? {
+                            id: doc.chat.id,
+                            createdAt: doc.chat.createdAt,
+                            updatedAt: doc.chat.updatedAt,
+                            name: doc.chat.name,
+                            lastMessage: doc.chat.messages[0] || null,
+                            unreadCount: doc.chat._count.messages,
+                            activeMemberCount: doc.chat._count.members,
+                        }
+                        : null;
+
                     return {
                         id: doc.id,
                         createdAt: doc.createdAt,
@@ -401,7 +531,7 @@ export const createDocumentService = (
                         expiresAt: doc.expiresAt,
                         riskLevel: doc.riskLevel,
                         actions,
-                        unreadMessagesCount: doc.chat?._count.messages ?? 0,
+                        chat,
                     } satisfies FetchDocumentsResponse["data"]["documents"][number];
                 }),
                 pagination: {
