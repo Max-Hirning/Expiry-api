@@ -71,11 +71,11 @@ export const createDocumentService = (
     teamMemberRepository: TeamMemberRepository,
     log: FastifyBaseLogger
 ): DocumentService => ({
-    getDocument: async ({ params }) => {
+    getDocument: async ({ params, initiator }) => {
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const document = await withRepositories(
+        const doc = await withRepositories(
             [documentRepository],
             (documentRepo) =>
                 documentRepo.findUniqueOrFail({
@@ -91,19 +91,52 @@ export const createDocumentService = (
                                 tag: true,
                             },
                         },
+                        chat: {
+                            select: {
+                                _count: {
+                                    select: {
+                                        messages: {
+                                            where: {
+                                                NOT: {
+                                                    chatMessageReadStatuses: {
+                                                        some: {
+                                                            readBy: {
+                                                                userId: initiator.id,
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                 })
         );
+
+        const tags = doc.documentTags.flatMap(({ tag }) => tag.tag);
+        const unreadMessagesCount = doc.chat?._count.messages ?? 0;
 
         return {
             message: "Document fetched successfully.",
             data: {
                 document: {
-                    ...document,
-                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                    id: doc.id,
+                    createdAt: doc.createdAt,
+                    updatedAt: doc.updatedAt,
+                    status: doc.status,
+                    name: doc.name,
+                    expiresAt: doc.expiresAt,
+                    riskLevel: doc.riskLevel,
+                    documentExtractedFields: doc.documentExtractedFields,
+                    files: doc.files,
+                    tags,
+                    unreadMessagesCount,
                 },
             },
-        };
+        } satisfies FetchDocumentResponse;
     },
 
     deleteDocument: async ({ params, initiator }) => {
@@ -204,18 +237,30 @@ export const createDocumentService = (
             log.error({ error }, "Failed to delete document");
         }
 
+        const tags = document.documentTags.flatMap(({ tag }) => tag.tag);
+        const unreadMessagesCount = 0;
+
         return {
             message: "Document deleted successfully.",
             data: {
                 document: {
-                    ...document,
-                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                    id: document.id,
+                    createdAt: document.createdAt,
+                    updatedAt: document.updatedAt,
+                    status: document.status,
+                    name: document.name,
+                    expiresAt: document.expiresAt,
+                    riskLevel: document.riskLevel,
+                    documentExtractedFields: document.documentExtractedFields,
+                    files: document.files,
+                    tags,
+                    unreadMessagesCount,
                 },
             },
-        };
+        } satisfies FetchDocumentResponse;
     },
 
-    getDocuments: async ({ query, params }) => {
+    getDocuments: async ({ query, params, initiator }) => {
         const where: PrismaTeam.DocumentWhereInput = {
             ...(query.search && {
                 name: {
@@ -305,6 +350,27 @@ export const createDocumentService = (
                                 }),
                             },
                         },
+                        chat: {
+                            select: {
+                                _count: {
+                                    select: {
+                                        messages: {
+                                            where: {
+                                                NOT: {
+                                                    chatMessageReadStatuses: {
+                                                        some: {
+                                                            readBy: {
+                                                                userId: initiator.id,
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                 })
         );
@@ -317,21 +383,32 @@ export const createDocumentService = (
         return {
             message: "Documents fetched successfully.",
             data: {
-                documents: documents.map((document) => ({
-                    ...document,
-                    actions: document.actionLogs.reduce<
+                documents: documents.map((doc) => {
+                    const actions = doc.actionLogs.reduce<
                         Record<string, ActionLogTypes[]>
                     >((acc, { actorId, type }) => {
                         (acc[actorId] ??= []).push(type);
 
                         return acc;
-                    }, {}),
-                })),
+                    }, {});
+
+                    return {
+                        id: doc.id,
+                        createdAt: doc.createdAt,
+                        updatedAt: doc.updatedAt,
+                        status: doc.status,
+                        name: doc.name,
+                        expiresAt: doc.expiresAt,
+                        riskLevel: doc.riskLevel,
+                        actions,
+                        unreadMessagesCount: doc.chat?._count.messages ?? 0,
+                    } satisfies FetchDocumentsResponse["data"]["documents"][number];
+                }),
                 pagination: {
                     nextCursor,
                 },
             },
-        };
+        } satisfies FetchDocumentsResponse;
     },
 
     createDocument: async ({ body, params, initiator }) => {

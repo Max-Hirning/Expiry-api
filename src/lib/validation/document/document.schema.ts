@@ -107,6 +107,7 @@ const fetchDocumentResponseSchema = z.object({
             ),
             files: z.array(defaultFileSchema),
             tags: z.array(z.string()),
+            unreadMessagesCount: z.number().int().nonnegative(),
         }),
     }),
 });
@@ -160,6 +161,7 @@ const fetchDocumentsResponseSchema = z.object({
                         z.uuid(),
                         z.array(z.enum(ActionLogTypes))
                     ),
+                    unreadMessagesCount: z.number().int().nonnegative(),
                 })
         ),
         pagination: paginationResponseSchema,
