@@ -251,9 +251,7 @@ export const createChatService = (
                             orderBy: { createdAt: "desc" },
                             take: 1,
                             select: {
-                                id: true,
-                                message: true,
-                                createdAt: true,
+                                ...defaultChatMessageSelector,
                                 author: {
                                     select: {
                                         id: true,
@@ -454,7 +452,7 @@ export const createChatService = (
 
                 const updated = await tx.chatMessage.update({
                     where: { id: params.messageId },
-                    data: { message: body.message },
+                    data: { message: body.message, lastEditedAt: new Date() },
                     select: defaultChatMessageSelector,
                 });
 

@@ -6,6 +6,7 @@ const defaultChatMessageSchema = z.object({
     id: z.uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    lastEditedAt: z.date().nullable(),
     message: z.string(),
     parentMessageId: z.uuid().nullable(),
     authorId: z.uuid(),

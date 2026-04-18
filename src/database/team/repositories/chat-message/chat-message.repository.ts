@@ -11,6 +11,7 @@ export const defaultChatMessageSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    lastEditedAt: true,
     message: true,
     parentMessageId: true,
     authorId: true,

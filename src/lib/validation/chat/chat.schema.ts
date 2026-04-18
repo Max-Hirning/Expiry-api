@@ -24,6 +24,7 @@ const lastChatMessageSchema = z.object({
     id: z.uuid(),
     message: z.string(),
     createdAt: z.date(),
+    lastEditedAt: z.date().nullable(),
     author: z.object({
         id: z.uuid(),
         userFullName: z.string(),

@@ -16,6 +16,7 @@ import {
 } from "@/database/master/generated/index.js";
 import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import { defaultChatMessageSelector } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
@@ -123,9 +124,7 @@ export const createDocumentService = (
                                     orderBy: { createdAt: "desc" as const },
                                     take: 1,
                                     select: {
-                                        id: true,
-                                        message: true,
-                                        createdAt: true,
+                                        ...defaultChatMessageSelector,
                                         author: {
                                             select: {
                                                 id: true,
@@ -258,9 +257,7 @@ export const createDocumentService = (
                                     orderBy: { createdAt: "desc" as const },
                                     take: 1,
                                     select: {
-                                        id: true,
-                                        message: true,
-                                        createdAt: true,
+                                        ...defaultChatMessageSelector,
                                         author: {
                                             select: {
                                                 id: true,
@@ -475,9 +472,7 @@ export const createDocumentService = (
                                     orderBy: { createdAt: "desc" as const },
                                     take: 1,
                                     select: {
-                                        id: true,
-                                        message: true,
-                                        createdAt: true,
+                                        ...defaultChatMessageSelector,
                                         author: {
                                             select: {
                                                 id: true,

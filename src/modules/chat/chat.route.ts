@@ -86,7 +86,7 @@ export const createChatRoutes = (
         chatHandler.sendMessage
     );
 
-    fastify.patch(
+    fastify.put(
         "/:chatId/messages/:messageId",
         {
             schema: {
