@@ -2,7 +2,10 @@ import fp from "fastify-plugin";
 import { asValue } from "awilix";
 import { FastifyInstance } from "fastify";
 import { Server as SocketIOServer } from "socket.io";
+import { UnauthorizedError } from "@/lib/errors/errors.js";
 import { FastifyPlugin } from "@/lib/fastify/fastify.constant.js";
+import { User, UserStatuses } from "@/database/master/generated/index.js";
+import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 
 const configureSocketIO = async (fastify: FastifyInstance) => {
     const io = new SocketIOServer(fastify.server, {
@@ -12,23 +15,62 @@ const configureSocketIO = async (fastify: FastifyInstance) => {
 
     io.use(async (socket, next) => {
         try {
-            const token =
-                socket.handshake.auth?.token ??
-                socket.handshake.headers?.authorization;
+            const cookieHeader = socket.handshake.headers?.cookie ?? "";
 
-            if (!token) {
-                return next(new Error("Unauthorized"));
+            const cookies = Object.fromEntries(
+                cookieHeader.split(";").map((c) => {
+                    const [key, ...rest] = c.trim().split("=");
+
+                    return [key, decodeURIComponent(rest.join("="))];
+                })
+            ) as {
+                access_token: string;
+                refresh_token: string;
+            };
+
+            const accessToken = cookies.access_token;
+
+            const refreshToken = cookies.refresh_token;
+
+            if (!accessToken || !refreshToken) {
+                throw new UnauthorizedError("Unauthorized");
             }
 
-            const payload = fastify.jwt.verify<{ id: string }>(token);
+            let tokenPayload: Pick<User, "id"> | null = null;
+
+            try {
+                tokenPayload =
+                    fastify.jwt.verify<Pick<User, "id">>(accessToken);
+            } catch {
+                try {
+                    tokenPayload =
+                        fastify.jwt.verify<Pick<User, "id">>(refreshToken);
+
+                    await fastify.prisma.master.refreshToken.findUniqueOrThrow({
+                        where: {
+                            userId: tokenPayload.id,
+                            token: refreshToken,
+                        },
+                    });
+                } catch {
+                    throw new UnauthorizedError("Unauthorized");
+                }
+            }
 
             const user = await fastify.prisma.master.user.findUnique({
-                where: { id: payload.id },
-                select: { id: true, fullName: true, role: true },
+                where: {
+                    id: tokenPayload.id,
+                    status: UserStatuses.ACTIVE,
+                    refreshToken: { token: refreshToken },
+                },
+                select: {
+                    ...defaultUserSelector,
+                    avatar: true,
+                },
             });
 
             if (!user) {
-                return next(new Error("Unauthorized"));
+                throw new UnauthorizedError("Unauthorized");
             }
 
             socket.data.user = user;

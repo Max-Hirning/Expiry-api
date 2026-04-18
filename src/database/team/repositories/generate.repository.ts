@@ -41,8 +41,6 @@ export const generateRepository = <T extends Model>(
 
     const delegate = prisma[modelInstanceName];
 
-    console.log(modelInstanceName, delegate);
-
     const count = delegate["count"] as (typeof delegate)["count"];
 
     const findUnique = delegate[
