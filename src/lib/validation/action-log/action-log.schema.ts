@@ -33,8 +33,7 @@ const fetchActionLogsQuerySchema = paginationQuerySchema
     })
     .partial()
     .required({
-        page: true,
-        perPage: true,
+        limit: true,
     });
 
 type FetchActionLogsQueryInput = z.infer<typeof fetchActionLogsQuerySchema>;

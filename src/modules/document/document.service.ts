@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { ChatService } from "../chat/chat.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
@@ -13,11 +14,11 @@ import {
     NotificationTypes,
     TeamMemberRoles,
 } from "@/database/master/generated/index.js";
-import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
+    ChatMemberStatus,
     Prisma as PrismaTeam,
 } from "@/database/team/generated/index.js";
 import {
@@ -25,12 +26,19 @@ import {
     TeamMemberRepository,
 } from "@/database/master/repositories/team-member/team-member.repository.js";
 import {
+    buildDocumentChatSelect,
+    defaultDocumentSelector,
+    defaultDocumentSelectorWithDetails,
+} from "@/database/team/repositories/document/docuement.repository.js";
+import {
     DocumentParamsInput,
     FetchDocumentResponse,
     FetchDocumentsQueryInput,
     FetchDocumentsResponse,
     CreateDocumentBodyInput,
     UpdateDocumentBodyInput,
+    UpdateDocumentResponse,
+    CreateDocumentResponse,
 } from "@/lib/validation/document/document.schema.js";
 
 export type DocumentService = {
@@ -51,26 +59,27 @@ export type DocumentService = {
         body: CreateDocumentBodyInput;
         params: TeamParamsInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<FetchDocumentResponse>;
+    }) => Promise<CreateDocumentResponse>;
     updateDocument: (p: {
         params: DocumentParamsInput;
         body: UpdateDocumentBodyInput;
         initiator: FastifyRequest["user"];
-    }) => Promise<FetchDocumentResponse>;
+    }) => Promise<UpdateDocumentResponse>;
 };
 
 export const createDocumentService = (
     applicationService: ApplicationService,
+    chatService: ChatService,
     gcpService: GcpService,
     notificationRepository: NotificationRepository,
     teamMemberRepository: TeamMemberRepository,
     log: FastifyBaseLogger
 ): DocumentService => ({
-    getDocument: async ({ params }) => {
+    getDocument: async ({ params, initiator }) => {
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const document = await withRepositories(
+        const doc = await withRepositories(
             [documentRepository],
             (documentRepo) =>
                 documentRepo.findUniqueOrFail({
@@ -78,27 +87,44 @@ export const createDocumentService = (
                         id: params.documentId,
                     },
                     select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
-                            select: {
-                                tag: true,
-                            },
-                        },
+                        ...defaultDocumentSelectorWithDetails,
+                        chat: buildDocumentChatSelect(initiator.id),
                     },
                 })
         );
+
+        const tags = doc.documentTags.flatMap(({ tag }) => tag.tag);
+
+        const chat = doc.chat
+            ? {
+                id: doc.chat.id,
+                createdAt: doc.chat.createdAt,
+                updatedAt: doc.chat.updatedAt,
+                name: doc.chat.name,
+                lastMessage: doc.chat.messages[0] || null,
+                unreadCount: doc.chat._count.messages,
+                activeMemberCount: doc.chat._count.members,
+            }
+            : null;
 
         return {
             message: "Document fetched successfully.",
             data: {
                 document: {
-                    ...document,
-                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                    id: doc.id,
+                    createdAt: doc.createdAt,
+                    updatedAt: doc.updatedAt,
+                    status: doc.status,
+                    name: doc.name,
+                    expiresAt: doc.expiresAt,
+                    riskLevel: doc.riskLevel,
+                    documentExtractedFields: doc.documentExtractedFields,
+                    files: doc.files,
+                    tags,
+                    chat,
                 },
             },
-        };
+        } satisfies FetchDocumentResponse;
     },
 
     deleteDocument: async ({ params, initiator }) => {
@@ -144,14 +170,8 @@ export const createDocumentService = (
                         id: params.documentId,
                     },
                     select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
-                            select: {
-                                tag: true,
-                            },
-                        },
+                        ...defaultDocumentSelectorWithDetails,
+                        chat: buildDocumentChatSelect(initiator.id),
                     },
                 });
 
@@ -199,20 +219,41 @@ export const createDocumentService = (
             log.error({ error }, "Failed to delete document");
         }
 
+        const tags = document.documentTags.flatMap(({ tag }) => tag.tag);
+
+        const chat = document.chat
+            ? {
+                id: document.chat.id,
+                createdAt: document.chat.createdAt,
+                updatedAt: document.chat.updatedAt,
+                name: document.chat.name,
+                lastMessage: document.chat.messages[0] || null,
+                unreadCount: document.chat._count.messages,
+                activeMemberCount: document.chat._count.members,
+            }
+            : null;
+
         return {
             message: "Document deleted successfully.",
             data: {
                 document: {
-                    ...document,
-                    tags: document.documentTags.flatMap(({ tag }) => tag.tag),
+                    id: document.id,
+                    createdAt: document.createdAt,
+                    updatedAt: document.updatedAt,
+                    status: document.status,
+                    name: document.name,
+                    expiresAt: document.expiresAt,
+                    riskLevel: document.riskLevel,
+                    documentExtractedFields: document.documentExtractedFields,
+                    files: document.files,
+                    tags,
+                    chat,
                 },
             },
-        };
+        } satisfies FetchDocumentResponse;
     },
 
-    getDocuments: async ({ query, params }) => {
-        const skip = (query.page - 1) * query.perPage;
-
+    getDocuments: async ({ query, params, initiator }) => {
         const where: PrismaTeam.DocumentWhereInput = {
             ...(query.search && {
                 name: {
@@ -266,75 +307,93 @@ export const createDocumentService = (
         const documentRepository =
             await applicationService.initDocumentRepository(params.teamId);
 
-        const [documents, total] = await withRepositories(
+        const documents = await withRepositories(
             [documentRepository],
             (documentRepo) =>
-                Promise.all([
-                    documentRepo.findMany({
-                        skip,
-                        where,
-                        take: query.perPage,
-                        orderBy: {
-                            ...(query.sortField && query.sortOrder
-                                ? {
-                                    [query.sortField]: query.sortOrder,
-                                }
-                                : {
-                                    createdAt: PrismaTeam.SortOrder.desc,
-                                }),
-                        },
-                        select: {
-                            ...defaultDocumentSelector,
-                            actionLogs: {
-                                where: {
-                                    type: {
-                                        in: [
-                                            ActionLogTypes.CREATE_DOCUMENT,
-                                            ActionLogTypes.UPDATE_DOCUMENT,
-                                        ],
-                                    },
-                                    ...(query.authorsIds && {
-                                        actorId: {
-                                            in: query.authorsIds,
-                                        },
-                                    }),
+                documentRepo.findMany({
+                    where,
+                    orderBy: {
+                        ...(query.sortField && query.sortOrder
+                            ? {
+                                [query.sortField]: query.sortOrder,
+                            }
+                            : {
+                                createdAt: PrismaTeam.SortOrder.desc,
+                            }),
+                    },
+                    ...(query.cursor && {
+                        cursor: { id: query.cursor },
+                        skip: 1,
+                    }),
+                    take: query.limit,
+                    select: {
+                        ...defaultDocumentSelector,
+                        actionLogs: {
+                            where: {
+                                type: {
+                                    in: [
+                                        ActionLogTypes.CREATE_DOCUMENT,
+                                        ActionLogTypes.UPDATE_DOCUMENT,
+                                    ],
                                 },
+                                ...(query.authorsIds && {
+                                    actorId: {
+                                        in: query.authorsIds,
+                                    },
+                                }),
                             },
                         },
-                    }),
-                    documentRepo.count({
-                        where,
-                    }),
-                ])
+                        chat: buildDocumentChatSelect(initiator.id),
+                    },
+                })
         );
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+        const nextCursor =
+            documents.length === query.limit
+                ? documents[documents.length - 1].id
+                : null;
 
         return {
             message: "Documents fetched successfully.",
             data: {
-                documents: documents.map((document) => ({
-                    ...document,
-                    actions: document.actionLogs.reduce<
+                documents: documents.map((doc) => {
+                    const actions = doc.actionLogs.reduce<
                         Record<string, ActionLogTypes[]>
                     >((acc, { actorId, type }) => {
                         (acc[actorId] ??= []).push(type);
 
                         return acc;
-                    }, {}),
-                })),
+                    }, {});
+
+                    const chat = doc.chat
+                        ? {
+                            id: doc.chat.id,
+                            createdAt: doc.chat.createdAt,
+                            updatedAt: doc.chat.updatedAt,
+                            name: doc.chat.name,
+                            lastMessage: doc.chat.messages[0] || null,
+                            unreadCount: doc.chat._count.messages,
+                            activeMemberCount: doc.chat._count.members,
+                        }
+                        : null;
+
+                    return {
+                        id: doc.id,
+                        createdAt: doc.createdAt,
+                        updatedAt: doc.updatedAt,
+                        status: doc.status,
+                        name: doc.name,
+                        expiresAt: doc.expiresAt,
+                        riskLevel: doc.riskLevel,
+                        actions,
+                        chat,
+                    } satisfies FetchDocumentsResponse["data"]["documents"][number];
+                }),
                 pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
+                    nextCursor,
                 },
             },
-        };
+        } satisfies FetchDocumentsResponse;
     },
 
     createDocument: async ({ body, params, initiator }) => {
@@ -411,77 +470,137 @@ export const createDocumentService = (
             })
         );
 
-        const document = await withRepositories([client], async (client) =>
-            client.$transaction(async (tx) => {
-                const document = await tx.document.create({
-                    data: {
-                        id: documentId,
-                        status: DocumentStatuses.PROCESSING,
-                        name: body.name,
-                    },
+        const teamMembers = await teamMemberRepository.findMany({
+            where: {
+                teamId: params.teamId,
+            },
+            select: {
+                user: {
                     select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
+                        id: true,
+                        fullName: true,
+                        avatar: {
                             select: {
-                                tag: true,
+                                url: true,
                             },
                         },
                     },
-                });
+                },
+            },
+        });
 
-                let tagsIds = [...existedTagsIds];
-
-                if (newTags.length > 0) {
-                    const newCreatedTags = await tx.tag.createManyAndReturn({
-                        data: newTags.map((tag) => ({
-                            tag,
-                        })),
-                        skipDuplicates: true,
+        const { document, createdFilesIds } = await withRepositories(
+            [client],
+            async (client) =>
+                client.$transaction(async (tx) => {
+                    const document = await tx.document.create({
+                        data: {
+                            id: documentId,
+                            status: DocumentStatuses.PROCESSING,
+                            name: body.name,
+                        },
+                        select: defaultDocumentSelectorWithDetails,
                     });
 
-                    tagsIds = tagsIds.concat(
-                        newCreatedTags.map(({ id }) => id)
-                    );
-                }
+                    let tagsIds = [...existedTagsIds];
 
-                if (tagsIds.length > 0) {
-                    await tx.documentTag.createMany({
-                        data: tagsIds.map((id) => ({
-                            tagId: id,
+                    if (newTags.length > 0) {
+                        const newCreatedTags = await tx.tag.createManyAndReturn(
+                            {
+                                data: newTags.map((tag) => ({
+                                    tag,
+                                })),
+                                skipDuplicates: true,
+                            }
+                        );
+
+                        tagsIds = tagsIds.concat(
+                            newCreatedTags.map(({ id }) => id)
+                        );
+                    }
+
+                    if (tagsIds.length > 0) {
+                        await tx.documentTag.createMany({
+                            data: tagsIds.map((id) => ({
+                                tagId: id,
+                                documentId,
+                            })),
+                            skipDuplicates: true,
+                        });
+                    }
+
+                    const files = await tx.file.createManyAndReturn({
+                        data: documentsUploadPayload.map((file) => ({
+                            id: file.id,
+                            key: file.key,
+                            fileSize: file.fileSize,
+                            mimeType: file.mimeType,
+                            url: file.url,
+                            urlExpiresAt: file.expiredAt,
+                            width: file.width,
+                            height: file.height,
                             documentId,
                         })),
-                        skipDuplicates: true,
                     });
-                }
 
-                await tx.file.createMany({
-                    data: documentsUploadPayload.map((file) => ({
-                        key: file.key,
-                        fileSize: file.fileSize,
-                        mimeType: file.mimeType,
-                        url: file.url,
-                        urlExpiresAt: file.expiredAt,
-                        width: file.width,
-                        height: file.height,
-                        documentId,
-                    })),
-                });
+                    const createdFilesIds = files.map(({ id }) => id);
 
-                await tx.actionLog.create({
-                    data: {
-                        type: ActionLogTypes.CREATE_DOCUMENT,
-                        actorId: initiator.id,
-                        actorAvatarUrl: initiator.avatar?.url || null,
-                        actorFullName: initiator.fullName,
-                        documentName: document.name,
+                    await tx.actionLog.create({
+                        data: {
+                            type: ActionLogTypes.CREATE_DOCUMENT,
+                            actorId: initiator.id,
+                            actorAvatarUrl: initiator.avatar?.url || null,
+                            actorFullName: initiator.fullName,
+                            documentName: document.name,
+                            documentId: document.id,
+                        },
+                    });
+
+                    const chat = await chatService.createChat({
+                        chatName: document.name,
                         documentId: document.id,
-                    },
-                });
+                        members: [
+                            {
+                                userId: initiator.id,
+                                userFullName: initiator.fullName,
+                                userAvatarUrl: initiator.avatar?.url,
+                            },
+                        ],
+                        tx,
+                    });
 
-                return document;
-            })
+                    await chatService.upsertChatMember({
+                        teamId: params.teamId,
+                        chatId: chat.id,
+                        tx,
+                        members: teamMembers.map((teamMember) => ({
+                            userId: teamMember.user.id,
+                            userFullName: teamMember.user.fullName,
+                            userAvatarUrl: teamMember.user.avatar?.url,
+                            status: ChatMemberStatus.ACTIVE,
+                        })),
+                    });
+
+                    const chatMember = await tx.chatMember.findFirst({
+                        where: {
+                            chatId: chat.id,
+                            userId: initiator.id,
+                        },
+                    });
+
+                    if (chatMember) {
+                        await tx.chatMessage.create({
+                            data: {
+                                message: `${initiator.fullName} uploaded a new ${files.length >= 2 ? "files" : "file"} for this document`,
+                                autoGenerated: true,
+                                authorId: chatMember.id,
+                                chatId: chat.id,
+                            },
+                        });
+                    }
+
+                    return { document, createdFilesIds };
+                })
         );
 
         return {
@@ -491,6 +610,10 @@ export const createDocumentService = (
                     ...document,
                     tags: document.documentTags.flatMap(({ tag }) => tag.tag),
                 },
+                filesToUpload: documentsUploadPayload.filter(
+                    (documentUploadPayload) =>
+                        createdFilesIds.includes(documentUploadPayload.id)
+                ),
             },
         };
     },
@@ -535,88 +658,171 @@ export const createDocumentService = (
             }
         );
 
-        const document = await withRepositories([client], async (client) =>
-            client.$transaction(async (tx) => {
-                let tagsIds = [...existedTagsIds];
+        const documentsUploadPayload =
+            body.files && body.files.length > 0
+                ? await Promise.all(
+                    body.files.map(async (file) => {
+                        const documentUploadPayload =
+                              await gcpService.uploadFile({
+                                  keyPayload: {
+                                      type: FileTypes.DOCUMENT,
+                                      documentId: params.documentId,
+                                      teamId: params.teamId,
+                                      fileName: file.id,
+                                  },
+                                  mimeType: file.mimeType,
+                              });
 
-                if (newTags.length > 0) {
-                    const newCreatedTags = await tx.tag.createManyAndReturn({
-                        data: newTags.map((tag) => ({
-                            tag,
-                        })),
-                        skipDuplicates: true,
-                    });
+                        const documentReadPayload =
+                              await gcpService.getFileUrl({
+                                  key: documentUploadPayload.key,
+                                  type: FileTypes.DOCUMENT,
+                              });
 
-                    tagsIds = tagsIds.concat(
-                        newCreatedTags.map(({ id }) => id)
-                    );
-                }
+                        return {
+                            ...file,
+                            ...documentReadPayload,
+                            key: documentUploadPayload.key,
+                            uploadUrl: documentUploadPayload.url,
+                        };
+                    })
+                )
+                : [];
 
-                if (tagsIds.length > 0) {
-                    await tx.documentTag.createMany({
-                        data: tagsIds.map((id) => ({
-                            tagId: id,
-                            documentId: document.id,
-                        })),
-                        skipDuplicates: true,
-                    });
-                }
+        const { document, createdFilesIds } = await withRepositories(
+            [client],
+            async (client) =>
+                client.$transaction(async (tx) => {
+                    let tagsIds = [...existedTagsIds];
 
-                if (body.tagsToDelete && body.tagsToDelete.length > 0) {
-                    await tx.documentTag.deleteMany({
-                        where: {
-                            tag: {
+                    if (newTags.length > 0) {
+                        const newCreatedTags = await tx.tag.createManyAndReturn(
+                            {
+                                data: newTags.map((tag) => ({
+                                    tag,
+                                })),
+                                skipDuplicates: true,
+                            }
+                        );
+
+                        tagsIds = tagsIds.concat(
+                            newCreatedTags.map(({ id }) => id)
+                        );
+                    }
+
+                    if (tagsIds.length > 0) {
+                        await tx.documentTag.createMany({
+                            data: tagsIds.map((id) => ({
+                                tagId: id,
+                                documentId: params.documentId,
+                            })),
+                            skipDuplicates: true,
+                        });
+                    }
+
+                    if (body.tagsToDelete && body.tagsToDelete.length > 0) {
+                        await tx.documentTag.deleteMany({
+                            where: {
                                 tag: {
-                                    in: body.tagsToDelete,
+                                    tag: {
+                                        in: body.tagsToDelete,
+                                    },
                                 },
                             },
+                        });
+                    }
+
+                    const updatedObjects: string[] = [];
+
+                    if (body.name) {
+                        updatedObjects.push("name");
+                    }
+
+                    if (body.tags) {
+                        updatedObjects.push("tags");
+                    }
+
+                    const document = await tx.document.update({
+                        where: {
+                            id: params.documentId,
                         },
-                    });
-                }
-
-                const updatedObjects: string[] = [];
-
-                if (body.name) {
-                    updatedObjects.push("name");
-                }
-
-                if (body.tags) {
-                    updatedObjects.push("tags");
-                }
-
-                const document = await tx.document.update({
-                    where: {
-                        id: params.documentId,
-                    },
-                    data: {
-                        name: body.name,
-                    },
-                    select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
-                            select: {
-                                tag: true,
-                            },
-                        },
-                    },
-                });
-
-                if (updatedObjects.length > 0) {
-                    await tx.actionLog.create({
                         data: {
-                            type: ActionLogTypes.UPDATE_DOCUMENT,
-                            actorId: initiator.id,
-                            actorAvatarUrl: initiator.avatar?.url || null,
-                            actorFullName: initiator.fullName,
-                            documentName: document.name,
+                            name: body.name,
                         },
+                        select: defaultDocumentSelectorWithDetails,
                     });
-                }
 
-                return document;
-            })
+                    if (updatedObjects.length > 0) {
+                        await tx.actionLog.create({
+                            data: {
+                                type: ActionLogTypes.UPDATE_DOCUMENT,
+                                actorId: initiator.id,
+                                actorAvatarUrl: initiator.avatar?.url || null,
+                                actorFullName: initiator.fullName,
+                                documentName: document.name,
+                            },
+                        });
+                    }
+
+                    let createdFilesIds: string[] = [];
+
+                    if (documentsUploadPayload.length > 0) {
+                        const files = await tx.file.createManyAndReturn({
+                            data: documentsUploadPayload.map((file) => ({
+                                key: file.key,
+                                fileSize: file.fileSize,
+                                mimeType: file.mimeType,
+                                url: file.url,
+                                urlExpiresAt: file.expiredAt,
+                                width: file.width,
+                                height: file.height,
+                                documentId: params.documentId,
+                            })),
+                        });
+
+                        createdFilesIds = files.map(({ id }) => id);
+
+                        const chat = await tx.chat.findUnique({
+                            where: { documentId: params.documentId },
+                        });
+
+                        if (chat) {
+                            await chatService.upsertChatMember({
+                                teamId: params.teamId,
+                                chatId: chat.id,
+                                members: [
+                                    {
+                                        userId: initiator.id,
+                                        userFullName: initiator.fullName,
+                                        userAvatarUrl: initiator.avatar?.url,
+                                        status: ChatMemberStatus.ACTIVE,
+                                    },
+                                ],
+                                tx,
+                            });
+
+                            const chatMember = await tx.chatMember.findFirst({
+                                where: {
+                                    chatId: chat.id,
+                                    userId: initiator.id,
+                                },
+                            });
+
+                            if (chatMember) {
+                                await tx.chatMessage.createMany({
+                                    data: {
+                                        message: `${initiator.fullName} uploaded a new ${files.length >= 2 ? "files" : "file"} for this document`,
+                                        autoGenerated: true,
+                                        authorId: chatMember.id,
+                                        chatId: chat.id,
+                                    },
+                                });
+                            }
+                        }
+                    }
+
+                    return { document, createdFilesIds };
+                })
         );
 
         return {
@@ -626,6 +832,10 @@ export const createDocumentService = (
                     ...document,
                     tags: document.documentTags.flatMap(({ tag }) => tag.tag),
                 },
+                filesToUpload: documentsUploadPayload.filter(
+                    (documentUploadPayload) =>
+                        createdFilesIds.includes(documentUploadPayload.id)
+                ),
             },
         };
     },

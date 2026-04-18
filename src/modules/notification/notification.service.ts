@@ -33,42 +33,39 @@ export const createNotificationService = (
     notificationRepository: NotificationRepository
 ): NotificationService => ({
     getNotifications: async ({ query, initiator }) => {
-        const skip = (query.page - 1) * query.perPage;
-
         const where: Prisma.NotificationWhereInput = {
             userId: initiator.id,
         };
 
-        const [notifications, total] = await Promise.all([
-            notificationRepository.findMany({
-                skip,
-                where,
-                take: query.perPage,
-                orderBy: {
+        const notifications = await notificationRepository.findMany({
+            where,
+            orderBy: [
+                {
                     createdAt: Prisma.SortOrder.desc,
                 },
-                select: defaultNotificationSelector,
+                {
+                    id: Prisma.SortOrder.desc,
+                },
+            ],
+            ...(query.cursor && {
+                cursor: { id: query.cursor },
+                skip: 1,
             }),
-            notificationRepository.count({
-                where,
-            }),
-        ]);
+            take: query.limit,
+            select: defaultNotificationSelector,
+        });
 
-        const totalPages = Math.ceil(total / query.perPage);
-        const prevPage = query.page > 1 ? query.page - 1 : null;
-        const nextPage = query.page < totalPages ? query.page + 1 : null;
+        const nextCursor =
+            notifications.length === query.limit
+                ? notifications[notifications.length - 1].id
+                : null;
 
         return {
             message: "Notifications fetched successfully.",
             data: {
                 notifications,
                 pagination: {
-                    page: query.page,
-                    perPage: query.perPage,
-                    prevPage,
-                    nextPage,
-                    totalPages,
-                    total,
+                    nextCursor,
                 },
             },
         };

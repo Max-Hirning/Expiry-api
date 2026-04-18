@@ -3,7 +3,9 @@ import fastifyJWT from "@fastify/jwt";
 import { addMinutes, isPast } from "date-fns";
 import { Actions } from "@/modules/auth/auth.types.js";
 import { FastifyPlugin } from "@/lib/fastify/fastify.constant.js";
+import { ChatMemberStatus } from "@/database/team/generated/index.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
+import { ChatParamsInput } from "@/lib/validation/chat/chat.schema.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { ForbiddenError, UnauthorizedError } from "@/lib/errors/errors.js";
 import { LAST_SEEN_DEBOUNCE_MINUTES } from "@/modules/user/user.constants.js";
@@ -381,6 +383,70 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     }
 
                     throw new ForbiddenError("Forbidden");
+                }
+
+                if (action === Actions.GET_CHATS) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: TeamParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: { some: { userId: id } },
+                        },
+                    });
+
+                    if (team) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
+                if (
+                    [
+                        Actions.GET_CHAT,
+                        Actions.GET_MESSAGES,
+                        Actions.SEND_MESSAGE,
+                        Actions.EDIT_MESSAGE,
+                        Actions.DELETE_MESSAGE,
+                        Actions.MARK_MESSAGES_READ,
+                    ].includes(action)
+                ) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: ChatParamsInput;
+                    }>;
+
+                    const teamUrl =
+                        fastify.config.MASTER_DATABASE_URL.replaceAll(
+                            "5432/expiry",
+                            `5432/${params.teamId}`
+                        );
+
+                    const teamClient = fastify.prisma.team(teamUrl);
+
+                    try {
+                        const member = await teamClient.chatMember.findFirst({
+                            where: {
+                                chatId: params.chatId,
+                                userId: id,
+                                status: ChatMemberStatus.ACTIVE,
+                            },
+                        });
+
+                        if (member) {
+                            return;
+                        }
+
+                        throw new ForbiddenError("Forbidden");
+                    } finally {
+                        await teamClient.$disconnect();
+                    }
                 }
             };
         }

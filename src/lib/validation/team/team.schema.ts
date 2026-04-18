@@ -107,8 +107,7 @@ const fetchTeamsQuerySchema = paginationQuerySchema
     })
     .partial()
     .required({
-        page: true,
-        perPage: true,
+        limit: true,
     });
 
 type FetchTeamsQueryInput = z.infer<typeof fetchTeamsQuerySchema>;

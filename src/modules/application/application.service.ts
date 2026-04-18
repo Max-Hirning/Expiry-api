@@ -28,6 +28,10 @@ import {
     TagRepository,
 } from "@/database/team/repositories/tag/tag.repository.js";
 import {
+    createChatRepository,
+    ChatRepository,
+} from "@/database/team/repositories/chat/chat.repository.js";
+import {
     createDocumentRepository,
     DocumentRepository,
 } from "@/database/team/repositories/document/docuement.repository.js";
@@ -41,9 +45,21 @@ import {
     createActionLogRepository,
 } from "@/database/team/repositories/action-log/action-log.repository.js";
 import {
+    createChatMemberRepository,
+    ChatMemberRepository,
+} from "@/database/team/repositories/chat-member/chat-member.repository.js";
+import {
     createDocumentTagRepository,
     DocumentTagRepository,
 } from "@/database/team/repositories/document-tag/document-tag.repository.js";
+import {
+    createChatMessageRepository,
+    ChatMessageRepository,
+} from "@/database/team/repositories/chat-message/chat-message.repository.js";
+import {
+    createChatMessageReadStatusRepository,
+    ChatMessageReadStatusRepository,
+} from "@/database/team/repositories/chat-message-read-status/chat-message-read-status.repository.js";
 
 export type ApplicationService = {
     healthChecker: () => Promise<string>;
@@ -53,6 +69,14 @@ export type ApplicationService = {
         teamId: string
     ) => Promise<DocumentTagRepository>;
     initActionLogRepository: (teamId: string) => Promise<ActionLogRepository>;
+    initChatRepository: (teamId: string) => Promise<ChatRepository>;
+    initChatMemberRepository: (teamId: string) => Promise<ChatMemberRepository>;
+    initChatMessageRepository: (
+        teamId: string
+    ) => Promise<ChatMessageRepository>;
+    initChatMessageReadStatusRepository: (
+        teamId: string
+    ) => Promise<ChatMessageReadStatusRepository>;
     initTeamTenantClient: (teamId: string) => Promise<TeamPrismaClient>;
     setTestData: () => Promise<string>;
 };
@@ -198,6 +222,78 @@ export const createApplicationService = (
         });
 
         const repository = createDocumentTagRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMemberRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMemberRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMessageRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMessageRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initChatMessageReadStatusRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createChatMessageReadStatusRepository(
             prisma,
             config.MASTER_DATABASE_URL.replaceAll(
                 "5432/expiry",
@@ -405,6 +501,104 @@ export const createApplicationService = (
                                 }
                             }
 
+                            // Create chats for each document with all team members
+                            for (const createdDocument of createdDocuments) {
+                                const chat = await tx.chat.create({
+                                    data: {
+                                        name: createdDocument.name,
+                                        documentId: createdDocument.id,
+                                    },
+                                });
+
+                                // Add all team members to the chat
+                                await tx.chatMember.createMany({
+                                    data: users.map(({ user }) => ({
+                                        chatId: chat.id,
+                                        userId: user.id,
+                                        userFullName: user.fullName,
+                                        userAvatarUrl: user.avatar?.url || null,
+                                        status: "ACTIVE",
+                                    })),
+                                });
+
+                                // Create default messages in the chat
+                                const defaultMessages = [
+                                    `Welcome to the ${createdDocument.name} chat! This is where team members can collaborate and discuss this document.`,
+                                    "Feel free to share updates, ask questions, and coordinate your work here.",
+                                    `Document created: ${new Date().toLocaleDateString()}`,
+                                ];
+
+                                const randomUser =
+                                    users[getRandomInt(0, users.length - 1)];
+
+                                const chatMember =
+                                    await tx.chatMember.findFirst({
+                                        where: {
+                                            chatId: chat.id,
+                                            userId: randomUser.user.id,
+                                        },
+                                    });
+
+                                if (chatMember) {
+                                    for (const messageText of defaultMessages) {
+                                        await tx.chatMessage.create({
+                                            data: {
+                                                message: messageText,
+                                                chatId: chat.id,
+                                                authorId: chatMember.id,
+                                                autoGenerated: true,
+                                            },
+                                        });
+                                    }
+                                }
+                            }
+
+                            // Create a general team chat that all members have access to
+                            const teamChat = await tx.chat.create({
+                                data: {
+                                    name: `${createdTeam.name} General`,
+                                },
+                            });
+
+                            await tx.chatMember.createMany({
+                                data: users.map(({ user }) => ({
+                                    chatId: teamChat.id,
+                                    userId: user.id,
+                                    userFullName: user.fullName,
+                                    userAvatarUrl: user.avatar?.url || null,
+                                    status: "ACTIVE",
+                                })),
+                            });
+
+                            const teamChatOwner =
+                                users.find(
+                                    ({ role }) => role === TeamMemberRoles.OWNER
+                                ) ||
+                                users.find(
+                                    ({ role }) => role === TeamMemberRoles.ADMIN
+                                );
+
+                            if (teamChatOwner) {
+                                const teamChatOwnerMember =
+                                    await tx.chatMember.findFirst({
+                                        where: {
+                                            chatId: teamChat.id,
+                                            userId: teamChatOwner.user.id,
+                                        },
+                                    });
+
+                                if (teamChatOwnerMember) {
+                                    await tx.chatMessage.create({
+                                        data: {
+                                            message: `Welcome to ${createdTeam.name}! This is our team chat. Let's collaborate and stay connected!`,
+                                            chatId: teamChat.id,
+                                            authorId: teamChatOwnerMember.id,
+                                            autoGenerated: true,
+                                        },
+                                    });
+                                }
+                            }
+
                             const invitedUsers = users.filter(
                                 ({ role }) => role === TeamMemberRoles.STAFF
                             );
@@ -523,6 +717,10 @@ export const createApplicationService = (
         initDocumentRepository,
         initTagRepository,
         initDocumentTagRepository,
+        initChatRepository,
+        initChatMemberRepository,
+        initChatMessageRepository,
+        initChatMessageReadStatusRepository,
     };
 };
 

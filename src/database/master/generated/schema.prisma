@@ -33,7 +33,7 @@ enum MfaTypes {
 }
 
 model User {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -58,21 +58,21 @@ model User {
 }
 
 model RefreshToken {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   token     String   @unique
   expiresAt DateTime
 
-  userId String @unique @map("user_id")
+  userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }
 
 model Avatar {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -84,14 +84,14 @@ model Avatar {
   width     Float
   height    Float
 
-  userId String @unique @map("user_id")
+  userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("avatars")
 }
 
 model NotificationPreference {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
@@ -100,14 +100,14 @@ model NotificationPreference {
   inAppNotifications Boolean @map("in_app_notifications")
   emailNotifications Boolean @map("email_notifications")
 
-  userId String @unique @map("user_id")
+  userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notification_preferences")
 }
 
 model Team {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -122,7 +122,7 @@ model Team {
 }
 
 model TeamStat {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -143,7 +143,7 @@ model TeamStat {
   /// Documents expiring soon (e.g. next 7 days)
   expiringSoonDocuments Int @map("expiring_soon_documents")
 
-  teamId String @unique @map("team_id")
+  teamId String @unique @map("team_id") @db.Uuid
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("team_stats")
@@ -156,16 +156,16 @@ enum TeamMemberRoles {
 }
 
 model TeamMember {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   role TeamMemberRoles
 
-  userId String @map("user_id")
+  userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  teamId String @map("team_id")
+  teamId String @map("team_id") @db.Uuid
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, teamId])
@@ -173,7 +173,7 @@ model TeamMember {
 }
 
 model Logo {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -185,7 +185,7 @@ model Logo {
   width     Float
   height    Float
 
-  teamId String @unique @map("team_id")
+  teamId String @unique @map("team_id") @db.Uuid
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("logos")
@@ -201,22 +201,22 @@ enum NotificationTypes {
 }
 
 model Notification {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   type   NotificationTypes
   readAt DateTime?         @map("read_at")
 
-  userId String @map("user_id")
+  userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   teamName String?
-  teamId   String? @map("team_id")
+  teamId   String? @map("team_id") @db.Uuid
   team     Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)
 
   documentName String?
-  documentId   String? @map("document_id")
+  documentId   String? @map("document_id") @db.Uuid
 
   @@map("notifications")
 }

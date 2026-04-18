@@ -43,8 +43,7 @@ const fetchTagsQuerySchema = paginationQuerySchema
     })
     .partial()
     .required({
-        page: true,
-        perPage: true,
+        limit: true,
     });
 
 type FetchTagsQueryInput = z.infer<typeof fetchTagsQuerySchema>;

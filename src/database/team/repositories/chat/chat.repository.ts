@@ -14,6 +14,18 @@ export const defaultChatSelector = {
     name: true,
 } satisfies Prisma.ChatSelect;
 
+export type ChatWithMembersAndUnreadCount = Prisma.ChatGetPayload<{
+    include: {
+        members: true;
+        _count: {
+            select: {
+                messages: true;
+                members: true;
+            };
+        };
+    };
+}>;
+
 export type ChatRepository = BaseRepository<"chat"> & {
     findUniqueOrFail: <TArgs extends Prisma.ChatFindUniqueArgs>(
         args: TArgs

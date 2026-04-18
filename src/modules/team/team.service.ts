@@ -2,11 +2,10 @@ import { randomUUID } from "crypto";
 import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
+import { ChatService } from "../chat/chat.service.js";
 import { UserService } from "../user/user.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { ActionLogTypes } from "@/database/team/generated/index.js";
-import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
@@ -20,6 +19,11 @@ import {
     defaultTeamSelector,
     TeamRepository,
 } from "@/database/master/repositories/team/team.repository.js";
+import {
+    ActionLogTypes,
+    ChatMemberStatus,
+    Prisma as PrismaTeam,
+} from "@/database/team/generated/index.js";
 import {
     createTenantDatabase,
     dropTenantDatabase,
@@ -82,7 +86,8 @@ export const createTeamService = (
     notificationRepository: NotificationRepository,
     teamStatRepository: TeamStatRepository,
     userRepository: UserRepository,
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    chatService: ChatService
 ): TeamService => {
     const getTeam = async (
         teamId: string,
@@ -327,8 +332,6 @@ export const createTeamService = (
         },
 
         getTeams: async ({ query, initiator }) => {
-            const skip = (query.page - 1) * query.perPage;
-
             const where: PrismaMaster.TeamWhereInput = {
                 teamMembers: {
                     some: {
@@ -378,12 +381,10 @@ export const createTeamService = (
                 }),
             };
 
-            const [teams, total] = await Promise.all([
-                teamRepository.findMany({
-                    skip,
-                    where,
-                    take: query.perPage,
-                    orderBy: {
+            const teams = await teamRepository.findMany({
+                where,
+                orderBy: [
+                    {
                         ...(query.sortField && query.sortOrder
                             ? {
                                 [query.sortField]: query.sortOrder,
@@ -392,26 +393,30 @@ export const createTeamService = (
                                 createdAt: PrismaMaster.SortOrder.desc,
                             }),
                     },
-                    select: {
-                        ...defaultTeamSelector,
-                        teamMembers: {
-                            where: {
-                                userId: initiator.id,
-                            },
-                        },
-                        stats: {
-                            select: defaultTeamStatSelector,
+                    { id: "desc" },
+                ],
+                ...(query.cursor && {
+                    cursor: { id: query.cursor },
+                    skip: 1,
+                }),
+                take: query.limit,
+                select: {
+                    ...defaultTeamSelector,
+                    teamMembers: {
+                        where: {
+                            userId: initiator.id,
                         },
                     },
-                }),
-                teamRepository.count({
-                    where,
-                }),
-            ]);
+                    stats: {
+                        select: defaultTeamStatSelector,
+                    },
+                },
+            });
 
-            const totalPages = Math.ceil(total / query.perPage);
-            const prevPage = query.page > 1 ? query.page - 1 : null;
-            const nextPage = query.page < totalPages ? query.page + 1 : null;
+            const nextCursor =
+                teams.length === query.limit
+                    ? teams[teams.length - 1].id
+                    : null;
 
             return {
                 message: "Teams fetched successfully.",
@@ -432,12 +437,7 @@ export const createTeamService = (
                             )!,
                         })),
                     pagination: {
-                        page: query.page,
-                        perPage: query.perPage,
-                        prevPage,
-                        nextPage,
-                        totalPages,
-                        total,
+                        nextCursor,
                     },
                 },
             };
@@ -501,6 +501,10 @@ export const createTeamService = (
                     };
                 }
 
+                if (body.teamMembers) {
+                    await checkTeamMembersRoles(teamMembersIds);
+                }
+
                 await createTenantDatabase(teamId);
 
                 await migrateTenantDatabase(
@@ -508,17 +512,6 @@ export const createTeamService = (
                         "/postgres",
                         `/${teamId}`
                     )
-                );
-
-                const activityLogRepository =
-                    await applicationService.initActionLogRepository(teamId);
-
-                await withRepositories(
-                    [activityLogRepository],
-                    (activityLogRepo) =>
-                        activityLogRepo.createMany({
-                            data: futureTeamMembersRecords.actionLogsData,
-                        })
                 );
 
                 const createdTeam = await teamRepository.create({
@@ -567,8 +560,6 @@ export const createTeamService = (
                 const team = await getTeam(createdTeam.id, initiator);
 
                 if (body.teamMembers) {
-                    await checkTeamMembersRoles(teamMembersIds);
-
                     futureTeamMembersRecords = await configureFutureTeamMembers(
                         {
                             teamMembers: body.teamMembers || [],
@@ -577,6 +568,40 @@ export const createTeamService = (
                         }
                     );
                 }
+
+                const memberUsers = await userRepository.findMany({
+                    where: {
+                        teamMembers: {
+                            some: {
+                                teamId,
+                            },
+                        },
+                    },
+                    select: {
+                        id: true,
+                        fullName: true,
+                        avatar: true,
+                    },
+                });
+
+                const client =
+                    await applicationService.initTeamTenantClient(teamId);
+
+                await withRepositories([client], async (tx) => {
+                    await tx.actionLog.createMany({
+                        data: futureTeamMembersRecords.actionLogsData,
+                    });
+
+                    await chatService.createChat({
+                        chatName: body.name,
+                        members: memberUsers.map((user) => ({
+                            userId: user.id,
+                            userFullName: user.fullName,
+                            userAvatarUrl: user.avatar?.url,
+                        })),
+                        tx,
+                    });
+                });
 
                 await notificationRepository.createMany({
                     data: futureTeamMembersRecords.notifications,
@@ -660,6 +685,12 @@ export const createTeamService = (
                 notifications: [],
             };
 
+            let newMemberUsers: Array<{
+                id: string;
+                fullName: string;
+                avatar: { url: string } | null;
+            }> = [];
+
             if (body.teamMembers) {
                 await checkTeamMembersRoles(teamMembersIds);
 
@@ -667,6 +698,21 @@ export const createTeamService = (
                     teamMembers: body.teamMembers || [],
                     team: teamToUpdate,
                     initiator,
+                });
+
+                newMemberUsers = await userRepository.findMany({
+                    where: {
+                        id: {
+                            in: futureTeamMembersRecords.teamMembers.map(
+                                ({ userId }) => userId
+                            ),
+                        },
+                    },
+                    select: {
+                        id: true,
+                        fullName: true,
+                        avatar: true,
+                    },
                 });
             }
 
@@ -744,11 +790,12 @@ export const createTeamService = (
                 return team;
             });
 
-            const activityLogRepository =
-                await applicationService.initActionLogRepository(params.teamId);
+            const client = await applicationService.initTeamTenantClient(
+                params.teamId
+            );
 
-            await withRepositories([activityLogRepository], (activityLogRepo) =>
-                activityLogRepo.createMany({
+            await withRepositories([client], async (tx) => {
+                await tx.actionLog.createMany({
                     data: [
                         ...futureTeamMembersRecords.actionLogsData,
                         ...futureTeamMembersToDisconnectRecords.actionLogsData,
@@ -759,8 +806,47 @@ export const createTeamService = (
                             actorAvatarUrl: initiator.avatar?.url,
                         },
                     ],
-                })
-            );
+                });
+
+                if (body.name) {
+                    await tx.chat.updateMany({
+                        where: {
+                            name: teamToUpdate.name,
+                        },
+                        data: {
+                            name: body.name,
+                        },
+                    });
+                }
+
+                if (newMemberUsers.length > 0) {
+                    const allChats = await tx.chat.findMany();
+
+                    for (const chat of allChats) {
+                        await chatService.upsertChatMember({
+                            teamId: params.teamId,
+                            chatId: chat.id,
+                            members: newMemberUsers.map((user) => ({
+                                userId: user.id,
+                                userFullName: user.fullName,
+                                userAvatarUrl: user.avatar?.url,
+                                status: ChatMemberStatus.ACTIVE,
+                            })),
+                            tx,
+                        });
+                    }
+                }
+
+                if (
+                    body.teamMembersUsersToDeleteIds &&
+                    body.teamMembersUsersToDeleteIds.length > 0
+                ) {
+                    await chatService.deleteChatMember({
+                        memberIds: body.teamMembersUsersToDeleteIds,
+                        tx,
+                    });
+                }
+            });
 
             const team = await getTeam(params.teamId, initiator);
 

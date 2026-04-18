@@ -2,6 +2,10 @@ import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
 import { defaultFileSchema } from "../file/file.schema.js";
 import {
+    defaultChatSchema,
+    lastChatMessageSchema,
+} from "../chat/chat.schema.js";
+import {
     paginationQuerySchema,
     paginationResponseSchema,
 } from "../pagination/pagination.schema.js";
@@ -11,6 +15,12 @@ import {
     RiskLevels,
 } from "@/database/team/generated/index.js";
 import { defaultDocumentExtractedFieldSchema } from "../document-extracted-field/document-extracted-field.schema.js";
+
+const documentChatSchema = defaultChatSchema.extend({
+    lastMessage: lastChatMessageSchema.nullable(),
+    unreadCount: z.number().int().nonnegative(),
+    activeMemberCount: z.number().int().nonnegative(),
+});
 
 const defaultDocumentSchema = z.object({
     id: z.uuid(),
@@ -62,6 +72,18 @@ const updateDocumentBodySchema = createDocumentBodySchema
     })
     .extend({
         tagsToDelete: z.array(z.string()),
+        files: z.array(
+            z
+                .object({
+                    mimeType: z.string(),
+                    fileSize: z.number(),
+                    width: z.number(),
+                    height: z.number(),
+                })
+                .extend({
+                    id: z.uuid(),
+                })
+        ),
     })
     .partial();
 
@@ -71,7 +93,12 @@ const createDocumentResponseSchema = z.object({
     message: z.string(),
     data: z.object({
         document: defaultDocumentSchema,
-        uploadUrl: z.url().nullable(),
+        filesToUpload: z.array(
+            z.object({
+                id: z.uuid(),
+                url: z.url(),
+            })
+        ),
     }),
 });
 
@@ -90,6 +117,7 @@ const fetchDocumentResponseSchema = z.object({
             ),
             files: z.array(defaultFileSchema),
             tags: z.array(z.string()),
+            chat: documentChatSchema.nullable(),
         }),
     }),
 });
@@ -123,8 +151,7 @@ const fetchDocumentsQuerySchema = paginationQuerySchema
     })
     .partial()
     .required({
-        page: true,
-        perPage: true,
+        limit: true,
     });
 
 type FetchDocumentsQueryInput = z.infer<typeof fetchDocumentsQuerySchema>;
@@ -144,6 +171,7 @@ const fetchDocumentsResponseSchema = z.object({
                         z.uuid(),
                         z.array(z.enum(ActionLogTypes))
                     ),
+                    chat: documentChatSchema.nullable(),
                 })
         ),
         pagination: paginationResponseSchema,
@@ -161,6 +189,7 @@ export {
     createDocumentResponseSchema,
     updateDocumentResponseSchema,
     defaultDocumentSchema,
+    documentChatSchema,
     fetchDocumentsQuerySchema,
 };
 

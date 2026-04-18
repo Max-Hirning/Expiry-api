@@ -21,4 +21,11 @@ export enum Actions {
     GET_TAG,
     GET_TAGS,
     UPDATE_TEAM_MEMBER_ROLE,
+    GET_CHATS,
+    GET_CHAT,
+    GET_MESSAGES,
+    SEND_MESSAGE,
+    EDIT_MESSAGE,
+    DELETE_MESSAGE,
+    MARK_MESSAGES_READ,
 }

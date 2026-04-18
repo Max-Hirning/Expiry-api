@@ -11,11 +11,37 @@ export const defaultChatMessageSelector = {
     id: true,
     createdAt: true,
     updatedAt: true,
+    lastEditedAt: true,
     message: true,
     parentMessageId: true,
     authorId: true,
     chatId: true,
 } satisfies Prisma.ChatMessageSelect;
+
+export const defaultChatMessageSelectorWithReadStatuses = {
+    ...defaultChatMessageSelector,
+    chatMessageReadStatuses: {
+        select: {
+            createdAt: true,
+            readBy: true,
+        },
+    },
+} satisfies Prisma.ChatMessageSelect;
+
+export const defaultChatMessageSelectorWithAuthor = {
+    ...defaultChatMessageSelector,
+    author: {
+        select: {
+            id: true,
+            userFullName: true,
+            userAvatarUrl: true,
+        },
+    },
+} satisfies Prisma.ChatMessageSelect;
+
+export type ChatMessageWithReadStatuses = Prisma.ChatMessageGetPayload<{
+    select: typeof defaultChatMessageSelectorWithReadStatuses;
+}>;
 
 export type ChatMessageRepository = BaseRepository<"chatMessage"> & {
     findUniqueOrFail: <TArgs extends Prisma.ChatMessageFindUniqueArgs>(
