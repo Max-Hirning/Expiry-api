@@ -386,12 +386,17 @@ export const createChatService = (
             const messages = await withRepositories(
                 [chatMessageRepository],
                 async (repo) => {
+                    const orderBy =
+                        query.direction === "down"
+                            ? { createdAt: "asc" as const }
+                            : { createdAt: "desc" as const };
+
                     const rows = await repo.findMany({
                         where: {
                             chatId: params.chatId,
                             parentMessageId: query.parentMessageId,
                         },
-                        orderBy: { createdAt: "desc" },
+                        orderBy,
                         ...(query.cursor && {
                             cursor: { id: query.cursor },
                             skip: 1,
