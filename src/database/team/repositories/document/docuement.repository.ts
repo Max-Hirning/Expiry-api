@@ -1,8 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { Prisma } from "@/database/team/generated/client.js";
+import { defaultChatSelector } from "../chat/chat.repository.js";
+import { ChatMemberStatus, Prisma } from "@/database/team/generated/client.js";
 import { BaseRepository, generateRepository } from "../generate.repository.js";
+import { defaultChatMessageSelectorWithAuthor } from "../chat-message/chat-message.repository.js";
 
 export const defaultDocumentSelector = {
     id: true,
@@ -13,6 +15,51 @@ export const defaultDocumentSelector = {
     expiresAt: true,
     riskLevel: true,
 } satisfies Prisma.DocumentSelect;
+
+export const defaultDocumentSelectorWithDetails = {
+    ...defaultDocumentSelector,
+    files: true,
+    documentExtractedFields: true,
+    documentTags: {
+        select: {
+            tag: true,
+        },
+    },
+} satisfies Prisma.DocumentSelect;
+
+export type DocumentWithDetails = Prisma.DocumentGetPayload<{
+    select: typeof defaultDocumentSelectorWithDetails;
+}>;
+
+export const buildDocumentChatSelect = (userId: string) => ({
+    select: {
+        ...defaultChatSelector,
+        _count: {
+            select: {
+                messages: {
+                    where: {
+                        NOT: {
+                            authorId: userId,
+                            chatMessageReadStatuses: {
+                                some: {
+                                    readBy: { userId },
+                                },
+                            },
+                        },
+                    },
+                },
+                members: {
+                    where: { status: ChatMemberStatus.ACTIVE },
+                },
+            },
+        },
+        messages: {
+            orderBy: { createdAt: "desc" as const },
+            take: 1,
+            select: defaultChatMessageSelectorWithAuthor,
+        },
+    },
+});
 
 export type DocumentRepository = BaseRepository<"document"> & {
     findUniqueOrFail: <TArgs extends Prisma.DocumentFindUniqueArgs>(

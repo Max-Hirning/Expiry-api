@@ -18,15 +18,29 @@ export const defaultChatMessageSelector = {
     chatId: true,
 } satisfies Prisma.ChatMessageSelect;
 
+export const defaultChatMessageSelectorWithReadStatuses = {
+    ...defaultChatMessageSelector,
+    chatMessageReadStatuses: {
+        select: {
+            createdAt: true,
+            readBy: true,
+        },
+    },
+} satisfies Prisma.ChatMessageSelect;
+
+export const defaultChatMessageSelectorWithAuthor = {
+    ...defaultChatMessageSelector,
+    author: {
+        select: {
+            id: true,
+            userFullName: true,
+            userAvatarUrl: true,
+        },
+    },
+} satisfies Prisma.ChatMessageSelect;
+
 export type ChatMessageWithReadStatuses = Prisma.ChatMessageGetPayload<{
-    select: typeof defaultChatMessageSelector & {
-        chatMessageReadStatuses: {
-            select: {
-                createdAt: true;
-                readBy: true;
-            };
-        };
-    };
+    select: typeof defaultChatMessageSelectorWithReadStatuses;
 }>;
 
 export type ChatMessageRepository = BaseRepository<"chatMessage"> & {

@@ -15,15 +15,16 @@ import {
     defaultChatSelector,
 } from "@/database/team/repositories/chat/chat.repository.js";
 import {
-    ChatMessageWithReadStatuses,
-    defaultChatMessageSelector,
-} from "@/database/team/repositories/chat-message/chat-message.repository.js";
-import {
     ChatParamsInput,
     GetChatsCursorQueryInput,
     FetchChatsResponse,
     FetchChatResponse,
 } from "@/lib/validation/chat/chat.schema.js";
+import {
+    ChatMessageWithReadStatuses,
+    defaultChatMessageSelectorWithAuthor,
+    defaultChatMessageSelectorWithReadStatuses,
+} from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import {
     ChatMessageParamsInput,
     SendMessageBodyInput,
@@ -168,15 +169,7 @@ export const createChatService = (
                 authorId: member.id,
                 chatId: params.chatId,
             },
-            select: {
-                ...defaultChatMessageSelector,
-                chatMessageReadStatuses: {
-                    select: {
-                        createdAt: true,
-                        readBy: true,
-                    },
-                },
-            },
+            select: defaultChatMessageSelectorWithReadStatuses,
         });
 
         return mapChatMessageResponse(message);
@@ -288,16 +281,7 @@ export const createChatService = (
                         messages: {
                             orderBy: { createdAt: "desc" },
                             take: 1,
-                            select: {
-                                ...defaultChatMessageSelector,
-                                author: {
-                                    select: {
-                                        id: true,
-                                        userFullName: true,
-                                        userAvatarUrl: true,
-                                    },
-                                },
-                            },
+                            select: defaultChatMessageSelectorWithAuthor,
                         },
                     },
                 });
@@ -413,15 +397,7 @@ export const createChatService = (
                             skip: 1,
                         }),
                         take: query.limit,
-                        select: {
-                            ...defaultChatMessageSelector,
-                            chatMessageReadStatuses: {
-                                select: {
-                                    createdAt: true,
-                                    readBy: true,
-                                },
-                            },
-                        },
+                        select: defaultChatMessageSelectorWithReadStatuses,
                     });
 
                     const nextCursor =
@@ -522,15 +498,7 @@ export const createChatService = (
                 const updated = await tx.chatMessage.update({
                     where: { id: params.messageId },
                     data: { message: body.message, lastEditedAt: new Date() },
-                    select: {
-                        ...defaultChatMessageSelector,
-                        chatMessageReadStatuses: {
-                            select: {
-                                createdAt: true,
-                                readBy: true,
-                            },
-                        },
-                    },
+                    select: defaultChatMessageSelectorWithReadStatuses,
                 });
 
                 return updated;
@@ -586,15 +554,7 @@ export const createChatService = (
 
                 const deleted = await tx.chatMessage.delete({
                     where: { id: params.messageId },
-                    select: {
-                        ...defaultChatMessageSelector,
-                        chatMessageReadStatuses: {
-                            select: {
-                                createdAt: true,
-                                readBy: true,
-                            },
-                        },
-                    },
+                    select: defaultChatMessageSelectorWithReadStatuses,
                 });
 
                 return deleted;

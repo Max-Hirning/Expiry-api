@@ -14,9 +14,7 @@ import {
     NotificationTypes,
     TeamMemberRoles,
 } from "@/database/master/generated/index.js";
-import { defaultDocumentSelector } from "@/database/team/repositories/document/docuement.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
-import { defaultChatMessageSelector } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
@@ -27,6 +25,11 @@ import {
     defaultTeamMemberSelector,
     TeamMemberRepository,
 } from "@/database/master/repositories/team-member/team-member.repository.js";
+import {
+    buildDocumentChatSelect,
+    defaultDocumentSelector,
+    defaultDocumentSelectorWithDetails,
+} from "@/database/team/repositories/document/docuement.repository.js";
 import {
     DocumentParamsInput,
     FetchDocumentResponse,
@@ -84,59 +87,8 @@ export const createDocumentService = (
                         id: params.documentId,
                     },
                     select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
-                            select: {
-                                tag: true,
-                            },
-                        },
-                        chat: {
-                            select: {
-                                id: true,
-                                createdAt: true,
-                                updatedAt: true,
-                                name: true,
-                                _count: {
-                                    select: {
-                                        messages: {
-                                            where: {
-                                                NOT: {
-                                                    authorId: initiator.id,
-                                                    chatMessageReadStatuses: {
-                                                        some: {
-                                                            readBy: {
-                                                                userId: initiator.id,
-                                                            },
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        members: {
-                                            where: {
-                                                status: ChatMemberStatus.ACTIVE,
-                                            },
-                                        },
-                                    },
-                                },
-                                messages: {
-                                    orderBy: { createdAt: "desc" as const },
-                                    take: 1,
-                                    select: {
-                                        ...defaultChatMessageSelector,
-                                        author: {
-                                            select: {
-                                                id: true,
-                                                userFullName: true,
-                                                userAvatarUrl: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
+                        ...defaultDocumentSelectorWithDetails,
+                        chat: buildDocumentChatSelect(initiator.id),
                     },
                 })
         );
@@ -218,59 +170,8 @@ export const createDocumentService = (
                         id: params.documentId,
                     },
                     select: {
-                        ...defaultDocumentSelector,
-                        files: true,
-                        documentExtractedFields: true,
-                        documentTags: {
-                            select: {
-                                tag: true,
-                            },
-                        },
-                        chat: {
-                            select: {
-                                id: true,
-                                createdAt: true,
-                                updatedAt: true,
-                                name: true,
-                                _count: {
-                                    select: {
-                                        messages: {
-                                            where: {
-                                                NOT: {
-                                                    authorId: initiator.id,
-                                                    chatMessageReadStatuses: {
-                                                        some: {
-                                                            readBy: {
-                                                                userId: initiator.id,
-                                                            },
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        members: {
-                                            where: {
-                                                status: ChatMemberStatus.ACTIVE,
-                                            },
-                                        },
-                                    },
-                                },
-                                messages: {
-                                    orderBy: { createdAt: "desc" as const },
-                                    take: 1,
-                                    select: {
-                                        ...defaultChatMessageSelector,
-                                        author: {
-                                            select: {
-                                                id: true,
-                                                userFullName: true,
-                                                userAvatarUrl: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
+                        ...defaultDocumentSelectorWithDetails,
+                        chat: buildDocumentChatSelect(initiator.id),
                     },
                 });
 
@@ -442,51 +343,7 @@ export const createDocumentService = (
                                 }),
                             },
                         },
-                        chat: {
-                            select: {
-                                id: true,
-                                createdAt: true,
-                                updatedAt: true,
-                                name: true,
-                                _count: {
-                                    select: {
-                                        messages: {
-                                            where: {
-                                                NOT: {
-                                                    authorId: initiator.id,
-                                                    chatMessageReadStatuses: {
-                                                        some: {
-                                                            readBy: {
-                                                                userId: initiator.id,
-                                                            },
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        members: {
-                                            where: {
-                                                status: ChatMemberStatus.ACTIVE,
-                                            },
-                                        },
-                                    },
-                                },
-                                messages: {
-                                    orderBy: { createdAt: "desc" as const },
-                                    take: 1,
-                                    select: {
-                                        ...defaultChatMessageSelector,
-                                        author: {
-                                            select: {
-                                                id: true,
-                                                userFullName: true,
-                                                userAvatarUrl: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
+                        chat: buildDocumentChatSelect(initiator.id),
                     },
                 })
         );
@@ -642,16 +499,7 @@ export const createDocumentService = (
                             status: DocumentStatuses.PROCESSING,
                             name: body.name,
                         },
-                        select: {
-                            ...defaultDocumentSelector,
-                            files: true,
-                            documentExtractedFields: true,
-                            documentTags: {
-                                select: {
-                                    tag: true,
-                                },
-                            },
-                        },
+                        select: defaultDocumentSelectorWithDetails,
                     });
 
                     let tagsIds = [...existedTagsIds];
@@ -901,16 +749,7 @@ export const createDocumentService = (
                         data: {
                             name: body.name,
                         },
-                        select: {
-                            ...defaultDocumentSelector,
-                            files: true,
-                            documentExtractedFields: true,
-                            documentTags: {
-                                select: {
-                                    tag: true,
-                                },
-                            },
-                        },
+                        select: defaultDocumentSelectorWithDetails,
                     });
 
                     if (updatedObjects.length > 0) {

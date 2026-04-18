@@ -11,6 +11,15 @@ export const defaultTagSelector = {
     tag: true,
 } satisfies Prisma.TagSelect;
 
+export const defaultTagSelectorWithCount = {
+    ...defaultTagSelector,
+    _count: {
+        select: {
+            documentTags: true,
+        },
+    },
+} satisfies Prisma.TagSelect;
+
 export type TagRepository = BaseRepository<"tag"> & {
     findUniqueOrFail: <TArgs extends Prisma.TagFindUniqueArgs>(
         args: TArgs
