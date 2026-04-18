@@ -6,6 +6,7 @@ const defaultChatSchema = z.object({
     id: z.uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    unreadCount: z.int(),
     name: z.string(),
 });
 

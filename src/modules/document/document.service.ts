@@ -103,6 +103,7 @@ export const createDocumentService = (
                                         messages: {
                                             where: {
                                                 NOT: {
+                                                    authorId: initiator.id,
                                                     chatMessageReadStatuses: {
                                                         some: {
                                                             readBy: {
@@ -236,6 +237,7 @@ export const createDocumentService = (
                                         messages: {
                                             where: {
                                                 NOT: {
+                                                    authorId: initiator.id,
                                                     chatMessageReadStatuses: {
                                                         some: {
                                                             readBy: {
@@ -451,6 +453,7 @@ export const createDocumentService = (
                                         messages: {
                                             where: {
                                                 NOT: {
+                                                    authorId: initiator.id,
                                                     chatMessageReadStatuses: {
                                                         some: {
                                                             readBy: {

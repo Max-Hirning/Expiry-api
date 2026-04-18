@@ -1,12 +1,22 @@
 import { z } from "zod";
-import { chatParamsSchema } from "../chat/chat.schema.js";
 import { paginationResponseSchema } from "../pagination/pagination.schema.js";
+import {
+    chatParamsSchema,
+    defaultChatMemberSchema,
+} from "../chat/chat.schema.js";
 
 const defaultChatMessageSchema = z.object({
     id: z.uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
     lastEditedAt: z.date().nullable(),
+    chatMessageReadStatuses: z.record(
+        z.uuid(),
+        z.object({
+            createdAt: z.date(),
+            readBy: defaultChatMemberSchema,
+        })
+    ),
     message: z.string(),
     parentMessageId: z.uuid().nullable(),
     authorId: z.uuid(),
@@ -88,6 +98,9 @@ export {
     defaultChatMessageSchema,
 };
 
+export type DefaultChatMessageResponse = z.infer<
+    typeof defaultChatMessageSchema
+>;
 export type ChatMessageParamsInput = z.infer<typeof chatMessageParamsSchema>;
 export type SendMessageBodyInput = z.infer<typeof sendMessageBodySchema>;
 export type EditMessageBodyInput = z.infer<typeof editMessageBodySchema>;

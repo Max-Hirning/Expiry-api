@@ -18,6 +18,17 @@ export const defaultChatMessageSelector = {
     chatId: true,
 } satisfies Prisma.ChatMessageSelect;
 
+export type ChatMessageWithReadStatuses = Prisma.ChatMessageGetPayload<{
+    select: typeof defaultChatMessageSelector & {
+        chatMessageReadStatuses: {
+            select: {
+                createdAt: true;
+                readBy: true;
+            };
+        };
+    };
+}>;
+
 export type ChatMessageRepository = BaseRepository<"chatMessage"> & {
     findUniqueOrFail: <TArgs extends Prisma.ChatMessageFindUniqueArgs>(
         args: TArgs

@@ -4,14 +4,20 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
-import { defaultChatSelector } from "@/database/team/repositories/chat/chat.repository.js";
 import {
     Chat,
     ChatMemberStatus,
     Prisma,
 } from "@/database/team/generated/index.js";
 import { defaultChatMemberSelector } from "@/database/team/repositories/chat-member/chat-member.repository.js";
-import { defaultChatMessageSelector } from "@/database/team/repositories/chat-message/chat-message.repository.js";
+import {
+    ChatWithMembersAndUnreadCount,
+    defaultChatSelector,
+} from "@/database/team/repositories/chat/chat.repository.js";
+import {
+    ChatMessageWithReadStatuses,
+    defaultChatMessageSelector,
+} from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import {
     ChatParamsInput,
     GetChatsCursorQueryInput,
@@ -29,6 +35,7 @@ import {
     EditMessageResponse,
     DeleteMessageResponse,
     MarkReadResponse,
+    DefaultChatMessageResponse,
 } from "@/lib/validation/chat-message/chat-message.schema.js";
 
 export type ChatService = {
@@ -105,6 +112,28 @@ export const createChatService = (
         }
     };
 
+    const mapChatMessageResponse = (
+        chatMessage: ChatMessageWithReadStatuses
+    ) => ({
+        ...chatMessage,
+        chatMessageReadStatuses:
+            chatMessage.chatMessageReadStatuses.reduceRight<
+                DefaultChatMessageResponse["chatMessageReadStatuses"]
+            >((res, { createdAt, readBy }) => {
+                res[readBy.userId] = {
+                    readBy,
+                    createdAt,
+                };
+
+                return res;
+            }, {}),
+    });
+
+    const mapChatResponse = (chat: ChatWithMembersAndUnreadCount) => ({
+        ...chat,
+        unreadCount: chat._count.messages,
+    });
+
     const createMessage = async ({
         params,
         body,
@@ -139,10 +168,18 @@ export const createChatService = (
                 authorId: member.id,
                 chatId: params.chatId,
             },
-            select: defaultChatMessageSelector,
+            select: {
+                ...defaultChatMessageSelector,
+                chatMessageReadStatuses: {
+                    select: {
+                        createdAt: true,
+                        readBy: true,
+                    },
+                },
+            },
         });
 
-        return message;
+        return mapChatMessageResponse(message);
     };
 
     return {
@@ -229,12 +266,13 @@ export const createChatService = (
                             select: {
                                 messages: {
                                     where: {
-                                        NOT: {
-                                            chatMessageReadStatuses: {
-                                                some: {
-                                                    readBy: {
-                                                        userId: initiator.id,
-                                                    },
+                                        author: {
+                                            userId: { not: initiator.id },
+                                        },
+                                        chatMessageReadStatuses: {
+                                            none: {
+                                                readBy: {
+                                                    userId: initiator.id,
                                                 },
                                             },
                                         },
@@ -305,6 +343,29 @@ export const createChatService = (
                             members: {
                                 where: { status: ChatMemberStatus.ACTIVE },
                             },
+                            _count: {
+                                select: {
+                                    messages: {
+                                        where: {
+                                            author: {
+                                                userId: { not: initiator.id },
+                                            },
+                                            chatMessageReadStatuses: {
+                                                none: {
+                                                    readBy: {
+                                                        userId: initiator.id,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                    members: {
+                                        where: {
+                                            status: ChatMemberStatus.ACTIVE,
+                                        },
+                                    },
+                                },
+                            },
                         },
                     });
 
@@ -328,7 +389,7 @@ export const createChatService = (
 
             return {
                 message: "Chat retrieved successfully",
-                data: { chat },
+                data: { chat: mapChatResponse(chat) },
             };
         },
 
@@ -352,7 +413,15 @@ export const createChatService = (
                             skip: 1,
                         }),
                         take: query.limit,
-                        select: defaultChatMessageSelector,
+                        select: {
+                            ...defaultChatMessageSelector,
+                            chatMessageReadStatuses: {
+                                select: {
+                                    createdAt: true,
+                                    readBy: true,
+                                },
+                            },
+                        },
                     });
 
                     const nextCursor =
@@ -367,7 +436,7 @@ export const createChatService = (
             return {
                 message: "Messages retrieved successfully",
                 data: {
-                    messages: messages.messages,
+                    messages: messages.messages.map(mapChatMessageResponse),
                     pagination: {
                         nextCursor: messages.nextCursor,
                     },
@@ -453,7 +522,15 @@ export const createChatService = (
                 const updated = await tx.chatMessage.update({
                     where: { id: params.messageId },
                     data: { message: body.message, lastEditedAt: new Date() },
-                    select: defaultChatMessageSelector,
+                    select: {
+                        ...defaultChatMessageSelector,
+                        chatMessageReadStatuses: {
+                            select: {
+                                createdAt: true,
+                                readBy: true,
+                            },
+                        },
+                    },
                 });
 
                 return updated;
@@ -461,7 +538,7 @@ export const createChatService = (
 
             return {
                 message: "Message edited successfully",
-                data: { chatMessage },
+                data: { chatMessage: mapChatMessageResponse(chatMessage) },
             };
         },
 
@@ -509,7 +586,15 @@ export const createChatService = (
 
                 const deleted = await tx.chatMessage.delete({
                     where: { id: params.messageId },
-                    select: defaultChatMessageSelector,
+                    select: {
+                        ...defaultChatMessageSelector,
+                        chatMessageReadStatuses: {
+                            select: {
+                                createdAt: true,
+                                readBy: true,
+                            },
+                        },
+                    },
                 });
 
                 return deleted;
@@ -517,7 +602,22 @@ export const createChatService = (
 
             return {
                 message: "Message deleted successfully",
-                data: { chatMessage },
+                data: {
+                    chatMessage: {
+                        ...chatMessage,
+                        chatMessageReadStatuses:
+                            chatMessage.chatMessageReadStatuses.reduceRight<
+                                DefaultChatMessageResponse["chatMessageReadStatuses"]
+                            >((res, { createdAt, readBy }) => {
+                                res[readBy.id] = {
+                                    readBy,
+                                    createdAt,
+                                };
+
+                                return res;
+                            }, {}),
+                    },
+                },
             };
         },
 
