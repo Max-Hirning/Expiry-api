@@ -359,6 +359,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         Actions.UPDATE_DOCUMENT,
                         Actions.GET_DOCUMENTS,
                         Actions.CREATE_DOCUMENT,
+                        Actions.GET_FILES,
                     ].includes(action)
                 ) {
                     const { id } = req.user;
@@ -448,6 +449,8 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         await teamClient.$disconnect();
                     }
                 }
+
+                throw new ForbiddenError("Forbidden");
             };
         }
     );
