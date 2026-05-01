@@ -59,13 +59,14 @@ describe("Notification Routes", () => {
 
             expect(signInResponse.statusCode).toBe(200);
 
-            const { data } = JSON.parse(signInResponse.body);
-            const token = data.token;
+            const cookieHeader = signInResponse.cookies
+                .map((c) => `${c.name}=${c.value}`)
+                .join("; ");
 
             const response = await app.inject({
                 method: "GET",
                 url: "/api/notifications?page=1&perPage=10",
-                headers: { authorization: `Bearer ${token}` },
+                headers: { cookie: cookieHeader },
             });
 
             expect(response.statusCode).toBe(200);
