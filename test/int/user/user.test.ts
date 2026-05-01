@@ -1,18 +1,18 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { FastifyInstance } from "fastify";
-
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
 import { testHelpers } from "../setup/helpers.js";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+const VALID_UUID = "00000000-0000-0000-0000-000000000001";
+const VALID_UUID_2 = "00000000-0000-0000-0000-000000000002";
 
 describe("User Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
 
     beforeAll(async () => {
-        // Initialize test database schema BEFORE creating the app
         cleanup = await setupDatabase();
-
         app = await createTestApp();
     });
 
@@ -26,7 +26,7 @@ describe("User Routes", () => {
         await testHelpers.cleanup();
     });
 
-    describe("POST /user/invite", () => {
+    describe("POST /api/users/invite", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
                 method: "POST",
@@ -45,9 +45,7 @@ describe("User Routes", () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/users/invite",
-                headers: {
-                    authorization: "Bearer invalid-token",
-                },
+                headers: { authorization: "Bearer invalid-token" },
                 payload: {
                     fullName: "Test",
                     email: "invalid-email",
@@ -57,13 +55,41 @@ describe("User Routes", () => {
 
             expect([400, 401]).toContain(response.statusCode);
         });
+
+        it("should fail with missing fullName", async () => {
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/users/invite",
+                headers: { authorization: "Bearer invalid-token" },
+                payload: {
+                    email: "test@example.com",
+                    phoneNumber: "+1234567890",
+                },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with missing phoneNumber", async () => {
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/users/invite",
+                headers: { authorization: "Bearer invalid-token" },
+                payload: {
+                    fullName: "Test User",
+                    email: "test@example.com",
+                },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
     });
 
-    describe("GET /user", () => {
+    describe("GET /api/users", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
                 method: "GET",
-                url: "/api/users?page=1&perPage=10",
+                url: "/api/users?limit=10",
             });
 
             expect(response.statusCode).toBe(401);
@@ -73,20 +99,292 @@ describe("User Routes", () => {
             const response = await app.inject({
                 method: "GET",
                 url: "/api/users?page=0&perPage=10",
-                headers: {
-                    authorization: "Bearer invalid-token",
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/users?limit=10",
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("GET /api/users/invite", () => {
+        it("should fail with missing invitationId", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/users/invite",
+            });
+
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("should fail with invalid invitationId token", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/users/invite?invitationId=invalid-token",
+            });
+
+            expect([400, 401, 404, 500]).toContain(response.statusCode);
+        });
+    });
+
+    describe("GET /api/users/:userId", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/users/${VALID_UUID}`,
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/users/not-a-uuid",
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/users/${VALID_UUID}`,
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("DELETE /api/users/:userId/invite", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: `/api/users/${VALID_UUID}/invite`,
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: "/api/users/not-a-uuid/invite",
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: `/api/users/${VALID_UUID}/invite`,
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("DELETE /api/users/:userId", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: `/api/users/${VALID_UUID}`,
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: "/api/users/not-a-uuid",
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "DELETE",
+                url: `/api/users/${VALID_UUID}`,
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("PUT /api/users/:userId", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}`,
+                payload: { fullName: "Updated Name" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: "/api/users/not-a-uuid",
+                payload: { fullName: "Updated Name" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid email format in body", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: { email: "not-an-email" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: { fullName: "Updated Name" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("PATCH /api/users/:userId/status", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "PATCH",
+                url: `/api/users/${VALID_UUID}/status`,
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "PATCH",
+                url: "/api/users/not-a-uuid/status",
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid token", async () => {
+            const response = await app.inject({
+                method: "PATCH",
+                url: `/api/users/${VALID_UUID}/status`,
+                headers: { authorization: "Bearer invalid-token" },
+            });
+
+            expect([400, 401, 403]).toContain(response.statusCode);
+        });
+    });
+
+    describe("PUT /api/users/:userId/password", () => {
+        it("should fail without authentication", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/password`,
+                payload: {
+                    oldPassword: "OldPassword123!",
+                    password: "NewPassword123!",
                 },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with missing oldPassword", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/password`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: { password: "NewPassword123!" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with missing new password", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/password`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: { oldPassword: "OldPassword123!" },
             });
 
             expect([400, 401]).toContain(response.statusCode);
         });
     });
 
-    describe("GET /user/:userId", () => {
+    describe("PUT /api/users/:userId/teams/:teamId/role", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
-                method: "GET",
-                url: "/api/users/test-id",
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/teams/${VALID_UUID_2}/role`,
+                payload: { role: "ADMIN" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid userId format", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/not-a-uuid/teams/${VALID_UUID_2}/role`,
+                payload: { role: "ADMIN" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid teamId format", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/teams/not-a-uuid/role`,
+                payload: { role: "ADMIN" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with invalid role value", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/teams/${VALID_UUID_2}/role`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: { role: "INVALID_ROLE" },
+            });
+
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("should fail with missing role field", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${VALID_UUID}/teams/${VALID_UUID_2}/role`,
+                headers: { authorization: "Bearer invalid-token" },
+                payload: {},
             });
 
             expect([400, 401]).toContain(response.statusCode);
