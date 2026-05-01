@@ -6,10 +6,8 @@ import {
     NotificationRepository,
 } from "@/database/master/repositories/notification/notification.repository.js";
 import {
-    FetchNotificationResponse,
     FetchNotificationsQueryInput,
     FetchNotificationsResponse,
-    NotificationParamsInput,
     ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
     UpdateNotificationsResponse,
@@ -20,10 +18,6 @@ export type NotificationService = {
         query: FetchNotificationsQueryInput;
         initiator: FastifyRequest["user"];
     }) => Promise<FetchNotificationsResponse>;
-    toggleNotificationReadAt: (p: {
-        params: NotificationParamsInput;
-        initiator: FastifyRequest["user"];
-    }) => Promise<FetchNotificationResponse>;
     toggleNotificationsReadAt: (p: {
         body: UpdateNotificationsBodyInput;
         initiator: FastifyRequest["user"];
@@ -115,46 +109,49 @@ export const createNotificationService = (
             },
         };
     },
-    toggleNotificationReadAt: async ({ params, initiator }) => {
-        const notificationToUpdate =
-            await notificationRepository.findUniqueOrFail({
+    toggleNotificationsReadAt: async ({ body, initiator }) => {
+        let count = 0;
+
+        if (body.allRead) {
+            const notifications = await notificationRepository.updateMany({
                 where: {
-                    id: params.notificationId,
                     userId: initiator.id,
+                },
+                data: {
+                    readAt: body.allRead ? new Date() : null,
                 },
             });
 
-        const notification = await notificationRepository.update({
-            where: {
-                id: params.notificationId,
+            count = notifications.count;
+
+            return {
+                message: "Notification updated successfully.",
+                data: {
+                    count,
+                },
+            };
+        }
+
+        if (body.notificationIds) {
+            const result = await notificationRepository.toggleRead({
+                notificationIds: body.notificationIds,
                 userId: initiator.id,
-            },
-            data: {
-                readAt: notificationToUpdate.readAt ? null : new Date(),
-            },
-        });
+            });
+
+            count = result.count;
+
+            return {
+                message: "Notification updated successfully.",
+                data: {
+                    count,
+                },
+            };
+        }
 
         return {
             message: "Notification updated successfully.",
             data: {
-                notification,
-            },
-        };
-    },
-    toggleNotificationsReadAt: async ({ body, initiator }) => {
-        const notifications = await notificationRepository.updateMany({
-            where: {
-                userId: initiator.id,
-            },
-            data: {
-                readAt: body.allRead ? new Date() : null,
-            },
-        });
-
-        return {
-            message: "Notification updated successfully.",
-            data: {
-                count: notifications.count,
+                count,
             },
         };
     },

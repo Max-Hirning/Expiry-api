@@ -29,6 +29,10 @@ export type NotificationRepository = BaseRepository<"notification"> & {
         notificationIds: string[];
         userId: string;
     }) => Promise<{ count: number }>;
+    toggleRead: (p: {
+        notificationIds: string[];
+        userId: string;
+    }) => Promise<{ count: number }>;
 };
 
 export const createNotificationRepository = ({
@@ -68,6 +72,23 @@ export const createNotificationRepository = ({
                     UPDATE notifications
                     SET
                         is_starred = NOT is_starred,
+                        updated_at = now()
+                    WHERE
+                        id = ANY(${notificationIds}::uuid[])
+                        AND user_id = ${userId}::uuid
+                    RETURNING id
+                )
+                SELECT COUNT(*) AS count FROM updated
+            `;
+
+            return { count: Number(result[0]?.count ?? 0) };
+        },
+        toggleRead: async ({ notificationIds, userId }) => {
+            const result = await prisma.$queryRaw<{ count: bigint }[]>`
+                WITH updated AS (
+                    UPDATE notifications
+                    SET
+                        read_at = CASE WHEN read_at IS NULL THEN now() ELSE NULL END,
                         updated_at = now()
                     WHERE
                         id = ANY(${notificationIds}::uuid[])

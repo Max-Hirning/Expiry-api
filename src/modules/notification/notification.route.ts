@@ -3,8 +3,6 @@ import { NotificationHandler } from "./notification.handler.js";
 import {
     fetchNotificationsQuerySchema,
     fetchNotificationsResponseSchema,
-    fetchNotificationResponseSchema,
-    notificationParamsSchema,
     toggleStarredBodySchema,
     updateNotificationsBodySchema,
     updateNotificationsResponseSchema,
@@ -30,24 +28,8 @@ export const createNotificationRoutes = (
         notificationHandler.getNotifications
     );
 
-    fastify.patch(
-        "/:notificationId",
-        {
-            schema: {
-                tags: ["notification"],
-                summary: "Update notification readAt",
-                params: notificationParamsSchema,
-                response: {
-                    200: fetchNotificationResponseSchema,
-                },
-            },
-            preHandler: [fastify.authorization],
-        },
-        notificationHandler.toggleNotificationReadAt
-    );
-
-    fastify.patch(
-        "/",
+    fastify.put(
+        "/read",
         {
             schema: {
                 tags: ["notification"],
@@ -62,7 +44,7 @@ export const createNotificationRoutes = (
         notificationHandler.toggleNotificationsReadAt
     );
 
-    fastify.patch(
+    fastify.put(
         "/starred",
         {
             schema: {

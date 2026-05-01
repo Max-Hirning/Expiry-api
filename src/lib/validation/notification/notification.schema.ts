@@ -53,9 +53,21 @@ type FetchNotificationsResponse = z.infer<
     typeof fetchNotificationsResponseSchema
 >;
 
-const updateNotificationsBodySchema = z.object({
-    allRead: z.boolean(),
-});
+const updateNotificationsBodySchema = z
+    .object({
+        allRead: z.boolean(),
+        notificationIds: z.array(z.uuid()).min(1),
+    })
+    .partial()
+    .refine(
+        ({ allRead, notificationIds }) =>
+            allRead !== undefined ||
+            (notificationIds !== undefined && notificationIds.length > 0),
+        {
+            message:
+                "At least one of allRead or notificationIds must be provided",
+        }
+    );
 
 const toggleStarredBodySchema = z.object({
     notificationIds: z.array(z.uuid()).min(1),
@@ -89,16 +101,9 @@ type FetchNotificationResponse = z.infer<
     typeof fetchNotificationResponseSchema
 >;
 
-const notificationParamsSchema = z.object({
-    notificationId: z.uuid(),
-});
-
-type NotificationParamsInput = z.infer<typeof notificationParamsSchema>;
-
 export {
     fetchNotificationsResponseSchema,
     defaultNotificationSchema,
-    notificationParamsSchema,
     updateNotificationsResponseSchema,
     fetchNotificationsQuerySchema,
     updateNotificationsBodySchema,
@@ -108,7 +113,6 @@ export {
 
 export type {
     FetchNotificationsResponse,
-    NotificationParamsInput,
     FetchNotificationsQueryInput,
     UpdateNotificationsResponse,
     UpdateNotificationsBodyInput,

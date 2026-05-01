@@ -3,7 +3,6 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { NotificationService } from "./notification.service.js";
 import {
     FetchNotificationsQueryInput,
-    NotificationParamsInput,
     ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
 } from "@/lib/validation/notification/notification.schema.js";
@@ -16,19 +15,13 @@ export type NotificationHandler = {
         reply: FastifyReply
     ) => Promise<void>;
 
-    toggleNotificationReadAt: (
-        request: FastifyRequest<{
-            Params: NotificationParamsInput;
-        }>,
-        reply: FastifyReply
-    ) => Promise<void>;
-
     toggleNotificationsReadAt: (
         request: FastifyRequest<{
             Body: UpdateNotificationsBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
+
     toggleStarred: (
         request: FastifyRequest<{
             Body: ToggleStarredBodyInput;
@@ -46,16 +39,6 @@ export const createNotificationHandler = (
 
             const data = await notificationService.getNotifications({
                 query,
-                initiator: user,
-            });
-
-            return reply.send(data);
-        },
-        toggleNotificationReadAt: async (request, reply) => {
-            const { params, user } = request;
-
-            const data = await notificationService.toggleNotificationReadAt({
-                params,
                 initiator: user,
             });
 
