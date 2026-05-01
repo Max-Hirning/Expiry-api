@@ -49,15 +49,15 @@ describe("Notification Routes", () => {
         });
     });
 
-    describe("PUT /notification/read", () => {
+    describe("PATCH /notification/read", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
-                method: "PUT",
+                method: "PATCH",
                 url: "/api/notifications/read",
-                payload: { ids: [] },
+                payload: { allRead: true },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(401);
         });
     });
 });

@@ -55,7 +55,7 @@ type FetchNotificationsResponse = z.infer<
 
 const updateNotificationsBodySchema = z
     .object({
-        allRead: z.boolean(),
+        allRead: z.literal(true),
         notificationIds: z.array(z.uuid()).min(1),
     })
     .partial()
@@ -90,24 +90,12 @@ type UpdateNotificationsResponse = z.infer<
     typeof updateNotificationsResponseSchema
 >;
 
-const fetchNotificationResponseSchema = z.object({
-    message: z.string(),
-    data: z.object({
-        notification: defaultNotificationSchema,
-    }),
-});
-
-type FetchNotificationResponse = z.infer<
-    typeof fetchNotificationResponseSchema
->;
-
 export {
     fetchNotificationsResponseSchema,
     defaultNotificationSchema,
     updateNotificationsResponseSchema,
     fetchNotificationsQuerySchema,
     updateNotificationsBodySchema,
-    fetchNotificationResponseSchema,
     toggleStarredBodySchema,
 };
 
@@ -116,6 +104,5 @@ export type {
     FetchNotificationsQueryInput,
     UpdateNotificationsResponse,
     UpdateNotificationsBodyInput,
-    FetchNotificationResponse,
     ToggleStarredBodyInput,
 };

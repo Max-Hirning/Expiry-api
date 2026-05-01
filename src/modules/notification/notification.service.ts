@@ -116,9 +116,10 @@ export const createNotificationService = (
             const notifications = await notificationRepository.updateMany({
                 where: {
                     userId: initiator.id,
+                    readAt: null,
                 },
                 data: {
-                    readAt: body.allRead ? new Date() : null,
+                    readAt: new Date(),
                 },
             });
 
