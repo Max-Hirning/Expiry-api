@@ -40,6 +40,46 @@ export const createNotificationService = (
     getNotifications: async ({ query, initiator }) => {
         const where: Prisma.NotificationWhereInput = {
             userId: initiator.id,
+            ...(query.search && {
+                OR: [
+                    {
+                        documentName: {
+                            mode: "insensitive",
+                            contains: query.search,
+                        },
+                    },
+                    {
+                        teamName: {
+                            mode: "insensitive",
+                            contains: query.search,
+                        },
+                    },
+                    {
+                        team: {
+                            name: {
+                                mode: "insensitive",
+                                contains: query.search,
+                            },
+                        },
+                    },
+                ],
+            }),
+            ...(query.isStarred !== undefined && {
+                isStarred: query.isStarred,
+            }),
+            ...(query.isRead === false && {
+                readAt: null,
+            }),
+            ...(query.isRead === true && {
+                readAt: {
+                    not: null,
+                },
+            }),
+            ...(query.types && {
+                type: {
+                    in: query.types,
+                },
+            }),
         };
 
         const notifications = await notificationRepository.findMany({

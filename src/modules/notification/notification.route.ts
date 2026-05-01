@@ -3,6 +3,7 @@ import { NotificationHandler } from "./notification.handler.js";
 import {
     fetchNotificationsQuerySchema,
     fetchNotificationsResponseSchema,
+    fetchNotificationResponseSchema,
     notificationParamsSchema,
     toggleStarredBodySchema,
     updateNotificationsBodySchema,
@@ -37,7 +38,7 @@ export const createNotificationRoutes = (
                 summary: "Update notification readAt",
                 params: notificationParamsSchema,
                 response: {
-                    200: fetchNotificationsResponseSchema,
+                    200: fetchNotificationResponseSchema,
                 },
             },
             preHandler: [fastify.authorization],

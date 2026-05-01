@@ -13,10 +13,6 @@ import {
     migrateTenantDatabase,
 } from "@/database/infra/tenant.js";
 import {
-    Prisma as MasterPrisma,
-    TeamMemberRoles,
-} from "@/database/master/generated/index.js";
-import {
     documents,
     images,
     tags,
@@ -35,6 +31,11 @@ import {
     createFileRepository,
     FileRepository,
 } from "@/database/team/repositories/file/file.repository.js";
+import {
+    Prisma as MasterPrisma,
+    TeamMemberRoles,
+    NotificationTypes,
+} from "@/database/master/generated/index.js";
 import {
     createDocumentRepository,
     DocumentRepository,
@@ -443,6 +444,86 @@ export const createApplicationService = (
                     });
 
                     await createTestTeamMembers(tx, createdUsers, createdTeams);
+
+                    const NOTIFICATIONS_PER_USER = 30;
+                    const READ_PROBABILITY = 0.5;
+                    const STARRED_PROBABILITY = 0.7;
+
+                    const notificationTypes = Object.values(NotificationTypes);
+
+                    const notificationData: MasterPrisma.NotificationCreateManyInput[] =
+                        createdUsers.flatMap((user) =>
+                            Array.from(
+                                { length: NOTIFICATIONS_PER_USER },
+                                () => {
+                                    const type =
+                                        notificationTypes[
+                                            getRandomInt(
+                                                0,
+                                                notificationTypes.length - 1
+                                            )
+                                        ];
+
+                                    const randomTeam =
+                                        createdTeams[
+                                            getRandomInt(
+                                                0,
+                                                createdTeams.length - 1
+                                            )
+                                        ];
+
+                                    const randomDocument =
+                                        documents[
+                                            getRandomInt(
+                                                0,
+                                                documents.length - 1
+                                            )
+                                        ];
+
+                                    const notification: MasterPrisma.NotificationCreateManyInput =
+                                        {
+                                            type,
+                                            userId: user.id,
+                                            readAt:
+                                                Math.random() > READ_PROBABILITY
+                                                    ? new Date()
+                                                    : null,
+                                            isStarred:
+                                                Math.random() >
+                                                STARRED_PROBABILITY,
+                                        };
+
+                                    if (
+                                        type ===
+                                            NotificationTypes.INVITE_USER_IN_TEAM ||
+                                        type ===
+                                            NotificationTypes.DELETE_USER_FROM_TEAM
+                                    ) {
+                                        notification.teamId = randomTeam.id;
+                                        notification.teamName = randomTeam.name;
+                                    } else if (
+                                        type ===
+                                        NotificationTypes.DELETE_DOCUMENT
+                                    ) {
+                                        notification.teamId = randomTeam.id;
+                                        notification.teamName = randomTeam.name;
+
+                                        notification.documentName =
+                                            randomDocument.name;
+                                    } else if (
+                                        type === NotificationTypes.DELETE_TEAM
+                                    ) {
+                                        notification.teamName = randomTeam.name;
+                                    }
+
+                                    return notification;
+                                }
+                            )
+                        );
+
+                    await tx.notification.createMany({
+                        data: notificationData,
+                    });
 
                     return createdTeams;
                 }

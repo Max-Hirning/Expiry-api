@@ -19,7 +19,23 @@ const defaultNotificationSchema = z.object({
     documentId: z.uuid().nullable(),
 });
 
-const fetchNotificationsQuerySchema = paginationQuerySchema;
+const fetchNotificationsQuerySchema = paginationQuerySchema
+    .extend({
+        search: z.string(),
+        isStarred: z.preprocess(
+            (val) => val === "true" || val === true,
+            z.boolean()
+        ),
+        isRead: z.preprocess(
+            (val) => val === "true" || val === true,
+            z.boolean()
+        ),
+        types: z.union([
+            z.enum(NotificationTypes).transform((val) => [val]),
+            z.array(z.enum(NotificationTypes)),
+        ]),
+    })
+    .partial();
 
 type FetchNotificationsQueryInput = z.infer<
     typeof fetchNotificationsQuerySchema
