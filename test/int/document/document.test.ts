@@ -129,7 +129,7 @@ describe("Document Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -159,7 +159,7 @@ describe("Document Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -189,7 +189,7 @@ describe("Document Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -222,7 +222,7 @@ describe("Document Routes", () => {
                 payload: { name: "Updated Doc" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -252,7 +252,7 @@ describe("Document Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 });

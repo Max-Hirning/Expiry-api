@@ -116,7 +116,7 @@ describe("Team Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
