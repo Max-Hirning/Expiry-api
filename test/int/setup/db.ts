@@ -58,21 +58,28 @@ const runMigrationFiles = async (client: Client, schema: string) => {
 
             const migrationSQL = await fs.readFile(migrationFilePath, "utf-8");
 
-            try {
-                await client.query(migrationSQL);
-            } catch (queryError: unknown) {
-                // Handle extension already exists errors (from parallel test execution)
-                if (
-                    queryError instanceof Error &&
-                    queryError.message.includes(
-                        "duplicate key value violates unique constraint"
-                    )
-                ) {
-                    console.warn(
-                        `Migration conflict (expected in parallel tests): ${queryError.message}`
-                    );
-                } else {
-                    throw queryError;
+            const statements = migrationSQL
+                .split(/;[ \t]*(?:\r?\n)+/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+
+            for (const statement of statements) {
+                try {
+                    await client.query(statement + ";");
+                } catch (queryError: unknown) {
+                    // Handle extension already exists errors (from parallel test execution)
+                    if (
+                        queryError instanceof Error &&
+                        queryError.message.includes(
+                            "duplicate key value violates unique constraint"
+                        )
+                    ) {
+                        console.warn(
+                            `Migration conflict (expected in parallel tests): ${queryError.message}`
+                        );
+                    } else {
+                        throw queryError;
+                    }
                 }
             }
         }

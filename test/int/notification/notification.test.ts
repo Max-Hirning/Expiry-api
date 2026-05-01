@@ -49,11 +49,12 @@ describe("Notification Routes", () => {
         });
     });
 
-    describe("PATCH /notification/:notificationId", () => {
+    describe("PATCH /notification", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
                 method: "PATCH",
-                url: "/api/notifications/notif-id",
+                url: "/api/notifications",
+                payload: { allRead: true },
             });
 
             expect([400, 401]).toContain(response.statusCode);

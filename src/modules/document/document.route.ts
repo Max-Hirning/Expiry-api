@@ -3,6 +3,10 @@ import { Actions } from "../auth/auth.types.js";
 import { DocumentHandler } from "./document.handler.js";
 import { teamParamsSchema } from "@/lib/validation/team/team.schema.js";
 import {
+    fetchFilesQuerySchema,
+    fetchFilesResponseSchema,
+} from "@/lib/validation/file/file.schema.js";
+import {
     createDocumentBodySchema,
     createDocumentResponseSchema,
     documentParamsSchema,
@@ -16,6 +20,26 @@ export const createDocumentRoutes = (
     fastify: FastifyInstance,
     documentHandler: DocumentHandler
 ) => {
+    fastify.get(
+        "/:documentId/files",
+        {
+            schema: {
+                tags: ["document"],
+                summary: "Fetch files",
+                params: documentParamsSchema,
+                querystring: fetchFilesQuerySchema,
+                response: {
+                    200: fetchFilesResponseSchema,
+                },
+            },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.GET_FILES),
+            ],
+        },
+        documentHandler.getFiles
+    );
+
     fastify.get(
         "/:documentId",
         {
