@@ -6,10 +6,9 @@ import {
     NotificationRepository,
 } from "@/database/master/repositories/notification/notification.repository.js";
 import {
-    FetchNotificationResponse,
     FetchNotificationsQueryInput,
     FetchNotificationsResponse,
-    NotificationParamsInput,
+    ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
     UpdateNotificationsResponse,
 } from "@/lib/validation/notification/notification.schema.js";
@@ -19,12 +18,12 @@ export type NotificationService = {
         query: FetchNotificationsQueryInput;
         initiator: FastifyRequest["user"];
     }) => Promise<FetchNotificationsResponse>;
-    toggleNotificationReadAt: (p: {
-        params: NotificationParamsInput;
-        initiator: FastifyRequest["user"];
-    }) => Promise<FetchNotificationResponse>;
     toggleNotificationsReadAt: (p: {
         body: UpdateNotificationsBodyInput;
+        initiator: FastifyRequest["user"];
+    }) => Promise<UpdateNotificationsResponse>;
+    toggleStarred: (p: {
+        body: ToggleStarredBodyInput;
         initiator: FastifyRequest["user"];
     }) => Promise<UpdateNotificationsResponse>;
 };
@@ -35,6 +34,46 @@ export const createNotificationService = (
     getNotifications: async ({ query, initiator }) => {
         const where: Prisma.NotificationWhereInput = {
             userId: initiator.id,
+            ...(query.search && {
+                OR: [
+                    {
+                        documentName: {
+                            mode: "insensitive",
+                            contains: query.search,
+                        },
+                    },
+                    {
+                        teamName: {
+                            mode: "insensitive",
+                            contains: query.search,
+                        },
+                    },
+                    {
+                        team: {
+                            name: {
+                                mode: "insensitive",
+                                contains: query.search,
+                            },
+                        },
+                    },
+                ],
+            }),
+            ...(query.isStarred !== undefined && {
+                isStarred: query.isStarred,
+            }),
+            ...(query.isRead === false && {
+                readAt: null,
+            }),
+            ...(query.isRead === true && {
+                readAt: {
+                    not: null,
+                },
+            }),
+            ...(query.types && {
+                type: {
+                    in: query.types,
+                },
+            }),
         };
 
         const notifications = await notificationRepository.findMany({
@@ -70,46 +109,63 @@ export const createNotificationService = (
             },
         };
     },
-    toggleNotificationReadAt: async ({ params, initiator }) => {
-        const notificationToUpdate =
-            await notificationRepository.findUniqueOrFail({
+    toggleNotificationsReadAt: async ({ body, initiator }) => {
+        let count = 0;
+
+        if (body.allRead) {
+            const notifications = await notificationRepository.updateMany({
                 where: {
-                    id: params.notificationId,
                     userId: initiator.id,
+                    readAt: null,
+                },
+                data: {
+                    readAt: new Date(),
                 },
             });
 
-        const notification = await notificationRepository.update({
-            where: {
-                id: params.notificationId,
+            count = notifications.count;
+
+            return {
+                message: "Notification updated successfully.",
+                data: {
+                    count,
+                },
+            };
+        }
+
+        if (body.notificationIds) {
+            const result = await notificationRepository.toggleRead({
+                notificationIds: body.notificationIds,
                 userId: initiator.id,
-            },
-            data: {
-                readAt: notificationToUpdate.readAt ? null : new Date(),
-            },
-        });
+            });
+
+            count = result.count;
+
+            return {
+                message: "Notification updated successfully.",
+                data: {
+                    count,
+                },
+            };
+        }
 
         return {
             message: "Notification updated successfully.",
             data: {
-                notification,
+                count,
             },
         };
     },
-    toggleNotificationsReadAt: async ({ body, initiator }) => {
-        const notifications = await notificationRepository.updateMany({
-            where: {
-                userId: initiator.id,
-            },
-            data: {
-                readAt: body.allRead ? new Date() : null,
-            },
+    toggleStarred: async ({ body, initiator }) => {
+        const result = await notificationRepository.toggleStarred({
+            notificationIds: body.notificationIds,
+            userId: initiator.id,
         });
 
         return {
-            message: "Notification updated successfully.",
+            message: "Notifications updated successfully.",
             data: {
-                count: notifications.count,
+                count: result.count,
             },
         };
     },

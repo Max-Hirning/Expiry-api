@@ -180,6 +180,40 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
+                if (action === Actions.GET_USERS) {
+                    return;
+                }
+
+                if (action === Actions.DELETE_INVITED_USER) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: UserParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            teamMembers: {
+                                some: {
+                                    userId: id,
+                                    role: TeamMemberRoles.OWNER,
+                                },
+                            },
+                            AND: {
+                                teamMembers: {
+                                    some: { userId: params.userId },
+                                },
+                            },
+                        },
+                    });
+
+                    if (team) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
                 if (Actions.DELETE_USER === action) {
                     const { id, role } = req.user;
 
@@ -359,6 +393,7 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         Actions.UPDATE_DOCUMENT,
                         Actions.GET_DOCUMENTS,
                         Actions.CREATE_DOCUMENT,
+                        Actions.GET_FILES,
                     ].includes(action)
                 ) {
                     const { id } = req.user;
@@ -375,6 +410,27 @@ const configureJwt = async (fastify: FastifyInstance) => {
                                     userId: id,
                                 },
                             },
+                        },
+                    });
+
+                    if (team) {
+                        return;
+                    }
+
+                    throw new ForbiddenError("Forbidden");
+                }
+
+                if ([Actions.GET_TAG, Actions.GET_TAGS].includes(action)) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: TeamParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: { some: { userId: id } },
                         },
                     });
 
@@ -448,6 +504,8 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         await teamClient.$disconnect();
                     }
                 }
+
+                throw new ForbiddenError("Forbidden");
             };
         }
     );

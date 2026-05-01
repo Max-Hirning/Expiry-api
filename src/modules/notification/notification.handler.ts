@@ -3,7 +3,7 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { NotificationService } from "./notification.service.js";
 import {
     FetchNotificationsQueryInput,
-    NotificationParamsInput,
+    ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
 } from "@/lib/validation/notification/notification.schema.js";
 
@@ -15,16 +15,16 @@ export type NotificationHandler = {
         reply: FastifyReply
     ) => Promise<void>;
 
-    toggleNotificationReadAt: (
+    toggleNotificationsReadAt: (
         request: FastifyRequest<{
-            Params: NotificationParamsInput;
+            Body: UpdateNotificationsBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
 
-    toggleNotificationsReadAt: (
+    toggleStarred: (
         request: FastifyRequest<{
-            Body: UpdateNotificationsBodyInput;
+            Body: ToggleStarredBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
@@ -44,20 +44,20 @@ export const createNotificationHandler = (
 
             return reply.send(data);
         },
-        toggleNotificationReadAt: async (request, reply) => {
-            const { params, user } = request;
+        toggleNotificationsReadAt: async (request, reply) => {
+            const { body, user } = request;
 
-            const data = await notificationService.toggleNotificationReadAt({
-                params,
+            const data = await notificationService.toggleNotificationsReadAt({
+                body,
                 initiator: user,
             });
 
             return reply.send(data);
         },
-        toggleNotificationsReadAt: async (request, reply) => {
+        toggleStarred: async (request, reply) => {
             const { body, user } = request;
 
-            const data = await notificationService.toggleNotificationsReadAt({
+            const data = await notificationService.toggleStarred({
                 body,
                 initiator: user,
             });

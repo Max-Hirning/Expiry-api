@@ -44,7 +44,7 @@ export const createFileRepository = (
             const file = await client.file.findUnique(args);
 
             if (!file) {
-                throw new NotFoundError("Document tag not found.");
+                throw new NotFoundError("File not found.");
             }
 
             return file as Prisma.FileGetPayload<TArgs>;
@@ -55,7 +55,7 @@ export const createFileRepository = (
             const file = await client.file.findFirst(args);
 
             if (!file) {
-                throw new NotFoundError("Document tag not found.");
+                throw new NotFoundError("File not found.");
             }
 
             return file as Prisma.FileGetPayload<TArgs>;
