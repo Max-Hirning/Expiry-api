@@ -9,11 +9,16 @@ import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { ApplicationService } from "../application/application.service.js";
 import { Prisma as PrismaMaster } from "@/database/master/generated/index.js";
+import { defaultFileSelector } from "@/database/team/repositories/file/file.repository.js";
 import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {
     NotificationTypes,
     TeamMemberRoles,
 } from "@/database/master/generated/index.js";
+import {
+    FetchFilesQueryInput,
+    FetchFilesResponse,
+} from "@/lib/validation/file/file.schema.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import {
     ActionLogTypes,
@@ -65,6 +70,11 @@ export type DocumentService = {
         body: UpdateDocumentBodyInput;
         initiator: FastifyRequest["user"];
     }) => Promise<UpdateDocumentResponse>;
+    getFiles: (p: {
+        params: DocumentParamsInput;
+        query: FetchFilesQueryInput;
+        initiator: FastifyRequest["user"];
+    }) => Promise<FetchFilesResponse>;
 };
 
 export const createDocumentService = (
@@ -837,6 +847,28 @@ export const createDocumentService = (
                         createdFilesIds.includes(documentUploadPayload.id)
                 ),
             },
+        };
+    },
+
+    getFiles: async ({ params, query }) => {
+        const fileRepository = await applicationService.initFileRepository(
+            params.teamId
+        );
+
+        const files = await fileRepository.findMany({
+            where: { documentId: params.documentId },
+            orderBy: { createdAt: PrismaTeam.SortOrder.desc },
+            ...(query.cursor && { cursor: { id: query.cursor }, skip: 1 }),
+            take: query.limit,
+            select: defaultFileSelector,
+        });
+
+        const nextCursor =
+            files.length === query.limit ? files[files.length - 1].id : null;
+
+        return {
+            message: "Files fetched successfully.",
+            data: { files, pagination: { nextCursor } },
         };
     },
 });

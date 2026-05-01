@@ -18,6 +18,7 @@ export enum Actions {
     UPDATE_DOCUMENT,
     GET_DOCUMENTS,
     CREATE_DOCUMENT,
+    GET_FILES,
     GET_TAG,
     GET_TAGS,
     UPDATE_TEAM_MEMBER_ROLE,

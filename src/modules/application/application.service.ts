@@ -32,6 +32,10 @@ import {
     ChatRepository,
 } from "@/database/team/repositories/chat/chat.repository.js";
 import {
+    createFileRepository,
+    FileRepository,
+} from "@/database/team/repositories/file/file.repository.js";
+import {
     createDocumentRepository,
     DocumentRepository,
 } from "@/database/team/repositories/document/docuement.repository.js";
@@ -77,6 +81,7 @@ export type ApplicationService = {
     initChatMessageReadStatusRepository: (
         teamId: string
     ) => Promise<ChatMessageReadStatusRepository>;
+    initFileRepository: (teamId: string) => Promise<FileRepository>;
     initTeamTenantClient: (teamId: string) => Promise<TeamPrismaClient>;
     setTestData: () => Promise<string>;
 };
@@ -294,6 +299,24 @@ export const createApplicationService = (
         });
 
         const repository = createChatMessageReadStatusRepository(
+            prisma,
+            config.MASTER_DATABASE_URL.replaceAll(
+                "5432/expiry",
+                `5432/${teamId}`
+            )
+        );
+
+        return repository;
+    };
+
+    const initFileRepository = async (teamId: string) => {
+        await teamRepository.findUniqueOrFail({
+            where: {
+                id: teamId,
+            },
+        });
+
+        const repository = createFileRepository(
             prisma,
             config.MASTER_DATABASE_URL.replaceAll(
                 "5432/expiry",
@@ -721,6 +744,7 @@ export const createApplicationService = (
         initChatMemberRepository,
         initChatMessageRepository,
         initChatMessageReadStatusRepository,
+        initFileRepository,
     };
 };
 

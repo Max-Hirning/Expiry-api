@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { DocumentService } from "./document.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
+import { FetchFilesQueryInput } from "@/lib/validation/file/file.schema.js";
 import {
     CreateDocumentBodyInput,
     DocumentParamsInput,
@@ -40,6 +41,13 @@ export type DocumentHandler = {
         request: FastifyRequest<{
             Params: DocumentParamsInput;
             Body: UpdateDocumentBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+    getFiles: (
+        request: FastifyRequest<{
+            Params: DocumentParamsInput;
+            Querystring: FetchFilesQueryInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
@@ -101,6 +109,18 @@ export const createDocumentHandler = (
             const data = await documentService.updateDocument({
                 params,
                 body,
+                initiator: user,
+            });
+
+            return reply.send(data);
+        },
+
+        getFiles: async (request, reply) => {
+            const { params, query, user } = request;
+
+            const data = await documentService.getFiles({
+                params,
+                query,
                 initiator: user,
             });
 
