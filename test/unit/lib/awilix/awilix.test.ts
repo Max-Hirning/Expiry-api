@@ -14,7 +14,7 @@ describe("addDIResolverName", () => {
     it("should attach the RESOLVER symbol with the given name", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log");
+        addDIResolverName(fn, "log");
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -25,7 +25,7 @@ describe("addDIResolverName", () => {
     it("should return the same function reference", () => {
         const fn = createStubService();
 
-        const result = addDIResolverName(fn as never, "log");
+        const result = addDIResolverName(fn, "log");
 
         expect(result).toBe(fn);
     });
@@ -33,7 +33,7 @@ describe("addDIResolverName", () => {
     it("should not set lifetime when not provided", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log");
+        addDIResolverName(fn, "log");
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -43,7 +43,7 @@ describe("addDIResolverName", () => {
     it("should set lifetime when provided", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log", Lifetime.SINGLETON);
+        addDIResolverName(fn, "log", Lifetime.SINGLETON);
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -53,7 +53,7 @@ describe("addDIResolverName", () => {
     it("should support TRANSIENT lifetime", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log", Lifetime.TRANSIENT);
+        addDIResolverName(fn, "log", Lifetime.TRANSIENT);
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -63,7 +63,7 @@ describe("addDIResolverName", () => {
     it("should support SCOPED lifetime", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log", Lifetime.SCOPED);
+        addDIResolverName(fn, "log", Lifetime.SCOPED);
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -73,8 +73,8 @@ describe("addDIResolverName", () => {
     it("should overwrite existing RESOLVER when called multiple times", () => {
         const fn = createStubService();
 
-        addDIResolverName(fn as never, "log");
-        addDIResolverName(fn as never, "config");
+        addDIResolverName(fn, "log");
+        addDIResolverName(fn, "config");
 
         const resolver = (fn as unknown as WithResolver)[RESOLVER];
 
@@ -89,7 +89,7 @@ describe("addDIResolverName", () => {
         };
         fn.customProp = "value";
 
-        addDIResolverName(fn as never, "log");
+        addDIResolverName(fn, "log");
 
         expect(fn.customProp).toBe("value");
     });

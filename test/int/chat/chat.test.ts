@@ -2,18 +2,26 @@ import { FastifyInstance } from "fastify";
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
 import { testHelpers } from "../setup/helpers.js";
+import { VALID_UUID, VALID_UUID_2 } from "../setup/fixtures.js";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-
-const VALID_UUID = "00000000-0000-0000-0000-000000000001";
-const VALID_UUID_2 = "00000000-0000-0000-0000-000000000002";
 
 describe("Chat Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
+    let authToken: string;
 
     beforeAll(async () => {
         cleanup = await setupDatabase();
         app = await createTestApp();
+
+        const user = await testHelpers.createUser();
+        const signInResponse = await app.inject({
+            method: "POST",
+            url: "/api/auth/sign-in",
+            payload: { identifier: user.email, password: user.password },
+        });
+        const { data } = JSON.parse(signInResponse.body);
+        authToken = data.token;
     });
 
     afterAll(async () => {
@@ -59,20 +67,20 @@ describe("Chat Routes", () => {
             const response = await app.inject({
                 method: "GET",
                 url: `/api/chats/${VALID_UUID}?limit=0`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should reject limit exceeding maximum", async () => {
             const response = await app.inject({
                 method: "GET",
                 url: `/api/chats/${VALID_UUID}?limit=100`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 
@@ -130,20 +138,20 @@ describe("Chat Routes", () => {
             const response = await app.inject({
                 method: "GET",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages?limit=0`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should reject invalid direction value", async () => {
             const response = await app.inject({
                 method: "GET",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages?direction=sideways`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 
@@ -162,22 +170,22 @@ describe("Chat Routes", () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: {},
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with empty message string", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: { message: "" },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with invalid chatId format", async () => {
@@ -206,11 +214,11 @@ describe("Chat Routes", () => {
             const response = await app.inject({
                 method: "PUT",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages/${VALID_UUID}`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: {},
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with invalid messageId format", async () => {
@@ -269,33 +277,33 @@ describe("Chat Routes", () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages/read`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: { messageIds: [] },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with missing messageIds", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages/read`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: {},
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with invalid messageId format in array", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/chats/${VALID_UUID}/${VALID_UUID_2}/messages/read`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: { messageIds: ["not-a-uuid"] },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 });

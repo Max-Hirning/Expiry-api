@@ -2,9 +2,8 @@ import { FastifyInstance } from "fastify";
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
 import { testHelpers } from "../setup/helpers.js";
+import { VALID_UUID } from "../setup/fixtures.js";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-
-const VALID_UUID = "00000000-0000-0000-0000-000000000001";
 
 describe("Notification Routes", () => {
     let app: FastifyInstance;
@@ -58,26 +57,22 @@ describe("Notification Routes", () => {
                 },
             });
 
-            if (signInResponse.statusCode !== 200) {
-                return;
-            }
+            expect(signInResponse.statusCode).toBe(200);
 
-            const { data } = JSON.parse(signInResponse.body);
-            const token = data?.token;
+            const cookieHeader = signInResponse.cookies
+                .map((c) => `${c.name}=${c.value}`)
+                .join("; ");
 
             const response = await app.inject({
                 method: "GET",
-                url: "/api/notifications",
-                headers: { authorization: `Bearer ${token}` },
+                url: "/api/notifications?page=1&perPage=10",
+                headers: { cookie: cookieHeader },
             });
 
-            expect([200, 401]).toContain(response.statusCode);
-
-            if (response.statusCode === 200) {
-                const body = JSON.parse(response.body);
-                expect(body.data).toHaveProperty("notifications");
-                expect(Array.isArray(body.data.notifications)).toBe(true);
-            }
+            expect(response.statusCode).toBe(200);
+            const body = JSON.parse(response.body);
+            expect(body.data).toHaveProperty("notifications");
+            expect(Array.isArray(body.data.notifications)).toBe(true);
         });
     });
 
