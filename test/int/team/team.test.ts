@@ -2,17 +2,26 @@ import { FastifyInstance } from "fastify";
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
 import { testHelpers } from "../setup/helpers.js";
+import { VALID_UUID } from "../setup/fixtures.js";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-
-const VALID_UUID = "00000000-0000-0000-0000-000000000001";
 
 describe("Team Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
+    let authToken: string;
 
     beforeAll(async () => {
         cleanup = await setupDatabase();
         app = await createTestApp();
+
+        const user = await testHelpers.createUser();
+        const signInResponse = await app.inject({
+            method: "POST",
+            url: "/api/auth/sign-in",
+            payload: { identifier: user.email, password: user.password },
+        });
+        const { data } = JSON.parse(signInResponse.body);
+        authToken = data.token;
     });
 
     afterAll(async () => {
@@ -40,11 +49,11 @@ describe("Team Routes", () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/teams",
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: {},
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
         it("should fail with invalid token", async () => {
@@ -156,13 +165,13 @@ describe("Team Routes", () => {
             const response = await app.inject({
                 method: "PUT",
                 url: `/api/teams/${VALID_UUID}`,
-                headers: { authorization: "Bearer invalid-token" },
+                headers: { authorization: `Bearer ${authToken}` },
                 payload: {
                     teamMembersUsersToDeleteIds: ["not-a-uuid"],
                 },
             });
 
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 

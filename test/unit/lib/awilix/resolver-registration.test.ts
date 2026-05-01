@@ -1,4 +1,4 @@
-import { RESOLVER } from "awilix";
+import { RESOLVER, Lifetime } from "awilix";
 import { describe, expect, it, vi } from "vitest";
 import { resolverOptionsRegister } from "@/lib/awilix/resolver-registration.js";
 import type { AwilixContainer, Resolver } from "awilix";
@@ -72,9 +72,12 @@ describe("resolverOptionsRegister", () => {
         const di = makeContainer(false);
         const register = getRegister(di);
         const fn = makeStubFn("userService");
-        const options = { lifetime: "SINGLETON" as const };
 
-        expect(() => register(fn as never, options)).not.toThrow();
+        const result = register(fn as never, { lifetime: Lifetime.SINGLETON });
+
+        expect((result as unknown as { lifetime: string }).lifetime).toBe(
+            Lifetime.SINGLETON
+        );
     });
 
     it("should not throw for distinct resolver names", () => {

@@ -1,6 +1,7 @@
 import { JWT } from "@fastify/jwt";
 import { UserService } from "./user.service.js";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { User } from "@/database/master/generated/index.js";
 import {
@@ -134,7 +135,13 @@ export const createHandler = (
         getInvitedUser: async (request, reply) => {
             const { query } = request;
 
-            const { id } = jwt.verify<Pick<User, "id">>(query.invitationId);
+            let id: string;
+
+            try {
+                ({ id } = jwt.verify<Pick<User, "id">>(query.invitationId));
+            } catch {
+                throw BadRequestError("Invalid invitation token");
+            }
 
             const data = await userService.getUser({
                 params: {
