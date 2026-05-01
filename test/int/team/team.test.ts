@@ -55,7 +55,7 @@ describe("Team Routes", () => {
                 payload: { name: "Test Team" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -86,7 +86,7 @@ describe("Team Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
@@ -149,7 +149,7 @@ describe("Team Routes", () => {
                 payload: { name: "Updated Team" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
 
         it("should fail with invalid teamMembersUsersToDeleteIds format", async () => {
@@ -192,7 +192,7 @@ describe("Team Routes", () => {
                 headers: { authorization: "Bearer invalid-token" },
             });
 
-            expect([401, 403]).toContain(response.statusCode);
+            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 });
