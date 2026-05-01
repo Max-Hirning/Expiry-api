@@ -49,10 +49,10 @@ describe("Notification Routes", () => {
         });
     });
 
-    describe("PATCH /notification/read", () => {
+    describe("PUT /notification/read", () => {
         it("should fail without authentication", async () => {
             const response = await app.inject({
-                method: "PATCH",
+                method: "PUT",
                 url: "/api/notifications/read",
                 payload: { allRead: true },
             });
