@@ -4,6 +4,7 @@ import { NotificationService } from "./notification.service.js";
 import {
     FetchNotificationsQueryInput,
     NotificationParamsInput,
+    ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
 } from "@/lib/validation/notification/notification.schema.js";
 
@@ -25,6 +26,12 @@ export type NotificationHandler = {
     toggleNotificationsReadAt: (
         request: FastifyRequest<{
             Body: UpdateNotificationsBodyInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+    toggleStarred: (
+        request: FastifyRequest<{
+            Body: ToggleStarredBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
@@ -58,6 +65,16 @@ export const createNotificationHandler = (
             const { body, user } = request;
 
             const data = await notificationService.toggleNotificationsReadAt({
+                body,
+                initiator: user,
+            });
+
+            return reply.send(data);
+        },
+        toggleStarred: async (request, reply) => {
+            const { body, user } = request;
+
+            const data = await notificationService.toggleStarred({
                 body,
                 initiator: user,
             });

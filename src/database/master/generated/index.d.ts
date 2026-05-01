@@ -13398,6 +13398,7 @@ export namespace Prisma {
         updatedAt: Date | null;
         type: $Enums.NotificationTypes | null;
         readAt: Date | null;
+        isStarred: boolean | null;
         userId: string | null;
         teamName: string | null;
         teamId: string | null;
@@ -13411,6 +13412,7 @@ export namespace Prisma {
         updatedAt: Date | null;
         type: $Enums.NotificationTypes | null;
         readAt: Date | null;
+        isStarred: boolean | null;
         userId: string | null;
         teamName: string | null;
         teamId: string | null;
@@ -13424,6 +13426,7 @@ export namespace Prisma {
         updatedAt: number;
         type: number;
         readAt: number;
+        isStarred: number;
         userId: number;
         teamName: number;
         teamId: number;
@@ -13438,6 +13441,7 @@ export namespace Prisma {
         updatedAt?: true;
         type?: true;
         readAt?: true;
+        isStarred?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -13451,6 +13455,7 @@ export namespace Prisma {
         updatedAt?: true;
         type?: true;
         readAt?: true;
+        isStarred?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -13464,6 +13469,7 @@ export namespace Prisma {
         updatedAt?: true;
         type?: true;
         readAt?: true;
+        isStarred?: true;
         userId?: true;
         teamName?: true;
         teamId?: true;
@@ -13559,6 +13565,7 @@ export namespace Prisma {
         updatedAt: Date;
         type: $Enums.NotificationTypes;
         readAt: Date | null;
+        isStarred: boolean;
         userId: string;
         teamName: string | null;
         teamId: string | null;
@@ -13595,6 +13602,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             type?: boolean;
             readAt?: boolean;
+            isStarred?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -13615,6 +13623,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             type?: boolean;
             readAt?: boolean;
+            isStarred?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -13635,6 +13644,7 @@ export namespace Prisma {
             updatedAt?: boolean;
             type?: boolean;
             readAt?: boolean;
+            isStarred?: boolean;
             userId?: boolean;
             teamName?: boolean;
             teamId?: boolean;
@@ -13652,6 +13662,7 @@ export namespace Prisma {
         updatedAt?: boolean;
         type?: boolean;
         readAt?: boolean;
+        isStarred?: boolean;
         userId?: boolean;
         teamName?: boolean;
         teamId?: boolean;
@@ -13667,6 +13678,7 @@ export namespace Prisma {
         | "updatedAt"
         | "type"
         | "readAt"
+        | "isStarred"
         | "userId"
         | "teamName"
         | "teamId"
@@ -13708,6 +13720,7 @@ export namespace Prisma {
                 updatedAt: Date;
                 type: $Enums.NotificationTypes;
                 readAt: Date | null;
+                isStarred: boolean;
                 userId: string;
                 teamName: string | null;
                 teamId: string | null;
@@ -14340,6 +14353,7 @@ export namespace Prisma {
         readonly updatedAt: FieldRef<"Notification", "DateTime">;
         readonly type: FieldRef<"Notification", "NotificationTypes">;
         readonly readAt: FieldRef<"Notification", "DateTime">;
+        readonly isStarred: FieldRef<"Notification", "Boolean">;
         readonly userId: FieldRef<"Notification", "String">;
         readonly teamName: FieldRef<"Notification", "String">;
         readonly teamId: FieldRef<"Notification", "String">;
@@ -14961,6 +14975,7 @@ export namespace Prisma {
         updatedAt: "updatedAt";
         type: "type";
         readAt: "readAt";
+        isStarred: "isStarred";
         userId: "userId";
         teamName: "teamName";
         teamId: "teamId";
@@ -15926,6 +15941,7 @@ export namespace Prisma {
             | EnumNotificationTypesFilter<"Notification">
             | $Enums.NotificationTypes;
         readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null;
+        isStarred?: BoolFilter<"Notification"> | boolean;
         userId?: UuidFilter<"Notification"> | string;
         teamName?: StringNullableFilter<"Notification"> | string | null;
         teamId?: UuidNullableFilter<"Notification"> | string | null;
@@ -15941,6 +15957,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         type?: SortOrder;
         readAt?: SortOrderInput | SortOrder;
+        isStarred?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrderInput | SortOrder;
         teamId?: SortOrderInput | SortOrder;
@@ -15966,6 +15983,7 @@ export namespace Prisma {
                 | Date
                 | string
                 | null;
+            isStarred?: BoolFilter<"Notification"> | boolean;
             userId?: UuidFilter<"Notification"> | string;
             teamName?: StringNullableFilter<"Notification"> | string | null;
             teamId?: UuidNullableFilter<"Notification"> | string | null;
@@ -15983,6 +16001,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         type?: SortOrder;
         readAt?: SortOrderInput | SortOrder;
+        isStarred?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrderInput | SortOrder;
         teamId?: SortOrderInput | SortOrder;
@@ -16018,6 +16037,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolWithAggregatesFilter<"Notification"> | boolean;
         userId?: UuidWithAggregatesFilter<"Notification"> | string;
         teamName?:
             | StringNullableWithAggregatesFilter<"Notification">
@@ -16827,6 +16847,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -16840,6 +16861,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         userId: string;
         teamName?: string | null;
         teamId?: string | null;
@@ -16859,6 +16881,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -16878,6 +16901,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -16891,6 +16915,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         userId: string;
         teamName?: string | null;
         teamId?: string | null;
@@ -16910,6 +16935,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -16927,6 +16953,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -17712,6 +17739,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         type?: SortOrder;
         readAt?: SortOrder;
+        isStarred?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -17725,6 +17753,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         type?: SortOrder;
         readAt?: SortOrder;
+        isStarred?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -17738,6 +17767,7 @@ export namespace Prisma {
         updatedAt?: SortOrder;
         type?: SortOrder;
         readAt?: SortOrder;
+        isStarred?: SortOrder;
         userId?: SortOrder;
         teamName?: SortOrder;
         teamId?: SortOrder;
@@ -19267,6 +19297,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -19279,6 +19310,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         teamName?: string | null;
         teamId?: string | null;
         documentName?: string | null;
@@ -19489,6 +19521,7 @@ export namespace Prisma {
             | EnumNotificationTypesFilter<"Notification">
             | $Enums.NotificationTypes;
         readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null;
+        isStarred?: BoolFilter<"Notification"> | boolean;
         userId?: UuidFilter<"Notification"> | string;
         teamName?: StringNullableFilter<"Notification"> | string | null;
         teamId?: UuidNullableFilter<"Notification"> | string | null;
@@ -20042,6 +20075,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         teamName?: string | null;
         documentName?: string | null;
         documentId?: string | null;
@@ -20054,6 +20088,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         userId: string;
         teamName?: string | null;
         documentName?: string | null;
@@ -20828,6 +20863,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         teamName?: string | null;
         teamId?: string | null;
         documentName?: string | null;
@@ -20876,6 +20912,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -20894,6 +20931,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -20912,6 +20950,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         teamId?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -20924,6 +20963,7 @@ export namespace Prisma {
         updatedAt?: Date | string;
         type: $Enums.NotificationTypes;
         readAt?: Date | string | null;
+        isStarred?: boolean;
         userId: string;
         teamName?: string | null;
         documentName?: string | null;
@@ -20950,6 +20990,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentId?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -20968,6 +21009,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;
@@ -20986,6 +21028,7 @@ export namespace Prisma {
             | Date
             | string
             | null;
+        isStarred?: BoolFieldUpdateOperationsInput | boolean;
         userId?: StringFieldUpdateOperationsInput | string;
         teamName?: NullableStringFieldUpdateOperationsInput | string | null;
         documentName?: NullableStringFieldUpdateOperationsInput | string | null;

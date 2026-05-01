@@ -205,8 +205,9 @@ model Notification {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  type   NotificationTypes
-  readAt DateTime?         @map("read_at")
+  type      NotificationTypes
+  readAt    DateTime?         @map("read_at")
+  isStarred Boolean           @default(false) @map("is_starred")
 
   userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

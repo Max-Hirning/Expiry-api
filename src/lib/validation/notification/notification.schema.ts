@@ -11,6 +11,7 @@ const defaultNotificationSchema = z.object({
     updatedAt: z.date(),
     type: z.enum(NotificationTypes),
     readAt: z.date().nullable(),
+    isStarred: z.boolean(),
     userId: z.uuid(),
     teamName: z.string().nullable(),
     teamId: z.uuid().nullable(),
@@ -39,6 +40,12 @@ type FetchNotificationsResponse = z.infer<
 const updateNotificationsBodySchema = z.object({
     allRead: z.boolean(),
 });
+
+const toggleStarredBodySchema = z.object({
+    notificationIds: z.array(z.uuid()).min(1),
+});
+
+type ToggleStarredBodyInput = z.infer<typeof toggleStarredBodySchema>;
 
 type UpdateNotificationsBodyInput = z.infer<
     typeof updateNotificationsBodySchema
@@ -80,6 +87,7 @@ export {
     fetchNotificationsQuerySchema,
     updateNotificationsBodySchema,
     fetchNotificationResponseSchema,
+    toggleStarredBodySchema,
 };
 
 export type {
@@ -89,4 +97,5 @@ export type {
     UpdateNotificationsResponse,
     UpdateNotificationsBodyInput,
     FetchNotificationResponse,
+    ToggleStarredBodyInput,
 };

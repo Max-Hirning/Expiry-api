@@ -10,6 +10,7 @@ import {
     FetchNotificationsQueryInput,
     FetchNotificationsResponse,
     NotificationParamsInput,
+    ToggleStarredBodyInput,
     UpdateNotificationsBodyInput,
     UpdateNotificationsResponse,
 } from "@/lib/validation/notification/notification.schema.js";
@@ -25,6 +26,10 @@ export type NotificationService = {
     }) => Promise<FetchNotificationResponse>;
     toggleNotificationsReadAt: (p: {
         body: UpdateNotificationsBodyInput;
+        initiator: FastifyRequest["user"];
+    }) => Promise<UpdateNotificationsResponse>;
+    toggleStarred: (p: {
+        body: ToggleStarredBodyInput;
         initiator: FastifyRequest["user"];
     }) => Promise<UpdateNotificationsResponse>;
 };
@@ -110,6 +115,19 @@ export const createNotificationService = (
             message: "Notification updated successfully.",
             data: {
                 count: notifications.count,
+            },
+        };
+    },
+    toggleStarred: async ({ body, initiator }) => {
+        const result = await notificationRepository.toggleStarred({
+            notificationIds: body.notificationIds,
+            userId: initiator.id,
+        });
+
+        return {
+            message: "Notifications updated successfully.",
+            data: {
+                count: result.count,
             },
         };
     },

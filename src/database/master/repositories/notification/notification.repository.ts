@@ -9,6 +9,7 @@ export const defaultNotificationSelector = {
     createdAt: true,
     updatedAt: true,
     readAt: true,
+    isStarred: true,
     type: true,
     userId: true,
     teamName: true,
@@ -24,6 +25,10 @@ export type NotificationRepository = BaseRepository<"notification"> & {
     findFirstOrFail: <TArgs extends Prisma.NotificationFindFirstArgs>(
         args: TArgs
     ) => Promise<Prisma.NotificationGetPayload<TArgs>>;
+    toggleStarred: (p: {
+        notificationIds: string[];
+        userId: string;
+    }) => Promise<{ count: number }>;
 };
 
 export const createNotificationRepository = ({
@@ -56,6 +61,23 @@ export const createNotificationRepository = ({
             }
 
             return notification as Prisma.NotificationGetPayload<TArgs>;
+        },
+        toggleStarred: async ({ notificationIds, userId }) => {
+            const result = await prisma.$queryRaw<{ count: bigint }[]>`
+                WITH updated AS (
+                    UPDATE notifications
+                    SET
+                        is_starred = NOT is_starred,
+                        updated_at = now()
+                    WHERE
+                        id = ANY(${notificationIds}::uuid[])
+                        AND user_id = ${userId}::uuid
+                    RETURNING id
+                )
+                SELECT COUNT(*) AS count FROM updated
+            `;
+
+            return { count: Number(result[0]?.count ?? 0) };
         },
     };
 };

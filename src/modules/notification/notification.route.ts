@@ -4,6 +4,7 @@ import {
     fetchNotificationsQuerySchema,
     fetchNotificationsResponseSchema,
     notificationParamsSchema,
+    toggleStarredBodySchema,
     updateNotificationsBodySchema,
     updateNotificationsResponseSchema,
 } from "@/lib/validation/notification/notification.schema.js";
@@ -58,5 +59,21 @@ export const createNotificationRoutes = (
             preHandler: [fastify.authorization],
         },
         notificationHandler.toggleNotificationsReadAt
+    );
+
+    fastify.patch(
+        "/starred",
+        {
+            schema: {
+                tags: ["notification"],
+                summary: "Toggle starred on notifications",
+                body: toggleStarredBodySchema,
+                response: {
+                    200: updateNotificationsResponseSchema,
+                },
+            },
+            preHandler: [fastify.authorization],
+        },
+        notificationHandler.toggleStarred
     );
 };
