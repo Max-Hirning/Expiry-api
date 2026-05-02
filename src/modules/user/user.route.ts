@@ -152,7 +152,7 @@ export const createUserRoutes = (
                 fastify.checkAccess(Actions.UPDATE_USER_PASSWORD),
             ],
         },
-        userHandler.deleteUser
+        userHandler.updateUserPassword
     );
 
     fastify.get(

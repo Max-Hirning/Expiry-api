@@ -107,16 +107,12 @@ export const createHandler = (
         },
 
         updateUserPassword: async (request, reply) => {
-            const { params, user, body } = request;
+            const { params, body } = request;
 
             const data = await userService.updateUserPassword({
                 params,
                 body,
             });
-
-            if (params.userId === user.id) {
-                request.resetTokens = true;
-            }
 
             return reply.send(data);
         },

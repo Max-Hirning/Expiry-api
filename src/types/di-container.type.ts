@@ -37,6 +37,7 @@ import { TeamMemberRepository } from "@/database/master/repositories/team-member
 import { ChatMessageRepository } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 import { DocumentTagRepository } from "@/database/team/repositories/document-tag/document-tag.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import { RefreshTokenRepository } from "@/database/master/repositories/refresh-token/refresh-token.repository.js";
 import { ChatMessageReadStatusRepository } from "@/database/team/repositories/chat-message-read-status/chat-message-read-status.repository.js";
 import { DocumentExtractedFieldRepository } from "@/database/team/repositories/document-extracted-field/document-extracted-field.repository.js";
 
@@ -70,6 +71,8 @@ export type Cradle = {
     gcpService: GcpService;
 
     documentExtractedFieldRepository: DocumentExtractedFieldRepository;
+
+    refreshTokenRepository: RefreshTokenRepository;
 
     fileRepository: FileRepository;
 

@@ -4,10 +4,10 @@ import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
 import { ApplicationService } from "../application/application.service.js";
+import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     invitedRoles,
@@ -16,6 +16,7 @@ import {
 } from "./user.constants.js";
 import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
+import { RefreshTokenRepository } from "@/database/master/repositories/refresh-token/refresh-token.repository.js";
 import {
     defaultUserSelector,
     UserRepository,
@@ -86,6 +87,8 @@ export const createService = (
     userRepository: UserRepository,
     notificationRepository: NotificationRepository,
     jwt: JWT,
+    refreshTokenRepository: RefreshTokenRepository,
+    prisma: FastifyInstance["prisma"],
     log: FastifyBaseLogger,
     gcpService: GcpService,
     teamRepository: TeamRepository,
@@ -322,15 +325,22 @@ export const createService = (
 
             const password = await hashing.hashPassword(body.password);
 
-            await userRepository.update({
-                where: {
-                    id: params.userId,
-                },
-                data: {
-                    password,
-                },
-                select: defaultUserSelector,
-            });
+            await prisma.master.$transaction([
+                userRepository.update({
+                    where: {
+                        id: params.userId,
+                    },
+                    data: {
+                        password,
+                    },
+                    select: defaultUserSelector,
+                }),
+                refreshTokenRepository.deleteMany({
+                    where: {
+                        userId: params.userId,
+                    },
+                }),
+            ]);
 
             const user = await getUser(params.userId);
 
