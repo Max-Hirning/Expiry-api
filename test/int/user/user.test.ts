@@ -9,12 +9,16 @@ describe("User Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
     let authToken: string;
+    let userId: string;
+    let userPassword: string;
 
     beforeAll(async () => {
         cleanup = await setupDatabase();
         app = await createTestApp();
 
         const user = await testHelpers.createUser();
+        userId = user.id;
+        userPassword = user.password;
         const signInResponse = await app.inject({
             method: "POST",
             url: "/api/auth/sign-in",
@@ -342,6 +346,37 @@ describe("User Routes", () => {
             });
 
             expect(response.statusCode).toBe(400);
+        });
+
+        it("should fail with wrong old password", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${userId}/password`,
+                headers: { authorization: `Bearer ${authToken}` },
+                payload: {
+                    oldPassword: "WrongPassword999!",
+                    password: "NewPassword123!",
+                },
+            });
+
+            expect(response.statusCode).toBe(409);
+        });
+
+        it("should succeed and invalidate refresh tokens on correct password change", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/users/${userId}/password`,
+                headers: { authorization: `Bearer ${authToken}` },
+                payload: {
+                    oldPassword: userPassword,
+                    password: "NewPassword456!",
+                },
+            });
+
+            expect(response.statusCode).toBe(200);
+            const body = JSON.parse(response.body);
+            expect(body.data).toHaveProperty("user");
+            expect(body.message).toBe("User password updated successfully.");
         });
     });
 

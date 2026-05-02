@@ -11,7 +11,7 @@ User management: invite, delete, update profile/avatar/password, toggle status. 
 | DELETE | `/api/users/:userId` | Delete active user + GCS avatar + action logs per team |
 | PUT | `/api/users/:userId` | Update profile (fullName, email, phone, avatar, notificationPreferences) |
 | PATCH | `/api/users/:userId/status` | Toggle ACTIVE ↔ SUSPENDED |
-| PUT | `/api/users/:userId/password` | Update password (validates old password) |
+| PUT | `/api/users/:userId/password` | Update password (validates old password, invalidates all refresh tokens atomically) |
 | PATCH | `/api/teams/:teamId/members/:userId/roles` | Update team member roles |
 | GET | `/api/users/invite` | Fetch invited user by JWT token (no auth required) |
 | GET | `/api/users/:userId` | Fetch user |
@@ -28,9 +28,11 @@ User management: invite, delete, update profile/avatar/password, toggle status. 
 
 **getUsers**: Excludes current user (`initiator.id`) and any ids in `omitUsersIds`. Returns `position` (team role) when `teamId` filter is provided.
 
+**updateUserPassword**: Validates the old password via bcrypt compare. On success, wraps the password update and `refreshTokenRepository.deleteMany` in a single `prisma.master.$transaction` to atomically commit both — ensures all existing sessions are invalidated when the password changes.
+
 **updateTeamMemberRoles**: Updates a team member's role within a team. Only admins/owners can update roles.
 
 **Factory function name**: `createService` (not `createUserService`) — DI name is still `"userService"`.
 
 ## Dependencies
-`userRepository` · `notificationRepository` · `jwt` · `log` · `gcpService` · `teamRepository` · `teamMemberRepository` · `applicationService`
+`userRepository` · `notificationRepository` · `jwt` · `refreshTokenRepository` · `prisma` · `log` · `gcpService` · `teamRepository` · `teamMemberRepository` · `applicationService`
