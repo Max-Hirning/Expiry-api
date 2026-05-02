@@ -3,11 +3,13 @@ import { TeamHandler } from "./team.handler.js";
 import { Actions } from "../auth/auth.types.js";
 import {
     createTeamBodySchema,
+    createTeamResponseSchema,
     fetchTeamResponseSchema,
     fetchTeamsQuerySchema,
     fetchTeamsResponseSchema,
     teamParamsSchema,
     updateTeamBodySchema,
+    updateTeamResponseSchema,
 } from "@/lib/validation/team/team.schema.js";
 
 export const createTeamRoutes = (
@@ -79,7 +81,7 @@ export const createTeamRoutes = (
                 summary: "Create team",
                 body: createTeamBodySchema,
                 response: {
-                    201: fetchTeamResponseSchema,
+                    201: createTeamResponseSchema,
                 },
             },
             preHandler: [
@@ -99,7 +101,7 @@ export const createTeamRoutes = (
                 params: teamParamsSchema,
                 body: updateTeamBodySchema,
                 response: {
-                    200: fetchTeamResponseSchema,
+                    200: updateTeamResponseSchema,
                 },
             },
             preHandler: [

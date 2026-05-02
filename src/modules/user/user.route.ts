@@ -13,6 +13,7 @@ import {
     updateTeamMemberRolesParamsSchema,
     updateTeamMemberRolesBodySchema,
     updateTeamMemberRolesResponseSchema,
+    updateUserResponseSchema,
 } from "@/lib/validation/user/user.schema.js";
 
 export const createUserRoutes = (
@@ -104,7 +105,7 @@ export const createUserRoutes = (
                 params: userParamsSchema,
                 body: updateUserBodySchema,
                 response: {
-                    200: fetchUserResponseSchema,
+                    200: updateUserResponseSchema,
                 },
             },
             preHandler: [
