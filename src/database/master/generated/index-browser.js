@@ -130,6 +130,7 @@ exports.Prisma.UserScalarFieldEnum = {
     invitedAt: "invitedAt",
     role: "role",
     status: "status",
+    selectedTeamId: "selectedTeamId",
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {

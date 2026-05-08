@@ -220,6 +220,15 @@ export const createService = (
                 });
             }
 
+            if (body.selectedTeamId) {
+                await teamMemberRepository.findFirstOrFail({
+                    where: {
+                        userId: params.userId,
+                        teamId: body.selectedTeamId,
+                    },
+                });
+            }
+
             let avatarPayload:
                 | (Pick<Avatar, "url" | "key" | "expiredAt"> & {
                       uploadUrl: string;
@@ -257,6 +266,7 @@ export const createService = (
                     email: body.email,
                     mfaType: body.mfaType,
                     phoneNumber: body.phoneNumber,
+                    selectedTeamId: body.selectedTeamId,
                     ...(body.avatar &&
                         avatarPayload && {
                         avatar: {

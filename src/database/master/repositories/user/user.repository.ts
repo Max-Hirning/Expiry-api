@@ -20,7 +20,13 @@ export const defaultUserSelector = {
     status: true,
     avatar: true,
     notificationPreferences: true,
+    selectedTeamId: true,
 } satisfies Prisma.UserSelect;
+
+type SelectedTeamReassignment = {
+    id: string;
+    selectedTeamId: string | null;
+};
 
 export type UserRepository = BaseRepository<"user"> & {
     findUniqueOrFail: <TArgs extends Prisma.UserFindUniqueArgs>(
@@ -29,6 +35,10 @@ export type UserRepository = BaseRepository<"user"> & {
     findFirstOrFail: <TArgs extends Prisma.UserFindFirstArgs>(
         args: TArgs
     ) => Promise<Prisma.UserGetPayload<TArgs>>;
+    bulkUpdateSelectedTeam: (
+        reassignments: SelectedTeamReassignment[],
+        tx?: Prisma.TransactionClient
+    ) => Promise<number>;
 };
 
 export const createUserRepository = ({
@@ -59,6 +69,32 @@ export const createUserRepository = ({
             }
 
             return user as Prisma.UserGetPayload<TArgs>;
+        },
+        bulkUpdateSelectedTeam: async (reassignments, tx) => {
+            if (reassignments.length === 0) {
+                return 0;
+            }
+
+            const client = tx ?? prisma;
+
+            const cases = Prisma.join(
+                reassignments.map(({ id, selectedTeamId }) =>
+                    selectedTeamId === null
+                        ? Prisma.sql`WHEN ${id}::uuid THEN NULL`
+                        : Prisma.sql`WHEN ${id}::uuid THEN ${selectedTeamId}::uuid`
+                ),
+                " "
+            );
+
+            const ids = Prisma.join(
+                reassignments.map(({ id }) => Prisma.sql`${id}::uuid`)
+            );
+
+            return client.$executeRaw`
+                UPDATE users
+                SET selected_team_id = CASE id ${cases} END
+                WHERE id IN (${ids})
+            `;
         },
     };
 };
