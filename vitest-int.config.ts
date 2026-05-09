@@ -7,6 +7,8 @@ export default mergeConfig(
         test: {
             setupFiles: "./test/int/setup/index.ts",
             include: ["test/int/**/*.test.ts"],
+            hookTimeout: 30000,
+            testTimeout: 30000,
         },
     })
 );
