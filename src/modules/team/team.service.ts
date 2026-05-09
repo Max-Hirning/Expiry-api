@@ -292,6 +292,30 @@ export const createTeamService = (
             const team = await getTeam(params.teamId, initiator);
 
             await prisma.master.$transaction(async (tx) => {
+                const usersWithSelected = await tx.user.findMany({
+                    where: { selectedTeamId: params.teamId },
+                    select: {
+                        id: true,
+                        teamMembers: {
+                            where: { teamId: { not: params.teamId } },
+                            select: { teamId: true },
+                        },
+                    },
+                });
+
+                const reassignments = usersWithSelected.map(
+                    ({ id, teamMembers }) => ({
+                        id,
+                        selectedTeamId: teamMembers.length
+                            ? teamMembers[
+                                Math.floor(Math.random() * teamMembers.length)
+                            ].teamId
+                            : null,
+                    })
+                );
+
+                await userRepository.bulkUpdateSelectedTeam(reassignments, tx);
+
                 const team = await tx.team.delete({
                     where: {
                         id: params.teamId,
@@ -569,6 +593,16 @@ export const createTeamService = (
                     );
                 }
 
+                await userRepository.setSelectedTeamIfNull(
+                    [
+                        initiator.id,
+                        ...futureTeamMembersRecords.teamMembers.map(
+                            ({ userId }) => userId
+                        ),
+                    ],
+                    createdTeam.id
+                );
+
                 const memberUsers = await userRepository.findMany({
                     where: {
                         teamMembers: {
@@ -786,6 +820,25 @@ export const createTeamService = (
                         ...futureTeamMembersToDisconnectRecords.notifications,
                     ],
                 });
+
+                await userRepository.setSelectedTeamIfNull(
+                    futureTeamMembersRecords.teamMembers.map(
+                        ({ userId }) => userId
+                    ),
+                    params.teamId,
+                    tx
+                );
+
+                if (
+                    body.teamMembersUsersToDeleteIds &&
+                    body.teamMembersUsersToDeleteIds.length > 0
+                ) {
+                    await userRepository.reassignSelectedTeamAfterRemoval(
+                        body.teamMembersUsersToDeleteIds,
+                        params.teamId,
+                        tx
+                    );
+                }
 
                 return team;
             });

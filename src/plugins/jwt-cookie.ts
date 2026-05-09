@@ -79,6 +79,7 @@ const tokenCookiePlugin = async (fastify: FastifyInstance) => {
                     JSON.stringify({
                         id: user.id,
                         role: user.role,
+                        selectedTeamId: user.selectedTeamId,
                     }),
                     {
                         ...cookieConfig,

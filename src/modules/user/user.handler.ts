@@ -103,6 +103,8 @@ export const createHandler = (
                 body,
             });
 
+            request.updateUserSession = true;
+
             return reply.send(data);
         },
 

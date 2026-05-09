@@ -1824,6 +1824,7 @@ export namespace Prisma {
     export type TeamCountOutputType = {
         notifications: number;
         teamMembers: number;
+        selectedUsers: number;
     };
 
     export type TeamCountOutputTypeSelect<
@@ -1831,6 +1832,7 @@ export namespace Prisma {
     > = {
         notifications?: boolean | TeamCountOutputTypeCountNotificationsArgs;
         teamMembers?: boolean | TeamCountOutputTypeCountTeamMembersArgs;
+        selectedUsers?: boolean | TeamCountOutputTypeCountSelectedUsersArgs;
     };
 
     // Custom InputTypes
@@ -1865,6 +1867,15 @@ export namespace Prisma {
     };
 
     /**
+     * TeamCountOutputType without action
+     */
+    export type TeamCountOutputTypeCountSelectedUsersArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        where?: UserWhereInput;
+    };
+
+    /**
      * Models
      */
 
@@ -1892,6 +1903,7 @@ export namespace Prisma {
         invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
+        selectedTeamId: string | null;
     };
 
     export type UserMaxAggregateOutputType = {
@@ -1908,6 +1920,7 @@ export namespace Prisma {
         invitedAt: Date | null;
         role: $Enums.UserRoles | null;
         status: $Enums.UserStatuses | null;
+        selectedTeamId: string | null;
     };
 
     export type UserCountAggregateOutputType = {
@@ -1924,6 +1937,7 @@ export namespace Prisma {
         invitedAt: number;
         role: number;
         status: number;
+        selectedTeamId: number;
         _all: number;
     };
 
@@ -1941,6 +1955,7 @@ export namespace Prisma {
         invitedAt?: true;
         role?: true;
         status?: true;
+        selectedTeamId?: true;
     };
 
     export type UserMaxAggregateInputType = {
@@ -1957,6 +1972,7 @@ export namespace Prisma {
         invitedAt?: true;
         role?: true;
         status?: true;
+        selectedTeamId?: true;
     };
 
     export type UserCountAggregateInputType = {
@@ -1973,6 +1989,7 @@ export namespace Prisma {
         invitedAt?: true;
         role?: true;
         status?: true;
+        selectedTeamId?: true;
         _all?: true;
     };
 
@@ -2065,6 +2082,7 @@ export namespace Prisma {
         invitedAt: Date | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId: string | null;
         _count: UserCountAggregateOutputType | null;
         _min: UserMinAggregateOutputType | null;
         _max: UserMaxAggregateOutputType | null;
@@ -2101,6 +2119,8 @@ export namespace Prisma {
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
+            selectedTeamId?: boolean;
+            selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
             teamMembers?: boolean | User$teamMembersArgs<ExtArgs>;
             refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>;
             avatar?: boolean | User$avatarArgs<ExtArgs>;
@@ -2130,6 +2150,8 @@ export namespace Prisma {
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
+            selectedTeamId?: boolean;
+            selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
         },
         ExtArgs["result"]["user"]
     >;
@@ -2151,6 +2173,8 @@ export namespace Prisma {
             invitedAt?: boolean;
             role?: boolean;
             status?: boolean;
+            selectedTeamId?: boolean;
+            selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
         },
         ExtArgs["result"]["user"]
     >;
@@ -2169,6 +2193,7 @@ export namespace Prisma {
         invitedAt?: boolean;
         role?: boolean;
         status?: boolean;
+        selectedTeamId?: boolean;
     };
 
     export type UserOmit<
@@ -2186,12 +2211,14 @@ export namespace Prisma {
         | "lastSeenAt"
         | "invitedAt"
         | "role"
-        | "status",
+        | "status"
+        | "selectedTeamId",
         ExtArgs["result"]["user"]
     >;
     export type UserInclude<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
+        selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
         teamMembers?: boolean | User$teamMembersArgs<ExtArgs>;
         refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>;
         avatar?: boolean | User$avatarArgs<ExtArgs>;
@@ -2203,16 +2230,21 @@ export namespace Prisma {
     };
     export type UserIncludeCreateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {};
+    > = {
+        selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
+    };
     export type UserIncludeUpdateManyAndReturn<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
-    > = {};
+    > = {
+        selectedTeam?: boolean | User$selectedTeamArgs<ExtArgs>;
+    };
 
     export type $UserPayload<
         ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
     > = {
         name: "User";
         objects: {
+            selectedTeam: Prisma.$TeamPayload<ExtArgs> | null;
             teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[];
             refreshToken: Prisma.$RefreshTokenPayload<ExtArgs> | null;
             avatar: Prisma.$AvatarPayload<ExtArgs> | null;
@@ -2234,6 +2266,7 @@ export namespace Prisma {
                 invitedAt: Date | null;
                 role: $Enums.UserRoles;
                 status: $Enums.UserStatuses;
+                selectedTeamId: string | null;
             },
             ExtArgs["result"]["user"]
         >;
@@ -2781,6 +2814,19 @@ export namespace Prisma {
         GlobalOmitOptions = {},
     > extends Prisma.PrismaPromise<T> {
         readonly [Symbol.toStringTag]: "PrismaPromise";
+        selectedTeam<T extends User$selectedTeamArgs<ExtArgs> = {}>(
+            args?: Subset<T, User$selectedTeamArgs<ExtArgs>>
+        ): Prisma__TeamClient<
+            $Result.GetResult<
+                Prisma.$TeamPayload<ExtArgs>,
+                T,
+                "findUniqueOrThrow",
+                GlobalOmitOptions
+            > | null,
+            null,
+            ExtArgs,
+            GlobalOmitOptions
+        >;
         teamMembers<T extends User$teamMembersArgs<ExtArgs> = {}>(
             args?: Subset<T, User$teamMembersArgs<ExtArgs>>
         ): Prisma.PrismaPromise<
@@ -2899,6 +2945,7 @@ export namespace Prisma {
         readonly invitedAt: FieldRef<"User", "DateTime">;
         readonly role: FieldRef<"User", "UserRoles">;
         readonly status: FieldRef<"User", "UserStatuses">;
+        readonly selectedTeamId: FieldRef<"User", "String">;
     }
 
     // Custom InputTypes
@@ -3163,6 +3210,10 @@ export namespace Prisma {
          */
         data: UserCreateManyInput | UserCreateManyInput[];
         skipDuplicates?: boolean;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: UserIncludeCreateManyAndReturn<ExtArgs> | null;
     };
 
     /**
@@ -3239,6 +3290,10 @@ export namespace Prisma {
          * Limit how many Users to update.
          */
         limit?: number;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: UserIncludeUpdateManyAndReturn<ExtArgs> | null;
     };
 
     /**
@@ -3311,6 +3366,27 @@ export namespace Prisma {
          * Limit how many Users to delete.
          */
         limit?: number;
+    };
+
+    /**
+     * User.selectedTeam
+     */
+    export type User$selectedTeamArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the Team
+         */
+        select?: TeamSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the Team
+         */
+        omit?: TeamOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: TeamInclude<ExtArgs> | null;
+        where?: TeamWhereInput;
     };
 
     /**
@@ -7828,6 +7904,7 @@ export namespace Prisma {
             stats?: boolean | Team$statsArgs<ExtArgs>;
             notifications?: boolean | Team$notificationsArgs<ExtArgs>;
             teamMembers?: boolean | Team$teamMembersArgs<ExtArgs>;
+            selectedUsers?: boolean | Team$selectedUsersArgs<ExtArgs>;
             _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>;
         },
         ExtArgs["result"]["team"]
@@ -7877,6 +7954,7 @@ export namespace Prisma {
         stats?: boolean | Team$statsArgs<ExtArgs>;
         notifications?: boolean | Team$notificationsArgs<ExtArgs>;
         teamMembers?: boolean | Team$teamMembersArgs<ExtArgs>;
+        selectedUsers?: boolean | Team$selectedUsersArgs<ExtArgs>;
         _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>;
     };
     export type TeamIncludeCreateManyAndReturn<
@@ -7895,6 +7973,7 @@ export namespace Prisma {
             stats: Prisma.$TeamStatPayload<ExtArgs> | null;
             notifications: Prisma.$NotificationPayload<ExtArgs>[];
             teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[];
+            selectedUsers: Prisma.$UserPayload<ExtArgs>[];
         };
         scalars: $Extensions.GetPayloadResult<
             {
@@ -8497,6 +8576,17 @@ export namespace Prisma {
               >
             | Null
         >;
+        selectedUsers<T extends Team$selectedUsersArgs<ExtArgs> = {}>(
+            args?: Subset<T, Team$selectedUsersArgs<ExtArgs>>
+        ): Prisma.PrismaPromise<
+            | $Result.GetResult<
+                  Prisma.$UserPayload<ExtArgs>,
+                  T,
+                  "findMany",
+                  GlobalOmitOptions
+              >
+            | Null
+        >;
         /**
          * Attaches callbacks for the resolution and/or rejection of the Promise.
          * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9053,6 +9143,32 @@ export namespace Prisma {
         take?: number;
         skip?: number;
         distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[];
+    };
+
+    /**
+     * Team.selectedUsers
+     */
+    export type Team$selectedUsersArgs<
+        ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    > = {
+        /**
+         * Select specific fields to fetch from the User
+         */
+        select?: UserSelect<ExtArgs> | null;
+        /**
+         * Omit specific fields from the User
+         */
+        omit?: UserOmit<ExtArgs> | null;
+        /**
+         * Choose, which related nodes to fetch as well
+         */
+        include?: UserInclude<ExtArgs> | null;
+        where?: UserWhereInput;
+        orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[];
+        cursor?: UserWhereUniqueInput;
+        take?: number;
+        skip?: number;
+        distinct?: UserScalarFieldEnum | UserScalarFieldEnum[];
     };
 
     /**
@@ -14862,6 +14978,7 @@ export namespace Prisma {
         invitedAt: "invitedAt";
         role: "role";
         status: "status";
+        selectedTeamId: "selectedTeamId";
     };
 
     export type UserScalarFieldEnum =
@@ -15172,6 +15289,11 @@ export namespace Prisma {
         invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
         role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
         status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
+        selectedTeamId?: UuidNullableFilter<"User"> | string | null;
+        selectedTeam?: XOR<
+            TeamNullableScalarRelationFilter,
+            TeamWhereInput
+        > | null;
         teamMembers?: TeamMemberListRelationFilter;
         refreshToken?: XOR<
             RefreshTokenNullableScalarRelationFilter,
@@ -15202,6 +15324,8 @@ export namespace Prisma {
         invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
+        selectedTeamId?: SortOrderInput | SortOrder;
+        selectedTeam?: TeamOrderByWithRelationInput;
         teamMembers?: TeamMemberOrderByRelationAggregateInput;
         refreshToken?: RefreshTokenOrderByWithRelationInput;
         avatar?: AvatarOrderByWithRelationInput;
@@ -15230,6 +15354,11 @@ export namespace Prisma {
             invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
             role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
             status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
+            selectedTeamId?: UuidNullableFilter<"User"> | string | null;
+            selectedTeam?: XOR<
+                TeamNullableScalarRelationFilter,
+                TeamWhereInput
+            > | null;
             teamMembers?: TeamMemberListRelationFilter;
             refreshToken?: XOR<
                 RefreshTokenNullableScalarRelationFilter,
@@ -15262,6 +15391,7 @@ export namespace Prisma {
         invitedAt?: SortOrderInput | SortOrder;
         role?: SortOrder;
         status?: SortOrder;
+        selectedTeamId?: SortOrderInput | SortOrder;
         _count?: UserCountOrderByAggregateInput;
         _max?: UserMaxOrderByAggregateInput;
         _min?: UserMinOrderByAggregateInput;
@@ -15305,6 +15435,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesWithAggregatesFilter<"User">
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | UuidNullableWithAggregatesFilter<"User">
+            | string
+            | null;
     };
 
     export type RefreshTokenWhereInput = {
@@ -15595,6 +15729,7 @@ export namespace Prisma {
         > | null;
         notifications?: NotificationListRelationFilter;
         teamMembers?: TeamMemberListRelationFilter;
+        selectedUsers?: UserListRelationFilter;
     };
 
     export type TeamOrderByWithRelationInput = {
@@ -15606,6 +15741,7 @@ export namespace Prisma {
         stats?: TeamStatOrderByWithRelationInput;
         notifications?: NotificationOrderByRelationAggregateInput;
         teamMembers?: TeamMemberOrderByRelationAggregateInput;
+        selectedUsers?: UserOrderByRelationAggregateInput;
     };
 
     export type TeamWhereUniqueInput = Prisma.AtLeast<
@@ -15624,6 +15760,7 @@ export namespace Prisma {
             > | null;
             notifications?: NotificationListRelationFilter;
             teamMembers?: TeamMemberListRelationFilter;
+            selectedUsers?: UserListRelationFilter;
         },
         "id" | "name"
     >;
@@ -16071,6 +16208,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
         avatar?: AvatarCreateNestedOneWithoutUserInput;
@@ -16092,6 +16230,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
         avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
@@ -16130,6 +16269,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUpdateOneWithoutUserNestedInput;
@@ -16168,6 +16308,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
@@ -16189,6 +16333,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
     };
 
     export type UserUpdateManyMutationInput = {
@@ -16255,6 +16400,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
     };
 
     export type RefreshTokenCreateInput = {
@@ -16501,6 +16650,7 @@ export namespace Prisma {
         stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUncheckedCreateInput = {
@@ -16512,6 +16662,7 @@ export namespace Prisma {
         stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserUncheckedCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUpdateInput = {
@@ -16523,6 +16674,7 @@ export namespace Prisma {
         stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamUncheckedUpdateInput = {
@@ -16534,6 +16686,7 @@ export namespace Prisma {
         stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUncheckedUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamCreateManyInput = {
@@ -17055,6 +17208,23 @@ export namespace Prisma {
         not?: NestedEnumUserStatusesFilter<$PrismaModel> | $Enums.UserStatuses;
     };
 
+    export type UuidNullableFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        mode?: QueryMode;
+        not?: NestedUuidNullableFilter<$PrismaModel> | string | null;
+    };
+
+    export type TeamNullableScalarRelationFilter = {
+        is?: TeamWhereInput | null;
+        isNot?: TeamWhereInput | null;
+    };
+
     export type TeamMemberListRelationFilter = {
         every?: TeamMemberWhereInput;
         some?: TeamMemberWhereInput;
@@ -17109,6 +17279,7 @@ export namespace Prisma {
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
+        selectedTeamId?: SortOrder;
     };
 
     export type UserMaxOrderByAggregateInput = {
@@ -17125,6 +17296,7 @@ export namespace Prisma {
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
+        selectedTeamId?: SortOrder;
     };
 
     export type UserMinOrderByAggregateInput = {
@@ -17141,6 +17313,7 @@ export namespace Prisma {
         invitedAt?: SortOrder;
         role?: SortOrder;
         status?: SortOrder;
+        selectedTeamId?: SortOrder;
     };
 
     export type UuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -17265,6 +17438,24 @@ export namespace Prisma {
         _count?: NestedIntFilter<$PrismaModel>;
         _min?: NestedEnumUserStatusesFilter<$PrismaModel>;
         _max?: NestedEnumUserStatusesFilter<$PrismaModel>;
+    };
+
+    export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        mode?: QueryMode;
+        not?:
+            | NestedUuidNullableWithAggregatesFilter<$PrismaModel>
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedStringNullableFilter<$PrismaModel>;
+        _max?: NestedStringNullableFilter<$PrismaModel>;
     };
 
     export type UserScalarRelationFilter = {
@@ -17434,6 +17625,16 @@ export namespace Prisma {
     export type TeamStatNullableScalarRelationFilter = {
         is?: TeamStatWhereInput | null;
         isNot?: TeamStatWhereInput | null;
+    };
+
+    export type UserListRelationFilter = {
+        every?: UserWhereInput;
+        some?: UserWhereInput;
+        none?: UserWhereInput;
+    };
+
+    export type UserOrderByRelationAggregateInput = {
+        _count?: SortOrder;
     };
 
     export type TeamCountOrderByAggregateInput = {
@@ -17716,23 +17917,6 @@ export namespace Prisma {
         not?: NestedStringNullableFilter<$PrismaModel> | string | null;
     };
 
-    export type UuidNullableFilter<$PrismaModel = never> = {
-        equals?: string | StringFieldRefInput<$PrismaModel> | null;
-        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        lt?: string | StringFieldRefInput<$PrismaModel>;
-        lte?: string | StringFieldRefInput<$PrismaModel>;
-        gt?: string | StringFieldRefInput<$PrismaModel>;
-        gte?: string | StringFieldRefInput<$PrismaModel>;
-        mode?: QueryMode;
-        not?: NestedUuidNullableFilter<$PrismaModel> | string | null;
-    };
-
-    export type TeamNullableScalarRelationFilter = {
-        is?: TeamWhereInput | null;
-        isNot?: TeamWhereInput | null;
-    };
-
     export type NotificationCountOrderByAggregateInput = {
         id?: SortOrder;
         createdAt?: SortOrder;
@@ -17816,22 +18000,13 @@ export namespace Prisma {
         _max?: NestedStringNullableFilter<$PrismaModel>;
     };
 
-    export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-        equals?: string | StringFieldRefInput<$PrismaModel> | null;
-        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        lt?: string | StringFieldRefInput<$PrismaModel>;
-        lte?: string | StringFieldRefInput<$PrismaModel>;
-        gt?: string | StringFieldRefInput<$PrismaModel>;
-        gte?: string | StringFieldRefInput<$PrismaModel>;
-        mode?: QueryMode;
-        not?:
-            | NestedUuidNullableWithAggregatesFilter<$PrismaModel>
-            | string
-            | null;
-        _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedStringNullableFilter<$PrismaModel>;
-        _max?: NestedStringNullableFilter<$PrismaModel>;
+    export type TeamCreateNestedOneWithoutSelectedUsersInput = {
+        create?: XOR<
+            TeamCreateWithoutSelectedUsersInput,
+            TeamUncheckedCreateWithoutSelectedUsersInput
+        >;
+        connectOrCreate?: TeamCreateOrConnectWithoutSelectedUsersInput;
+        connect?: TeamWhereUniqueInput;
     };
 
     export type TeamMemberCreateNestedManyWithoutUserInput = {
@@ -17973,6 +18148,25 @@ export namespace Prisma {
         set?: $Enums.UserStatuses;
     };
 
+    export type TeamUpdateOneWithoutSelectedUsersNestedInput = {
+        create?: XOR<
+            TeamCreateWithoutSelectedUsersInput,
+            TeamUncheckedCreateWithoutSelectedUsersInput
+        >;
+        connectOrCreate?: TeamCreateOrConnectWithoutSelectedUsersInput;
+        upsert?: TeamUpsertWithoutSelectedUsersInput;
+        disconnect?: TeamWhereInput | boolean;
+        delete?: TeamWhereInput | boolean;
+        connect?: TeamWhereUniqueInput;
+        update?: XOR<
+            XOR<
+                TeamUpdateToOneWithWhereWithoutSelectedUsersInput,
+                TeamUpdateWithoutSelectedUsersInput
+            >,
+            TeamUncheckedUpdateWithoutSelectedUsersInput
+        >;
+    };
+
     export type TeamMemberUpdateManyWithoutUserNestedInput = {
         create?:
             | XOR<
@@ -18088,6 +18282,10 @@ export namespace Prisma {
             >,
             NotificationPreferenceUncheckedUpdateWithoutUserInput
         >;
+    };
+
+    export type NullableStringFieldUpdateOperationsInput = {
+        set?: string | null;
     };
 
     export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
@@ -18347,6 +18545,21 @@ export namespace Prisma {
         connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[];
     };
 
+    export type UserCreateNestedManyWithoutSelectedTeamInput = {
+        create?:
+            | XOR<
+                  UserCreateWithoutSelectedTeamInput,
+                  UserUncheckedCreateWithoutSelectedTeamInput
+              >
+            | UserCreateWithoutSelectedTeamInput[]
+            | UserUncheckedCreateWithoutSelectedTeamInput[];
+        connectOrCreate?:
+            | UserCreateOrConnectWithoutSelectedTeamInput
+            | UserCreateOrConnectWithoutSelectedTeamInput[];
+        createMany?: UserCreateManySelectedTeamInputEnvelope;
+        connect?: UserWhereUniqueInput | UserWhereUniqueInput[];
+    };
+
     export type LogoUncheckedCreateNestedOneWithoutTeamInput = {
         create?: XOR<
             LogoCreateWithoutTeamInput,
@@ -18393,6 +18606,21 @@ export namespace Prisma {
             | TeamMemberCreateOrConnectWithoutTeamInput[];
         createMany?: TeamMemberCreateManyTeamInputEnvelope;
         connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[];
+    };
+
+    export type UserUncheckedCreateNestedManyWithoutSelectedTeamInput = {
+        create?:
+            | XOR<
+                  UserCreateWithoutSelectedTeamInput,
+                  UserUncheckedCreateWithoutSelectedTeamInput
+              >
+            | UserCreateWithoutSelectedTeamInput[]
+            | UserUncheckedCreateWithoutSelectedTeamInput[];
+        connectOrCreate?:
+            | UserCreateOrConnectWithoutSelectedTeamInput
+            | UserCreateOrConnectWithoutSelectedTeamInput[];
+        createMany?: UserCreateManySelectedTeamInputEnvelope;
+        connect?: UserWhereUniqueInput | UserWhereUniqueInput[];
     };
 
     export type LogoUpdateOneWithoutTeamNestedInput = {
@@ -18493,6 +18721,34 @@ export namespace Prisma {
         deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[];
     };
 
+    export type UserUpdateManyWithoutSelectedTeamNestedInput = {
+        create?:
+            | XOR<
+                  UserCreateWithoutSelectedTeamInput,
+                  UserUncheckedCreateWithoutSelectedTeamInput
+              >
+            | UserCreateWithoutSelectedTeamInput[]
+            | UserUncheckedCreateWithoutSelectedTeamInput[];
+        connectOrCreate?:
+            | UserCreateOrConnectWithoutSelectedTeamInput
+            | UserCreateOrConnectWithoutSelectedTeamInput[];
+        upsert?:
+            | UserUpsertWithWhereUniqueWithoutSelectedTeamInput
+            | UserUpsertWithWhereUniqueWithoutSelectedTeamInput[];
+        createMany?: UserCreateManySelectedTeamInputEnvelope;
+        set?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        delete?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        connect?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        update?:
+            | UserUpdateWithWhereUniqueWithoutSelectedTeamInput
+            | UserUpdateWithWhereUniqueWithoutSelectedTeamInput[];
+        updateMany?:
+            | UserUpdateManyWithWhereWithoutSelectedTeamInput
+            | UserUpdateManyWithWhereWithoutSelectedTeamInput[];
+        deleteMany?: UserScalarWhereInput | UserScalarWhereInput[];
+    };
+
     export type LogoUncheckedUpdateOneWithoutTeamNestedInput = {
         create?: XOR<
             LogoCreateWithoutTeamInput,
@@ -18589,6 +18845,34 @@ export namespace Prisma {
             | TeamMemberUpdateManyWithWhereWithoutTeamInput
             | TeamMemberUpdateManyWithWhereWithoutTeamInput[];
         deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[];
+    };
+
+    export type UserUncheckedUpdateManyWithoutSelectedTeamNestedInput = {
+        create?:
+            | XOR<
+                  UserCreateWithoutSelectedTeamInput,
+                  UserUncheckedCreateWithoutSelectedTeamInput
+              >
+            | UserCreateWithoutSelectedTeamInput[]
+            | UserUncheckedCreateWithoutSelectedTeamInput[];
+        connectOrCreate?:
+            | UserCreateOrConnectWithoutSelectedTeamInput
+            | UserCreateOrConnectWithoutSelectedTeamInput[];
+        upsert?:
+            | UserUpsertWithWhereUniqueWithoutSelectedTeamInput
+            | UserUpsertWithWhereUniqueWithoutSelectedTeamInput[];
+        createMany?: UserCreateManySelectedTeamInputEnvelope;
+        set?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        delete?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        connect?: UserWhereUniqueInput | UserWhereUniqueInput[];
+        update?:
+            | UserUpdateWithWhereUniqueWithoutSelectedTeamInput
+            | UserUpdateWithWhereUniqueWithoutSelectedTeamInput[];
+        updateMany?:
+            | UserUpdateManyWithWhereWithoutSelectedTeamInput
+            | UserUpdateManyWithWhereWithoutSelectedTeamInput[];
+        deleteMany?: UserScalarWhereInput | UserScalarWhereInput[];
     };
 
     export type TeamCreateNestedOneWithoutStatsInput = {
@@ -18729,10 +19013,6 @@ export namespace Prisma {
         set?: $Enums.NotificationTypes;
     };
 
-    export type NullableStringFieldUpdateOperationsInput = {
-        set?: string | null;
-    };
-
     export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
         create?: XOR<
             UserCreateWithoutNotificationsInput,
@@ -18859,6 +19139,17 @@ export namespace Prisma {
             | $Enums.UserStatuses[]
             | ListEnumUserStatusesFieldRefInput<$PrismaModel>;
         not?: NestedEnumUserStatusesFilter<$PrismaModel> | $Enums.UserStatuses;
+    };
+
+    export type NestedUuidNullableFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        not?: NestedUuidNullableFilter<$PrismaModel> | string | null;
     };
 
     export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -19015,6 +19306,37 @@ export namespace Prisma {
         _max?: NestedEnumUserStatusesFilter<$PrismaModel>;
     };
 
+    export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        not?:
+            | NestedUuidNullableWithAggregatesFilter<$PrismaModel>
+            | string
+            | null;
+        _count?: NestedIntNullableFilter<$PrismaModel>;
+        _min?: NestedStringNullableFilter<$PrismaModel>;
+        _max?: NestedStringNullableFilter<$PrismaModel>;
+    };
+
+    export type NestedStringNullableFilter<$PrismaModel = never> = {
+        equals?: string | StringFieldRefInput<$PrismaModel> | null;
+        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
+        lt?: string | StringFieldRefInput<$PrismaModel>;
+        lte?: string | StringFieldRefInput<$PrismaModel>;
+        gt?: string | StringFieldRefInput<$PrismaModel>;
+        gte?: string | StringFieldRefInput<$PrismaModel>;
+        contains?: string | StringFieldRefInput<$PrismaModel>;
+        startsWith?: string | StringFieldRefInput<$PrismaModel>;
+        endsWith?: string | StringFieldRefInput<$PrismaModel>;
+        not?: NestedStringNullableFilter<$PrismaModel> | string | null;
+    };
+
     export type NestedFloatFilter<$PrismaModel = never> = {
         equals?: number | FloatFieldRefInput<$PrismaModel>;
         in?: number[] | ListFloatFieldRefInput<$PrismaModel>;
@@ -19121,31 +19443,6 @@ export namespace Prisma {
             | $Enums.NotificationTypes;
     };
 
-    export type NestedStringNullableFilter<$PrismaModel = never> = {
-        equals?: string | StringFieldRefInput<$PrismaModel> | null;
-        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        lt?: string | StringFieldRefInput<$PrismaModel>;
-        lte?: string | StringFieldRefInput<$PrismaModel>;
-        gt?: string | StringFieldRefInput<$PrismaModel>;
-        gte?: string | StringFieldRefInput<$PrismaModel>;
-        contains?: string | StringFieldRefInput<$PrismaModel>;
-        startsWith?: string | StringFieldRefInput<$PrismaModel>;
-        endsWith?: string | StringFieldRefInput<$PrismaModel>;
-        not?: NestedStringNullableFilter<$PrismaModel> | string | null;
-    };
-
-    export type NestedUuidNullableFilter<$PrismaModel = never> = {
-        equals?: string | StringFieldRefInput<$PrismaModel> | null;
-        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        lt?: string | StringFieldRefInput<$PrismaModel>;
-        lte?: string | StringFieldRefInput<$PrismaModel>;
-        gt?: string | StringFieldRefInput<$PrismaModel>;
-        gte?: string | StringFieldRefInput<$PrismaModel>;
-        not?: NestedUuidNullableFilter<$PrismaModel> | string | null;
-    };
-
     export type NestedEnumNotificationTypesWithAggregatesFilter<
         $PrismaModel = never,
     > = {
@@ -19187,21 +19484,34 @@ export namespace Prisma {
             _max?: NestedStringNullableFilter<$PrismaModel>;
         };
 
-    export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-        equals?: string | StringFieldRefInput<$PrismaModel> | null;
-        in?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null;
-        lt?: string | StringFieldRefInput<$PrismaModel>;
-        lte?: string | StringFieldRefInput<$PrismaModel>;
-        gt?: string | StringFieldRefInput<$PrismaModel>;
-        gte?: string | StringFieldRefInput<$PrismaModel>;
-        not?:
-            | NestedUuidNullableWithAggregatesFilter<$PrismaModel>
-            | string
-            | null;
-        _count?: NestedIntNullableFilter<$PrismaModel>;
-        _min?: NestedStringNullableFilter<$PrismaModel>;
-        _max?: NestedStringNullableFilter<$PrismaModel>;
+    export type TeamCreateWithoutSelectedUsersInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        logo?: LogoCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatCreateNestedOneWithoutTeamInput;
+        notifications?: NotificationCreateNestedManyWithoutTeamInput;
+        teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+    };
+
+    export type TeamUncheckedCreateWithoutSelectedUsersInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        name: string;
+        logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
+        stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
+        notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
+        teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+    };
+
+    export type TeamCreateOrConnectWithoutSelectedUsersInput = {
+        where: TeamWhereUniqueInput;
+        create: XOR<
+            TeamCreateWithoutSelectedUsersInput,
+            TeamUncheckedCreateWithoutSelectedUsersInput
+        >;
     };
 
     export type TeamMemberCreateWithoutUserInput = {
@@ -19358,6 +19668,48 @@ export namespace Prisma {
             NotificationPreferenceCreateWithoutUserInput,
             NotificationPreferenceUncheckedCreateWithoutUserInput
         >;
+    };
+
+    export type TeamUpsertWithoutSelectedUsersInput = {
+        update: XOR<
+            TeamUpdateWithoutSelectedUsersInput,
+            TeamUncheckedUpdateWithoutSelectedUsersInput
+        >;
+        create: XOR<
+            TeamCreateWithoutSelectedUsersInput,
+            TeamUncheckedCreateWithoutSelectedUsersInput
+        >;
+        where?: TeamWhereInput;
+    };
+
+    export type TeamUpdateToOneWithWhereWithoutSelectedUsersInput = {
+        where?: TeamWhereInput;
+        data: XOR<
+            TeamUpdateWithoutSelectedUsersInput,
+            TeamUncheckedUpdateWithoutSelectedUsersInput
+        >;
+    };
+
+    export type TeamUpdateWithoutSelectedUsersInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        logo?: LogoUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUpdateOneWithoutTeamNestedInput;
+        notifications?: NotificationUpdateManyWithoutTeamNestedInput;
+        teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+    };
+
+    export type TeamUncheckedUpdateWithoutSelectedUsersInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        name?: StringFieldUpdateOperationsInput | string;
+        logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
+        stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
+        notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
+        teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
     };
 
     export type TeamMemberUpsertWithWhereUniqueWithoutUserInput = {
@@ -19583,6 +19935,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
         avatar?: AvatarCreateNestedOneWithoutUserInput;
         notifications?: NotificationCreateNestedManyWithoutUserInput;
@@ -19603,6 +19956,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
         avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput;
@@ -19668,6 +20022,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
         avatar?: AvatarUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUpdateManyWithoutUserNestedInput;
@@ -19705,6 +20060,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
         avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput;
@@ -19725,6 +20084,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
         notifications?: NotificationCreateNestedManyWithoutUserInput;
@@ -19745,6 +20105,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput;
@@ -19810,6 +20171,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUpdateManyWithoutUserNestedInput;
@@ -19847,6 +20209,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput;
@@ -19867,6 +20233,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
         avatar?: AvatarCreateNestedOneWithoutUserInput;
@@ -19887,6 +20254,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
         avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
@@ -19952,6 +20320,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUpdateOneWithoutUserNestedInput;
@@ -19989,6 +20358,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
@@ -20136,6 +20509,63 @@ export namespace Prisma {
 
     export type TeamMemberCreateManyTeamInputEnvelope = {
         data: TeamMemberCreateManyTeamInput | TeamMemberCreateManyTeamInput[];
+        skipDuplicates?: boolean;
+    };
+
+    export type UserCreateWithoutSelectedTeamInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
+        password: string;
+        lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
+        invitedAt?: Date | string | null;
+        role: $Enums.UserRoles;
+        status: $Enums.UserStatuses;
+        teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
+        refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
+        avatar?: AvatarCreateNestedOneWithoutUserInput;
+        notifications?: NotificationCreateNestedManyWithoutUserInput;
+        notificationPreferences?: NotificationPreferenceCreateNestedOneWithoutUserInput;
+    };
+
+    export type UserUncheckedCreateWithoutSelectedTeamInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
+        password: string;
+        lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
+        invitedAt?: Date | string | null;
+        role: $Enums.UserRoles;
+        status: $Enums.UserStatuses;
+        teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
+        refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
+        avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
+        notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput;
+        notificationPreferences?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput;
+    };
+
+    export type UserCreateOrConnectWithoutSelectedTeamInput = {
+        where: UserWhereUniqueInput;
+        create: XOR<
+            UserCreateWithoutSelectedTeamInput,
+            UserUncheckedCreateWithoutSelectedTeamInput
+        >;
+    };
+
+    export type UserCreateManySelectedTeamInputEnvelope = {
+        data:
+            | UserCreateManySelectedTeamInput
+            | UserCreateManySelectedTeamInput[];
         skipDuplicates?: boolean;
     };
 
@@ -20293,6 +20723,54 @@ export namespace Prisma {
         >;
     };
 
+    export type UserUpsertWithWhereUniqueWithoutSelectedTeamInput = {
+        where: UserWhereUniqueInput;
+        update: XOR<
+            UserUpdateWithoutSelectedTeamInput,
+            UserUncheckedUpdateWithoutSelectedTeamInput
+        >;
+        create: XOR<
+            UserCreateWithoutSelectedTeamInput,
+            UserUncheckedCreateWithoutSelectedTeamInput
+        >;
+    };
+
+    export type UserUpdateWithWhereUniqueWithoutSelectedTeamInput = {
+        where: UserWhereUniqueInput;
+        data: XOR<
+            UserUpdateWithoutSelectedTeamInput,
+            UserUncheckedUpdateWithoutSelectedTeamInput
+        >;
+    };
+
+    export type UserUpdateManyWithWhereWithoutSelectedTeamInput = {
+        where: UserScalarWhereInput;
+        data: XOR<
+            UserUpdateManyMutationInput,
+            UserUncheckedUpdateManyWithoutSelectedTeamInput
+        >;
+    };
+
+    export type UserScalarWhereInput = {
+        AND?: UserScalarWhereInput | UserScalarWhereInput[];
+        OR?: UserScalarWhereInput[];
+        NOT?: UserScalarWhereInput | UserScalarWhereInput[];
+        id?: UuidFilter<"User"> | string;
+        createdAt?: DateTimeFilter<"User"> | Date | string;
+        updatedAt?: DateTimeFilter<"User"> | Date | string;
+        fullName?: StringFilter<"User"> | string;
+        email?: StringFilter<"User"> | string;
+        phoneNumber?: StringFilter<"User"> | string;
+        mfaType?: EnumMfaTypesNullableFilter<"User"> | $Enums.MfaTypes | null;
+        password?: StringFilter<"User"> | string;
+        lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+        lastSeenAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+        invitedAt?: DateTimeNullableFilter<"User"> | Date | string | null;
+        role?: EnumUserRolesFilter<"User"> | $Enums.UserRoles;
+        status?: EnumUserStatusesFilter<"User"> | $Enums.UserStatuses;
+        selectedTeamId?: UuidNullableFilter<"User"> | string | null;
+    };
+
     export type TeamCreateWithoutStatsInput = {
         id?: string;
         createdAt?: Date | string;
@@ -20301,6 +20779,7 @@ export namespace Prisma {
         logo?: LogoCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUncheckedCreateWithoutStatsInput = {
@@ -20311,6 +20790,7 @@ export namespace Prisma {
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserUncheckedCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamCreateOrConnectWithoutStatsInput = {
@@ -20349,6 +20829,7 @@ export namespace Prisma {
         logo?: LogoUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamUncheckedUpdateWithoutStatsInput = {
@@ -20359,6 +20840,7 @@ export namespace Prisma {
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUncheckedUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type UserCreateWithoutTeamMembersInput = {
@@ -20375,6 +20857,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
         avatar?: AvatarCreateNestedOneWithoutUserInput;
         notifications?: NotificationCreateNestedManyWithoutUserInput;
@@ -20395,6 +20878,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
         avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput;
@@ -20417,6 +20901,7 @@ export namespace Prisma {
         logo?: LogoCreateNestedOneWithoutTeamInput;
         stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUncheckedCreateWithoutTeamMembersInput = {
@@ -20427,6 +20912,7 @@ export namespace Prisma {
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
         stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserUncheckedCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamCreateOrConnectWithoutTeamMembersInput = {
@@ -20488,6 +20974,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUpdateManyWithoutUserNestedInput;
@@ -20525,6 +21012,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput;
@@ -20559,6 +21050,7 @@ export namespace Prisma {
         logo?: LogoUpdateOneWithoutTeamNestedInput;
         stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamUncheckedUpdateWithoutTeamMembersInput = {
@@ -20569,6 +21061,7 @@ export namespace Prisma {
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
         stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUncheckedUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamCreateWithoutLogoInput = {
@@ -20579,6 +21072,7 @@ export namespace Prisma {
         stats?: TeamStatCreateNestedOneWithoutTeamInput;
         notifications?: NotificationCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUncheckedCreateWithoutLogoInput = {
@@ -20589,6 +21083,7 @@ export namespace Prisma {
         stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         notifications?: NotificationUncheckedCreateNestedManyWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserUncheckedCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamCreateOrConnectWithoutLogoInput = {
@@ -20627,6 +21122,7 @@ export namespace Prisma {
         stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamUncheckedUpdateWithoutLogoInput = {
@@ -20637,6 +21133,7 @@ export namespace Prisma {
         stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         notifications?: NotificationUncheckedUpdateManyWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUncheckedUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type UserCreateWithoutNotificationsInput = {
@@ -20653,6 +21150,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeam?: TeamCreateNestedOneWithoutSelectedUsersInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput;
         avatar?: AvatarCreateNestedOneWithoutUserInput;
@@ -20673,6 +21171,7 @@ export namespace Prisma {
         invitedAt?: Date | string | null;
         role: $Enums.UserRoles;
         status: $Enums.UserStatuses;
+        selectedTeamId?: string | null;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput;
         refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput;
         avatar?: AvatarUncheckedCreateNestedOneWithoutUserInput;
@@ -20695,6 +21194,7 @@ export namespace Prisma {
         logo?: LogoCreateNestedOneWithoutTeamInput;
         stats?: TeamStatCreateNestedOneWithoutTeamInput;
         teamMembers?: TeamMemberCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamUncheckedCreateWithoutNotificationsInput = {
@@ -20705,6 +21205,7 @@ export namespace Prisma {
         logo?: LogoUncheckedCreateNestedOneWithoutTeamInput;
         stats?: TeamStatUncheckedCreateNestedOneWithoutTeamInput;
         teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput;
+        selectedUsers?: UserUncheckedCreateNestedManyWithoutSelectedTeamInput;
     };
 
     export type TeamCreateOrConnectWithoutNotificationsInput = {
@@ -20766,6 +21267,7 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeam?: TeamUpdateOneWithoutSelectedUsersNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUpdateOneWithoutUserNestedInput;
@@ -20803,6 +21305,10 @@ export namespace Prisma {
         status?:
             | EnumUserStatusesFieldUpdateOperationsInput
             | $Enums.UserStatuses;
+        selectedTeamId?:
+            | NullableStringFieldUpdateOperationsInput
+            | string
+            | null;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
         refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
         avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
@@ -20837,6 +21343,7 @@ export namespace Prisma {
         logo?: LogoUpdateOneWithoutTeamNestedInput;
         stats?: TeamStatUpdateOneWithoutTeamNestedInput;
         teamMembers?: TeamMemberUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamUncheckedUpdateWithoutNotificationsInput = {
@@ -20847,6 +21354,7 @@ export namespace Prisma {
         logo?: LogoUncheckedUpdateOneWithoutTeamNestedInput;
         stats?: TeamStatUncheckedUpdateOneWithoutTeamNestedInput;
         teamMembers?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput;
+        selectedUsers?: UserUncheckedUpdateManyWithoutSelectedTeamNestedInput;
     };
 
     export type TeamMemberCreateManyUserInput = {
@@ -20978,6 +21486,22 @@ export namespace Prisma {
         userId: string;
     };
 
+    export type UserCreateManySelectedTeamInput = {
+        id?: string;
+        createdAt?: Date | string;
+        updatedAt?: Date | string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        mfaType?: $Enums.MfaTypes | null;
+        password: string;
+        lastLoginAt?: Date | string | null;
+        lastSeenAt?: Date | string | null;
+        invitedAt?: Date | string | null;
+        role: $Enums.UserRoles;
+        status: $Enums.UserStatuses;
+    };
+
     export type NotificationUpdateWithoutTeamInput = {
         id?: StringFieldUpdateOperationsInput | string;
         createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
@@ -21063,6 +21587,115 @@ export namespace Prisma {
             | EnumTeamMemberRolesFieldUpdateOperationsInput
             | $Enums.TeamMemberRoles;
         userId?: StringFieldUpdateOperationsInput | string;
+    };
+
+    export type UserUpdateWithoutSelectedTeamInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        fullName?: StringFieldUpdateOperationsInput | string;
+        email?: StringFieldUpdateOperationsInput | string;
+        phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
+        password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
+        status?:
+            | EnumUserStatusesFieldUpdateOperationsInput
+            | $Enums.UserStatuses;
+        teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput;
+        refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput;
+        avatar?: AvatarUpdateOneWithoutUserNestedInput;
+        notifications?: NotificationUpdateManyWithoutUserNestedInput;
+        notificationPreferences?: NotificationPreferenceUpdateOneWithoutUserNestedInput;
+    };
+
+    export type UserUncheckedUpdateWithoutSelectedTeamInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        fullName?: StringFieldUpdateOperationsInput | string;
+        email?: StringFieldUpdateOperationsInput | string;
+        phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
+        password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
+        status?:
+            | EnumUserStatusesFieldUpdateOperationsInput
+            | $Enums.UserStatuses;
+        teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput;
+        refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput;
+        avatar?: AvatarUncheckedUpdateOneWithoutUserNestedInput;
+        notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput;
+        notificationPreferences?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput;
+    };
+
+    export type UserUncheckedUpdateManyWithoutSelectedTeamInput = {
+        id?: StringFieldUpdateOperationsInput | string;
+        createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+        fullName?: StringFieldUpdateOperationsInput | string;
+        email?: StringFieldUpdateOperationsInput | string;
+        phoneNumber?: StringFieldUpdateOperationsInput | string;
+        mfaType?:
+            | NullableEnumMfaTypesFieldUpdateOperationsInput
+            | $Enums.MfaTypes
+            | null;
+        password?: StringFieldUpdateOperationsInput | string;
+        lastLoginAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        lastSeenAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        invitedAt?:
+            | NullableDateTimeFieldUpdateOperationsInput
+            | Date
+            | string
+            | null;
+        role?: EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles;
+        status?:
+            | EnumUserStatusesFieldUpdateOperationsInput
+            | $Enums.UserStatuses;
     };
 
     /**

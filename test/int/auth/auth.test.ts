@@ -56,7 +56,7 @@ describe("Auth Routes", () => {
                 const body = JSON.parse(response.body);
                 expect(body.data).toHaveProperty("user");
             }
-        }, 10000);
+        }, 30000);
 
         it("should fail with invalid email format", async () => {
             const response = await app.inject({

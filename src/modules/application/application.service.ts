@@ -98,63 +98,127 @@ export const createApplicationService = (
         users: { id: string }[],
         createdTeams: { id: string }[]
     ) => {
-        const shuffledUsers = _.shuffle(users);
+        const MIN_TEAMS_PER_USER = 3;
+        const MAX_TEAMS_PER_USER = 10;
+        const MAX_ADMINS_PER_TEAM = 2;
+
+        const teamCap = Math.min(MAX_TEAMS_PER_USER, createdTeams.length);
+        const minTeams = Math.min(MIN_TEAMS_PER_USER, createdTeams.length);
+
+        const teamRoles = new Map<string, Map<string, TeamMemberRoles>>();
+
+        for (const team of createdTeams) {
+            teamRoles.set(team.id, new Map());
+        }
+
+        const userTeamCount = (userId: string) => {
+            let count = 0;
+
+            for (const roleMap of teamRoles.values()) {
+                if (roleMap.has(userId)) {
+                    count++;
+                }
+            }
+
+            return count;
+        };
+
+        const addMembership = (
+            userId: string,
+            teamId: string,
+            role: TeamMemberRoles
+        ) => {
+            teamRoles.get(teamId)!.set(userId, role);
+        };
+
+        const shuffledForOwners = _.shuffle(users);
+
+        for (const [index, team] of createdTeams.entries()) {
+            const owner = shuffledForOwners[index % shuffledForOwners.length];
+
+            if (owner) {
+                addMembership(owner.id, team.id, TeamMemberRoles.OWNER);
+            }
+
+            const adminCount = getRandomInt(0, MAX_ADMINS_PER_TEAM);
+            const adminCandidates = _.shuffle(users);
+            let added = 0;
+
+            for (const candidate of adminCandidates) {
+                if (added >= adminCount) {
+                    break;
+                }
+
+                if (
+                    teamRoles.get(team.id)!.has(candidate.id) ||
+                    userTeamCount(candidate.id) >= teamCap
+                ) {
+                    continue;
+                }
+
+                addMembership(candidate.id, team.id, TeamMemberRoles.ADMIN);
+                added++;
+            }
+        }
+
+        for (const user of users) {
+            while (userTeamCount(user.id) < minTeams) {
+                const candidateTeams = _.shuffle(
+                    createdTeams.filter(
+                        (team) => !teamRoles.get(team.id)!.has(user.id)
+                    )
+                );
+
+                if (candidateTeams.length === 0) {
+                    break;
+                }
+
+                const team = candidateTeams[0]!;
+
+                addMembership(user.id, team.id, TeamMemberRoles.STAFF);
+            }
+        }
 
         const teamMembersData: {
-            role: "OWNER" | "ADMIN" | "STAFF";
+            role: TeamMemberRoles;
             userId: string;
             teamId: string;
         }[] = [];
 
-        let userIndex = 0;
-
-        for (const team of createdTeams) {
-            let adminCount = 0;
-            let hasOwner = false;
-
-            const membersPerTeam = Math.floor(
-                users.length / createdTeams.length
-            );
-
-            const extra = users.length % createdTeams.length;
-
-            const teamSize = membersPerTeam + (extra > 0 ? 1 : 0);
-
-            for (let index = 0; index < teamSize; index++) {
-                const user = shuffledUsers[userIndex];
-                userIndex++;
-
-                let role: TeamMemberRoles;
-
-                if (!hasOwner && index === 0) {
-                    role = TeamMemberRoles.OWNER;
-                    hasOwner = true;
-                } else {
-                    role =
-                        adminCount < 2 && Math.random() < 0.5
-                            ? TeamMemberRoles.ADMIN
-                            : TeamMemberRoles.STAFF;
-
-                    if (role === TeamMemberRoles.ADMIN) {
-                        adminCount++;
-                    }
-                }
-
-                teamMembersData.push({
-                    role,
-                    userId: user.id,
-                    teamId: team.id,
-                });
-
-                if (userIndex >= shuffledUsers.length) {
-                    break;
-                }
+        for (const [teamId, roleMap] of teamRoles) {
+            for (const [userId, role] of roleMap) {
+                teamMembersData.push({ role, userId, teamId });
             }
         }
 
         await tx.teamMember.createMany({
             data: teamMembersData,
         });
+
+        const userTeams = new Map<string, string[]>();
+
+        for (const { userId, teamId } of teamMembersData) {
+            if (!userTeams.has(userId)) {
+                userTeams.set(userId, []);
+            }
+
+            userTeams.get(userId)!.push(teamId);
+        }
+
+        for (const user of users) {
+            const teams = userTeams.get(user.id);
+
+            if (!teams || teams.length === 0) {
+                continue;
+            }
+
+            const selectedTeamId = teams[getRandomInt(0, teams.length - 1)];
+
+            await tx.user.update({
+                where: { id: user.id },
+                data: { selectedTeamId },
+            });
+        }
     };
 
     const initTeamTenantClient = async (teamId: string) => {

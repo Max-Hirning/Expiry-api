@@ -9,6 +9,7 @@ describe("User Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
     let authToken: string;
+    let cookieHeader: string;
     let userId: string;
     let userPassword: string;
 
@@ -26,6 +27,10 @@ describe("User Routes", () => {
         });
         const { data } = JSON.parse(signInResponse.body);
         authToken = data.token;
+
+        cookieHeader = signInResponse.cookies
+            .map((c) => `${c.name}=${c.value}`)
+            .join("; ");
     });
 
     afterAll(async () => {
@@ -352,7 +357,7 @@ describe("User Routes", () => {
             const response = await app.inject({
                 method: "PUT",
                 url: `/api/users/${userId}/password`,
-                headers: { authorization: `Bearer ${authToken}` },
+                headers: { cookie: cookieHeader },
                 payload: {
                     oldPassword: "WrongPassword999!",
                     password: "NewPassword123!",
@@ -366,7 +371,7 @@ describe("User Routes", () => {
             const response = await app.inject({
                 method: "PUT",
                 url: `/api/users/${userId}/password`,
-                headers: { authorization: `Bearer ${authToken}` },
+                headers: { cookie: cookieHeader },
                 payload: {
                     oldPassword: userPassword,
                     password: "NewPassword456!",

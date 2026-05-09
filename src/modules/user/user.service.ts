@@ -220,6 +220,15 @@ export const createService = (
                 });
             }
 
+            if (body.selectedTeamId) {
+                await teamMemberRepository.findFirstOrFail({
+                    where: {
+                        userId: params.userId,
+                        teamId: body.selectedTeamId,
+                    },
+                });
+            }
+
             let avatarPayload:
                 | (Pick<Avatar, "url" | "key" | "expiredAt"> & {
                       uploadUrl: string;
@@ -257,6 +266,7 @@ export const createService = (
                     email: body.email,
                     mfaType: body.mfaType,
                     phoneNumber: body.phoneNumber,
+                    selectedTeamId: body.selectedTeamId,
                     ...(body.avatar &&
                         avatarPayload && {
                         avatar: {
@@ -416,6 +426,13 @@ export const createService = (
                 },
                 select: defaultUserSelector,
             });
+
+            if (body.teamId) {
+                await userRepository.setSelectedTeamIfNull(
+                    [invitedUser.id],
+                    body.teamId
+                );
+            }
 
             const invitationId = jwt.sign({
                 id: invitedUser.id,

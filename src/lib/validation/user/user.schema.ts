@@ -29,6 +29,7 @@ const defaultUserSchema = z.object({
     notificationPreferences: defaultNotificationPreferenceSchema,
     unReadNotifications: z.int(),
     isOnline: z.boolean(),
+    selectedTeamId: z.uuid().nullable(),
 });
 
 const inviteUserBodySchema = defaultUserSchema
@@ -63,6 +64,7 @@ const updateUserBodySchema = defaultUserSchema
             height: true,
             fileSize: true,
         }),
+        selectedTeamId: z.uuid().nullable(),
     })
     .partial();
 

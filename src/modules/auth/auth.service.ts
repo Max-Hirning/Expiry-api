@@ -191,7 +191,7 @@ export const createAuthService = (
                         });
 
                         if (invitationId) {
-                            return tx.user.update({
+                            const updated = await tx.user.update({
                                 where: {
                                     id: userId,
                                 },
@@ -210,9 +210,17 @@ export const createAuthService = (
                                 },
                                 select: defaultUserSelector,
                             });
+
+                            await userRepository.setSelectedTeamIfNull(
+                                [updated.id],
+                                createdTeam.id,
+                                tx
+                            );
+
+                            return updated;
                         }
 
-                        return tx.user.create({
+                        const created = await tx.user.create({
                             data: {
                                 id: userId,
                                 role: UserRoles.USER,
@@ -253,6 +261,14 @@ export const createAuthService = (
                             },
                             select: defaultUserSelector,
                         });
+
+                        await userRepository.setSelectedTeamIfNull(
+                            [created.id],
+                            createdTeam.id,
+                            tx
+                        );
+
+                        return created;
                     }
                 );
 
