@@ -538,6 +538,10 @@ export const createTeamService = (
                     )
                 );
 
+                const memberUserIdsToCreate = body.teamMembers
+                    ? body.teamMembers.map(({ userId }) => userId)
+                    : [];
+
                 const createdTeam = await teamRepository.create({
                     data: {
                         id: teamId,
@@ -580,6 +584,11 @@ export const createTeamService = (
                     },
                     select: defaultTeamSelector,
                 });
+
+                await userRepository.setSelectedTeamIfNull(
+                    [initiator.id, ...memberUserIdsToCreate],
+                    createdTeam.id
+                );
 
                 const team = await getTeam(createdTeam.id, initiator);
 
@@ -810,6 +819,25 @@ export const createTeamService = (
                         ...futureTeamMembersToDisconnectRecords.notifications,
                     ],
                 });
+
+                await userRepository.setSelectedTeamIfNull(
+                    futureTeamMembersRecords.teamMembers.map(
+                        ({ userId }) => userId
+                    ),
+                    params.teamId,
+                    tx
+                );
+
+                if (
+                    body.teamMembersUsersToDeleteIds &&
+                    body.teamMembersUsersToDeleteIds.length > 0
+                ) {
+                    await userRepository.reassignSelectedTeamAfterRemoval(
+                        body.teamMembersUsersToDeleteIds,
+                        params.teamId,
+                        tx
+                    );
+                }
 
                 return team;
             });

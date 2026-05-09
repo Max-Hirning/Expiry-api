@@ -39,6 +39,16 @@ export type UserRepository = BaseRepository<"user"> & {
         reassignments: SelectedTeamReassignment[],
         tx?: Prisma.TransactionClient
     ) => Promise<number>;
+    setSelectedTeamIfNull: (
+        userIds: string[],
+        teamId: string,
+        tx?: Prisma.TransactionClient
+    ) => Promise<number>;
+    reassignSelectedTeamAfterRemoval: (
+        userIds: string[],
+        removedTeamId: string,
+        tx?: Prisma.TransactionClient
+    ) => Promise<number>;
 };
 
 export const createUserRepository = ({
@@ -94,6 +104,53 @@ export const createUserRepository = ({
                 UPDATE users
                 SET selected_team_id = CASE id ${cases} END
                 WHERE id IN (${ids})
+            `;
+        },
+        setSelectedTeamIfNull: async (userIds, teamId, tx) => {
+            if (userIds.length === 0) {
+                return 0;
+            }
+
+            const client = tx ?? prisma;
+
+            const ids = Prisma.join(
+                userIds.map((id) => Prisma.sql`${id}::uuid`)
+            );
+
+            return client.$executeRaw`
+                UPDATE users
+                SET selected_team_id = ${teamId}::uuid
+                WHERE id IN (${ids})
+                  AND selected_team_id IS NULL
+            `;
+        },
+        reassignSelectedTeamAfterRemoval: async (
+            userIds,
+            removedTeamId,
+            tx
+        ) => {
+            if (userIds.length === 0) {
+                return 0;
+            }
+
+            const client = tx ?? prisma;
+
+            const ids = Prisma.join(
+                userIds.map((id) => Prisma.sql`${id}::uuid`)
+            );
+
+            return client.$executeRaw`
+                UPDATE users u
+                SET selected_team_id = (
+                    SELECT tm.team_id
+                    FROM team_members tm
+                    WHERE tm.user_id = u.id
+                      AND tm.team_id <> ${removedTeamId}::uuid
+                    ORDER BY tm.created_at ASC
+                    LIMIT 1
+                )
+                WHERE u.id IN (${ids})
+                  AND u.selected_team_id = ${removedTeamId}::uuid
             `;
         },
     };

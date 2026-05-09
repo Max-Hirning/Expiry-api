@@ -427,6 +427,13 @@ export const createService = (
                 select: defaultUserSelector,
             });
 
+            if (body.teamId) {
+                await userRepository.setSelectedTeamIfNull(
+                    [invitedUser.id],
+                    body.teamId
+                );
+            }
+
             const invitationId = jwt.sign({
                 id: invitedUser.id,
             });
