@@ -538,10 +538,6 @@ export const createTeamService = (
                     )
                 );
 
-                const memberUserIdsToCreate = body.teamMembers
-                    ? body.teamMembers.map(({ userId }) => userId)
-                    : [];
-
                 const createdTeam = await teamRepository.create({
                     data: {
                         id: teamId,
@@ -585,11 +581,6 @@ export const createTeamService = (
                     select: defaultTeamSelector,
                 });
 
-                await userRepository.setSelectedTeamIfNull(
-                    [initiator.id, ...memberUserIdsToCreate],
-                    createdTeam.id
-                );
-
                 const team = await getTeam(createdTeam.id, initiator);
 
                 if (body.teamMembers) {
@@ -601,6 +592,16 @@ export const createTeamService = (
                         }
                     );
                 }
+
+                await userRepository.setSelectedTeamIfNull(
+                    [
+                        initiator.id,
+                        ...futureTeamMembersRecords.teamMembers.map(
+                            ({ userId }) => userId
+                        ),
+                    ],
+                    createdTeam.id
+                );
 
                 const memberUsers = await userRepository.findMany({
                     where: {
