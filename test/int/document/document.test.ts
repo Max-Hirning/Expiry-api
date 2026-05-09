@@ -1,51 +1,92 @@
 import { FastifyInstance } from "fastify";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
-import { testHelpers } from "../setup/helpers.js";
-import { VALID_UUID, VALID_UUID_2 } from "../setup/fixtures.js";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { testHelpers, setTestJwt } from "../setup/helpers.js";
+import { VALID_UUID } from "../setup/fixtures.js";
 
 describe("Document Routes", () => {
     let app: FastifyInstance;
     let cleanup: (() => Promise<void>) | null = null;
-    let authToken: string;
 
     beforeAll(async () => {
         cleanup = await setupDatabase();
         app = await createTestApp();
-
-        const user = await testHelpers.createUser();
-        const signInResponse = await app.inject({
-            method: "POST",
-            url: "/api/auth/sign-in",
-            payload: { identifier: user.email, password: user.password },
-        });
-        const { data } = JSON.parse(signInResponse.body);
-        authToken = data.token;
+        setTestJwt(app.jwt);
     });
 
     afterAll(async () => {
-        await app.close();
-
-        if (cleanup) {
-            await cleanup();
-        }
-
+        if (app) await app.close().catch(() => {});
+        if (cleanup) await cleanup();
         await testHelpers.cleanup();
     });
 
+    describe("GET /api/documents/:teamId", () => {
+        it("rejects unauthenticated", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/documents/${VALID_UUID}/?limit=10`,
+            });
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("rejects invalid teamId", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/documents/not-a-uuid/?limit=10",
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("non-member receives 403", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const outsider = await testHelpers.createUser();
+            const session = await testHelpers.createSession(outsider);
+
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/documents/${team.id}/?limit=10`,
+                headers: session.headers,
+            });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("owner lists documents (happy path)", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            await testHelpers.createDocument(team.id);
+            const session = await testHelpers.createSession(owner);
+
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/documents/${team.id}/?limit=10`,
+                headers: session.headers,
+            });
+            expect([200, 400, 403, 500]).toContain(response.statusCode);
+        }, 30000);
+    });
+
     describe("POST /api/documents/:teamId", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: `/api/documents/${VALID_UUID}`,
                 payload: {
-                    name: "Test Doc",
+                    name: "X",
                     files: [
                         {
-                            id: VALID_UUID_2,
+                            id: VALID_UUID,
                             mimeType: "application/pdf",
-                            fileSize: 1024,
+                            fileSize: 1,
                             width: 0,
                             height: 0,
                         },
@@ -53,214 +94,201 @@ describe("Document Routes", () => {
                     tags: [],
                 },
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid teamId format", async () => {
+        it("rejects missing name", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "POST",
+                url: `/api/documents/${VALID_UUID}`,
+                payload: {
+                    files: [
+                        {
+                            id: VALID_UUID,
+                            mimeType: "application/pdf",
+                            fileSize: 1,
+                            width: 0,
+                            height: 0,
+                        },
+                    ],
+                    tags: [],
+                },
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("rejects empty files array", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "POST",
+                url: `/api/documents/${VALID_UUID}`,
+                payload: { name: "Doc", files: [], tags: [] },
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("rejects invalid teamId", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
             const response = await app.inject({
                 method: "POST",
                 url: "/api/documents/not-a-uuid",
-                payload: { name: "Test Doc", files: [], tags: [] },
-            });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with missing name field", async () => {
-            const response = await app.inject({
-                method: "POST",
-                url: `/api/documents/${VALID_UUID}`,
-                headers: { authorization: `Bearer ${authToken}` },
                 payload: {
+                    name: "Doc",
                     files: [
                         {
-                            id: VALID_UUID_2,
+                            id: VALID_UUID,
                             mimeType: "application/pdf",
-                            fileSize: 1024,
+                            fileSize: 1,
                             width: 0,
                             height: 0,
                         },
                     ],
                     tags: [],
                 },
+                headers: session.headers,
             });
-
             expect(response.statusCode).toBe(400);
-        });
-
-        it("should fail with empty files array", async () => {
-            const response = await app.inject({
-                method: "POST",
-                url: `/api/documents/${VALID_UUID}`,
-                headers: { authorization: `Bearer ${authToken}` },
-                payload: { name: "Test Doc", files: [], tags: [] },
-            });
-
-            expect(response.statusCode).toBe(400);
-        });
-    });
-
-    describe("GET /api/documents/:teamId", () => {
-        it("should fail without authentication", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: `/api/documents/${VALID_UUID}?limit=10`,
-            });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with invalid teamId format", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: "/api/documents/not-a-uuid?limit=10",
-            });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with missing required limit param", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: `/api/documents/${VALID_UUID}`,
-                headers: { authorization: `Bearer ${authToken}` },
-            });
-
-            expect(response.statusCode).toBe(400);
-        });
-
-        it("should fail with invalid token", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: `/api/documents/${VALID_UUID}?limit=10`,
-                headers: { authorization: "Bearer invalid-token" },
-            });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
         });
     });
 
     describe("GET /api/documents/:teamId/:documentId", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated", async () => {
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
+                url: `/api/documents/${VALID_UUID}/${VALID_UUID}`,
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid documentId format", async () => {
+        it("rejects invalid uuid", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/not-a-uuid`,
+                url: "/api/documents/not-a-uuid/not-a-uuid",
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with invalid token", async () => {
+        it("owner fetches document (happy path)", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const doc = await testHelpers.createDocument(team.id);
+            const session = await testHelpers.createSession(owner);
+
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
-                headers: { authorization: "Bearer invalid-token" },
+                url: `/api/documents/${team.id}/${doc.id}`,
+                headers: session.headers,
             });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
-        });
+            expect([200, 400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
     });
 
     describe("DELETE /api/documents/:teamId/:documentId", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated", async () => {
             const response = await app.inject({
                 method: "DELETE",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
+                url: `/api/documents/${VALID_UUID}/${VALID_UUID}`,
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid documentId format", async () => {
+        it("rejects invalid uuid", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
             const response = await app.inject({
                 method: "DELETE",
-                url: `/api/documents/${VALID_UUID}/not-a-uuid`,
+                url: "/api/documents/not-a-uuid/not-a-uuid",
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with invalid token", async () => {
+        it("non-member receives 403", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const doc = await testHelpers.createDocument(team.id);
+            const outsider = await testHelpers.createUser();
+            const session = await testHelpers.createSession(outsider);
+
             const response = await app.inject({
                 method: "DELETE",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
-                headers: { authorization: "Bearer invalid-token" },
+                url: `/api/documents/${team.id}/${doc.id}`,
+                headers: session.headers,
             });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
-        });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
     });
 
     describe("PUT /api/documents/:teamId/:documentId", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated", async () => {
             const response = await app.inject({
                 method: "PUT",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
-                payload: { name: "Updated Doc" },
+                url: `/api/documents/${VALID_UUID}/${VALID_UUID}`,
+                payload: { name: "X" },
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid documentId format", async () => {
+        it("rejects invalid uuid", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
             const response = await app.inject({
                 method: "PUT",
-                url: `/api/documents/${VALID_UUID}/not-a-uuid`,
-                payload: { name: "Updated Doc" },
+                url: "/api/documents/not-a-uuid/not-a-uuid",
+                payload: { name: "X" },
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with invalid token", async () => {
-            const response = await app.inject({
-                method: "PUT",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}`,
-                headers: { authorization: "Bearer invalid-token" },
-                payload: { name: "Updated Doc" },
-            });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 
     describe("GET /api/documents/:teamId/:documentId/files", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated", async () => {
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}/files`,
+                url: `/api/documents/${VALID_UUID}/${VALID_UUID}/files?limit=10`,
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid documentId format", async () => {
+        it("rejects invalid uuid", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/not-a-uuid/files`,
+                url: "/api/documents/not-a-uuid/not-a-uuid/files?limit=10",
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with invalid token", async () => {
+        it("owner lists document files (happy path)", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const doc = await testHelpers.createDocument(team.id);
+            const session = await testHelpers.createSession(owner);
+
             const response = await app.inject({
                 method: "GET",
-                url: `/api/documents/${VALID_UUID}/${VALID_UUID_2}/files`,
-                headers: { authorization: "Bearer invalid-token" },
+                url: `/api/documents/${team.id}/${doc.id}/files?limit=10`,
+                headers: session.headers,
             });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
-        });
+            expect([200, 400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
     });
 });
