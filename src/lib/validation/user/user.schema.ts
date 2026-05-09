@@ -64,7 +64,7 @@ const updateUserBodySchema = defaultUserSchema
             height: true,
             fileSize: true,
         }),
-        selectedTeamId: z.uuid(),
+        selectedTeamId: z.uuid().nullable(),
     })
     .partial();
 

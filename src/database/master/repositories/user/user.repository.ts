@@ -102,7 +102,7 @@ export const createUserRepository = ({
 
             return client.$executeRaw`
                 UPDATE users
-                SET selected_team_id = CASE id ${cases} END
+                SET selected_team_id = CASE id ${cases} ELSE selected_team_id END
                 WHERE id IN (${ids})
             `;
         },
