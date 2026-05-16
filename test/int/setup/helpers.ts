@@ -24,6 +24,9 @@ export const setTestJwt = (jwt: JWT) => {
     jwtInstance = jwt;
 };
 
+export const hasRealTenantDb = (teamId: string): boolean =>
+    teamsWithRealTenantDb.has(teamId);
+
 let masterPrisma: MasterPrismaClient;
 const tenantPrismaCache = new Map<string, TeamPrismaClient>();
 const tenantCleanups = new Map<string, () => Promise<void>>();

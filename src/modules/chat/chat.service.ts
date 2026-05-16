@@ -142,6 +142,25 @@ export const createChatService = (
         unreadCount: chat._count.messages,
     });
 
+    const buildVisibilityFilter = (
+        userId: string
+    ): Prisma.ChatMessageWhereInput => ({
+        OR: [
+            { visibleToMemberId: null },
+            { visibleToMember: { is: { userId } } },
+        ],
+    });
+
+    const buildUnreadCountWhere = (
+        userId: string
+    ): Prisma.ChatMessageWhereInput => ({
+        NOT: { author: { is: { userId } } },
+        ...buildVisibilityFilter(userId),
+        chatMessageReadStatuses: {
+            none: { readBy: { userId } },
+        },
+    });
+
     const createMessage = async ({
         params,
         body,
@@ -266,30 +285,7 @@ export const createChatService = (
                         _count: {
                             select: {
                                 messages: {
-                                    where: {
-                                        NOT: {
-                                            author: {
-                                                is: { userId: initiator.id },
-                                            },
-                                        },
-                                        OR: [
-                                            { visibleToMemberId: null },
-                                            {
-                                                visibleToMember: {
-                                                    is: {
-                                                        userId: initiator.id,
-                                                    },
-                                                },
-                                            },
-                                        ],
-                                        chatMessageReadStatuses: {
-                                            none: {
-                                                readBy: {
-                                                    userId: initiator.id,
-                                                },
-                                            },
-                                        },
-                                    },
+                                    where: buildUnreadCountWhere(initiator.id),
                                 },
                                 members: {
                                     where: {
@@ -300,16 +296,7 @@ export const createChatService = (
                         },
                         messages: {
                             orderBy: { createdAt: "desc" },
-                            where: {
-                                OR: [
-                                    { visibleToMemberId: null },
-                                    {
-                                        visibleToMember: {
-                                            is: { userId: initiator.id },
-                                        },
-                                    },
-                                ],
-                            },
+                            where: buildVisibilityFilter(initiator.id),
                             take: 1,
                             select: defaultChatMessageSelectorWithAuthor,
                         },
@@ -360,32 +347,9 @@ export const createChatService = (
                             _count: {
                                 select: {
                                     messages: {
-                                        where: {
-                                            NOT: {
-                                                author: {
-                                                    is: {
-                                                        userId: initiator.id,
-                                                    },
-                                                },
-                                            },
-                                            OR: [
-                                                { visibleToMemberId: null },
-                                                {
-                                                    visibleToMember: {
-                                                        is: {
-                                                            userId: initiator.id,
-                                                        },
-                                                    },
-                                                },
-                                            ],
-                                            chatMessageReadStatuses: {
-                                                none: {
-                                                    readBy: {
-                                                        userId: initiator.id,
-                                                    },
-                                                },
-                                            },
-                                        },
+                                        where: buildUnreadCountWhere(
+                                            initiator.id
+                                        ),
                                     },
                                     members: {
                                         where: {
@@ -512,14 +476,7 @@ export const createChatService = (
                         where: {
                             chatId: params.chatId,
                             parentMessageId: query.parentMessageId,
-                            OR: [
-                                { visibleToMemberId: null },
-                                {
-                                    visibleToMember: {
-                                        is: { userId: initiator.id },
-                                    },
-                                },
-                            ],
+                            ...buildVisibilityFilter(initiator.id),
                         },
                         orderBy,
                         ...(query.cursor && {
@@ -603,8 +560,12 @@ export const createChatService = (
                     );
                 }
 
-                const message = await tx.chatMessage.findUnique({
-                    where: { id: params.messageId },
+                const message = await tx.chatMessage.findFirst({
+                    where: {
+                        id: params.messageId,
+                        chatId: params.chatId,
+                        ...buildVisibilityFilter(initiator.id),
+                    },
                 });
 
                 if (!message) {
@@ -664,8 +625,12 @@ export const createChatService = (
                     );
                 }
 
-                const message = await tx.chatMessage.findUnique({
-                    where: { id: params.messageId },
+                const message = await tx.chatMessage.findFirst({
+                    where: {
+                        id: params.messageId,
+                        chatId: params.chatId,
+                        ...buildVisibilityFilter(initiator.id),
+                    },
                 });
 
                 if (!message) {
@@ -741,8 +706,23 @@ export const createChatService = (
                         );
                     }
 
+                    const visibleMessages = await tx.chatMessage.findMany({
+                        where: {
+                            id: { in: body.messageIds },
+                            chatId: params.chatId,
+                            ...buildVisibilityFilter(initiator.id),
+                        },
+                        select: { id: true },
+                    });
+
+                    const visibleIds = visibleMessages.map((m) => m.id);
+
+                    if (visibleIds.length === 0) {
+                        return [];
+                    }
+
                     await tx.chatMessageReadStatus.createMany({
-                        data: body.messageIds.map((messageId) => ({
+                        data: visibleIds.map((messageId) => ({
                             chatMessageId: messageId,
                             readById: member.id,
                         })),
@@ -751,9 +731,7 @@ export const createChatService = (
 
                     const statuses = await tx.chatMessageReadStatus.findMany({
                         where: {
-                            chatMessageId: {
-                                in: body.messageIds,
-                            },
+                            chatMessageId: { in: visibleIds },
                             readById: member.id,
                         },
                     });

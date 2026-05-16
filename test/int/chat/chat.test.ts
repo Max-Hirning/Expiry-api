@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
-import { testHelpers, setTestJwt } from "../setup/helpers.js";
+import { testHelpers, setTestJwt, hasRealTenantDb } from "../setup/helpers.js";
 import { VALID_UUID } from "../setup/fixtures.js";
 import { TeamMemberRoles } from "@/database/master/generated/client.js";
 
@@ -233,7 +233,12 @@ describe("Chat Routes", () => {
                 payload: { name: "renamed" },
                 headers: session.headers,
             });
-            expect([200, 400, 403, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(200);
+                expect(response.json().data.chat.name).toBe("renamed");
+            } else {
+                expect([200, 400, 403, 500]).toContain(response.statusCode);
+            }
         }, 30000);
 
         it("owner toggles aiAgentEnabled (happy path)", async () => {
@@ -244,7 +249,12 @@ describe("Chat Routes", () => {
                 payload: { aiAgentEnabled: false },
                 headers: session.headers,
             });
-            expect([200, 400, 403, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(200);
+                expect(response.json().data.chat.aiAgentEnabled).toBe(false);
+            } else {
+                expect([200, 400, 403, 500]).toContain(response.statusCode);
+            }
         }, 30000);
 
         it("owner updates aiAgentVisibility to SENDER_ONLY (happy path)", async () => {
@@ -255,7 +265,14 @@ describe("Chat Routes", () => {
                 payload: { aiAgentVisibility: "SENDER_ONLY" },
                 headers: session.headers,
             });
-            expect([200, 400, 403, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(200);
+                expect(response.json().data.chat.aiAgentVisibility).toBe(
+                    "SENDER_ONLY"
+                );
+            } else {
+                expect([200, 400, 403, 500]).toContain(response.statusCode);
+            }
         }, 30000);
     });
 
@@ -314,7 +331,18 @@ describe("Chat Routes", () => {
                 url: `/api/chats/${team.id}/${chat.id}/messages?limit=20`,
                 headers: session.headers,
             });
-            expect([200, 400, 403, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(200);
+                const messages = response.json().data.messages;
+                expect(
+                    messages.find(
+                        (m: { message: string }) =>
+                            m.message === "private AI reply"
+                    )
+                ).toBeUndefined();
+            } else {
+                expect([200, 400, 403, 500]).toContain(response.statusCode);
+            }
         }, 30000);
     });
 
@@ -412,7 +440,12 @@ describe("Chat Routes", () => {
                 payload: { message: "edited" },
                 headers: session.headers,
             });
-            expect([400, 403, 404, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(403);
+                expect(response.json().message).toMatch(/AI agent/i);
+            } else {
+                expect([400, 403, 404, 500]).toContain(response.statusCode);
+            }
         }, 30000);
     });
 
@@ -461,7 +494,12 @@ describe("Chat Routes", () => {
                 url: `/api/chats/${team.id}/${chat.id}/messages/${aiMessage.id}`,
                 headers: session.headers,
             });
-            expect([400, 403, 404, 500]).toContain(response.statusCode);
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(403);
+                expect(response.json().message).toMatch(/AI agent/i);
+            } else {
+                expect([400, 403, 404, 500]).toContain(response.statusCode);
+            }
         }, 30000);
     });
 

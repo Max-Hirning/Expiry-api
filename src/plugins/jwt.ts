@@ -489,32 +489,6 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     if (!team) {
                         throw new ForbiddenError("Forbidden");
                     }
-
-                    const teamUrl =
-                        fastify.config.MASTER_DATABASE_URL.replaceAll(
-                            "5432/expiry",
-                            `5432/${params.teamId}`
-                        );
-
-                    const teamClient = fastify.prisma.team(teamUrl);
-
-                    try {
-                        const member = await teamClient.chatMember.findFirst({
-                            where: {
-                                chatId: params.chatId,
-                                userId: id,
-                                status: ChatMemberStatus.ACTIVE,
-                            },
-                        });
-
-                        if (member) {
-                            return;
-                        }
-
-                        throw new ForbiddenError("Forbidden");
-                    } finally {
-                        await teamClient.$disconnect();
-                    }
                 }
 
                 if (
