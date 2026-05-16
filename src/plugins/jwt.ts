@@ -462,6 +462,35 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
+                if (action === Actions.UPDATE_CHAT) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: ChatParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: {
+                                some: {
+                                    userId: id,
+                                    role: {
+                                        in: [
+                                            TeamMemberRoles.OWNER,
+                                            TeamMemberRoles.ADMIN,
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    });
+
+                    if (!team) {
+                        throw new ForbiddenError("Forbidden");
+                    }
+                }
+
                 if (
                     [
                         Actions.GET_CHAT,

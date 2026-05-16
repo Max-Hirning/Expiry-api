@@ -24,6 +24,7 @@ export enum Actions {
     UPDATE_TEAM_MEMBER_ROLE,
     GET_CHATS,
     GET_CHAT,
+    UPDATE_CHAT,
     GET_MESSAGES,
     SEND_MESSAGE,
     EDIT_MESSAGE,
