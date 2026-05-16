@@ -10,49 +10,33 @@ describe("Application Routes", () => {
     let cleanup: (() => Promise<void>) | null = null;
 
     beforeAll(async () => {
-        // Initialize test database schema BEFORE creating the app
         cleanup = await setupDatabase();
-
         app = await createTestApp();
     });
 
     afterAll(async () => {
-        await app.close();
-
-        if (cleanup) {
-            await cleanup();
-        }
-
+        if (app) await app.close().catch(() => {});
+        if (cleanup) await cleanup();
         await testHelpers.cleanup();
     });
 
-    describe("GET /application/ping", () => {
-        it("should return healthy status", async () => {
+    describe("GET /api/ping", () => {
+        it("returns 200 without auth", async () => {
             const response = await app.inject({
                 method: "GET",
                 url: "/api/ping",
             });
-
             expect(response.statusCode).toBe(200);
-            if (response.body) {
-                try {
-                    const body = JSON.parse(response.body);
-                    if (body.data) {
-                        expect(body.data).toHaveProperty("status");
-                    }
-                } catch (e) {
-                    // Response might not be JSON, that's ok for a ping
-                }
-            }
         });
+    });
 
-        it("should not require authentication", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: "/api/ping",
-            });
-
-            expect(response.statusCode).toBe(200);
+    describe("POST /api/test-data", () => {
+        it("route is registered (handler is a heavy seeder; not invoked in tests)", () => {
+            // Verify the route is mounted without invoking the seeder, which
+            // creates many users/teams/tenant DBs and depends on GCS/infra
+            // that the test env does not provide.
+            const has = app.hasRoute({ method: "POST", url: "/api/test-data" });
+            expect(has).toBe(true);
         });
     });
 });

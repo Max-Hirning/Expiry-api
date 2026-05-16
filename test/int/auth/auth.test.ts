@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { FastifyInstance } from "fastify";
 
 import { setupDatabase } from "../setup/db.js";
@@ -10,28 +10,18 @@ describe("Auth Routes", () => {
     let cleanup: (() => Promise<void>) | null = null;
 
     beforeAll(async () => {
-        // Initialize test database schema BEFORE creating the app
         cleanup = await setupDatabase();
-
         app = await createTestApp();
     });
 
     afterAll(async () => {
-        await app.close();
-
-        if (cleanup) {
-            await cleanup();
-        }
-
+        if (app) await app.close().catch(() => {});
+        if (cleanup) await cleanup();
         await testHelpers.cleanup();
     });
 
-    afterEach(async () => {
-        // No need to cleanup here since we're using a single schema per describe block
-    });
-
-    describe("POST /auth/sign-up", () => {
-        it("should handle sign up request (may fail due to team DB creation)", async () => {
+    describe("POST /api/auth/sign-up", () => {
+        it("attempts sign up (tolerates 5xx вЂ” sign-up provisions a tenant DB which may fail in test env)", async () => {
             const email = `newuser-${Date.now()}@example.com`;
             const response = await app.inject({
                 method: "POST",
@@ -40,25 +30,21 @@ describe("Auth Routes", () => {
                     user: {
                         fullName: "New User",
                         email,
-                        phoneNumber: "+1234567890",
+                        phoneNumber: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
                         password: "SecurePassword123!",
                     },
-                    team: {
-                        name: `Team ${Date.now()}`,
-                    },
+                    team: { name: `Team ${Date.now()}` },
                 },
             });
 
-            // Accept 201, 200, or 500 (team DB creation may fail during testing)
-            expect([201, 200, 500]).toContain(response.statusCode);
-
+            expect([200, 201, 500]).toContain(response.statusCode);
             if (response.statusCode === 201 || response.statusCode === 200) {
                 const body = JSON.parse(response.body);
                 expect(body.data).toHaveProperty("user");
             }
         }, 30000);
 
-        it("should fail with invalid email format", async () => {
+        it("rejects invalid email format", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-up",
@@ -69,55 +55,99 @@ describe("Auth Routes", () => {
                         phoneNumber: "+1234567890",
                         password: "SecurePassword123!",
                     },
-                    team: {
-                        name: `Team ${Date.now()}`,
-                    },
+                    team: { name: "Team" },
                 },
             });
-
             expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with missing password", async () => {
+        it("rejects missing password", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-up",
                 payload: {
                     user: {
                         fullName: "New User",
-                        email: `newuser-${Date.now()}@example.com`,
+                        email: "newuser@example.com",
                         phoneNumber: "+1234567890",
                     },
-                    team: {
-                        name: `Team ${Date.now()}`,
-                    },
+                    team: { name: "Team" },
                 },
             });
-
             expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with missing team name", async () => {
+        it("rejects missing team name", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-up",
                 payload: {
                     user: {
                         fullName: "New User",
-                        email: `newuser-${Date.now()}@example.com`,
+                        email: "newuser@example.com",
                         phoneNumber: "+1234567890",
                         password: "SecurePassword123!",
                     },
                     team: {},
                 },
             });
+            expect(response.statusCode).toBe(400);
+        });
 
+        it("rejects empty payload", async () => {
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/auth/sign-up",
+                payload: {},
+            });
             expect(response.statusCode).toBe(400);
         });
     });
 
-    describe("POST /auth/sign-in", () => {
-        it("should fail with non-existent user", async () => {
+    describe("POST /api/auth/sign-in", () => {
+        it("succeeds with valid credentials (happy path)", async () => {
+            const user = await testHelpers.createUser();
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/auth/sign-in",
+                payload: {
+                    identifier: user.email,
+                    password: user.password,
+                },
+            });
+            expect(response.statusCode).toBe(200);
+            const body = JSON.parse(response.body);
+            expect(body.data).toHaveProperty("user");
+            expect(body.data.user.email).toBe(user.email);
+        });
+
+        it("succeeds with phone number identifier", async () => {
+            const user = await testHelpers.createUser();
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/auth/sign-in",
+                payload: {
+                    identifier: user.phoneNumber,
+                    password: user.password,
+                },
+            });
+            expect(response.statusCode).toBe(200);
+        });
+
+        it("rejects wrong password", async () => {
+            const user = await testHelpers.createUser();
+            const response = await app.inject({
+                method: "POST",
+                url: "/api/auth/sign-in",
+                payload: {
+                    identifier: user.email,
+                    password: "WrongPassword123!",
+                },
+            });
+            expect([400, 401, 404, 409]).toContain(response.statusCode);
+        });
+
+        it("rejects non-existent user", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-in",
@@ -126,29 +156,24 @@ describe("Auth Routes", () => {
                     password: "SomePassword123!",
                 },
             });
-
-            expect([400, 404, 500]).toContain(response.statusCode);
+            expect([400, 401, 404, 409]).toContain(response.statusCode);
         });
 
-        it("should fail with missing password field", async () => {
+        it("rejects missing password", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-in",
-                payload: {
-                    identifier: "user@example.com",
-                },
+                payload: { identifier: "user@example.com" },
             });
-
             expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with empty payload", async () => {
+        it("rejects empty payload", async () => {
             const response = await app.inject({
                 method: "POST",
                 url: "/api/auth/sign-in",
                 payload: {},
             });
-
             expect(response.statusCode).toBe(400);
         });
     });

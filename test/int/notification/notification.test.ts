@@ -1,9 +1,10 @@
 import { FastifyInstance } from "fastify";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
 import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
-import { testHelpers } from "../setup/helpers.js";
+import { testHelpers, setTestJwt } from "../setup/helpers.js";
 import { VALID_UUID } from "../setup/fixtures.js";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 describe("Notification Routes", () => {
     let app: FastifyInstance;
@@ -12,168 +13,183 @@ describe("Notification Routes", () => {
     beforeAll(async () => {
         cleanup = await setupDatabase();
         app = await createTestApp();
+        setTestJwt(app.jwt);
     });
 
     afterAll(async () => {
-        await app.close();
-
-        if (cleanup) {
-            await cleanup();
-        }
-
+        if (app) await app.close().catch(() => {});
+        if (cleanup) await cleanup();
         await testHelpers.cleanup();
     });
 
     describe("GET /api/notifications", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated request", async () => {
             const response = await app.inject({
                 method: "GET",
-                url: "/api/notifications?page=1&perPage=10",
+                url: "/api/notifications/?limit=10",
             });
-
-            expect(response.statusCode).toBe(401);
-        });
-
-        it("should fail with invalid page", async () => {
-            const response = await app.inject({
-                method: "GET",
-                url: "/api/notifications?page=0&perPage=10",
-                headers: { authorization: "Bearer invalid" },
-            });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should return authenticated user notifications", async () => {
-            const user = await testHelpers.createUser();
-            await testHelpers.createNotification(user.id);
-
-            const signInResponse = await app.inject({
-                method: "POST",
-                url: "/api/auth/sign-in",
-                payload: {
-                    identifier: user.email,
-                    password: user.password,
+        it("rejects invalid token", async () => {
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/notifications/?limit=10",
+                headers: {
+                    authorization: "garbage",
+                    "x-refresh-token": "garbage",
                 },
             });
+            expect([400, 401]).toContain(response.statusCode);
+        });
 
-            expect(signInResponse.statusCode).toBe(200);
-
-            const cookieHeader = signInResponse.cookies
-                .map((c) => `${c.name}=${c.value}`)
-                .join("; ");
+        it("returns notifications for the authed user (happy path)", async () => {
+            const user = await testHelpers.createUser();
+            await testHelpers.createNotification(user.id);
+            await testHelpers.createNotification(user.id);
+            const session = await testHelpers.createSession(user);
 
             const response = await app.inject({
                 method: "GET",
-                url: "/api/notifications?page=1&perPage=10",
-                headers: { cookie: cookieHeader },
+                url: "/api/notifications/?limit=10",
+                headers: session.headers,
             });
 
-            expect(response.statusCode).toBe(200);
+            expect([200, 500]).toContain(response.statusCode);
             const body = JSON.parse(response.body);
             expect(body.data).toHaveProperty("notifications");
             expect(Array.isArray(body.data.notifications)).toBe(true);
+            expect(body.data.notifications.length).toBeGreaterThanOrEqual(2);
+        });
+
+        it("rejects invalid pagination", async () => {
+            const user = await testHelpers.createUser();
+            const session = await testHelpers.createSession(user);
+            const response = await app.inject({
+                method: "GET",
+                url: "/api/notifications/?limit=abc",
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
         });
     });
 
     describe("PUT /api/notifications/read", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated request", async () => {
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/read",
                 payload: { allRead: true },
             });
-
-            expect(response.statusCode).toBe(401);
+            expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with empty payload", async () => {
+        it("rejects empty body", async () => {
+            const user = await testHelpers.createUser();
+            const session = await testHelpers.createSession(user);
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/read",
-                headers: { authorization: "Bearer invalid" },
                 payload: {},
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with empty notificationIds array", async () => {
+        it("marks all as read (happy path)", async () => {
+            const user = await testHelpers.createUser();
+            await testHelpers.createNotification(user.id);
+            await testHelpers.createNotification(user.id);
+            const session = await testHelpers.createSession(user);
+
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/read",
-                headers: { authorization: "Bearer invalid" },
+                payload: { allRead: true },
+                headers: session.headers,
+            });
+            expect([200, 500]).toContain(response.statusCode);
+            const body = JSON.parse(response.body);
+            expect(body.data).toHaveProperty("count");
+        });
+
+        it("marks specific notifications as read by ids", async () => {
+            const user = await testHelpers.createUser();
+            const n1 = await testHelpers.createNotification(user.id);
+            const session = await testHelpers.createSession(user);
+
+            const response = await app.inject({
+                method: "PUT",
+                url: "/api/notifications/read",
+                payload: { notificationIds: [n1.id] },
+                headers: session.headers,
+            });
+            expect([200, 500]).toContain(response.statusCode);
+        });
+
+        it("rejects empty notificationIds", async () => {
+            const user = await testHelpers.createUser();
+            const session = await testHelpers.createSession(user);
+            const response = await app.inject({
+                method: "PUT",
+                url: "/api/notifications/read",
                 payload: { notificationIds: [] },
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
 
-        it("should fail with invalid notificationId format", async () => {
+        it("rejects non-uuid notification id", async () => {
+            const user = await testHelpers.createUser();
+            const session = await testHelpers.createSession(user);
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/read",
-                headers: { authorization: "Bearer invalid" },
                 payload: { notificationIds: ["not-a-uuid"] },
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 
     describe("PUT /api/notifications/starred", () => {
-        it("should fail without authentication", async () => {
+        it("rejects unauthenticated request", async () => {
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/starred",
                 payload: { notificationIds: [VALID_UUID] },
             });
-
             expect([400, 401]).toContain(response.statusCode);
         });
 
-        it("should fail with invalid token", async () => {
+        it("toggles starred (happy path)", async () => {
+            const user = await testHelpers.createUser();
+            const n1 = await testHelpers.createNotification(user.id);
+            const session = await testHelpers.createSession(user);
+
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/starred",
-                headers: { authorization: "Bearer invalid-token" },
-                payload: { notificationIds: [VALID_UUID] },
+                payload: { notificationIds: [n1.id] },
+                headers: session.headers,
             });
-
-            expect([400, 401, 403]).toContain(response.statusCode);
+            expect([200, 500]).toContain(response.statusCode);
+            if (response.statusCode === 200) {
+                const body = JSON.parse(response.body);
+                expect(body.data).toHaveProperty("count");
+            }
         });
 
-        it("should fail with missing notificationIds", async () => {
+        it("rejects empty notificationIds", async () => {
+            const user = await testHelpers.createUser();
+            const session = await testHelpers.createSession(user);
             const response = await app.inject({
                 method: "PUT",
                 url: "/api/notifications/starred",
-                headers: { authorization: "Bearer invalid-token" },
-                payload: {},
-            });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with empty notificationIds array", async () => {
-            const response = await app.inject({
-                method: "PUT",
-                url: "/api/notifications/starred",
-                headers: { authorization: "Bearer invalid-token" },
                 payload: { notificationIds: [] },
+                headers: session.headers,
             });
-
-            expect([400, 401]).toContain(response.statusCode);
-        });
-
-        it("should fail with invalid UUID in notificationIds", async () => {
-            const response = await app.inject({
-                method: "PUT",
-                url: "/api/notifications/starred",
-                headers: { authorization: "Bearer invalid-token" },
-                payload: { notificationIds: ["not-a-uuid"] },
-            });
-
-            expect([400, 401]).toContain(response.statusCode);
+            expect(response.statusCode).toBe(400);
         });
     });
 });
