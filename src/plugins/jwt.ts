@@ -462,6 +462,61 @@ const configureJwt = async (fastify: FastifyInstance) => {
                     throw new ForbiddenError("Forbidden");
                 }
 
+                if (action === Actions.UPDATE_CHAT) {
+                    const { id } = req.user;
+
+                    const { params } = req as FastifyRequest<{
+                        Params: ChatParamsInput;
+                    }>;
+
+                    const team = await fastify.prisma.master.team.findFirst({
+                        where: {
+                            id: params.teamId,
+                            teamMembers: {
+                                some: {
+                                    userId: id,
+                                    role: {
+                                        in: [
+                                            TeamMemberRoles.OWNER,
+                                            TeamMemberRoles.ADMIN,
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    });
+
+                    if (!team) {
+                        throw new ForbiddenError("Forbidden");
+                    }
+
+                    const teamUrl =
+                        fastify.config.MASTER_DATABASE_URL.replaceAll(
+                            "5432/expiry",
+                            `5432/${params.teamId}`
+                        );
+
+                    const teamClient = fastify.prisma.team(teamUrl);
+
+                    try {
+                        const member = await teamClient.chatMember.findFirst({
+                            where: {
+                                chatId: params.chatId,
+                                userId: id,
+                                status: ChatMemberStatus.ACTIVE,
+                            },
+                        });
+
+                        if (member) {
+                            return;
+                        }
+
+                        throw new ForbiddenError("Forbidden");
+                    } finally {
+                        await teamClient.$disconnect();
+                    }
+                }
+
                 if (
                     [
                         Actions.GET_CHAT,

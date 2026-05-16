@@ -12,6 +12,8 @@ export const defaultChatSelector = {
     createdAt: true,
     updatedAt: true,
     name: true,
+    aiAgentEnabled: true,
+    aiAgentVisibility: true,
 } satisfies Prisma.ChatSelect;
 
 export type ChatWithMembersAndUnreadCount = Prisma.ChatGetPayload<{

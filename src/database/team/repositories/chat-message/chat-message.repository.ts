@@ -13,8 +13,10 @@ export const defaultChatMessageSelector = {
     updatedAt: true,
     lastEditedAt: true,
     message: true,
+    isFromAiAgent: true,
     parentMessageId: true,
     authorId: true,
+    visibleToMemberId: true,
     chatId: true,
 } satisfies Prisma.ChatMessageSelect;
 

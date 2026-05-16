@@ -1,6 +1,9 @@
 import { z } from "zod";
-import { ChatMemberStatus } from "@/database/team/generated/index.js";
 import { paginationResponseSchema } from "../pagination/pagination.schema.js";
+import {
+    ChatAiAgentVisibility,
+    ChatMemberStatus,
+} from "@/database/team/generated/index.js";
 
 const defaultChatSchema = z.object({
     id: z.uuid(),
@@ -8,6 +11,11 @@ const defaultChatSchema = z.object({
     updatedAt: z.date(),
     unreadCount: z.int(),
     name: z.string(),
+    aiAgentEnabled: z.boolean(),
+    aiAgentVisibility: z.enum([
+        ChatAiAgentVisibility.ALL,
+        ChatAiAgentVisibility.SENDER_ONLY,
+    ]),
 });
 
 const defaultChatMemberSchema = z.object({
@@ -26,11 +34,14 @@ const lastChatMessageSchema = z.object({
     message: z.string(),
     createdAt: z.date(),
     lastEditedAt: z.date().nullable(),
-    author: z.object({
-        id: z.uuid(),
-        userFullName: z.string(),
-        userAvatarUrl: z.string().nullable(),
-    }),
+    isFromAiAgent: z.boolean(),
+    author: z
+        .object({
+            id: z.uuid(),
+            userFullName: z.string(),
+            userAvatarUrl: z.string().nullable(),
+        })
+        .nullable(),
 });
 
 const chatParamsSchema = z.object({
@@ -45,6 +56,28 @@ const getChatsCursorQuerySchema = z.object({
 
 const createChatBodySchema = z.object({
     name: z.string().min(1).max(100),
+});
+
+const updateChatBodySchema = z
+    .object({
+        name: z.string().min(1).max(100).optional(),
+        aiAgentEnabled: z.boolean().optional(),
+        aiAgentVisibility: z
+            .enum([
+                ChatAiAgentVisibility.ALL,
+                ChatAiAgentVisibility.SENDER_ONLY,
+            ])
+            .optional(),
+    })
+    .refine((v) => Object.keys(v).length > 0, {
+        message: "At least one field must be provided",
+    });
+
+const updateChatResponseSchema = z.object({
+    message: z.string(),
+    data: z.object({
+        chat: defaultChatSchema,
+    }),
 });
 
 const fetchChatsResponseSchema = z.object({
@@ -74,6 +107,8 @@ export {
     chatParamsSchema,
     getChatsCursorQuerySchema,
     createChatBodySchema,
+    updateChatBodySchema,
+    updateChatResponseSchema,
     fetchChatsResponseSchema,
     fetchChatResponseSchema,
     defaultChatSchema,
@@ -86,6 +121,8 @@ export type GetChatsCursorQueryInput = z.infer<
     typeof getChatsCursorQuerySchema
 >;
 export type CreateChatBodyInput = z.infer<typeof createChatBodySchema>;
+export type UpdateChatBodyInput = z.infer<typeof updateChatBodySchema>;
+export type UpdateChatResponse = z.infer<typeof updateChatResponseSchema>;
 export type FetchChatsResponse = z.infer<typeof fetchChatsResponseSchema>;
 export type FetchChatResponse = z.infer<typeof fetchChatResponseSchema>;
 export type LastChatMessage = z.infer<typeof lastChatMessageSchema>;

@@ -5,6 +5,7 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import {
     ChatParamsInput,
     GetChatsCursorQueryInput,
+    UpdateChatBodyInput,
 } from "@/lib/validation/chat/chat.schema.js";
 import {
     ChatMessageParamsInput,
@@ -25,6 +26,13 @@ export type ChatHandler = {
     getChat: (
         req: FastifyRequest<{
             Params: ChatParamsInput;
+        }>,
+        reply: FastifyReply
+    ) => Promise<void>;
+    updateChat: (
+        req: FastifyRequest<{
+            Params: ChatParamsInput;
+            Body: UpdateChatBodyInput;
         }>,
         reply: FastifyReply
     ) => Promise<void>;
@@ -83,6 +91,21 @@ export const createChatHandler = (
             params: request.params,
             initiator: request.user,
         });
+
+        return reply.send(result);
+    },
+
+    async updateChat(request, reply) {
+        const result = await chatService.updateChat({
+            params: request.params,
+            body: request.body,
+            initiator: request.user,
+        });
+
+        io.to(`chat:${request.params.chatId}`).emit(
+            "chat:updated",
+            result.data.chat
+        );
 
         return reply.send(result);
     },

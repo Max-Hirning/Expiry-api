@@ -4,6 +4,8 @@ import { Actions } from "@/modules/auth/auth.types.js";
 import {
     chatParamsSchema,
     getChatsCursorQuerySchema,
+    updateChatBodySchema,
+    updateChatResponseSchema,
     fetchChatsResponseSchema,
     fetchChatResponseSchema,
 } from "@/lib/validation/chat/chat.schema.js";
@@ -52,6 +54,22 @@ export const createChatRoutes = (
             ],
         },
         chatHandler.getChat
+    );
+
+    fastify.put(
+        "/:chatId",
+        {
+            schema: {
+                params: chatParamsSchema,
+                body: updateChatBodySchema,
+                response: { 200: updateChatResponseSchema },
+            },
+            preHandler: [
+                fastify.authorization,
+                fastify.checkAccess(Actions.UPDATE_CHAT),
+            ],
+        },
+        chatHandler.updateChat
     );
 
     fastify.get(
