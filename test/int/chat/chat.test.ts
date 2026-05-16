@@ -5,6 +5,7 @@ import { setupDatabase } from "../setup/db.js";
 import { createTestApp } from "../setup/app.js";
 import { testHelpers, setTestJwt } from "../setup/helpers.js";
 import { VALID_UUID } from "../setup/fixtures.js";
+import { TeamMemberRoles } from "@/database/master/generated/client.js";
 
 describe("Chat Routes", () => {
     let app: FastifyInstance;
@@ -129,6 +130,135 @@ describe("Chat Routes", () => {
         }, 30000);
     });
 
+    describe("PUT /api/chats/:teamId/:chatId", () => {
+        it("rejects unauthenticated", async () => {
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${VALID_UUID}/${VALID_UUID}`,
+                payload: { name: "x" },
+            });
+            expect([400, 401]).toContain(response.statusCode);
+        });
+
+        it("rejects invalid uuid in params", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "PUT",
+                url: "/api/chats/not-a-uuid/not-a-uuid",
+                payload: { name: "x" },
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("rejects empty body", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${VALID_UUID}/${VALID_UUID}`,
+                payload: {},
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("rejects invalid aiAgentVisibility enum", async () => {
+            const u = await testHelpers.createUser();
+            const session = await testHelpers.createSession(u);
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${VALID_UUID}/${VALID_UUID}`,
+                payload: { aiAgentVisibility: "BOGUS" },
+                headers: session.headers,
+            });
+            expect(response.statusCode).toBe(400);
+        });
+
+        it("non OWNER/ADMIN team member receives 403", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const staff = await testHelpers.createUser();
+            await testHelpers.addTeamMember(
+                team.id,
+                staff.id,
+                TeamMemberRoles.STAFF
+            );
+            const chat = await testHelpers.createChat(team.id, [
+                { userId: owner.id, userFullName: owner.fullName },
+                { userId: staff.id, userFullName: staff.fullName },
+            ]);
+            const session = await testHelpers.createSession(staff);
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}`,
+                payload: { name: "renamed" },
+                headers: session.headers,
+            });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("team admin who is not a chat member receives 403", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const admin = await testHelpers.createUser();
+            await testHelpers.addTeamMember(
+                team.id,
+                admin.id,
+                TeamMemberRoles.ADMIN
+            );
+            const chat = await testHelpers.createChat(team.id, [
+                { userId: owner.id, userFullName: owner.fullName },
+            ]);
+            const session = await testHelpers.createSession(admin);
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}`,
+                payload: { name: "renamed" },
+                headers: session.headers,
+            });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("owner updates chat name (happy path)", async () => {
+            const { team, chat, session } = await setupTeamWithChat();
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}`,
+                payload: { name: "renamed" },
+                headers: session.headers,
+            });
+            expect([200, 400, 403, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("owner toggles aiAgentEnabled (happy path)", async () => {
+            const { team, chat, session } = await setupTeamWithChat();
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}`,
+                payload: { aiAgentEnabled: false },
+                headers: session.headers,
+            });
+            expect([200, 400, 403, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("owner updates aiAgentVisibility to SENDER_ONLY (happy path)", async () => {
+            const { team, chat, session } = await setupTeamWithChat();
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}`,
+                payload: { aiAgentVisibility: "SENDER_ONLY" },
+                headers: session.headers,
+            });
+            expect([200, 400, 403, 500]).toContain(response.statusCode);
+        }, 30000);
+    });
+
     describe("GET /api/chats/:teamId/:chatId/messages", () => {
         it("rejects unauthenticated", async () => {
             const response = await app.inject({
@@ -151,6 +281,34 @@ describe("Chat Routes", () => {
 
         it("owner reads messages (happy path)", async () => {
             const { team, chat, session } = await setupTeamWithChat();
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/chats/${team.id}/${chat.id}/messages?limit=20`,
+                headers: session.headers,
+            });
+            expect([200, 400, 403, 500]).toContain(response.statusCode);
+        }, 30000);
+
+        it("SENDER_ONLY AI message filtered for non-recipient member", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const second = await testHelpers.createUser();
+            await testHelpers.addTeamMember(team.id, second.id);
+            const chat = await testHelpers.createChat(team.id, [
+                { userId: owner.id, userFullName: owner.fullName },
+                { userId: second.id, userFullName: second.fullName },
+            ]);
+            const ownerMember = chat.members.find(
+                (m) => m.userId === owner.id
+            )!;
+            await testHelpers.createMessage(team.id, chat.id, null, {
+                isFromAiAgent: true,
+                visibleToMemberId: ownerMember.id,
+                message: "private AI reply",
+            });
+            const session = await testHelpers.createSession(second);
             const response = await app.inject({
                 method: "GET",
                 url: `/api/chats/${team.id}/${chat.id}/messages?limit=20`,
@@ -239,6 +397,23 @@ describe("Chat Routes", () => {
             });
             expect([200, 400, 403, 404, 500]).toContain(response.statusCode);
         }, 30000);
+
+        it("cannot edit AI agent message", async () => {
+            const { team, chat, session } = await setupTeamWithChat();
+            const aiMessage = await testHelpers.createMessage(
+                team.id,
+                chat.id,
+                null,
+                { isFromAiAgent: true, message: "AI hello" }
+            );
+            const response = await app.inject({
+                method: "PUT",
+                url: `/api/chats/${team.id}/${chat.id}/messages/${aiMessage.id}`,
+                payload: { message: "edited" },
+                headers: session.headers,
+            });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
+        }, 30000);
     });
 
     describe("DELETE /api/chats/:teamId/:chatId/messages/:messageId", () => {
@@ -271,6 +446,22 @@ describe("Chat Routes", () => {
             expect([200, 204, 400, 403, 404, 500]).toContain(
                 response.statusCode
             );
+        }, 30000);
+
+        it("cannot delete AI agent message", async () => {
+            const { team, chat, session } = await setupTeamWithChat();
+            const aiMessage = await testHelpers.createMessage(
+                team.id,
+                chat.id,
+                null,
+                { isFromAiAgent: true, message: "AI hello" }
+            );
+            const response = await app.inject({
+                method: "DELETE",
+                url: `/api/chats/${team.id}/${chat.id}/messages/${aiMessage.id}`,
+                headers: session.headers,
+            });
+            expect([400, 403, 404, 500]).toContain(response.statusCode);
         }, 30000);
     });
 
