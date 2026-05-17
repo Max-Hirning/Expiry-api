@@ -5,12 +5,13 @@ import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
+import { defaultChatMemberSelector } from "@/database/team/repositories/chat-member/chat-member.repository.js";
 import {
     Chat,
+    ChatAiAgentVisibility,
     ChatMemberStatus,
     Prisma,
 } from "@/database/team/generated/index.js";
-import { defaultChatMemberSelector } from "@/database/team/repositories/chat-member/chat-member.repository.js";
 import {
     ChatWithMembersAndUnreadCount,
     defaultChatSelector,
@@ -482,42 +483,49 @@ export const createChatService = (
         },
 
         getMessages: async ({ params, query, initiator }) => {
-            const chatMessageRepository =
-                await applicationService.initChatMessageRepository(
-                    params.teamId
-                );
-
-            const messages = await withRepositories(
-                [chatMessageRepository],
-                async (repo) => {
-                    const orderBy =
-                        query.direction === "down"
-                            ? { createdAt: "asc" as const }
-                            : { createdAt: "desc" as const };
-
-                    const rows = await repo.findMany({
-                        where: {
-                            chatId: params.chatId,
-                            parentMessageId: query.parentMessageId,
-                            ...buildVisibilityFilter(initiator.id),
-                        },
-                        orderBy,
-                        ...(query.cursor && {
-                            cursor: { id: query.cursor },
-                            skip: 1,
-                        }),
-                        take: query.limit,
-                        select: defaultChatMessageSelectorWithReadStatuses,
-                    });
-
-                    const nextCursor =
-                        rows.length === query.limit
-                            ? rows[rows.length - 1].id
-                            : null;
-
-                    return { messages: rows, nextCursor };
-                }
+            const client = await applicationService.initTeamTenantClient(
+                params.teamId
             );
+
+            const messages = await withRepositories([client], async (tx) => {
+                const chat = await tx.chat.findUnique({
+                    where: { id: params.chatId },
+                    select: { aiAgentVisibility: true },
+                });
+
+                if (!chat) {
+                    throw new NotFoundError("Chat not found");
+                }
+
+                const orderBy =
+                    query.direction === "down"
+                        ? { createdAt: "asc" as const }
+                        : { createdAt: "desc" as const };
+
+                const rows = await tx.chatMessage.findMany({
+                    where: {
+                        chatId: params.chatId,
+                        parentMessageId: query.parentMessageId,
+                        ...(chat.aiAgentVisibility ===
+                            ChatAiAgentVisibility.SENDER_ONLY &&
+                            buildVisibilityFilter(initiator.id)),
+                    },
+                    orderBy,
+                    ...(query.cursor && {
+                        cursor: { id: query.cursor },
+                        skip: 1,
+                    }),
+                    take: query.limit,
+                    select: defaultChatMessageSelectorWithReadStatuses,
+                });
+
+                const nextCursor =
+                    rows.length === query.limit
+                        ? rows[rows.length - 1].id
+                        : null;
+
+                return { messages: rows, nextCursor };
+            });
 
             return {
                 message: "Messages retrieved successfully",
