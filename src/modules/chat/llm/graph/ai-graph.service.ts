@@ -27,7 +27,7 @@ import {
     buildDocumentsTools,
     buildMembersTools,
     buildTeamStatsTools,
-} from "./build-tools.js";
+} from "./tools/tools-build.js";
 
 export type AiGraphService = {
     run: (input: {
@@ -41,35 +41,6 @@ export type AiGraphService = {
     }) => Promise<string>;
 };
 
-const extractStringContent = (content: unknown): string => {
-    if (typeof content === "string") {
-        return content;
-    }
-
-    if (Array.isArray(content)) {
-        return content
-            .map((part) => {
-                if (typeof part === "string") {
-                    return part;
-                }
-
-                if (
-                    part &&
-                    typeof part === "object" &&
-                    "text" in part &&
-                    typeof (part as { text: unknown }).text === "string"
-                ) {
-                    return (part as { text: string }).text;
-                }
-
-                return "";
-            })
-            .join("");
-    }
-
-    return "";
-};
-
 export const createService = (
     geminiProviderService: GeminiProviderService,
     chatDataService: ChatDataService,
@@ -78,6 +49,35 @@ export const createService = (
     teamStatsDataService: TeamStatsDataService,
     log: FastifyBaseLogger
 ): AiGraphService => {
+    const extractStringContent = (content: unknown): string => {
+        if (typeof content === "string") {
+            return content;
+        }
+
+        if (Array.isArray(content)) {
+            return content
+                .map((part) => {
+                    if (typeof part === "string") {
+                        return part;
+                    }
+
+                    if (
+                        part &&
+                        typeof part === "object" &&
+                        "text" in part &&
+                        typeof (part as { text: unknown }).text === "string"
+                    ) {
+                        return (part as { text: string }).text;
+                    }
+
+                    return "";
+                })
+                .join("");
+        }
+
+        return "";
+    };
+
     const runRouter = async (state: GraphState): Promise<AgentName[]> => {
         const llm = geminiProviderService.create({ temperature: 0 });
         const structured = llm.withStructuredOutput(routerOutputSchema);
