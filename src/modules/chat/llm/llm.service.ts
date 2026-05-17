@@ -1,9 +1,12 @@
 import { FastifyBaseLogger } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { AiGraphService } from "./graph/ai-graph.service.js";
-import { ChatDataService } from "./data/chat-data.service.js";
-import { AI_FALLBACK_ERROR_MESSAGE, HISTORY_LIMIT } from "./llm.constants.js";
-import { AiMessagePersistenceService } from "./persistence/ai-message-persistence.service.js";
+import { AiGraphService } from "@/modules/chat/llm/graph/ai-graph.service.js";
+import { ChatDataService } from "@/modules/chat/llm/data/chat-data.service.js";
+import {
+    AI_FALLBACK_ERROR_MESSAGE,
+    HISTORY_LIMIT,
+} from "@/modules/chat/llm/llm.constants.js";
+import { AiMessagePersistenceService } from "@/modules/chat/llm/persistence/ai-message-persistence.service.js";
 
 export type LlmService = {
     handleUserMessage: (p: {

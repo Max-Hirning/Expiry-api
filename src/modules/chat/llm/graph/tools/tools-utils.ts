@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { FastifyBaseLogger } from "fastify";
-import { TOOL_INTEGRITY_ERROR } from "../../llm.constants.js";
+import { TOOL_INTEGRITY_ERROR } from "@/modules/chat/llm/llm.constants.js";
 
 export const safeJson = (value: unknown): string => {
     try {

@@ -1,6 +1,6 @@
 /// <reference types="./types/index.d.ts" />
 import closeWithGrace from "close-with-grace";
-import { configureServer } from "./server.js";
+import { configureServer } from "@/server.js";
 
 const main = async () => {
     const fastify = await configureServer();

@@ -1,4 +1,4 @@
-import { AgentName } from "./llm.constants.js";
+import { AgentName } from "@/modules/chat/llm/llm.constants.js";
 
 export type HistoryItem = {
     role: "user" | "ai";

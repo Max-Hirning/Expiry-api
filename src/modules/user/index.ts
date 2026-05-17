@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createUserRoutes } from "./user.route.js";
+import { createUserRoutes } from "@/modules/user/user.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/users";

@@ -1,6 +1,6 @@
 import { AwilixContainer } from "awilix";
-import { EnvConfig } from "./env.type.ts";
-import { Cradle } from "./di-container.type.ts";
+import { EnvConfig } from "@/types/env.type.ts";
+import { Cradle } from "@/types/di-container.type.ts";
 import { Actions } from "@/modules/auth/auth.types.ts";
 import { TeamPrismaFactory } from "@/plugins/prisma.js";
 import type { Server as SocketIOServer } from "socket.io";

@@ -1,15 +1,15 @@
 import { randomUUID } from "crypto";
 import { hashing } from "@/lib/hashing/hashing.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
-import { UserService } from "../user/user.service.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
-import { ChatService } from "../chat/chat.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { UserService } from "@/modules/user/user.service.js";
+import { ChatService } from "@/modules/chat/chat.service.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { FetchUserResponse } from "@/lib/validation/user/user.schema.js";
-import { ApplicationService } from "../application/application.service.js";
+import { ApplicationService } from "@/modules/application/application.service.js";
 import {
     defaultUserSelector,
     UserRepository,

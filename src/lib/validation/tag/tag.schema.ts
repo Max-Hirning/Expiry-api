@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
-import { fetchDocumentsQuerySchema } from "../document/document.schema.js";
+import { fetchDocumentsQuerySchema } from "@/lib/validation/document/document.schema.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
+} from "@/lib/validation/pagination/pagination.schema.js";
 
 const defaultTagSchema = z.object({
     id: z.uuid(),

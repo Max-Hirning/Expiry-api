@@ -1,10 +1,13 @@
 import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { defaultChatSelector } from "../chat/chat.repository.js";
 import { ChatMemberStatus, Prisma } from "@/database/team/generated/client.js";
-import { BaseRepository, generateRepository } from "../generate.repository.js";
-import { defaultChatMessageSelectorWithAuthor } from "../chat-message/chat-message.repository.js";
+import { defaultChatSelector } from "@/database/team/repositories/chat/chat.repository.js";
+import {
+    BaseRepository,
+    generateRepository,
+} from "@/database/team/repositories/generate.repository.js";
+import { defaultChatMessageSelectorWithAuthor } from "@/database/team/repositories/chat-message/chat-message.repository.js";
 
 export const defaultDocumentSelector = {
     id: true,

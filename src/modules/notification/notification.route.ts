@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { NotificationHandler } from "./notification.handler.js";
+import { NotificationHandler } from "@/modules/notification/notification.handler.js";
 import {
     fetchNotificationsQuerySchema,
     fetchNotificationsResponseSchema,

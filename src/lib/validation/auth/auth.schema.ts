@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { defaultUserSchema } from "../user/user.schema.js";
-import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
+import { defaultUserSchema } from "@/lib/validation/user/user.schema.js";
+import { defaultAvatarSchema } from "@/lib/validation/avatar/avatar.schema.js";
 
 const signInBodySchema = z.object({
     identifier: z.union([z.email(), z.string()]),

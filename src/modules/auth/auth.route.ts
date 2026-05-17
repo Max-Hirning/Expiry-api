@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { AuthHandler } from "./auth.handler.js";
+import { AuthHandler } from "@/modules/auth/auth.handler.js";
 import { fetchUserResponseSchema } from "@/lib/validation/user/user.schema.js";
 import {
     fetchSignUpResponseSchema,

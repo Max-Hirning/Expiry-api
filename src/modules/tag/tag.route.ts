@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { TagHandler } from "./tag.handler.js";
-import { Actions } from "../auth/auth.types.js";
+import { Actions } from "@/modules/auth/auth.types.js";
+import { TagHandler } from "@/modules/tag/tag.handler.js";
 import { teamParamsSchema } from "@/lib/validation/team/team.schema.js";
 import {
     fetchTagsResponseSchema,

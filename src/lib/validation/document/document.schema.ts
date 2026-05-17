@@ -1,20 +1,20 @@
 import { z } from "zod";
 import { Prisma } from "@/database/team/generated/edge.js";
-import { defaultFileSchema } from "../file/file.schema.js";
+import { defaultFileSchema } from "@/lib/validation/file/file.schema.js";
 import {
     defaultChatSchema,
     lastChatMessageSchema,
-} from "../chat/chat.schema.js";
-import {
-    paginationQuerySchema,
-    paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
+} from "@/lib/validation/chat/chat.schema.js";
 import {
     ActionLogTypes,
     DocumentStatuses,
     RiskLevels,
 } from "@/database/team/generated/index.js";
-import { defaultDocumentExtractedFieldSchema } from "../document-extracted-field/document-extracted-field.schema.js";
+import {
+    paginationQuerySchema,
+    paginationResponseSchema,
+} from "@/lib/validation/pagination/pagination.schema.js";
+import { defaultDocumentExtractedFieldSchema } from "@/lib/validation/document-extracted-field/document-extracted-field.schema.js";
 
 const documentChatSchema = defaultChatSchema.extend({
     lastMessage: lastChatMessageSchema.nullable(),

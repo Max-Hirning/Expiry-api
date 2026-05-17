@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createTagRoutes } from "./tag.route.js";
+import { createTagRoutes } from "@/modules/tag/tag.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/tags/:teamId";

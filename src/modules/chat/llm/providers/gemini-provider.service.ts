@@ -1,7 +1,7 @@
 import { EnvConfig } from "@/types/env.type.js";
-import { GEMINI_MODEL } from "../llm.constants.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { GEMINI_MODEL } from "@/modules/chat/llm/llm.constants.js";
 
 export type GeminiProviderService = {
     create: (overrides?: {

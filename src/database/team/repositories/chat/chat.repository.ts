@@ -5,7 +5,7 @@ import { Prisma } from "@/database/team/generated/client.js";
 import {
     BaseRepository,
     generateRepository,
-} from "../../../team/repositories/generate.repository.js";
+} from "@/database/team/repositories/generate.repository.js";
 
 export const defaultChatSelector = {
     id: true,

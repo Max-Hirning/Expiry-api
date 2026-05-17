@@ -2,12 +2,12 @@ import { randomUUID } from "crypto";
 import { EnvConfig } from "@/types/env.type.js";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
-import { ChatService } from "../chat/chat.service.js";
-import { UserService } from "../user/user.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { ChatService } from "@/modules/chat/chat.service.js";
+import { UserService } from "@/modules/user/user.service.js";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
+import { ApplicationService } from "@/modules/application/application.service.js";
 import { UserRepository } from "@/database/master/repositories/user/user.repository.js";
 import {
     BadRequestError,

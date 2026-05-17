@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { ApplicationHandler } from "./application.handler.js";
+import { ApplicationHandler } from "@/modules/application/application.handler.js";
 
 export const createApplicationRoutes = (
     fastify: FastifyInstance,

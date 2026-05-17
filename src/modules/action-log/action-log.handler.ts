@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { ActionLogService } from "./action-log.service.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
+import { ActionLogService } from "@/modules/action-log/action-log.service.js";
 import { FetchActionLogsQueryInput } from "@/lib/validation/action-log/action-log.schema.js";
 
 export type ActionLogHandler = {

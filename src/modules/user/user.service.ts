@@ -6,14 +6,9 @@ import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { ActionLogTypes } from "@/database/team/generated/index.js";
-import { ApplicationService } from "../application/application.service.js";
 import { FastifyBaseLogger, FastifyInstance, FastifyRequest } from "fastify";
+import { ApplicationService } from "@/modules/application/application.service.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
-import {
-    invitedRoles,
-    ONLINE_THRESHOLD_MINUTES,
-    toggleStatuses,
-} from "./user.constants.js";
 import { TeamMemberRepository } from "@/database/master/repositories/team-member/team-member.repository.js";
 import { NotificationRepository } from "@/database/master/repositories/notification/notification.repository.js";
 import { RefreshTokenRepository } from "@/database/master/repositories/refresh-token/refresh-token.repository.js";
@@ -21,6 +16,11 @@ import {
     defaultUserSelector,
     UserRepository,
 } from "@/database/master/repositories/user/user.repository.js";
+import {
+    invitedRoles,
+    ONLINE_THRESHOLD_MINUTES,
+    toggleStatuses,
+} from "@/modules/user/user.constants.js";
 import {
     BadRequestError,
     ConflictError,

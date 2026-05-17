@@ -3,7 +3,7 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import { Prisma as PrismaTeam } from "@/database/team/generated/index.js";
-import { ApplicationService } from "../application/application.service.js";
+import { ApplicationService } from "@/modules/application/application.service.js";
 import {
     FetchActionLogsQueryInput,
     FetchActionLogsResponse,

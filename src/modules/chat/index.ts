@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createChatRoutes } from "./chat.route.js";
+import { createChatRoutes } from "@/modules/chat/chat.route.js";
 
 export const autoPrefix = "/api/chats/:teamId";
 

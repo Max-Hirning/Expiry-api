@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { paginationResponseSchema } from "../pagination/pagination.schema.js";
+import { paginationResponseSchema } from "@/lib/validation/pagination/pagination.schema.js";
 import {
     ChatAiAgentVisibility,
     ChatMemberStatus,

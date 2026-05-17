@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { Actions } from "../auth/auth.types.js";
-import { ActionLogHandler } from "./action-log.handler.js";
+import { Actions } from "@/modules/auth/auth.types.js";
 import { teamParamsSchema } from "@/lib/validation/team/team.schema.js";
+import { ActionLogHandler } from "@/modules/action-log/action-log.handler.js";
 import {
     fetchActionLogsQuerySchema,
     fetchActionLogsResponseSchema,

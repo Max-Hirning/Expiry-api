@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { Actions } from "../auth/auth.types.js";
-import { DocumentHandler } from "./document.handler.js";
+import { Actions } from "@/modules/auth/auth.types.js";
 import { teamParamsSchema } from "@/lib/validation/team/team.schema.js";
+import { DocumentHandler } from "@/modules/document/document.handler.js";
 import {
     fetchFilesQuerySchema,
     fetchFilesResponseSchema,

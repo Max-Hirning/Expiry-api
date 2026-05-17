@@ -1,8 +1,8 @@
-import { LlmService } from "./llm/llm.service.js";
-import { EDIT_WINDOW_MS } from "./chat.constants.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
+import { LlmService } from "@/modules/chat/llm/llm.service.js";
+import { EDIT_WINDOW_MS } from "@/modules/chat/chat.constants.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 import {

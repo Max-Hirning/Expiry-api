@@ -2,7 +2,10 @@ import { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { Prisma } from "@/database/master/generated/client.js";
-import { BaseRepository, generateRepository } from "../generate.repository.js";
+import {
+    BaseRepository,
+    generateRepository,
+} from "@/database/master/repositories/generate.repository.js";
 
 export const defaultRefreshTokenSelector = {
     id: true,

@@ -1,6 +1,6 @@
-import { AuthService } from "./auth.service.js";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { AuthService } from "@/modules/auth/auth.service.js";
 import {
     SignInBodyInput,
     SignUpBodyInput,

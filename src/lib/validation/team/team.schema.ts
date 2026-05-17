@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { defaultLogoSchema } from "../logo/logo.schema.js";
+import { defaultLogoSchema } from "@/lib/validation/logo/logo.schema.js";
 import { Prisma, TeamMemberRoles } from "@/database/master/generated/edge.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
+} from "@/lib/validation/pagination/pagination.schema.js";
 
 const defaultTeamSchema = z.object({
     id: z.uuid(),

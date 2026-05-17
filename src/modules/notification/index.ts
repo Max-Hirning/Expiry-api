@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createNotificationRoutes } from "./notification.route.js";
+import { createNotificationRoutes } from "@/modules/notification/notification.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/notifications";

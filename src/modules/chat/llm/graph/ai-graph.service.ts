@@ -1,33 +1,43 @@
 import { createAgent } from "langchain";
 import { FastifyBaseLogger } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { ChatDataService } from "../data/chat-data.service.js";
-import { buildChatSystemPrompt } from "./prompts/chat.prompt.js";
-import { MembersDataService } from "../data/members-data.service.js";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { buildMembersSystemPrompt } from "./prompts/members.prompt.js";
-import { AgentContext, GraphState, HistoryItem } from "../llm.types.js";
-import { DocumentsDataService } from "../data/documents-data.service.js";
-import { TeamStatsDataService } from "../data/team-stats-data.service.js";
-import { buildDocumentsSystemPrompt } from "./prompts/documents.prompt.js";
-import { AgentName, AI_FALLBACK_ERROR_MESSAGE } from "../llm.constants.js";
-import { buildTeamStatsSystemPrompt } from "./prompts/team-stats.prompt.js";
-import { finalAnswerSchema, routerOutputSchema } from "./ai-graph.schemas.js";
-import { GeminiProviderService } from "../providers/gemini-provider.service.js";
+import { ChatDataService } from "@/modules/chat/llm/data/chat-data.service.js";
+import { MembersDataService } from "@/modules/chat/llm/data/members-data.service.js";
+import { buildChatSystemPrompt } from "@/modules/chat/llm/graph/prompts/chat.prompt.js";
+import { DocumentsDataService } from "@/modules/chat/llm/data/documents-data.service.js";
+import { TeamStatsDataService } from "@/modules/chat/llm/data/team-stats-data.service.js";
+import { buildMembersSystemPrompt } from "@/modules/chat/llm/graph/prompts/members.prompt.js";
+import { GeminiProviderService } from "@/modules/chat/llm/providers/gemini-provider.service.js";
+import { buildDocumentsSystemPrompt } from "@/modules/chat/llm/graph/prompts/documents.prompt.js";
+import { buildTeamStatsSystemPrompt } from "@/modules/chat/llm/graph/prompts/team-stats.prompt.js";
+import {
+    AgentName,
+    AI_FALLBACK_ERROR_MESSAGE,
+} from "@/modules/chat/llm/llm.constants.js";
+import {
+    AgentContext,
+    GraphState,
+    HistoryItem,
+} from "@/modules/chat/llm/llm.types.js";
+import {
+    finalAnswerSchema,
+    routerOutputSchema,
+} from "@/modules/chat/llm/graph/ai-graph.schemas.js";
 import {
     ROUTER_SYSTEM_PROMPT,
     buildRouterUserMessage,
-} from "./prompts/router.prompt.js";
+} from "@/modules/chat/llm/graph/prompts/router.prompt.js";
 import {
     AGGREGATOR_SYSTEM_PROMPT,
     buildAggregatorUserMessage,
-} from "./prompts/aggregator.prompt.js";
+} from "@/modules/chat/llm/graph/prompts/aggregator.prompt.js";
 import {
     buildChatTools,
     buildDocumentsTools,
     buildMembersTools,
     buildTeamStatsTools,
-} from "./tools/tools-build.js";
+} from "@/modules/chat/llm/graph/tools/tools-build.js";
 
 export type AiGraphService = {
     run: (input: {

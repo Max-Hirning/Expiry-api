@@ -1,4 +1,4 @@
-import { HistoryItem } from "../../llm.types.js";
+import { HistoryItem } from "@/modules/chat/llm/llm.types.js";
 
 export const formatHistoryForPrompt = (history: HistoryItem[]): string => {
     if (history.length === 0) {

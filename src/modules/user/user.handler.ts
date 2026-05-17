@@ -1,9 +1,9 @@
 import { JWT } from "@fastify/jwt";
-import { UserService } from "./user.service.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BadRequestError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { User } from "@/database/master/generated/index.js";
+import { UserService } from "@/modules/user/user.service.js";
 import {
     FetchInvitedUserQueryInput,
     FetchUsersQueryInput,

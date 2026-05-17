@@ -1,6 +1,6 @@
 import type { Server, Socket } from "socket.io";
-import { ChatService } from "./chat.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { ChatService } from "@/modules/chat/chat.service.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { ChatMemberStatus } from "@/database/team/generated/index.js";
 import { ApplicationService } from "@/modules/application/application.service.js";

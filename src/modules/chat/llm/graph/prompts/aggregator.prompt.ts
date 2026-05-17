@@ -1,6 +1,6 @@
-import { HistoryItem } from "../../llm.types.js";
-import { AgentName } from "../../llm.constants.js";
-import { formatHistoryForPrompt } from "./shared.js";
+import { HistoryItem } from "@/modules/chat/llm/llm.types.js";
+import { AgentName } from "@/modules/chat/llm/llm.constants.js";
+import { formatHistoryForPrompt } from "@/modules/chat/llm/graph/prompts/shared.js";
 
 export const AGGREGATOR_SYSTEM_PROMPT = `You are the final responder for a multi-agent AI assistant. You will be given:
 1. The user's original question.

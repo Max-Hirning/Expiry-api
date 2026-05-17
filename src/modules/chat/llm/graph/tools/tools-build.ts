@@ -1,11 +1,14 @@
 import { FastifyBaseLogger } from "fastify";
 import { tool } from "@langchain/core/tools";
-import { AgentContext } from "../../llm.types.js";
-import { ChatDataService } from "../../data/chat-data.service.js";
-import { validateOrFallback, wrapToolError } from "./tools-utils.js";
-import { MembersDataService } from "../../data/members-data.service.js";
-import { DocumentsDataService } from "../../data/documents-data.service.js";
-import { TeamStatsDataService } from "../../data/team-stats-data.service.js";
+import { AgentContext } from "@/modules/chat/llm/llm.types.js";
+import { ChatDataService } from "@/modules/chat/llm/data/chat-data.service.js";
+import { MembersDataService } from "@/modules/chat/llm/data/members-data.service.js";
+import { DocumentsDataService } from "@/modules/chat/llm/data/documents-data.service.js";
+import { TeamStatsDataService } from "@/modules/chat/llm/data/team-stats-data.service.js";
+import {
+    validateOrFallback,
+    wrapToolError,
+} from "@/modules/chat/llm/graph/tools/tools-utils.js";
 import {
     chatInfoOutputSchema,
     chatMembersOutputSchema,
@@ -19,7 +22,7 @@ import {
     memberCountsOutputSchema,
     memberOutputSchema,
     teamStatsOutputSchema,
-} from "./tools-build.schemas.js";
+} from "@/modules/chat/llm/graph/tools/tools-build.schemas.js";
 
 export const buildMembersTools = (
     ctx: AgentContext,

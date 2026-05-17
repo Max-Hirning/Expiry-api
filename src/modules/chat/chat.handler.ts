@@ -1,7 +1,7 @@
-import { ChatService } from "./chat.service.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import type { Server as SocketIOServer } from "socket.io";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { ChatService } from "@/modules/chat/chat.service.js";
 import {
     ChatParamsInput,
     GetChatsCursorQueryInput,

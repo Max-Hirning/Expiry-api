@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createAuthRoutes } from "./auth.route.js";
+import { createAuthRoutes } from "@/modules/auth/auth.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/auth";

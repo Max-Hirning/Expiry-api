@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { TeamHandler } from "./team.handler.js";
-import { Actions } from "../auth/auth.types.js";
+import { Actions } from "@/modules/auth/auth.types.js";
+import { TeamHandler } from "@/modules/team/team.handler.js";
 import {
     createTeamBodySchema,
     createTeamResponseSchema,

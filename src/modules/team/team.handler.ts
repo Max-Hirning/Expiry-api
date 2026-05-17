@@ -1,6 +1,6 @@
-import { TeamService } from "./team.service.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { TeamService } from "@/modules/team/team.service.js";
 import {
     CreateTeamBodyInput,
     FetchTeamsQueryInput,

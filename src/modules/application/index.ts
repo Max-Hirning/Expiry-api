@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createApplicationRoutes } from "./application.route.js";
+import { createApplicationRoutes } from "@/modules/application/application.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api";

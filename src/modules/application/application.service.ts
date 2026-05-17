@@ -6,19 +6,15 @@ import { hashing } from "@/lib/hashing/hashing.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
-import { getRandomInt, splitRandomSum } from "./application.utils.js";
 import { TeamRepository } from "@/database/master/repositories/team/team.repository.js";
 import {
     createTenantDatabase,
     migrateTenantDatabase,
 } from "@/database/infra/tenant.js";
 import {
-    documents,
-    images,
-    tags,
-    teams,
-    users,
-} from "./application.constants.js";
+    getRandomInt,
+    splitRandomSum,
+} from "@/modules/application/application.utils.js";
 import {
     createTagRepository,
     TagRepository,
@@ -31,6 +27,13 @@ import {
     createFileRepository,
     FileRepository,
 } from "@/database/team/repositories/file/file.repository.js";
+import {
+    documents,
+    images,
+    tags,
+    teams,
+    users,
+} from "@/modules/application/application.constants.js";
 import {
     Prisma as MasterPrisma,
     TeamMemberRoles,

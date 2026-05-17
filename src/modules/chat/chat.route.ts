@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { ChatHandler } from "./chat.handler.js";
 import { Actions } from "@/modules/auth/auth.types.js";
+import { ChatHandler } from "@/modules/chat/chat.handler.js";
 import {
     chatParamsSchema,
     getChatsCursorQuerySchema,

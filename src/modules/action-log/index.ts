@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createActionLogRoutes } from "./action-log.route.js";
+import { createActionLogRoutes } from "@/modules/action-log/action-log.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/action-logs/:teamId";

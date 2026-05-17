@@ -1,6 +1,6 @@
 import { JWT } from "@fastify/jwt";
-import { EnvConfig } from "./env.type.js";
 import { FastifyBaseLogger } from "fastify";
+import { EnvConfig } from "@/types/env.type.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
 import { PrismaClient } from "@prisma/client/extension";
 import type { Server as SocketIOServer } from "socket.io";

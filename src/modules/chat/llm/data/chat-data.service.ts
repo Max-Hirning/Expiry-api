@@ -1,6 +1,6 @@
-import { HistoryItem } from "../llm.types.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { withRepositories } from "@/lib/utils/repository.js";
+import { HistoryItem } from "@/modules/chat/llm/llm.types.js";
 import { ChatMemberStatus } from "@/database/team/generated/index.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
 

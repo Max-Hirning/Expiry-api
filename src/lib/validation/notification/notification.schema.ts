@@ -3,7 +3,7 @@ import { NotificationTypes } from "@/database/master/generated/index.js";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
+} from "@/lib/validation/pagination/pagination.schema.js";
 
 const defaultNotificationSchema = z.object({
     id: z.uuid(),

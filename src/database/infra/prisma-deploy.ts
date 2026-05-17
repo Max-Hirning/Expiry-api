@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { migrateTenantDatabase } from "./tenant.js";
+import { migrateTenantDatabase } from "@/database/infra/tenant.js";
 import { PrismaClient as MasterPrisma } from "@/database/master/generated/client.js";
 
 async function deployTenants() {

@@ -1,5 +1,5 @@
-import { TagService } from "./tag.service.js";
 import { FastifyRequest, FastifyReply } from "fastify";
+import { TagService } from "@/modules/tag/tag.service.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
 import {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AGENT_NAMES } from "../llm.constants.js";
+import { AGENT_NAMES } from "@/modules/chat/llm/llm.constants.js";
 
 export const routerOutputSchema = z.object({
     agents: z.array(z.enum(AGENT_NAMES)).min(1),

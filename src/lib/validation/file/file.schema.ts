@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
     paginationQuerySchema,
     paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
+} from "@/lib/validation/pagination/pagination.schema.js";
 
 const defaultFileSchema = z.object({
     id: z.uuid(),

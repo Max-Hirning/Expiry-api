@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
-import { NotificationService } from "./notification.service.js";
+import { NotificationService } from "@/modules/notification/notification.service.js";
 import {
     FetchNotificationsQueryInput,
     ToggleStarredBodyInput,

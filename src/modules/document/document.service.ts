@@ -1,14 +1,14 @@
 import { randomUUID } from "crypto";
 import { FileTypes } from "@/lib/gcp/gcp.types.js";
 import { GcpService } from "@/lib/gcp/gcp.service.js";
-import { ChatService } from "../chat/chat.service.js";
 import { ConflictError } from "@/lib/errors/errors.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { FastifyBaseLogger, FastifyRequest } from "fastify";
+import { ChatService } from "@/modules/chat/chat.service.js";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { TeamParamsInput } from "@/lib/validation/team/team.schema.js";
-import { ApplicationService } from "../application/application.service.js";
 import { Prisma as PrismaMaster } from "@/database/master/generated/index.js";
+import { ApplicationService } from "@/modules/application/application.service.js";
 import { defaultFileSelector } from "@/database/team/repositories/file/file.repository.js";
 import { defaultUserSelector } from "@/database/master/repositories/user/user.repository.js";
 import {

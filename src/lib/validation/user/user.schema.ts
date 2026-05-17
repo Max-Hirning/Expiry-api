@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { defaultAvatarSchema } from "../avatar/avatar.schema.js";
 import { Prisma, TeamMemberRoles } from "@/database/master/generated/edge.js";
+import { defaultAvatarSchema } from "@/lib/validation/avatar/avatar.schema.js";
 import {
     UserStatuses,
     UserRoles,
@@ -9,8 +9,8 @@ import {
 import {
     paginationQuerySchema,
     paginationResponseSchema,
-} from "../pagination/pagination.schema.js";
-import { defaultNotificationPreferenceSchema } from "../notification-preference/notification-preference.schema.js";
+} from "@/lib/validation/pagination/pagination.schema.js";
+import { defaultNotificationPreferenceSchema } from "@/lib/validation/notification-preference/notification-preference.schema.js";
 
 const defaultUserSchema = z.object({
     id: z.uuid(),

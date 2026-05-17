@@ -2,9 +2,9 @@ import { Lifetime } from "awilix";
 import { addDays, addMinutes } from "date-fns";
 import { EnvConfig } from "@/types/env.type.js";
 import { Storage } from "@google-cloud/storage";
-import { addDIResolverName } from "../awilix/awilix.js";
-import { InternalServerError } from "../errors/errors.js";
-import { ConfigureFileKeyArg, FileTypes } from "./gcp.types.js";
+import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { InternalServerError } from "@/lib/errors/errors.js";
+import { ConfigureFileKeyArg, FileTypes } from "@/lib/gcp/gcp.types.js";
 
 export type GcpService = {
     uploadFile: (p: {

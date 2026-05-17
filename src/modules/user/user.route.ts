@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { UserHandler } from "./user.handler.js";
-import { Actions } from "../auth/auth.types.js";
+import { Actions } from "@/modules/auth/auth.types.js";
+import { UserHandler } from "@/modules/user/user.handler.js";
 import {
     fetchInvitedUserQuerySchema,
     fetchUserResponseSchema,

@@ -1,5 +1,5 @@
-import { HistoryItem } from "../../llm.types.js";
-import { formatHistoryForPrompt } from "./shared.js";
+import { HistoryItem } from "@/modules/chat/llm/llm.types.js";
+import { formatHistoryForPrompt } from "@/modules/chat/llm/graph/prompts/shared.js";
 
 export const ROUTER_SYSTEM_PROMPT = `You are a router for a multi-agent AI assistant inside a team chat application.
 Given a user's question, decide which of the following specialized agents should handle it. You may pick one or several when the question covers multiple topics.

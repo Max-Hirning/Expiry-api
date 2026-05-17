@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { paginationResponseSchema } from "../pagination/pagination.schema.js";
+import { paginationResponseSchema } from "@/lib/validation/pagination/pagination.schema.js";
 import {
     chatParamsSchema,
     defaultChatMemberSchema,
-} from "../chat/chat.schema.js";
+} from "@/lib/validation/chat/chat.schema.js";
 
 const defaultChatMessageSchema = z.object({
     id: z.uuid(),

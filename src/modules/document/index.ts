@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createDocumentRoutes } from "./document.route.js";
+import { createDocumentRoutes } from "@/modules/document/document.route.js";
 
 // Define the endpoint prefix by providing autoPrefix module property.
 export const autoPrefix = "/api/documents/:teamId";
