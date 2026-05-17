@@ -8,4 +8,5 @@ export type EnvConfig = {
     GCP_BUCKET: string;
     APPLICATION_URL: string;
     DOCS_PASSWORD: string | undefined;
+    GEMINI_API_KEY: string;
 };

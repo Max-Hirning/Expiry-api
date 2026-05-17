@@ -1,6 +1,7 @@
-import { FastifyRequest } from "fastify";
+import { LlmService } from "./llm/llm.service.js";
 import { EDIT_WINDOW_MS } from "./chat.constants.js";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
+import { FastifyBaseLogger, FastifyRequest } from "fastify";
 import { withRepositories } from "@/lib/utils/repository.js";
 import { NotFoundError, ForbiddenError } from "@/lib/errors/errors.js";
 import { ApplicationService } from "@/modules/application/application.service.js";
@@ -110,7 +111,9 @@ export type ChatService = {
 };
 
 export const createChatService = (
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    llmService: LlmService,
+    log: FastifyBaseLogger
 ): ChatService => {
     const assertWithinEditWindow = (updatedAt: Date) => {
         if (Date.now() - updatedAt.getTime() >= EDIT_WINDOW_MS) {
@@ -171,7 +174,11 @@ export const createChatService = (
         body: SendMessageBodyInput;
         initiator: FastifyRequest["user"];
         tx: Prisma.TransactionClient;
-    }): Promise<SendMessageResponse["data"]["chatMessage"]> => {
+    }): Promise<{
+        chatMessage: SendMessageResponse["data"]["chatMessage"];
+        chatMemberId: string;
+        aiTriggered: boolean;
+    }> => {
         const member = await tx.chatMember.findFirst({
             where: {
                 chatId: params.chatId,
@@ -185,6 +192,17 @@ export const createChatService = (
             throw new ForbiddenError("You are not a member of this chat");
         }
 
+        let isForAi = false;
+
+        if (body.isForAi) {
+            const chat = await tx.chat.findUnique({
+                where: { id: params.chatId },
+                select: { aiAgentEnabled: true },
+            });
+
+            isForAi = chat?.aiAgentEnabled === true;
+        }
+
         const message = await tx.chatMessage.create({
             data: {
                 message: body.message,
@@ -193,13 +211,18 @@ export const createChatService = (
                 ...(body.parentMessageId && {
                     parentMessageId: body.parentMessageId,
                 }),
+                ...(isForAi && { visibleToMemberId: member.id }),
                 authorId: member.id,
                 chatId: params.chatId,
             },
             select: defaultChatMessageSelectorWithReadStatuses,
         });
 
-        return mapChatMessageResponse(message);
+        return {
+            chatMessage: mapChatMessageResponse(message),
+            chatMemberId: member.id,
+            aiTriggered: isForAi,
+        };
     };
 
     return {
@@ -508,10 +531,10 @@ export const createChatService = (
         },
 
         sendMessage: async ({ params, body, initiator, tx }) => {
-            let chatMessage = null;
+            let created: Awaited<ReturnType<typeof createMessage>>;
 
             if (tx) {
-                chatMessage = await createMessage({
+                created = await createMessage({
                     params,
                     body,
                     initiator,
@@ -522,21 +545,38 @@ export const createChatService = (
                     params.teamId
                 );
 
-                chatMessage = await withRepositories([client], async (tx) => {
-                    const message = await createMessage({
+                created = await withRepositories([client], async (tx) =>
+                    createMessage({
                         params,
                         body,
                         initiator,
                         tx,
-                    });
+                    })
+                );
+            }
 
-                    return message;
-                });
+            if (created.aiTriggered) {
+                void llmService
+                    .handleUserMessage({
+                        chatId: params.chatId,
+                        teamId: params.teamId,
+                        userId: initiator.id,
+                        userChatMemberId: created.chatMemberId,
+                        message: body.message,
+                    })
+                    .catch((error) => {
+                        log.error(
+                            { error, chatId: params.chatId },
+                            "llmService.handleUserMessage failed"
+                        );
+                    });
             }
 
             return {
                 message: "Message sent successfully",
-                data: { chatMessage },
+                data: {
+                    chatMessage: created.chatMessage,
+                },
             };
         },
 

@@ -127,10 +127,17 @@ export const createChatHandler = (
             initiator: request.user,
         });
 
-        io.to(`chat:${request.params.chatId}`).emit(
-            "chat:message:new",
-            result.data.chatMessage
-        );
+        if (result.data.chatMessage.visibleToMemberId === null) {
+            io.to(`chat:${request.params.chatId}`).emit(
+                "chat:message:new",
+                result.data.chatMessage
+            );
+        } else {
+            io.to(`user:${request.user.id}`).emit(
+                "chat:message:new",
+                result.data.chatMessage
+            );
+        }
 
         return reply.status(201).send(result);
     },

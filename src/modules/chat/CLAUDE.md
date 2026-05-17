@@ -171,6 +171,62 @@ Messages support threaded replies via `parentMessageId`:
 4. **Real-time Updates** — Socket.IO broadcasts to all users in chat room after operations
 5. **No Soft Deletes** — Messages are hard-deleted, not soft-deleted
 
+## AI Assistant Sub-module (`llm/`)
+
+The `llm/` subfolder adds a **multi-agent AI assistant** that replies inside the same chat. Triggered when `sendMessage` is called with `isForAi: true` (REST body or `chat:message:send` socket payload) AND the chat has `aiAgentEnabled = true`.
+
+### Privacy model
+- The user's question is persisted with `visibleToMemberId = <senderChatMember.id>` — only the sender sees it.
+- The AI reply is also persisted with `visibleToMemberId = <senderChatMember.id>`, `isFromAiAgent = true`, `authorId = null`.
+- Both `chat.handler.ts` and `chat.socket-handler.ts` check `chatMessage.visibleToMemberId`: if non-null, the broadcast goes to `user:${userId}` instead of `chat:${chatId}`. AI replies are emitted from `aiMessagePersistenceService` directly to `user:${initiatorUserId}`.
+- The existing `buildVisibilityFilter` in `chat.service.ts` already filters `getMessages` by `visibleToMemberId`, so privacy in message listings works automatically.
+
+### Multi-agent architecture
+`llm/graph/ai-graph.service.ts` runs a supervisor pattern:
+1. **Router** — Gemini structured-output call picks 1..N specialized agents from `{members, documents, teamStats, chat}`.
+2. **Sub-agents** — each is a `createReactAgent` (from `@langchain/langgraph/prebuilt`) with a small set of Zod-typed tools and an agent-specific prompt.
+3. **Aggregator** — final Gemini call with structured output `{ content: string }`, validated via Zod; falls back to a safe error string on validation failure.
+
+All read-only. Tools never see Prisma — they call **data services** that the model is forced to use.
+
+### Data services (read-only, all in `llm/data/`)
+- `chatDataService` (tenant DB) — `getChatScope`, `getChatInfo`, `getChatMembers`, `getHistoryForAi`, `findChatMemberByUserId`
+- `membersDataService` (master DB) — `getTeamMembers`, `findMembersByName`, `getMemberByUserId`
+- `documentsDataService` (tenant DB) — `listDocuments`, `getDocumentById`; both honor `scopedDocumentId` so a chat tied to one document cannot leak others
+- `teamStatsDataService` (master DB) — `getTeamStats`, `getMemberCountsByRole`
+
+### File map
+```
+src/modules/chat/llm/
+├── llm.service.ts                              # facade, orchestrates scope → history → graph → persistence
+├── llm.constants.ts                            # HISTORY_LIMIT, GEMINI_MODEL, AGENT_NAMES, fallback strings
+├── llm.types.ts                                # GraphState, AgentContext, HistoryItem
+├── providers/gemini-provider.service.ts        # ChatGoogleGenerativeAI factory
+├── data/
+│   ├── chat-data.service.ts
+│   ├── members-data.service.ts
+│   ├── documents-data.service.ts
+│   └── team-stats-data.service.ts
+├── graph/
+│   ├── ai-graph.service.ts                     # router + sub-agents + aggregator
+│   ├── build-tools.ts                          # tool() wrappers with Zod input + Zod output validation
+│   ├── tool-utils.ts                           # safeJson, validateOrFallback, wrapToolError
+│   └── prompts.ts                              # all agent + router + aggregator prompts
+└── persistence/ai-message-persistence.service.ts  # saveAiReply / saveAiError + socket emit to user room
+```
+
+### Awilix names
+`llmService`, `aiGraphService`, `geminiProviderService`, `chatDataService`, `membersDataService`, `documentsDataService`, `teamStatsDataService`, `aiMessagePersistenceService`. All registered via `addDIResolverName(createService, "<name>")` at the bottom of each `*.service.ts` file (auto-loaded by `plugins/awilix.ts`).
+
+### History fed to the AI
+`chatDataService.getHistoryForAi` pulls the last 20 messages where `visibleToMemberId = userChatMemberId` AND (the user wrote it OR `isFromAiAgent = true`). Other members' messages are never mixed in.
+
+### Required env
+`GEMINI_API_KEY` (added to `src/plugins/env.ts` and `EnvConfig`).
+
+### Out of scope right now
+Streaming replies, write/action tools, RAG over document contents, per-tool ACL, tests.
+
 ## Testing Considerations
 
 - Mock `applicationService.initChatRepository()` and related methods

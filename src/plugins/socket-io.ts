@@ -82,6 +82,12 @@ const configureSocketIO = async (fastify: FastifyInstance) => {
     });
 
     io.on("connection", (socket) => {
+        const userId = socket.data.user?.id;
+
+        if (userId) {
+            void socket.join(`user:${userId}`);
+        }
+
         const chatSocketHandler = fastify.di.resolve("chatSocketHandler");
         chatSocketHandler.register(socket, io);
     });

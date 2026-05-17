@@ -31,6 +31,7 @@ const chatMessageParamsSchema = chatParamsSchema.extend({
 
 const sendMessageBodySchema = z.object({
     message: z.string().min(1).max(4000),
+    isForAi: z.boolean().optional(),
     parentMessageId: z.string().uuid().optional(),
 });
 

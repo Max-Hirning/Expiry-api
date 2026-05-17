@@ -18,6 +18,7 @@ const configureEnv = async (fastify: FastifyInstance) => {
             .prop("GCP_BUCKET", S.string())
             .prop("PORT", S.number())
             .prop("DOCS_PASSWORD", S.string())
+            .prop("GEMINI_API_KEY", S.string())
             .prop("HOST", S.string().default("0.0.0.0"))
             .required([
                 "NODE_ENV",
@@ -27,6 +28,7 @@ const configureEnv = async (fastify: FastifyInstance) => {
                 "APPLICATION_URL",
                 "GCP_BUCKET",
                 "PORT",
+                "GEMINI_API_KEY",
             ])
             .valueOf(),
         dotenv: true,

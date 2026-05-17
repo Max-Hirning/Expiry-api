@@ -66,23 +66,32 @@ export const createChatSocketHandler = (
                 teamId,
                 message,
                 parentMessageId,
+                isForAi,
             }: {
                 chatId: string;
                 teamId: string;
                 message: string;
                 parentMessageId?: string;
+                isForAi?: boolean;
             }) => {
                 try {
                     const result = await chatService.sendMessage({
                         params: { teamId, chatId },
-                        body: { message, parentMessageId },
+                        body: { message, parentMessageId, isForAi },
                         initiator: user,
                     });
 
-                    io.to(`chat:${chatId}`).emit(
-                        "chat:message:new",
-                        result.data.chatMessage
-                    );
+                    if (result.data.chatMessage.visibleToMemberId === null) {
+                        io.to(`chat:${chatId}`).emit(
+                            "chat:message:new",
+                            result.data.chatMessage
+                        );
+                    } else {
+                        io.to(`user:${user.id}`).emit(
+                            "chat:message:new",
+                            result.data.chatMessage
+                        );
+                    }
                 } catch (error) {
                     socket.emit("chat:error", {
                         event: "chat:message:send",
