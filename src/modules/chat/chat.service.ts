@@ -645,6 +645,12 @@ export const createChatService = (
                     throw new ForbiddenError("Cannot edit AI agent messages");
                 }
 
+                if (message.isToAiAgent) {
+                    throw new ForbiddenError(
+                        "Cannot edit messages sent to AI agent"
+                    );
+                }
+
                 if (message.authorId !== member.id) {
                     throw new ForbiddenError(
                         "You can only edit your own messages"
@@ -708,6 +714,12 @@ export const createChatService = (
 
                 if (message.isFromAiAgent) {
                     throw new ForbiddenError("Cannot delete AI agent messages");
+                }
+
+                if (message.isToAiAgent) {
+                    throw new ForbiddenError(
+                        "Cannot delete messages sent to AI agent"
+                    );
                 }
 
                 if (message.authorId !== member.id) {

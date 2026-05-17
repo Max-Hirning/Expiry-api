@@ -14,6 +14,7 @@ export const defaultChatMessageSelector = {
     lastEditedAt: true,
     message: true,
     isFromAiAgent: true,
+    isToAiAgent: true,
     parentMessageId: true,
     authorId: true,
     visibleToMemberId: true,

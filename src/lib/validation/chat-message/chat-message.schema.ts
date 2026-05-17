@@ -19,6 +19,7 @@ const defaultChatMessageSchema = z.object({
     ),
     message: z.string(),
     isFromAiAgent: z.boolean(),
+    isToAiAgent: z.boolean(),
     parentMessageId: z.uuid().nullable(),
     authorId: z.uuid().nullable(),
     visibleToMemberId: z.uuid().nullable(),
