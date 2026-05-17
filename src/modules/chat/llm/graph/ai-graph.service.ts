@@ -3,31 +3,35 @@ import { createAgent } from "langchain";
 import { FastifyBaseLogger } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { ChatDataService } from "../data/chat-data.service.js";
+import { buildChatSystemPrompt } from "./prompts/chat.prompt.js";
 import { MembersDataService } from "../data/members-data.service.js";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { buildMembersSystemPrompt } from "./prompts/members.prompt.js";
 import { AgentContext, GraphState, HistoryItem } from "../llm.types.js";
 import { DocumentsDataService } from "../data/documents-data.service.js";
 import { TeamStatsDataService } from "../data/team-stats-data.service.js";
+import { buildDocumentsSystemPrompt } from "./prompts/documents.prompt.js";
+import { buildTeamStatsSystemPrompt } from "./prompts/team-stats.prompt.js";
 import { GeminiProviderService } from "../providers/gemini-provider.service.js";
+import {
+    ROUTER_SYSTEM_PROMPT,
+    buildRouterUserMessage,
+} from "./prompts/router.prompt.js";
 import {
     AGENT_NAMES,
     AgentName,
     AI_FALLBACK_ERROR_MESSAGE,
 } from "../llm.constants.js";
 import {
+    AGGREGATOR_SYSTEM_PROMPT,
+    buildAggregatorUserMessage,
+} from "./prompts/aggregator.prompt.js";
+import {
     buildChatTools,
     buildDocumentsTools,
     buildMembersTools,
     buildTeamStatsTools,
 } from "./build-tools.js";
-import {
-    AGGREGATOR_PROMPT,
-    CHAT_AGENT_PROMPT,
-    DOCUMENTS_AGENT_PROMPT,
-    MEMBERS_AGENT_PROMPT,
-    ROUTER_PROMPT,
-    TEAM_STATS_AGENT_PROMPT,
-} from "./prompts.js";
 
 const routerOutputSchema = z.object({
     agents: z.array(z.enum(AGENT_NAMES)).min(1),
@@ -47,16 +51,6 @@ export type AiGraphService = {
         userMessage: string;
         history: HistoryItem[];
     }) => Promise<string>;
-};
-
-const formatHistoryForPrompt = (history: HistoryItem[]): string => {
-    if (history.length === 0) {
-        return "(no prior conversation)";
-    }
-
-    return history
-        .map((h) => `${h.role === "user" ? "User" : "AI"}: ${h.content}`)
-        .join("\n");
 };
 
 const extractStringContent = (content: unknown): string => {
@@ -101,9 +95,12 @@ export const createService = (
         const structured = llm.withStructuredOutput(routerOutputSchema);
 
         const result = await structured.invoke([
-            new SystemMessage(ROUTER_PROMPT),
+            new SystemMessage(ROUTER_SYSTEM_PROMPT),
             new HumanMessage(
-                `Conversation so far:\n${formatHistoryForPrompt(state.history)}\n\nUser's new question: ${state.userMessage}`
+                buildRouterUserMessage({
+                    history: state.history,
+                    userMessage: state.userMessage,
+                })
             ),
         ]);
 
@@ -120,36 +117,44 @@ export const createService = (
     ): Promise<string> => {
         const llm = geminiProviderService.create({ temperature: 0.2 });
 
-        let prompt: string;
+        let systemPrompt: string;
         let tools;
 
         switch (agentName) {
         case "members":
-            prompt = MEMBERS_AGENT_PROMPT;
+            systemPrompt = buildMembersSystemPrompt({
+                documentId: ctx.documentId,
+            });
+
             tools = buildMembersTools(ctx, membersDataService, log);
             break;
         case "documents":
-            prompt = DOCUMENTS_AGENT_PROMPT;
+            systemPrompt = buildDocumentsSystemPrompt({
+                documentId: ctx.documentId,
+            });
+
             tools = buildDocumentsTools(ctx, documentsDataService, log);
             break;
         case "teamStats":
-            prompt = TEAM_STATS_AGENT_PROMPT;
+            systemPrompt = buildTeamStatsSystemPrompt({
+                documentId: ctx.documentId,
+            });
+
             tools = buildTeamStatsTools(ctx, teamStatsDataService, log);
             break;
         case "chat":
-            prompt = CHAT_AGENT_PROMPT;
+            systemPrompt = buildChatSystemPrompt({
+                documentId: ctx.documentId,
+            });
+
             tools = buildChatTools(ctx, chatDataService, log);
             break;
         }
 
-        const scopedPrompt = ctx.documentId
-            ? `${prompt}\n\nThis chat is scoped to document id ${ctx.documentId}.`
-            : prompt;
-
         const agent = createAgent({
             model: llm,
             tools,
-            systemPrompt: scopedPrompt,
+            systemPrompt,
         });
 
         const conversation = [
@@ -172,17 +177,15 @@ export const createService = (
         const llm = geminiProviderService.create({ temperature: 0.2 });
         const structured = llm.withStructuredOutput(finalAnswerSchema);
 
-        const findings = state.selectedAgents
-            .map(
-                (a) =>
-                    `=== ${a} agent ===\n${state.agentResults[a] ?? "(no output)"}`
-            )
-            .join("\n\n");
-
         const result = await structured.invoke([
-            new SystemMessage(AGGREGATOR_PROMPT),
+            new SystemMessage(AGGREGATOR_SYSTEM_PROMPT),
             new HumanMessage(
-                `User's question: ${state.userMessage}\n\nRecent conversation:\n${formatHistoryForPrompt(state.history)}\n\nSub-agent findings:\n${findings}`
+                buildAggregatorUserMessage({
+                    userMessage: state.userMessage,
+                    history: state.history,
+                    selectedAgents: state.selectedAgents,
+                    agentResults: state.agentResults,
+                })
             ),
         ]);
 
