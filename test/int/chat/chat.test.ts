@@ -313,10 +313,14 @@ describe("Chat Routes", () => {
             });
             const second = await testHelpers.createUser();
             await testHelpers.addTeamMember(team.id, second.id);
-            const chat = await testHelpers.createChat(team.id, [
-                { userId: owner.id, userFullName: owner.fullName },
-                { userId: second.id, userFullName: second.fullName },
-            ]);
+            const chat = await testHelpers.createChat(
+                team.id,
+                [
+                    { userId: owner.id, userFullName: owner.fullName },
+                    { userId: second.id, userFullName: second.fullName },
+                ],
+                { aiAgentVisibility: "SENDER_ONLY" }
+            );
             const ownerMember = chat.members.find(
                 (m) => m.userId === owner.id
             )!;
@@ -340,6 +344,49 @@ describe("Chat Routes", () => {
                             m.message === "private AI reply"
                     )
                 ).toBeUndefined();
+            } else {
+                expect([200, 400, 403, 500]).toContain(response.statusCode);
+            }
+        }, 30000);
+
+        it("ALL visibility shows AI message to every member regardless of visibleToMemberId", async () => {
+            const owner = await testHelpers.createUser();
+            const team = await testHelpers.createTeam(owner.id, {
+                provisionTenantDb: true,
+            });
+            const second = await testHelpers.createUser();
+            await testHelpers.addTeamMember(team.id, second.id);
+            const chat = await testHelpers.createChat(
+                team.id,
+                [
+                    { userId: owner.id, userFullName: owner.fullName },
+                    { userId: second.id, userFullName: second.fullName },
+                ],
+                { aiAgentVisibility: "ALL" }
+            );
+            const ownerMember = chat.members.find(
+                (m) => m.userId === owner.id
+            )!;
+            await testHelpers.createMessage(team.id, chat.id, null, {
+                isFromAiAgent: true,
+                visibleToMemberId: ownerMember.id,
+                message: "shared AI reply",
+            });
+            const session = await testHelpers.createSession(second);
+            const response = await app.inject({
+                method: "GET",
+                url: `/api/chats/${team.id}/${chat.id}/messages?limit=20`,
+                headers: session.headers,
+            });
+            if (hasRealTenantDb(team.id)) {
+                expect(response.statusCode).toBe(200);
+                const messages = response.json().data.messages;
+                expect(
+                    messages.find(
+                        (m: { message: string }) =>
+                            m.message === "shared AI reply"
+                    )
+                ).toBeDefined();
             } else {
                 expect([200, 400, 403, 500]).toContain(response.statusCode);
             }

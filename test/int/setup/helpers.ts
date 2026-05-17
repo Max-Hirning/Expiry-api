@@ -11,6 +11,7 @@ import {
 import {
     PrismaClient as TeamPrismaClient,
     DocumentStatuses,
+    ChatAiAgentVisibility,
     ChatMemberStatus,
     ActionLogTypes,
 } from "@/database/team/generated/client.js";
@@ -242,7 +243,10 @@ export const testHelpers = {
     createChat: async (
         teamId: string,
         members: { userId: string; userFullName: string }[],
-        overrides?: { name?: string }
+        overrides?: {
+            name?: string;
+            aiAgentVisibility?: ChatAiAgentVisibility;
+        }
     ) => {
         if (!teamsWithRealTenantDb.has(teamId)) {
             return {
@@ -261,6 +265,9 @@ export const testHelpers = {
                 name:
                     overrides?.name ||
                     `Chat ${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+                ...(overrides?.aiAgentVisibility && {
+                    aiAgentVisibility: overrides.aiAgentVisibility,
+                }),
                 members: {
                     create: members.map((m) => ({
                         userId: m.userId,
