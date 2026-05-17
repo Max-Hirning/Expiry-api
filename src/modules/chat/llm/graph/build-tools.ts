@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { FastifyBaseLogger } from "fastify";
 import { tool } from "@langchain/core/tools";
 import { AgentContext } from "../llm.types.js";
@@ -7,83 +6,20 @@ import { validateOrFallback, wrapToolError } from "./tool-utils.js";
 import { MembersDataService } from "../data/members-data.service.js";
 import { DocumentsDataService } from "../data/documents-data.service.js";
 import { TeamStatsDataService } from "../data/team-stats-data.service.js";
-
-const memberOutputSchema = z.array(
-    z.object({
-        userId: z.string(),
-        fullName: z.string(),
-        email: z.string(),
-        role: z.string(),
-    })
-);
-
-const documentSummaryOutputSchema = z.array(
-    z.object({
-        id: z.string(),
-        name: z.string(),
-        status: z.string(),
-        riskLevel: z.string().nullable(),
-        expiresAt: z.date().nullable(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-    })
-);
-
-const documentDetailOutputSchema = z
-    .object({
-        id: z.string(),
-        name: z.string(),
-        status: z.string(),
-        riskLevel: z.string().nullable(),
-        expiresAt: z.date().nullable(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-        tags: z.array(z.string()),
-    })
-    .nullable();
-
-const teamStatsOutputSchema = z
-    .object({
-        totalDocuments: z.number(),
-        processingDocuments: z.number(),
-        activeDocuments: z.number(),
-        archivedDocuments: z.number(),
-        failedDocuments: z.number(),
-        needsReviewDocuments: z.number(),
-        highRiskDocuments: z.number(),
-        mediumRiskDocuments: z.number(),
-        lowRiskDocuments: z.number(),
-        expiringSoonDocuments: z.number(),
-    })
-    .nullable();
-
-const memberCountsOutputSchema = z.array(
-    z.object({ role: z.string(), count: z.number() })
-);
-
-const chatInfoOutputSchema = z.object({
-    chatId: z.string(),
-    name: z.string(),
-    documentId: z.string().nullable(),
-    aiAgentEnabled: z.boolean(),
-    activeMembers: z.array(
-        z.object({
-            id: z.string(),
-            userId: z.string(),
-            userFullName: z.string(),
-            userAvatarUrl: z.string().nullable(),
-        })
-    ),
-});
-
-const chatMembersOutputSchema = z.array(
-    z.object({
-        id: z.string(),
-        userId: z.string(),
-        userFullName: z.string(),
-        userAvatarUrl: z.string().nullable(),
-    })
-);
+import {
+    chatInfoOutputSchema,
+    chatMembersOutputSchema,
+    documentDetailOutputSchema,
+    documentSummaryOutputSchema,
+    emptyInputSchema,
+    findMembersByNameInputSchema,
+    getDocumentByIdInputSchema,
+    getTeamMembersInputSchema,
+    listDocumentsInputSchema,
+    memberCountsOutputSchema,
+    memberOutputSchema,
+    teamStatsOutputSchema,
+} from "./build-tools.schemas.js";
 
 export const buildMembersTools = (
     ctx: AgentContext,
@@ -113,9 +49,7 @@ export const buildMembersTools = (
             name: "get_team_members",
             description:
                 "List members of the current team. Returns userId, fullName, email, role.",
-            schema: z.object({
-                limit: z.number().int().min(1).max(200).optional(),
-            }),
+            schema: getTeamMembersInputSchema,
         }
     ),
     tool(
@@ -142,10 +76,7 @@ export const buildMembersTools = (
             name: "find_members_by_name",
             description:
                 "Search team members by name or email substring (case-insensitive).",
-            schema: z.object({
-                query: z.string().min(1),
-                limit: z.number().int().min(1).max(200).optional(),
-            }),
+            schema: findMembersByNameInputSchema,
         }
     ),
 ];
@@ -182,10 +113,7 @@ export const buildDocumentsTools = (
             name: "list_documents",
             description:
                 "List documents for the current team. If this chat is scoped to a single document, results are automatically restricted to it.",
-            schema: z.object({
-                query: z.string().optional(),
-                limit: z.number().int().min(1).max(200).optional(),
-            }),
+            schema: listDocumentsInputSchema,
         }
     ),
     tool(
@@ -214,9 +142,7 @@ export const buildDocumentsTools = (
             name: "get_document_by_id",
             description:
                 "Fetch a single document by id, with tags. If this chat is scoped to another document, returns null.",
-            schema: z.object({
-                documentId: z.string().uuid(),
-            }),
+            schema: getDocumentByIdInputSchema,
         }
     ),
 ];
@@ -248,7 +174,7 @@ export const buildTeamStatsTools = (
             name: "get_team_stats",
             description:
                 "Returns aggregate document statistics for the current team (counts by status, risk levels, etc.).",
-            schema: z.object({}),
+            schema: emptyInputSchema,
         }
     ),
     tool(
@@ -280,7 +206,7 @@ export const buildTeamStatsTools = (
             name: "get_member_counts_by_role",
             description:
                 "Returns the number of members of the current team grouped by role.",
-            schema: z.object({}),
+            schema: emptyInputSchema,
         }
     ),
 ];
@@ -313,7 +239,7 @@ export const buildChatTools = (
             name: "get_chat_info",
             description:
                 "Returns metadata about the current chat: name, linked documentId, AI-agent flag, and active members of THIS chat.",
-            schema: z.object({}),
+            schema: emptyInputSchema,
         }
     ),
     tool(
@@ -341,7 +267,7 @@ export const buildChatTools = (
             name: "get_chat_members",
             description:
                 "Returns the list of active members of the current chat.",
-            schema: z.object({}),
+            schema: emptyInputSchema,
         }
     ),
 ];

@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { createAgent } from "langchain";
 import { FastifyBaseLogger } from "fastify";
 import { addDIResolverName } from "@/lib/awilix/awilix.js";
@@ -11,17 +10,14 @@ import { AgentContext, GraphState, HistoryItem } from "../llm.types.js";
 import { DocumentsDataService } from "../data/documents-data.service.js";
 import { TeamStatsDataService } from "../data/team-stats-data.service.js";
 import { buildDocumentsSystemPrompt } from "./prompts/documents.prompt.js";
+import { AgentName, AI_FALLBACK_ERROR_MESSAGE } from "../llm.constants.js";
 import { buildTeamStatsSystemPrompt } from "./prompts/team-stats.prompt.js";
+import { finalAnswerSchema, routerOutputSchema } from "./ai-graph.schemas.js";
 import { GeminiProviderService } from "../providers/gemini-provider.service.js";
 import {
     ROUTER_SYSTEM_PROMPT,
     buildRouterUserMessage,
 } from "./prompts/router.prompt.js";
-import {
-    AGENT_NAMES,
-    AgentName,
-    AI_FALLBACK_ERROR_MESSAGE,
-} from "../llm.constants.js";
 import {
     AGGREGATOR_SYSTEM_PROMPT,
     buildAggregatorUserMessage,
@@ -32,14 +28,6 @@ import {
     buildMembersTools,
     buildTeamStatsTools,
 } from "./build-tools.js";
-
-const routerOutputSchema = z.object({
-    agents: z.array(z.enum(AGENT_NAMES)).min(1),
-});
-
-const finalAnswerSchema = z.object({
-    content: z.string().min(1).max(8000),
-});
 
 export type AiGraphService = {
     run: (input: {
