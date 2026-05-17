@@ -1,6 +1,6 @@
 export const HISTORY_LIMIT = 20;
 
-export const GEMINI_MODEL = "gemini-2.0-flash";
+export const GEMINI_MODEL = "gemini-3.1-flash-lite";
 
 export const AGENT_NAMES = [
     "members",

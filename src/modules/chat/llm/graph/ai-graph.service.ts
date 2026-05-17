@@ -4,7 +4,6 @@ import { addDIResolverName } from "@/lib/awilix/awilix.js";
 import { ChatDataService } from "../data/chat-data.service.js";
 import { buildChatSystemPrompt } from "./prompts/chat.prompt.js";
 import { MembersDataService } from "../data/members-data.service.js";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { buildMembersSystemPrompt } from "./prompts/members.prompt.js";
 import { AgentContext, GraphState, HistoryItem } from "../llm.types.js";
 import { DocumentsDataService } from "../data/documents-data.service.js";
@@ -14,6 +13,11 @@ import { AgentName, AI_FALLBACK_ERROR_MESSAGE } from "../llm.constants.js";
 import { buildTeamStatsSystemPrompt } from "./prompts/team-stats.prompt.js";
 import { finalAnswerSchema, routerOutputSchema } from "./ai-graph.schemas.js";
 import { GeminiProviderService } from "../providers/gemini-provider.service.js";
+import {
+    AIMessage,
+    HumanMessage,
+    SystemMessage,
+} from "@langchain/core/messages";
 import {
     ROUTER_SYSTEM_PROMPT,
     buildRouterUserMessage,
@@ -149,7 +153,7 @@ export const createService = (
             ...history.map((h) =>
                 h.role === "user"
                     ? new HumanMessage(h.content)
-                    : new SystemMessage(`Prior AI reply: ${h.content}`)
+                    : new AIMessage(h.content)
             ),
             new HumanMessage(userMessage),
         ];

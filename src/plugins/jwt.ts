@@ -486,9 +486,11 @@ const configureJwt = async (fastify: FastifyInstance) => {
                         },
                     });
 
-                    if (!team) {
-                        throw new ForbiddenError("Forbidden");
+                    if (team) {
+                        return;
                     }
+
+                    throw new ForbiddenError("Forbidden");
                 }
 
                 if (

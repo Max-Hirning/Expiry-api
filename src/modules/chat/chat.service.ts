@@ -147,13 +147,26 @@ export const createChatService = (
     });
 
     const buildVisibilityFilter = (
-        userId: string
-    ): Prisma.ChatMessageWhereInput => ({
-        OR: [
-            { visibleToMemberId: null },
-            { visibleToMember: { is: { userId } } },
-        ],
-    });
+        userId: string,
+        aiAgentVisibility: ChatAiAgentVisibility = ChatAiAgentVisibility.SENDER_ONLY
+    ): Prisma.ChatMessageWhereInput => {
+        if (aiAgentVisibility === ChatAiAgentVisibility.ALL) {
+            return {
+                OR: [
+                    { visibleToMemberId: null },
+                    { isFromAiAgent: true },
+                    { visibleToMember: { is: { userId } } },
+                ],
+            };
+        }
+
+        return {
+            OR: [
+                { visibleToMemberId: null, isToAiAgent: false },
+                { visibleToMember: { is: { userId } } },
+            ],
+        };
+    };
 
     const buildUnreadCountWhere = (
         userId: string
@@ -212,6 +225,7 @@ export const createChatService = (
                 ...(body.parentMessageId && {
                     parentMessageId: body.parentMessageId,
                 }),
+                isToAiAgent: isForAi,
                 ...(isForAi && { visibleToMemberId: member.id }),
                 authorId: member.id,
                 chatId: params.chatId,
@@ -506,9 +520,10 @@ export const createChatService = (
                     where: {
                         chatId: params.chatId,
                         parentMessageId: query.parentMessageId,
-                        ...(chat.aiAgentVisibility ===
-                            ChatAiAgentVisibility.SENDER_ONLY &&
-                            buildVisibilityFilter(initiator.id)),
+                        ...buildVisibilityFilter(
+                            initiator.id,
+                            chat.aiAgentVisibility
+                        ),
                     },
                     orderBy,
                     ...(query.cursor && {
@@ -754,11 +769,23 @@ export const createChatService = (
                         );
                     }
 
+                    const chat = await tx.chat.findUnique({
+                        where: { id: params.chatId },
+                        select: { aiAgentVisibility: true },
+                    });
+
+                    if (!chat) {
+                        throw new NotFoundError("Chat not found");
+                    }
+
                     const visibleMessages = await tx.chatMessage.findMany({
                         where: {
                             id: { in: body.messageIds },
                             chatId: params.chatId,
-                            ...buildVisibilityFilter(initiator.id),
+                            ...buildVisibilityFilter(
+                                initiator.id,
+                                chat.aiAgentVisibility
+                            ),
                         },
                         select: { id: true },
                     });

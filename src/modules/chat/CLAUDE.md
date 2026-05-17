@@ -129,7 +129,7 @@ The AI agent is **not** a `User` / `ChatMember`. Its messages have `isFromAiAgen
 
 - **Per-chat toggle**: `Chat.aiAgentEnabled` (default `true`) controls whether the AI agent can post in a chat.
 - **Visibility mode**: `Chat.aiAgentVisibility` is either `ALL` (default — every active member sees the AI reply) or `SENDER_ONLY` (only the member who triggered the AI sees the reply, enforced via `ChatMessage.visibleToMemberId`).
-- **Visibility filter**: The last-message preview and unread counts always apply `visibleToMemberId IS NULL OR visibleToMember.userId = currentUser.id`. `getMessages` applies that same filter **only when the chat's `aiAgentVisibility = SENDER_ONLY`**; when `aiAgentVisibility = ALL`, all messages in the chat are returned regardless of `visibleToMemberId`.
+- **Visibility filter**: The last-message preview and unread counts always apply `visibleToMemberId IS NULL OR visibleToMember.userId = currentUser.id`. `getMessages` applies that same filter **only when the chat's `aiAgentVisibility = SENDER_ONLY`**; when `aiAgentVisibility = ALL`, all messages in the chat are returned regardless of `visibleToMemberId`. The filter matches both the user's own AI-targeted question AND the AI's reply to them — so the sender sees the full AI exchange while other members never see another user's questions to AI.
 - AI agent messages **cannot be edited or deleted** (throws `ForbiddenError`).
 
 ### Member Authorization
